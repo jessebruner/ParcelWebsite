@@ -79,6 +79,48 @@ document.addEventListener('DOMContentLoaded', async function() {
     const manifest = JSON.parse(manifestEl.textContent);
     let template = JSON.parse(templateEl.textContent);
 
+    /*
+     * The site ships as one generated page template. Keep the production-only
+     * contact configuration here, beside the point where that template is
+     * unpacked, so publishing never depends on an editor prop being set.
+     *
+     * FormSubmit is the server boundary for this static GitHub Pages site. Its
+     * AJAX endpoint accepts JSON cross-origin and forwards it to the address in
+     * the URL after that inbox completes FormSubmit's one-time activation.
+     */
+    const contactFormEdits = [
+      [
+        '&quot;formEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;',
+        '&quot;formEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://formsubmit.co/ajax/jesse@commonparcel.com&quot;'
+      ],
+      [
+        'Request received',
+        'Request sent'
+      ],
+      [
+        'We have it. You will hear from a person, not a sequence.',
+        'Thanks — Jesse will be in touch shortly.'
+      ],
+      [
+        '? "Sent straight to the team — your mail app never opens"',
+        '? "Your request goes directly to Jesse."'
+      ],
+      [
+        '? "A reply usually comes the same day."',
+        '? "Jesse will reply to the email address you provided."'
+      ],
+      [
+        'const payload = { association: g("ea-assoc"), name: g("ea-name"), lots: g("ea-lots"), email: g("ea-email") };',
+        'const payload = { association: g("ea-assoc"), name: g("ea-name"), lots: g("ea-lots"), email: g("ea-email"), _subject: "New Common Parcel early access request", _template: "table", _url: "https://commonparcel.com/" };'
+      ]
+    ];
+    for (const [before, after] of contactFormEdits) {
+      if (!template.includes(before)) {
+        throw new Error('Contact form publishing patch no longer matches the generated page.');
+      }
+      template = template.replace(before, after);
+    }
+
     // Nested page bundles (iframe targets). Each ships ONCE, in the ROOT
     // document's manifest; frame srcs carry an about:blank#<uuid> marker
     // instead of a substitutable uuid. Every document mints the blobs for
