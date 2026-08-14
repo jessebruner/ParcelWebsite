@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+# Answer engines are allowed deliberately, not by omission. A board asking an
+# assistant "what should a self-managed HOA use" is exactly the query this
+# site exists to be found on.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://commonparcel.com/sitemap.xml
