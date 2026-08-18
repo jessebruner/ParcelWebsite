@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/gen-sitemap.mjs",
+    "build": "astro build && node tools/sync-homepage-masthead.mjs && node tools/gen-sitemap.mjs",
     "preview": "astro preview",
     "links": "node tools/check-links.mjs",
     "voice": "node tools/voice-lint.mjs",
