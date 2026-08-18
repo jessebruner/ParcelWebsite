@@ -1,0 +1,15 @@
+---
+/**
+ * A section: name in the rail, argument on the right, optional onward link
+ * under the name. Above 1000px the rail is a real column; below it stacks.
+ */
+interface Props { title: string; field?: boolean; note?: string; noteHref?: string; id?: string; }
+const { title, field = false, note, noteHref, id } = Astro.props;
+---
+<section class:list={["band", { "band--field": field }]} id={id}>
+  <div class="page">
+    <h2 class="rail t-sheet">{title}</h2>
+    {note && noteHref && <p class="rail-note"><a href={noteHref}>{note}</a></p>}
+    <div class="body"><slot /></div>
+  </div>
+</section>

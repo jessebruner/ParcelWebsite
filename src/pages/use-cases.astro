@@ -1,0 +1,121 @@
+---
+/**
+ * One page, anchored sections, so /use-cases#condo is shareable.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+
+<Base
+  title="Use cases"
+  description="What Parcel looks like at five doors and at a thousand, for an HOA, a condo association or a civic association, and for a board self-managing for the first time."
+  path="/use-cases"
+  reviewed="August 2026"
+>
+  <Hero eyebrow="Use cases">
+    <h1 class="t-display">Where this fits</h1>
+    <p class="t-lede">By size, by type, and by what is happening to your board right now.</p>
+  </Hero>
+
+  <Band title="By size" id="size">
+    <ul class="rows">
+      <li>
+        <b>Under 25 doors.</b> The board is three people and the treasurer is doing it on a
+        spreadsheet. Parcel costs the monthly minimum here, and the value is mostly that the
+        documents get read and the deadlines get watched. Nobody has to become the software person.
+      </li>
+      <li>
+        <b>25 to 100 doors.</b> The size where self-management stops being casual. Real money
+        moving, a handful of late accounts every quarter, and a violation or two that could be
+        argued. This is the shape Parcel was built around.
+      </li>
+      <li>
+        <b>100 to 500 doors.</b> A management company would quote thousands a month at this size.
+        Enough owners that the portal starts taking real load off the board, and enough vendor
+        contracts that re-bidding pays for the software several times over.
+      </li>
+      <li>
+        <b>Over 500 doors.</b> The per lot rate is at its lowest here. Committees matter, elections
+        are contested, and the record is what protects the board. Parcel runs at this size; the
+        constraint is usually whether the board wants to self-manage at all.
+      </li>
+    </ul>
+  </Band>
+
+  <Band title="By type" field id="type">
+    <ul class="rows">
+      <li>
+        <b>Homeowners associations.</b> The default case. Declaration, bylaws, rules, a plat, an
+        assessment, and an architectural committee.
+      </li>
+      <li>
+        <b>Condominium associations.</b> Heavier statutory obligations in most states, and stricter
+        reserve rules. Parcel holds condominium specific requirements separately where the statute
+        treats them differently, because a rule that binds condominiums and not HOAs applied to the
+        wrong entity is as wrong as no rule at all.
+      </li>
+      <li>
+        <b>Planned communities.</b> Sub-associations, shared amenities, and more than one set of
+        documents. Parcel reads each and keeps them apart.
+      </li>
+      <li>
+        <b>Civic and neighborhood associations.</b> Lighter statutory duties, smaller budgets,
+        often no assessment at all. These pay a reduced rate.
+      </li>
+    </ul>
+  </Band>
+
+  <Band title="Self-managing for the first time" id="self-managing">
+    <p>
+      You have decided not to hire a manager, or you already did and it did not work.
+    </p>
+    <p class="coda">
+      The hard part is not the bookkeeping. It is that nobody knows what the documents say, and
+      every decision carries a low worry of having done something void.
+    </p>
+  </Band>
+
+  <Band title="Leaving a management company" field id="leaving" note="See the comparison" noteHref="/vs/management-company">
+    <p>
+      Read your contract for the notice period and the records return clause first. That second
+      clause decides how painful the next month is.
+    </p>
+    <p>
+      Parcel prepares the termination notice your contract requires, the records request, and a
+      transition checklist, then loads the ledgers, documents and roster as they arrive. Migration
+      is included.
+    </p>
+    <p class="coda">
+      Format specific import for Buildium, PayHOA and TownSq exports is being built. A generic
+      import of units, owners and balances works today, so no promise on timing yet.
+    </p>
+  </Band>
+
+  <Band title="A brand new board after developer turnover" id="turnover" note="Read about turnover" noteHref="/blog/hoa-developer-turnover">
+    <p>
+      You have a box of documents and no idea whether it is complete, and one deadline is already
+      running that most boards miss.
+    </p>
+    <p class="coda">
+      There is nothing to migrate from, so there is no switching cost at all. It is the cheapest
+      moment to start properly.
+    </p>
+  </Band>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-sheet">Tell me your state and your lot count.</h2>
+      <div class="actions">
+        <a class="btn btn--on-ink" href="/demo">Get early access</a>
+        <a class="btn btn--ghost-on-ink" href="/pricing">See the price</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close .actions { margin-top: var(--s-6); }
+</style>

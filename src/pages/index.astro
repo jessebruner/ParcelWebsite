@@ -1,0 +1,170 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+import Plat from "../components/Plat.astro";
+import { PRODUCT } from "../data/routes";
+
+const faqs = [
+  ["Where does our dues money go?",
+   "Into the association's own account, in its own name, at its own bank. Owners pay it directly. Parcel is not in that path and cannot move a dollar out of it."],
+  ["Do we have to type our CC&Rs in?",
+   "No. That is the work Parcel does. Upload what you have and confirm what it read."],
+  ["How long does setup take?",
+   "About thirty minutes for a typical set of documents, most of it you confirming what it found."],
+  ["What if it cannot find a rule in our documents?",
+   "It prints unknown and tells you why. It does not fill the gap with a number from somewhere else."],
+  ["Can we leave?", "Any month, with everything."],
+];
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://commonparcel.com/#organization",
+      name: "Common Parcel",
+      url: "https://commonparcel.com/",
+      email: "jesse@commonparcel.com",
+      logo: "https://commonparcel.com/apple-touch-icon.png",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "1420 Washington Blvd, Ste 301",
+        addressLocality: "Detroit", addressRegion: "MI",
+        postalCode: "48226", addressCountry: "US",
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Common Parcel",
+      applicationCategory: "BusinessApplication",
+      applicationSubCategory: "HOA management software",
+      operatingSystem: "Web",
+      url: "https://commonparcel.com/",
+      publisher: { "@id": "https://commonparcel.com/#organization" },
+      description:
+        "HOA management software for self-managed boards. Parcel reads the association's declaration and bylaws and runs the dues, notices, violations, elections and vendor contracts on the schedule those documents set.",
+      offers: {
+        "@type": "AggregateOffer", priceCurrency: "USD", lowPrice: "10", offerCount: "1",
+        description: "Graduated per lot, per month, with a $10 monthly minimum.",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      inLanguage: "en-US",
+      mainEntity: faqs.map(([q, a]) => ({
+        "@type": "Question", name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
+    },
+  ],
+});
+---
+
+<Base
+  title="Common Parcel: HOA management software for self-managed boards"
+  description="Upload your declaration and bylaws. Parcel reads them and runs the dues, the notices, the violations and the elections on the schedule your documents already set. Starts at $10 a month."
+  shareTitle="Software that reads your governing documents"
+  path="/"
+  schema={schema}
+>
+  <Hero>
+    <div class="split">
+      <div>
+        <h1 class="t-display">Ditch your HOA management company.</h1>
+        <p class="t-lede">
+          Upload your declaration. Parcel reads it, then runs the dues, the notices, the
+          violations and the elections on the schedule your documents already set.
+        </p>
+        <div class="actions">
+          <a class="btn btn--on-ink" href="/demo">Get early access</a>
+          <a class="btn btn--ghost-on-ink" href="/pricing">See the price</a>
+        </div>
+        <p class="terms">No contract · No setup fee · No credit card needed</p>
+      </div>
+      <div class="plat-wrap"><Plat /></div>
+    </div>
+  </Hero>
+
+  <Band title="Be a neighbor again." field>
+    <p class="t-lede">
+      Parcel does the month from your own documents, and replaces the company you were paying
+      to do it.
+    </p>
+    <ul class="rows">
+      <li><b>Any size.</b> Five doors or a thousand. HOAs, condos, and civic associations.</li>
+      <li><b>No staff.</b> No manager, no bookkeeper, and nobody who has to be the software person.</li>
+      <li><b>Your rules.</b> It runs on your declaration and your state's law, not a generic template.</li>
+    </ul>
+  </Band>
+
+  <Band title="Everything the month needs" note="See every feature" noteHref="/product/dues-and-payments">
+    <ul class="rows">
+      <li><b>Dues and payments.</b> Invoiced on your schedule, at the amount your declaration sets.</li>
+      <li><b>Collections.</b> A late account climbs the ladder your state allows, at the pace your state allows.</li>
+      <li><b>Accounting and budgets.</b> The bank reconciles overnight. The budget carries the vote that adopted it.</li>
+      <li><b>Rules and enforcement.</b> A violation is logged against the rule it breaks, with the cure window and the hearing.</li>
+      <li><b>Meetings and voting.</b> Notice on time, quorum against the roster you actually have, minutes when the vote closes.</li>
+      <li><b>Documents and answers.</b> Ask what your declaration says. The answer comes back with the page it came from.</li>
+      <li><b>Vendors and insurance.</b> Contracts get re-bid before they renew, with the going rate beside each quote.</li>
+      <li><b>Resident portal.</b> Owners look up their balance and their rules without calling you.</li>
+    </ul>
+  </Band>
+
+  <Band title="It reads the law, then watches it change" field note="How compliance works" noteHref="/compliance">
+    <p>
+      Parcel models HOA statute across every state, and tracks the bills that would change it.
+      When a rule moves, you get told what changed and what it means for your association.
+    </p>
+    <p class="coda">
+      Where a provision has not been read yet, the part of the product that needs it stops and
+      says so. It does not guess at law.
+    </p>
+  </Band>
+
+  <Band title="Starts at $10 a month" note="Work out what you would pay" noteHref="/pricing">
+    <p>
+      One price covers everything. No tiers to compare, nothing charged per notice, and owners
+      are not charged to pay their dues. The rate per lot falls as the association grows.
+    </p>
+    <p>
+      Billing is monthly. Leave whenever you like and take the ledgers, the documents, the
+      minutes and the record with you.
+    </p>
+  </Band>
+
+  <Band title="Common questions" field>
+    <dl class="faq">
+      {faqs.map(([q, a]) => (
+        <div><dt class="t-title">{q}</dt><dd>{a}</dd></div>
+      ))}
+    </dl>
+  </Band>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-display">Get your evenings back.</h2>
+      <div class="actions"><a class="btn btn--on-ink" href="/demo">Get early access</a></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .split { display: grid; gap: var(--s-12); align-items: center; }
+  @media (min-width: 900px) { .split { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); } }
+  h1 { max-width: 14ch; }
+  .t-lede { margin-top: clamp(20px, 2.6vw, 34px); }
+  .actions { margin-top: clamp(24px, 3vw, 34px); }
+  .terms {
+    margin: clamp(22px, 2.6vw, 32px) 0 0; padding-top: var(--s-4);
+    border-top: 1px solid var(--night-rule);
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--on-dark-label);
+  }
+  .plat-wrap { display: flex; justify-content: flex-end; }
+  @media (max-width: 899px) { .plat-wrap { justify-content: flex-start; } }
+
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 13ch; }
+  .close .actions { margin-top: clamp(26px, 3.4vw, 44px); }
+</style>

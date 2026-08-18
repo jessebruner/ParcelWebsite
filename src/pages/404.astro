@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Page not found"
+  description="That page is not here."
+  path="/404"
+>
+  <Hero>
+    <h1 class="t-display">That page is not here</h1>
+    <p class="t-lede">It may have moved, or the link may be wrong.</p>
+  </Hero>
+  <Band title="Try one of these">
+    <ul class="rows"><li><a href="/">Home</a></li><li><a href="/product/dues-and-payments">What Parcel does</a></li><li><a href="/compliance">Compliance</a></li><li><a href="/pricing">Pricing</a></li></ul>
+  </Band>
+
+  <Band title="If a link on this site sent you here" field>
+    <p>Tell me and I will fix it. <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a></p>
+  </Band>
+
+</Base>

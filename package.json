@@ -1,0 +1,17 @@
+{
+  "name": "commonparcel-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node tools/gen-sitemap.mjs",
+    "preview": "astro preview",
+    "links": "node tools/check-links.mjs",
+    "voice": "node tools/voice-lint.mjs",
+    "verify": "npm run build && npm run links"
+  },
+  "dependencies": {
+    "astro": "7.2.3"
+  }
+}

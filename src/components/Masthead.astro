@@ -1,0 +1,240 @@
+---
+/**
+ * The masthead, built from src/data/routes.ts.
+ *
+ * Nothing here is a hand-written link. That is deliberate: the previous attempt
+ * shipped a menu pointing at pages that did not exist yet, so the navigation
+ * 404'd. Add a route to the manifest and it appears here; remove the page and
+ * the link checker fails the build.
+ *
+ * Desktop dropdowns open on hover and on focus-within, so they work from the
+ * keyboard without script. The script only adds click-to-toggle for touch, the
+ * mobile menu, and Escape to close.
+ */
+import Mark from "./Mark.astro";
+import { PRODUCT, PRODUCT_RAIL, COMPARE, TOP_NAV } from "../data/routes";
+
+const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const isCurrent = (p: string) => here === p;
+const inPanel = (rs: { path: string }[]) => rs.some((r) => isCurrent(r.path));
+---
+
+<header class="mast">
+  <div class="page bar">
+    <a class="lockup" href="/">
+      <Mark size={32} />
+      <span class="wordmark">Common Parcel</span>
+    </a>
+
+    <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="nav" aria-label="Main">
+      <ul class="top">
+        {TOP_NAV.map((item) =>
+          item.panel ? (
+            <li class="has-panel" data-panel={item.panel}>
+              <button
+                type="button"
+                class:list={["trigger", { on: item.panel === "product" ? inPanel(PRODUCT) : inPanel(COMPARE) }]}
+                aria-expanded="false"
+              >
+                {item.label}
+                <svg viewBox="0 0 10 6" width="10" height="6" aria-hidden="true"><path d="M0 0l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+              </button>
+
+              {item.panel === "product" ? (
+                <div class="panel panel--wide">
+                  <div class="grid">
+                    <ul class="items">
+                      {PRODUCT.map((r) => (
+                        <li>
+                          <a href={r.path} aria-current={isCurrent(r.path) ? "page" : undefined}>
+                            <span class="name">{r.label}</span>
+                            <span class="blurb">{r.blurb}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <ul class="rail">
+                      {PRODUCT_RAIL.map((r) => (
+                        <li>
+                          <a href={r.path}>
+                            <span class="name">{r.label}</span>
+                            <span class="blurb">{r.blurb}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div class="panel">
+                  <ul class="items items--single">
+                    {COMPARE.map((r) => (
+                      <li>
+                        <a href={r.path} aria-current={isCurrent(r.path) ? "page" : undefined}>
+                          <span class="name">{r.label}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          ) : (
+            <li>
+              <a
+                class:list={["link", { on: isCurrent(item.path!) }]}
+                href={item.path}
+                aria-current={isCurrent(item.path!) ? "page" : undefined}
+              >{item.label}</a>
+            </li>
+          )
+        )}
+      </ul>
+      <a class="btn btn--primary cta" href="/demo">Get early access</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .mast {
+    position: sticky; top: 0; z-index: 60;
+    background: var(--paper);
+    border-bottom: var(--stroke-edge);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); }
+
+  .lockup { display: flex; align-items: center; gap: 10px; text-decoration: none; padding-block: var(--s-3); }
+  .wordmark {
+    font-family: var(--font-serif); font-size: var(--t-title); font-weight: 600;
+    letter-spacing: -0.025em; color: var(--ink); white-space: nowrap;
+  }
+
+  nav { display: flex; align-items: center; gap: var(--s-5); }
+  .top { display: flex; align-items: center; gap: clamp(4px, 1.4vw, 18px); list-style: none; margin: 0; padding: 0; }
+
+  .trigger, .link {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    padding: 0 var(--s-2);
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3); background: none; border: none; cursor: pointer; text-decoration: none;
+  }
+  .trigger:hover, .link:hover, .trigger.on, .link.on { color: var(--terracotta); }
+  .trigger svg { opacity: 0.6; transition: transform 0.15s ease; }
+
+  .has-panel { position: relative; }
+
+  .panel {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    background: var(--card); border: var(--stroke-edge); border-top: var(--stroke-consequence);
+    padding: var(--s-6);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.12s ease;
+  }
+  .panel--wide { width: min(78vw, 860px); }
+  .panel:not(.panel--wide) { width: max-content; }
+
+  .has-panel:hover > .panel,
+  .has-panel:focus-within > .panel,
+  .has-panel[data-open] > .panel { opacity: 1; visibility: visible; pointer-events: auto; }
+  .has-panel:hover > .trigger svg,
+  .has-panel[data-open] > .trigger svg { transform: rotate(180deg); }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15em); gap: var(--s-8); }
+  .items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-1) var(--s-6);
+           list-style: none; margin: 0; padding: 0; }
+  .items--single { grid-template-columns: minmax(0, 1fr); }
+  .items a, .rail a {
+    display: block; padding: var(--s-2) var(--s-3); text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .items a:hover, .rail a:hover { background: var(--field); border-left-color: var(--terracotta); }
+  .items a[aria-current="page"] { border-left-color: var(--terracotta); }
+  .name { display: block; font-family: var(--font-serif); font-size: var(--t-body); font-weight: 600; color: var(--ink); }
+  .blurb { display: block; font-size: var(--t-micro); color: var(--ink-3); margin-top: 2px; }
+
+  .rail { list-style: none; margin: 0; padding: 0 0 0 var(--s-6); border-left: var(--stroke-rule); }
+
+  .burger { display: none; }
+
+  /* ── Phone ───────────────────────────────────────────────────────────── */
+  @media (max-width: 940px) {
+    .burger {
+      display: inline-flex; flex-direction: column; justify-content: center; gap: 4px;
+      width: 44px; height: 44px; padding: 0 10px;
+      background: none; border: none; cursor: pointer;
+    }
+    .burger span { display: block; height: 1.5px; background: var(--ink); }
+
+    nav {
+      position: absolute; top: 100%; left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 0;
+      background: var(--card); border-bottom: var(--stroke-consequence);
+      padding: var(--s-2) var(--pad-x) var(--s-6);
+      display: none;
+    }
+    .mast[data-nav-open] nav { display: flex; }
+
+    .top { flex-direction: column; align-items: stretch; gap: 0; }
+    .trigger, .link { justify-content: space-between; width: 100%; border-bottom: var(--stroke-hairline); }
+    .trigger { padding-inline: var(--s-2); }
+
+    .panel {
+      position: static; transform: none; width: auto; opacity: 1; visibility: visible;
+      pointer-events: auto; border: none; border-top: none; padding: var(--s-2) 0 var(--s-4) var(--s-4);
+      display: none;
+    }
+    .has-panel[data-open] > .panel { display: block; }
+    .has-panel:hover > .panel:not([data-open]) { display: none; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+    .items { grid-template-columns: minmax(0, 1fr); }
+    .rail { padding: var(--s-4) 0 0; border-left: none; border-top: var(--stroke-rule); }
+    .cta { margin-top: var(--s-4); justify-content: center; }
+  }
+
+  /* The wordmark plus the button is wider than a small phone. The heron is the
+     favicon and the app icon, so it carries the identity alone down here. */
+  @media (max-width: 420px) {
+    .wordmark { display: none; }
+  }
+</style>
+
+<script>
+  const mast = document.querySelector<HTMLElement>(".mast");
+  const burger = mast?.querySelector<HTMLButtonElement>(".burger");
+  const nav = mast?.querySelector<HTMLElement>("nav");
+  const panels = Array.from(mast?.querySelectorAll<HTMLElement>(".has-panel") ?? []);
+  const touch = window.matchMedia("(hover: none), (max-width: 940px)");
+
+  burger?.addEventListener("click", () => {
+    const open = mast!.hasAttribute("data-nav-open");
+    open ? mast!.removeAttribute("data-nav-open") : mast!.setAttribute("data-nav-open", "");
+    burger.setAttribute("aria-expanded", String(!open));
+  });
+
+  for (const li of panels) {
+    const trigger = li.querySelector<HTMLButtonElement>(".trigger")!;
+    trigger.addEventListener("click", (e) => {
+      // On a pointer device the panel is already open on hover, so a click here
+      // would close it the moment it appeared. Only intercept where hover is
+      // not available or the menu has collapsed.
+      if (!touch.matches) return;
+      e.preventDefault();
+      const open = li.hasAttribute("data-open");
+      for (const other of panels) { other.removeAttribute("data-open"); other.querySelector(".trigger")!.setAttribute("aria-expanded", "false"); }
+      if (!open) { li.setAttribute("data-open", ""); trigger.setAttribute("aria-expanded", "true"); }
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    mast?.removeAttribute("data-nav-open");
+    burger?.setAttribute("aria-expanded", "false");
+    for (const li of panels) { li.removeAttribute("data-open"); li.querySelector(".trigger")?.setAttribute("aria-expanded", "false"); }
+    (document.activeElement as HTMLElement)?.blur();
+  });
+</script>

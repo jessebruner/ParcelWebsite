@@ -1,0 +1,194 @@
+---
+/**
+ * The one page where prices belong.
+ *
+ * The calculator exists so a board gets its own number instead of reading a
+ * worked example built on somebody else's lot count. That was a deliberate
+ * decision: a rate card is a fact about the price list, and "a hundred lots
+ * costs about this" is a scenario we invented.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+
+const BRACKETS = [
+  { upTo: 10, rate: 2.5, label: "First 10" },
+  { upTo: 70, rate: 1.1, label: "11 to 70" },
+  { upTo: 500, rate: 0.4, label: "71 to 500" },
+  { upTo: Infinity, rate: 0.5, label: "Above 500" },
+];
+const MINIMUM = 10;
+
+const faqs = [
+  ["Is there a free trial?",
+   "Founding associations are being onboarded now. Ask and we will talk about what makes sense for yours."],
+  ["What counts as a lot?", "A unit that owes an assessment. Common areas do not count."],
+  ["Do you charge for the resident portal?",
+   "No. It is part of the price, and owners pay nothing to use it."],
+  ["What happens if we leave?",
+   "Billing stops. A full export of ledgers, documents, minutes and the record is available in the month you leave."],
+];
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Common Parcel",
+  description: "HOA management software for self-managed boards, priced per lot with a $10 monthly minimum.",
+  offers: {
+    "@type": "AggregateOffer",
+    priceCurrency: "USD",
+    lowPrice: "10",
+    offerCount: "1",
+    description: "Graduated per lot, per month. $2.50 each for the first 10 lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, $0.50 above 500, with a $10 monthly minimum.",
+  },
+});
+---
+
+<Base
+  title="Pricing"
+  description="Graduated per lot, per month, with a $10 minimum. Everything included. No contract, no setup fee, and no charge to owners for paying their dues."
+  path="/pricing"
+  reviewed="August 2026"
+  schema={schema}
+>
+  <Hero eyebrow="Pricing">
+    <h1 class="t-display">One price. Everything in it.</h1>
+    <p class="t-lede">
+      Graduated per lot, per month, like a tax bracket. The rate falls as the association grows.
+    </p>
+  </Hero>
+
+  <Band title="The rate card">
+    <div class="scroll-x">
+      <table>
+        <caption>Per lot, per month</caption>
+        <thead><tr><th>Lots</th><th>Rate</th></tr></thead>
+        <tbody>
+          {BRACKETS.map((b) => (
+            <tr><th scope="row">{b.label}</th><td class="num">${b.rate.toFixed(2)}</td></tr>
+          ))}
+        </tbody>
+        <tfoot><tr><th scope="row">Monthly minimum</th><td class="num">${MINIMUM.toFixed(2)}</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="calc" data-min={MINIMUM} data-brackets={JSON.stringify(BRACKETS.map((b) => [b.upTo === Infinity ? null : b.upTo, b.rate]))}>
+      <label for="lots">How many lots does your association have?</label>
+      <input id="lots" type="number" min="1" max="5000" step="1" value="60" inputmode="numeric" />
+      <p class="out"><span class="figure" data-out>$76.00</span> <span class="per">a month</span></p>
+      <p class="perlot t-mono" data-perlot></p>
+    </div>
+  </Band>
+
+  <Band title="What is included" field>
+    <p>
+      Everything. Collections, violations, hearings, elections, meetings, minutes, budgets, vendor
+      contracts, insurance, records requests, resale packets, the resident portal, and the record
+      of every action.
+    </p>
+    <p>
+      There are no feature tiers. Nothing is charged per notice or per document. Owners are not
+      charged a fee to pay their dues.
+    </p>
+    <p class="coda">Civic and neighborhood associations pay a reduced rate. Ask.</p>
+  </Band>
+
+  <Band title="What it replaces">
+    <p>
+      A local management company charges $15 to $25 per door per month for full management, and
+      bills separately for mailings, estoppel letters, collections and after hours calls.
+    </p>
+    <p>
+      Other HOA platforms tier per door and still expect a volunteer to set up the rules and
+      remember the deadlines.
+    </p>
+  </Band>
+
+  <Band title="Terms" field>
+    <ul class="rows">
+      <li>Billing is monthly. No contract and no setup fee.</li>
+      <li>Migration is included.</li>
+      <li>A full export of ledgers, documents, minutes and the record is available any month, including the month you leave.</li>
+    </ul>
+  </Band>
+
+  <Band title="Questions" note="Talk to a person" noteHref="/contact">
+    <dl class="faq">
+      {faqs.map(([q, a]) => <div><dt class="t-title">{q}</dt><dd>{a}</dd></div>)}
+    </dl>
+  </Band>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-sheet">Bring this to the board. The vote is theirs.</h2>
+      <div class="actions"><a class="btn btn--on-ink" href="/demo">Get early access</a></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  table tfoot td, table tfoot th[scope="row"] {
+    border-top: var(--stroke-consequence); border-bottom: none;
+    font-family: var(--font-sans); font-weight: 600; color: var(--ink);
+    text-transform: none; letter-spacing: 0;
+  }
+  table th[scope="row"] {
+    text-transform: none; letter-spacing: 0; font-family: var(--font-sans);
+    font-size: var(--t-body); font-weight: 400; color: var(--ink-body);
+    border-bottom: var(--stroke-hairline);
+  }
+
+  .calc { border: var(--stroke-consequence); padding: var(--s-6); margin-top: var(--s-8) !important; }
+  .calc label { display: block; font-family: var(--font-mono); font-size: var(--t-mono-label);
+                letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+  .calc input {
+    display: block; width: 100%; max-width: 8em; margin-top: var(--s-3);
+    font-family: var(--font-mono); font-size: var(--t-title); padding: var(--s-2) var(--s-3);
+    border: var(--stroke-edge); background: var(--card); color: var(--ink);
+  }
+  .out { margin: var(--s-5) 0 0; display: flex; align-items: baseline; gap: var(--s-3); }
+  .figure { font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+            font-size: var(--t-figure); line-height: 1; color: var(--terracotta); }
+  .per { font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.16em;
+         text-transform: uppercase; color: var(--ink-3); }
+  .perlot { margin: var(--s-2) 0 0; color: var(--ink-3); }
+
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close .actions { margin-top: var(--s-6); }
+</style>
+
+<script>
+  const calc = document.querySelector<HTMLElement>(".calc");
+  if (calc) {
+    const min = Number(calc.dataset.min);
+    const brackets: [number | null, number][] = JSON.parse(calc.dataset.brackets!);
+    const input = calc.querySelector<HTMLInputElement>("input")!;
+    const out = calc.querySelector<HTMLElement>("[data-out]")!;
+    const perLot = calc.querySelector<HTMLElement>("[data-perlot]")!;
+
+    const price = (lots: number) => {
+      let remaining = lots;
+      let last = 0;
+      let total = 0;
+      for (const [upTo, rate] of brackets) {
+        const ceiling = upTo ?? Infinity;
+        const inBand = Math.max(0, Math.min(remaining, ceiling - last));
+        total += inBand * rate;
+        remaining -= inBand;
+        last = ceiling;
+        if (remaining <= 0) break;
+      }
+      return Math.max(min, total);
+    };
+
+    const render = () => {
+      const lots = Math.max(1, Math.min(5000, Math.floor(Number(input.value) || 1)));
+      const total = price(lots);
+      out.textContent = `$${total.toFixed(2)}`;
+      perLot.textContent = `${(total / lots).toFixed(2)} per lot · ${lots} lots`;
+    };
+    input.addEventListener("input", render);
+    render();
+  }
+</script>

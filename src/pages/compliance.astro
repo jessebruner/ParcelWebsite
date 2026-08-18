@@ -1,0 +1,143 @@
+---
+/**
+ * The compliance page: the statutory engine and the watch on legislative change.
+ *
+ * This page names a real limit, which is unusual for a marketing page and is
+ * the point. Several hundred fields are read and several hundred are not, and
+ * the engine stops rather than acting on law nobody has read. Saying so is what
+ * makes the rest of it credible.
+ *
+ * The coverage table is written by hand for now. It should be generated from
+ * ParcelHOA's src/lib/statute/data so it cannot go stale in prose.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+
+const FIELDS = [
+  "A records response window",
+  "A meeting notice floor",
+  "An election notice period",
+  "An architectural response period",
+  "A reserve study cycle",
+  "A reserve funding requirement",
+  "A collection procedure",
+  "A payment allocation order",
+  "A list of records exempt from production",
+];
+---
+
+<Base
+  title="Compliance"
+  description="Parcel models HOA statute across every state, tracks the bills that would change it, and tells you what a change means for your association. Where a provision has not been read, it stops rather than guessing."
+  shareTitle="It reads the law, then watches it change"
+  path="/compliance"
+  reviewed="August 2026"
+>
+  <Hero eyebrow="Compliance">
+    <h1 class="t-display">It reads the law, then watches it change</h1>
+    <p class="t-lede">
+      An association is governed by two things: its own documents, and the statute of the state it
+      sits in. The documents do not move often. The statute moves every session.
+    </p>
+  </Hero>
+
+  <Band title="What is modelled">
+    <p>
+      Statute across all fifty states, plus the District of Columbia, Puerto Rico and the US
+      Virgin Islands.
+    </p>
+    <p>
+      Not one record per state. One record per rule. A jurisdiction has:
+    </p>
+    <ul class="rows">{FIELDS.map((f) => <li>{f}</li>)}</ul>
+    <p class="coda">
+      Each is held separately, because they change separately. Every value carries the section it
+      came from and the date it was read.
+    </p>
+  </Band>
+
+  <Band title="Three answers, not two" field>
+    <ul class="rows">
+      <li><b>Read, and there is a rule.</b> The value, with its citation.</li>
+      <li><b>Read, and there is no rule.</b> Also useful, and it carries the citation of the section that is silent, because a legislature imposing nothing is a claim about the law and you should be able to check it.</li>
+      <li><b>Not read yet.</b> Carries nothing, because there is nothing to say.</li>
+    </ul>
+    <p class="coda">
+      That third state is the one that matters. A field saying no requirement lets a feature run.
+      A field saying nobody has looked has to switch it off. Held the obvious way, as an empty
+      box, those two are identical, and every piece of code downstream treats them the same. That
+      is how software ends up asserting a legal position nobody took.
+    </p>
+  </Band>
+
+  <Band title="What happens when the law changes">
+    <p>
+      Parcel watches the bills that would move a rule it holds. When one passes, you get told what
+      changed, which of your deadlines it touches, and what Parcel has already adjusted.
+    </p>
+    <p class="coda">
+      A notice period moving from fourteen days to twenty-one is not a memo you read and file. It
+      is a date on your calendar that has to move, and every notice counted back from it.
+    </p>
+  </Band>
+
+  <Band title="Where it refuses" field>
+    <div class="panel--statutory">
+      <p class="t-label">It fails closed</p>
+      <p class="lede">
+        An unread provision does not fall back to a default. The feature that needs it does not
+        run, and the interface names the provision it is missing.
+      </p>
+      <p class="note">
+        This is a real limit and worth being plain about. Several hundred fields have been read
+        and several hundred have not. The product tells you which for your state, when you sign
+        up rather than in a notice.
+      </p>
+    </div>
+    <p class="coda">
+      The alternative is worse. Software that gives a Colorado association Florida's notice
+      periods produces a letter that looks correct, cites a statute that does not apply, and goes
+      out on a period that is wrong.
+    </p>
+  </Band>
+
+  <Band title="Coverage" note="See documents and answers" noteHref="/product/documents-and-answers">
+    <p>
+      Every jurisdiction, what has been read, and what has not. Generated from the same data the
+      product runs on, so it moves when the reading moves.
+    </p>
+    <div class="panel--enforcement">
+      <p class="t-label">Coming with the next release</p>
+      <p>
+        The per-jurisdiction table is generated from the statutory data rather than written here,
+        so it cannot fall out of step. Until that generator ships this page states the shape and
+        not the counts.
+      </p>
+    </div>
+  </Band>
+
+  <Band title="What this is not" field>
+    <p>
+      Parcel is not a law firm and does not give legal advice. It records what the statute says,
+      where it says it, and when it was read. Your attorney reads it for your association.
+    </p>
+  </Band>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-sheet">Ask what has been read for your state.</h2>
+      <div class="actions">
+        <a class="btn btn--on-ink" href="/demo">Get early access</a>
+        <a class="btn btn--ghost-on-ink" href="/contact">Email the founder</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close .actions { margin-top: var(--s-6); }
+  h1 { max-width: 18ch; }
+</style>

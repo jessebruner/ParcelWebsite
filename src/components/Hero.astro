@@ -1,0 +1,33 @@
+---
+/**
+ * The night hero. Dusk bands under the copy, which is the identity ramp from
+ * globals.css rather than a decorative gradient.
+ *
+ * Linted at the hero surface, so nothing in here may carry a digit, a counted
+ * quantity, or back-office vocabulary. Keep those below the fold.
+ */
+interface Props { eyebrow?: string; display?: boolean; }
+const { eyebrow, display = false } = Astro.props;
+---
+<section class="hero on-ink">
+  <div class="dusk" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="page inner">
+    {eyebrow && <p class="t-label">{eyebrow}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; background: var(--night); color: var(--paper); overflow: hidden;
+          padding-block: clamp(56px, 7vw, 116px) clamp(44px, 5.5vw, 88px); }
+  .hero :global(h1) { color: var(--paper); }
+  .hero :global(.t-label) { color: var(--sand); }
+  .hero :global(.t-lede) { color: var(--mist); max-width: 34em; }
+  .inner { position: relative; z-index: 1; }
+  /* Three dusk stops along the bottom edge. Same ramp as the app's weather band. */
+  .dusk { position: absolute; inset: auto 0 0 0; display: flex; flex-direction: column; }
+  .dusk span { height: 6px; }
+  .dusk span:nth-child(1) { background: var(--plum); }
+  .dusk span:nth-child(2) { background: var(--rose); }
+  .dusk span:nth-child(3) { background: var(--ember); }
+</style>

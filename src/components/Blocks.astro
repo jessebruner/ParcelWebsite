@@ -1,0 +1,63 @@
+---
+/**
+ * Renders the Content blocks from src/data/content.ts.
+ *
+ * Bold lead-ins are written **like this** in the data and become <b>. Nothing
+ * else in the copy is marked up, because anything more would be a templating
+ * language and the words should stay readable in the data file.
+ */
+import type { Content } from "../data/content";
+
+interface Props { body: Content[]; }
+const { body } = Astro.props;
+
+/** **Lead-in.** rest -> <b>Lead-in.</b> rest */
+function bold(s: string): string {
+  return s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+}
+---
+
+{body.map((block) => {
+  if ("lede" in block) return <p class="t-lede" set:html={bold(block.lede)} />;
+  if ("coda" in block) return <p class="coda" set:html={bold(block.coda)} />;
+  if ("p" in block) return <p set:html={bold(block.p)} />;
+  if ("rows" in block) return (
+    <ul class="rows">{block.rows.map((r) => <li set:html={bold(r)} />)}</ul>
+  );
+  if ("table" in block) return (
+    <div class="scroll-x">
+      <table>
+        {block.table.caption && <caption>{block.table.caption}</caption>}
+        <thead><tr>{block.table.head.map((h) => <th>{h}</th>)}</tr></thead>
+        <tbody>
+          {block.table.body.map((row) => (
+            <tr>{row.map((cell, i) => (i === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>))}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+  if ("statutory" in block) return (
+    <div class="panel--statutory">
+      <p class="t-label">{block.statutory.label}</p>
+      <p class="lede">{block.statutory.lede}</p>
+      {block.statutory.note && <p class="note">{block.statutory.note}</p>}
+    </div>
+  );
+  return null;
+})}
+
+<style>
+  /* A row header in a comparison table is a label, not a heading rule. */
+  table th[scope="row"] {
+    border-bottom: var(--stroke-hairline);
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    font-weight: 600;
+    color: var(--ink);
+    padding-right: var(--s-5);
+  }
+  table :global(caption) { padding-bottom: var(--s-3); }
+</style>

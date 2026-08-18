@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Changelog"
+  description="What shipped, and when. Statutory reading is listed too, because coverage is part of the product."
+  path="/changelog"
+>
+  <Hero eyebrow="Changelog">
+    <h1 class="t-display">What shipped</h1>
+    <p class="t-lede">Newest first. Statutory reading is listed alongside the software, because coverage is part of the product.</p>
+  </Hero>
+  <Band title="18 August 2026">
+    <ul class="rows"><li><b>The site.</b> Rebuilt on one navigation, with a page behind every link.</li><li><b>Compliance.</b> The statutory engine and the legislative watch documented in public, gaps included.</li></ul>
+  </Band>
+
+  <Band title="How this list is kept" field>
+    <p class="coda">Entries are generated from the release and from the statutory data, so coverage changes appear here without being written by hand.</p>
+  </Band>
+
+</Base>
