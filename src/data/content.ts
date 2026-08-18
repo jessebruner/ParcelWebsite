@@ -15,7 +15,14 @@ export type Content =
   | { coda: string }
   | { rows: string[] }
   | { table: { caption?: string; head: string[]; body: string[][] } }
-  | { statutory: { label: string; lede: string; note?: string } };
+  | { statutory: { label: string; lede: string; note?: string } }
+  | { panel: {
+        label: string;
+        note?: string;
+        caption?: string;
+        rows: { label: string; value?: string; cite?: string; meter?: number; chip?: string; pending?: boolean }[];
+        footing?: { label: string; value: string };
+      } };
 
 export interface BandSpec {
   title: string;
@@ -49,7 +56,38 @@ export const FEATURES: PageSpec[] = [
     bands: [
       {
         title: "What it does",
-        body: [{ rows: [
+        body: [
+          { "panel": {
+                            "label": "Assessments · March",
+                            "note": "118 lots",
+                            "rows": [
+                                      {
+                                                "label": "Lot 12 · A. Wells",
+                                                "chip": "Paid"
+                                      },
+                                      {
+                                                "label": "Lot 27 · R. Okafor",
+                                                "chip": "Paid"
+                                      },
+                                      {
+                                                "label": "Lot 41 · Delgado",
+                                                "chip": "Paid"
+                                      },
+                                      {
+                                                "label": "Lot 58 · J. Pham",
+                                                "chip": "Paid"
+                                      },
+                                      {
+                                                "label": "Lot 63 · Hargrove",
+                                                "value": "Due",
+                                                "pending": true
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Collected",
+                                      "value": "$1,140"
+                            }
+                  } },{ rows: [
           "Invoices every lot on your schedule, at your amount.",
           "Takes autopay, bank transfer and card.",
           "Logs a mailed cheque against the right lot.",
@@ -90,6 +128,37 @@ export const FEATURES: PageSpec[] = [
       {
         title: "The ladder",
         body: [
+          { "panel": {
+                            "label": "Lot 63 · unpaid since 1 March",
+                            "note": "Held",
+                            "rows": [
+                                      {
+                                                "label": "Friendly reminder",
+                                                "value": "Day 1",
+                                                "cite": "Sent"
+                                      },
+                                      {
+                                                "label": "Formal late notice",
+                                                "value": "Day 30",
+                                                "cite": "Sent"
+                                      },
+                                      {
+                                                "label": "Demand and lien warning",
+                                                "value": "Day 60",
+                                                "cite": "Awaiting two signatures",
+                                                "pending": true
+                                      },
+                                      {
+                                                "label": "Accrual",
+                                                "value": "Frozen",
+                                                "cite": "Hardship recorded by the board"
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Balance",
+                                      "value": "$570"
+                            }
+                  } },
           { rows: [
             "**Reminder.** A friendly note, on the day your grace period ends.",
             "**Formal notice.** The late notice your documents and your state require.",
@@ -134,7 +203,34 @@ export const FEATURES: PageSpec[] = [
     bands: [
       {
         title: "Reconciliation",
-        body: [{ p: "The bank reconciles overnight. A reconciliation that does not cover every transaction is not accepted as complete, so reconciled means reconciled." }],
+        body: [
+          { "panel": {
+                            "label": "Reconciliation · 31 March",
+                            "note": "Complete",
+                            "rows": [
+                                      {
+                                                "label": "Transactions matched",
+                                                "meter": 1
+                                      },
+                                      {
+                                                "label": "Deposits",
+                                                "value": "$14,820"
+                                      },
+                                      {
+                                                "label": "Vendor payments",
+                                                "value": "$9,404"
+                                      },
+                                      {
+                                                "label": "Unmatched",
+                                                "value": "0",
+                                                "cite": "A partial reconciliation is not accepted"
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Budget against actual",
+                                      "value": "+$1,206"
+                            }
+                  } },{ p: "The bank reconciles overnight. A reconciliation that does not cover every transaction is not accepted as complete, so reconciled means reconciled." }],
       },
       {
         title: "Budgets",
@@ -176,6 +272,35 @@ export const FEATURES: PageSpec[] = [
       {
         title: "The sequence",
         body: [
+          { "panel": {
+                            "label": "Lot 77 · fence height",
+                            "note": "On schedule",
+                            "rows": [
+                                      {
+                                                "label": "Notice sent",
+                                                "value": "2 March",
+                                                "cite": "Art. VII §3, p. 14"
+                                      },
+                                      {
+                                                "label": "Cure window",
+                                                "value": "closes 16 March",
+                                                "pending": true
+                                      },
+                                      {
+                                                "label": "Re-inspection",
+                                                "value": "17 March"
+                                      },
+                                      {
+                                                "label": "Enforced before",
+                                                "value": "3 times in 4 years",
+                                                "cite": "11 open instances"
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Fine available",
+                                      "value": "Not yet"
+                            }
+                  } },
           { rows: [
             "Report, from a board member, a neighbor, or an owner through the portal.",
             "Verify, with a photo, a date, and the rule it breaks, quoted from your declaration.",
@@ -227,6 +352,34 @@ export const FEATURES: PageSpec[] = [
       {
         title: "The meeting",
         body: [
+          { "panel": {
+                            "label": "Annual meeting · 14 November",
+                            "note": "Live tally",
+                            "rows": [
+                                      {
+                                                "label": "Notice sent",
+                                                "value": "21 days prior",
+                                                "cite": "Bylaws Art. IV §2, p. 9"
+                                      },
+                                      {
+                                                "label": "Quorum",
+                                                "meter": 0.62
+                                      },
+                                      {
+                                                "label": "Ballots in",
+                                                "value": "73 of 118"
+                                      },
+                                      {
+                                                "label": "Minutes",
+                                                "value": "Drafting",
+                                                "pending": true
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Quorum threshold",
+                                      "value": "Met"
+                            }
+                  } },
           { rows: [
             "**Notice** goes out on the period your state and your bylaws set, counted back from the date.",
             "**The agenda** assembles itself from business that is actually open: the motions waiting, the approvals pending, the deadlines landing.",
@@ -266,6 +419,42 @@ export const FEATURES: PageSpec[] = [
       {
         title: "What happens when you upload",
         body: [
+          { "panel": {
+                            "label": "Reading your declaration",
+                            "note": "About 30 min",
+                            "rows": [
+                                      {
+                                                "label": "Assessment",
+                                                "value": "$285",
+                                                "cite": "P. 6, line 12"
+                                      },
+                                      {
+                                                "label": "Due date",
+                                                "value": "1st",
+                                                "cite": "P. 6, line 18"
+                                      },
+                                      {
+                                                "label": "Grace period",
+                                                "value": "10 days",
+                                                "cite": "P. 7, line 4"
+                                      },
+                                      {
+                                                "label": "Late fee",
+                                                "value": "$25",
+                                                "cite": "P. 7, line 9"
+                                      },
+                                      {
+                                                "label": "Fine cap",
+                                                "value": "Unknown",
+                                                "cite": "Not found in your documents",
+                                                "pending": true
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Confirmed by the board",
+                                      "value": "4 of 5"
+                            }
+                  } },
           { rows: [
             "**The documents are read.** Declaration, bylaws, rules, amendments, plat. Scans are fine.",
             "**Provisions come out as facts.** The assessment, the due date, the grace period, the late fee, the quorum threshold, the notice periods. Each carries the page and line it was read from.",
@@ -313,6 +502,34 @@ export const FEATURES: PageSpec[] = [
       {
         title: "Contracts",
         body: [
+          { "panel": {
+                            "label": "Landscaping · renews 2 April",
+                            "note": "3 quotes in",
+                            "rows": [
+                                      {
+                                                "label": "Incumbent, renewing",
+                                                "value": "$26,400"
+                                      },
+                                      {
+                                                "label": "Quote two",
+                                                "value": "$24,550"
+                                      },
+                                      {
+                                                "label": "Quote three",
+                                                "value": "$21,650",
+                                                "chip": "Lowest"
+                                      },
+                                      {
+                                                "label": "Going rate, your area",
+                                                "value": "$22,100",
+                                                "cite": "Benchmark"
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "If you switch",
+                                      "value": "$4,750"
+                            }
+                  } },
           { p: "Every contract has a renewal date and a notice period, and Parcel counts back from both. Before a contract renews it goes and gets fresh quotes, and puts the going rate for that work in your area beside them." },
           { coda: "You pick the vendor. Parcel refuses to let the date pass unnoticed." },
         ],
@@ -351,7 +568,36 @@ export const FEATURES: PageSpec[] = [
     bands: [
       {
         title: "What an owner can do",
-        body: [{ rows: [
+        body: [
+          { "panel": {
+                            "label": "Portal · what an owner sees",
+                            "note": "0 to your inbox",
+                            "rows": [
+                                      {
+                                                "label": "Balance",
+                                                "value": "$285"
+                                      },
+                                      {
+                                                "label": "Autopay",
+                                                "value": "On",
+                                                "cite": "Next 1 April"
+                                      },
+                                      {
+                                                "label": "Can I put a shed on my lot?",
+                                                "value": "Answered",
+                                                "cite": "Art. IX §2, p. 21"
+                                      },
+                                      {
+                                                "label": "Architectural request",
+                                                "value": "Submitted",
+                                                "pending": true
+                                      }
+                            ],
+                            "footing": {
+                                      "label": "Calls to the board",
+                                      "value": "None"
+                            }
+                  } },{ rows: [
           "See what they owe, and what it is made of.",
           "Pay, or set up autopay.",
           "Download a statement or a receipt.",

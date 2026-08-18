@@ -12,15 +12,15 @@ person. It serves homeowners associations, condominium associations, planned
 communities, and civic or neighbourhood associations of five to a thousand-plus
 doors.
 
-Contact: jesse@commonparcel.com — the founder answers.
+Contact: jesse@commonparcel.com. The founder answers.
 Site: https://commonparcel.com/
 
 ## What it does
 
 A board uploads its declaration, bylaws, rules and owner roster. Common Parcel
-reads those documents and extracts the numbers that govern everything else — the
+reads those documents and extracts the numbers that govern everything else. The
 assessment amount, the due date, the grace period, the late fee, the meeting and
-voting rules — and shows each one with the page and line it came from. Setup
+voting rules. Each one is shown with the page and line it came from. Setup
 usually takes about thirty minutes.
 
 From then on it runs the association's recurring work automatically:
@@ -64,8 +64,8 @@ with a $10 monthly minimum.
 - A 100-lot association pays about $110 a month
 - A 1,000-lot association pays about $513 a month
 
-Everything is included — collections, violations, elections, vendor management,
-documents and the audit trail — with no feature tiers and no per-notice charge.
+Everything is included. Collections, violations, elections, vendor management,
+documents and the record, with no feature tiers and no per-notice charge.
 Owners pay no fee to pay their dues. Civic and neighbourhood associations pay a
 reduced rate. Billing is month to month with no contract, no setup fee, and a
 full export of ledgers, documents, minutes and audit trail available in any

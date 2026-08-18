@@ -5,6 +5,9 @@ import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
 import { POSTS } from "../../data/posts";
 
+/** A stable seed per page: the same slug always paints the same treeline. */
+const seedFor = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) || 7;
+
 export function getStaticPaths() {
   return POSTS.map((post) => ({ params: { slug: post.slug }, props: { post } }));
 }
@@ -35,7 +38,7 @@ const schema = JSON.stringify({
   reviewed={fmt(post.checked)}
   schema={schema}
 >
-  <Hero eyebrow={post.topic}>
+  <Hero eyebrow={post.topic} compact seed={seedFor(post.slug)}>
     <h1 class="t-display">{post.h1}</h1>
     <p class="t-lede">{post.lede}</p>
     <p class="byline">

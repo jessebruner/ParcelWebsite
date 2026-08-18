@@ -1,0 +1,77 @@
+---
+/**
+ * A painted sky. Two modes.
+ *
+ * `band` draws sky only, at strip height, for the dividers between chapters.
+ * Without it you get the full scene: horizon, water, treeline, reeds, heron.
+ *
+ * The canvas is small and stretched with image-rendering: pixelated, which is
+ * how the original gets its pixel grid rather than by drawing large squares.
+ * That also means the paint cost does not change with the viewport.
+ *
+ * Decorative, so aria-hidden. Under prefers-reduced-motion it paints one frame
+ * and stops, because the animation is the water moving and the bird dipping,
+ * neither of which carries information.
+ */
+interface Props {
+  scene?: "dusk" | "dawn";
+  seed?: number;
+  band?: boolean;
+  /** CSS height. Ignored for bands, which have their own. */
+  height?: string;
+}
+const { scene = "dusk", seed = 7, band = false, height } = Astro.props;
+const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<canvas
+  id={id}
+  class:list={["sky", { band }]}
+  width={384}
+  height={band ? 54 : 216}
+  aria-hidden="true"
+  data-scene={scene}
+  data-seed={seed}
+  data-band={band ? "1" : undefined}
+  style={height ? `--sky-h:${height}` : undefined}
+></canvas>
+
+<style>
+  .sky {
+    display: block;
+    width: 100%;
+    height: var(--sky-h, 100%);
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+  .band {
+    height: clamp(72px, 8vw, 104px);
+    border-top: 1px solid var(--c-edge);
+    border-bottom: 1px solid var(--c-edge);
+  }
+</style>
+
+<script>
+  import { Scene } from "../scripts/sky.js";
+
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const live = new WeakMap();
+
+  function mount() {
+    for (const cv of document.querySelectorAll<HTMLCanvasElement>("canvas.sky")) {
+      if (live.has(cv)) continue;
+      const s = new Scene(cv, {
+        scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk",
+        seed: Number(cv.dataset.seed) || 7,
+        band: !!cv.dataset.band,
+      });
+      live.set(cv, s);
+      // One frame is the whole picture. The loop is only the water and the bird.
+      if (reduce) s.draw();
+      else s.start();
+    }
+  }
+  mount();
+  // Paint again once the fonts settle and the layout stops moving.
+  addEventListener("load", mount);
+</script>

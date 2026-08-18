@@ -7,6 +7,7 @@
  * language and the words should stay readable in the data file.
  */
 import type { Content } from "../data/content";
+import Panel from "./Panel.astro";
 
 interface Props { body: Content[]; }
 const { body } = Astro.props;
@@ -36,6 +37,15 @@ function bold(s: string): string {
         </tbody>
       </table>
     </div>
+  );
+  if ("panel" in block) return (
+    <Panel
+      label={block.panel.label}
+      note={block.panel.note}
+      rows={block.panel.rows}
+      footing={block.panel.footing}
+      caption={block.panel.caption}
+    />
   );
   if ("statutory" in block) return (
     <div class="panel--statutory">

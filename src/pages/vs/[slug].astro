@@ -7,7 +7,11 @@ import Base from "../../layouts/Base.astro";
 import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
+import PixelSky from "../../components/PixelSky.astro";
 import { COMPARISONS } from "../../data/content";
+
+/** A stable seed per page: the same slug always paints the same treeline. */
+const seedFor = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) || 7;
 
 export function getStaticPaths() {
   return COMPARISONS.map((page) => ({ params: { slug: page.slug }, props: { page } }));
@@ -22,12 +26,14 @@ const { page } = Astro.props;
   path={`/vs/${page.slug}`}
   reviewed="August 2026"
 >
-  <Hero eyebrow={page.eyebrow}>
+  <Hero eyebrow={page.eyebrow} scene="dawn" seed={seedFor(page.slug)}>
     <h1 class="t-display">{page.h1}</h1>
     <p class="t-lede">{page.lede}</p>
   </Hero>
 
-  {page.bands.map((band) => (
+  {page.bands.map((band, i) => (
+    <>
+    {i === 2 && <PixelSky band scene="dawn" seed={seedFor(page.slug) + 3} />}
     <Band
       title={band.title}
       field={band.field}
@@ -36,6 +42,7 @@ const { page } = Astro.props;
     >
       <Blocks body={band.body} />
     </Band>
+    </>
   ))}
 
   <section class="close on-ink">
