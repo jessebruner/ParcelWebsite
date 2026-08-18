@@ -98,15 +98,15 @@ export const POSTS: PostSpec[] = [
 
   {
     slug: "hoa-developer-turnover",
-    title: "Your developer handed over the association. A clock you cannot see is already running.",
-    short: "Your developer handed over the association",
+    title: "The defect claim clock starts before turnover",
+    short: "The defect claim clock starts before turnover",
     description:
       "A construction defect claim runs from substantial completion, not from turnover. Those dates are years apart, and boards lose the claim without knowing they had one.",
     topic: "Getting started",
     published: "2026-08-18",
     checked: "2026-08-18",
-    h1: "A clock you cannot see is already running",
-    lede: "Control has transferred, or is about to. You are a few neighbors with a legal obligation, a box of documents, and no way to tell whether it is complete.",
+    h1: "The defect claim clock starts before turnover",
+    lede: "Control has transferred, or is about to. You have a box of documents, a legal obligation, and one deadline that started years before your board existed.",
     bands: [
       {
         title: "The date that matters most",

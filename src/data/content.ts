@@ -51,7 +51,7 @@ export const FEATURES: PageSpec[] = [
     description:
       "Invoiced at the amount your declaration sets, on the date it sets. Receipts post the same day and the ledger reconciles overnight.",
     eyebrow: "Dues and payments",
-    h1: "The dues collect themselves",
+    h1: "Dues go out on time, every period",
     lede: "Parcel bills the assessment your declaration sets, on the date it sets. It does not ask you to type the amount, and it does not need reminding when the quarter turns.",
     bands: [
       {
@@ -122,11 +122,11 @@ export const FEATURES: PageSpec[] = [
     description:
       "A graduated delinquency ladder that runs on your state's periods, holds when a board says hold, and waits for two officers before anything statutory leaves.",
     eyebrow: "Collections",
-    h1: "A late account climbs slowly, on purpose",
-    lede: "Climbing too fast is indefensible, and in most states it makes the result void rather than merely untidy. So the ladder is conservative, and where your documents are ambiguous it holds instead of guessing.",
+    h1: "What happens when someone stops paying",
+    lede: "Parcel sends the reminder, then the late notice, then the demand, on the dates your documents and your state require. Moving faster than that is how a board loses the argument later.",
     bands: [
       {
-        title: "The ladder",
+        title: "The order notices go out in",
         body: [
           { "panel": {
                             "label": "Lot 63 · unpaid since 1 March",
@@ -169,7 +169,7 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "What a hold means",
+        title: "Putting an account on hold",
         field: true,
         body: [{ p: "When a board freezes an account for a hardship, a dispute, or a death in the family, accrual stops and the ladder stops. Not mostly stops." }],
       },
@@ -198,7 +198,7 @@ export const FEATURES: PageSpec[] = [
     description:
       "Nightly bank reconciliation, budgets that carry the vote that adopted them, and a full export for your accountant any month.",
     eyebrow: "Accounting and budgets",
-    h1: "Books an auditor can follow",
+    h1: "Ledgers that reconcile, budgets that show their vote",
     lede: "Every charge, payment, fee and credit lands in one ledger, and the bank reconciles against it overnight.",
     bands: [
       {
@@ -266,8 +266,8 @@ export const FEATURES: PageSpec[] = [
     description:
       "Violations logged against the rule they break, with the cure window, the hearing notice your state requires, and a check on how often that rule has been enforced before.",
     eyebrow: "Rules and enforcement",
-    h1: "The fine that gets challenged is the one that skipped a step",
-    lede: "Skipping due process does not weaken a fine. In most states it voids it. A notice that fails to name the violation or cite the rule fails the standard.",
+    h1: "Violations, hearings, and fines that hold up",
+    lede: "A fine only sticks if the steps before it were done properly. Parcel runs each one on the clock your state sets, and will not produce the fine until the hearing is on the record.",
     bands: [
       {
         title: "The sequence",
@@ -317,7 +317,7 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "The question nobody could answer before",
+        title: "How often has this rule been enforced?",
         field: true,
         body: [
           { p: "Before a fine is levied, Parcel looks at how the association has treated that rule before and says what it finds. How many times it has been enforced. How many open instances are sitting there right now." },
@@ -496,8 +496,8 @@ export const FEATURES: PageSpec[] = [
     description:
       "Contracts get re-bid before they renew, with the going rate beside each quote. Policies are read, renewals land on the calendar, and invoices are checked against the contract.",
     eyebrow: "Vendors and insurance",
-    h1: "The renewal nobody noticed",
-    lede: "A landscaping contract renews at twelve per cent more than last year because the date passed and nobody was watching. That is the most common way an association loses money, and it is quiet.",
+    h1: "Contracts get re-bid before they renew",
+    lede: "Parcel watches every renewal date and goes out for fresh quotes before it arrives, with the going rate for that work beside them. You still choose the vendor.",
     bands: [
       {
         title: "Contracts",

@@ -62,7 +62,7 @@ export const TOP_NAV = [
   { label: "Product", panel: "product" as const },
   { label: "Compliance", path: "/compliance" },
   { label: "Use cases", path: "/use-cases" },
-  { label: "Pricing", path: "/pricing" },
+  { label: "Price", path: "/pricing" },
   { label: "Compare", panel: "compare" as const },
   { label: "Blog", path: "/blog" },
 ];

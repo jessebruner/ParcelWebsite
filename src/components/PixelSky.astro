@@ -1,53 +1,52 @@
 ---
 /**
- * A painted sky. Two modes.
+ * THE SKY. Three modes, and the distinction is load-bearing.
  *
- * `band` draws sky only, at strip height, for the dividers between chapters.
- * Without it you get the full scene: horizon, water, treeline, reeds, heron.
+ * ParcelHOA's own PixelSky.tsx states the rule and I broke it: behind working
+ * text the sky is a TEXTURE, not a picture. Sky only, no treeline, no water, no
+ * heron, painted once. A heron behind a page heading is the mark appearing
+ * twice on one screen, and a scene stretched behind a hero is neither the
+ * picture it was composed as nor a background.
  *
- * The canvas is small and stretched with image-rendering: pixelated, which is
- * how the original gets its pixel grid rather than by drawing large squares.
- * That also means the paint cost does not change with the viewport.
+ *   texture  sky only, hero height, painted once. Behind headings.
+ *   band     sky only, strip height, painted once. Between chapters.
+ *   scene    the whole marsh, animated. The homepage hero, and nowhere else.
  *
- * Decorative, so aria-hidden. Under prefers-reduced-motion it paints one frame
- * and stops, because the animation is the water moving and the bird dipping,
- * neither of which carries information.
+ * The canvas is small and scaled with image-rendering: pixelated, which is where
+ * the grid comes from. A CSS gradient would be the one soft edge in a system
+ * whose argument is that it is drawn on a grid.
  */
 interface Props {
+  mode?: "texture" | "band" | "scene";
   scene?: "dusk" | "dawn";
   seed?: number;
-  band?: boolean;
-  /** CSS height. Ignored for bands, which have their own. */
-  height?: string;
+  /** Where in the ramp the strip sits. 0 is night, 1 is the horizon. */
+  crop?: number;
 }
-const { scene = "dusk", seed = 7, band = false, height } = Astro.props;
+const { mode = "texture", scene = "dusk", seed = 7, crop } = Astro.props;
+const band = mode !== "scene";
+const h = mode === "band" ? 54 : 216;
 const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <canvas
   id={id}
-  class:list={["sky", { band }]}
+  class:list={["sky", mode]}
   width={384}
-  height={band ? 54 : 216}
+  height={h}
   aria-hidden="true"
+  data-mode={mode}
   data-scene={scene}
   data-seed={seed}
-  data-band={band ? "1" : undefined}
-  style={height ? `--sky-h:${height}` : undefined}
+  data-crop={crop ?? undefined}
 ></canvas>
 
 <style>
-  .sky {
-    display: block;
-    width: 100%;
-    height: var(--sky-h, 100%);
-    object-fit: cover;
-    image-rendering: pixelated;
-  }
+  .sky { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
   .band {
-    height: clamp(72px, 8vw, 104px);
-    border-top: 1px solid var(--c-edge);
-    border-bottom: 1px solid var(--c-edge);
+    height: clamp(56px, 6vw, 84px);
+    border-top: var(--stroke-edge);
+    border-bottom: var(--stroke-edge);
   }
 </style>
 
@@ -55,23 +54,23 @@ const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
   import { Scene } from "../scripts/sky.js";
 
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  const live = new WeakMap();
+  const painted = new WeakSet<HTMLCanvasElement>();
 
-  function mount() {
+  function paint() {
     for (const cv of document.querySelectorAll<HTMLCanvasElement>("canvas.sky")) {
-      if (live.has(cv)) continue;
+      if (painted.has(cv)) continue;
+      painted.add(cv);
+      const mode = cv.dataset.mode ?? "texture";
       const s = new Scene(cv, {
         scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk",
         seed: Number(cv.dataset.seed) || 7,
-        band: !!cv.dataset.band,
+        band: mode !== "scene",
       });
-      live.set(cv, s);
-      // One frame is the whole picture. The loop is only the water and the bird.
-      if (reduce) s.draw();
-      else s.start();
+      // Only the full scene moves, and only where nothing is being read.
+      if (mode === "scene" && !reduce) s.start();
+      else s.draw();
     }
   }
-  mount();
-  // Paint again once the fonts settle and the layout stops moving.
-  addEventListener("load", mount);
+  paint();
+  addEventListener("load", paint);
 </script>

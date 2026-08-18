@@ -33,7 +33,7 @@ const { page } = Astro.props;
 
   {page.bands.map((band, i) => (
     <>
-    {i === 2 && <PixelSky band scene="dawn" seed={seedFor(page.slug) + 3} />}
+    {i === 2 && <PixelSky mode="band" scene="dawn" seed={seedFor(page.slug) + 3} />}
     <Band
       title={band.title}
       field={band.field}
