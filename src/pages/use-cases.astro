@@ -1,107 +1,294 @@
 ---
 /**
- * One page, anchored sections, so /use-cases#condo is shareable.
+ * "IS THIS FOR AN ASSOCIATION LIKE MINE?"
+ *
+ * One page, three axes, anchored so /use-cases#turnover is shareable. The five
+ * anchors #size, #type, #self-managing, #leaving and #turnover are linked from
+ * other pages and the link checker fails the build if any of them goes missing.
+ *
+ * The shape is a reaction to what the competition does. PayHOA, Condo Control,
+ * TownSq and Vantaca all segment the same way: by role, or by the one binary of
+ * self-managed against management company. None of them lets a board find
+ * itself by door count, by entity type, or by what just happened to it, which
+ * are the three things that actually decide what an association owes and what
+ * it pays. So the directory under the hero is the page's main device, and every
+ * section below it is one of the three axes answered on its own terms:
+ *
+ *   size      a card grid, because four brackets are four parallel cases
+ *   type      the two-track band, because the differences are specifications
+ *   situation prose, because a situation is a story and not a spec
+ *
+ * The one inverting panel on the page sits in #turnover, where a statute really
+ * does draw a boundary: the defect clock starts at substantial completion, and
+ * a board that does not know that has already lost time.
+ *
+ * No testimonials, no logos, no review scores, no community count. There are no
+ * customers yet, and every competitor page above leans on all four.
  */
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
+import Panel from "../components/Panel.astro";
+import Plat from "../components/usecases/Plat.astro";
+
+/*
+ * Tile counts are literal: 20, 60, 160 and 528 lots drawn, so each plat sits
+ * inside the bracket it labels rather than gesturing at it.
+ */
+const SIZES = [
+  {
+    id: "size-25",
+    range: "Under 25 doors",
+    title: "A board of three, and the treasurer's spreadsheet",
+    body: "What Parcel adds at this size is narrow and real: the documents get read, and the deadlines get watched. No board member has to become the software person.",
+    work: "Documents and deadlines",
+    plat: { cols: 5, rows: 4, size: 22, small: 16 },
+  },
+  {
+    id: "size-100",
+    range: "25 to 100 doors",
+    title: "Where self-management stops being casual",
+    body: "Real money moves every month. A few accounts run late every quarter, and a violation or two could be argued either way. This is the shape Parcel was built around.",
+    work: "Money and late accounts",
+    plat: { cols: 10, rows: 6, size: 16, small: 11 },
+  },
+  {
+    id: "size-500",
+    range: "100 to 500 doors",
+    title: "A management company would quote thousands a month here",
+    body: "Enough owners that the resident portal takes real load off the board. Enough vendor contracts that re-bidding them pays for the software several times over.",
+    work: "Owner questions and vendor contracts",
+    plat: { cols: 16, rows: 10, size: 13, small: 9 },
+  },
+  {
+    id: "size-over",
+    range: "Over 500 doors",
+    title: "The record is what protects the board",
+    body: "The per lot rate is at its lowest here. Committees matter and elections are contested, so what the board can prove becomes the thing that settles an argument. Parcel runs at this size.",
+    work: "Elections and the record",
+    plat: { cols: 24, rows: 22, size: 11, small: 7 },
+  },
+];
+
+const TYPES = [
+  {
+    id: "type-hoa",
+    name: "Homeowners associations",
+    spec: "Declaration · bylaws · rules · plat",
+    body: "The default case. An assessment, and an architectural committee that owes an answer inside a period the statute sets.",
+  },
+  {
+    id: "type-condo",
+    name: "Condominium associations",
+    spec: "Heavier duties · stricter reserve rules",
+    body: "Parcel holds condominium requirements separately wherever the statute treats them differently. A rule that binds condominiums and not homeowners associations, applied to the wrong entity, is as wrong as no rule at all.",
+  },
+  {
+    id: "type-planned",
+    name: "Planned communities",
+    spec: "More than one document set",
+    body: "Sub-associations and shared amenities. Parcel reads every set and keeps them apart.",
+  },
+  {
+    id: "type-civic",
+    name: "Civic and neighborhood associations",
+    spec: "Often no assessment at all",
+    body: "Lighter statutory duties and smaller budgets. These pay a reduced rate.",
+  },
+];
+
+/* The three artefacts Parcel prepares, and the one thing it waits on. */
+const TRANSITION = [
+  { label: "Termination notice", value: "Prepared" },
+  { label: "Records request", value: "Prepared" },
+  { label: "Transition checklist", value: "Prepared" },
+  { label: "Ledgers, documents, roster", value: "As they arrive", pending: true },
+];
 ---
 
 <Base
   title="Use cases"
-  description="What Parcel looks like at five doors and at a thousand, for an HOA, a condo association or a civic association, and for a board self-managing for the first time."
+  description="Find your association by door count, by entity type, and by where your board is starting from: self-managing for the first time, leaving a management company, or newly seated after developer turnover."
+  shareTitle="Which associations this fits"
   path="/use-cases"
   reviewed="August 2026"
 >
-  <Hero eyebrow="Use cases">
+  <Hero eyebrow="Use cases" seed={41}>
     <h1 class="t-display">Which associations this fits</h1>
-    <p class="t-lede">By how many doors you have, what kind of association you are, and where your board is starting from.</p>
+    <p class="t-lede">
+      By how many doors you have, what kind of association you are, and where your board is
+      starting from.
+    </p>
   </Hero>
 
-  <Band title="By size" id="size">
-    <ul class="rows">
-      <li>
-        <b>Under 25 doors.</b> The board is three people and the treasurer is doing it on a
-        spreadsheet. Parcel costs the monthly minimum here, and the value is mostly that the
-        documents get read and the deadlines get watched. Nobody has to become the software person.
-      </li>
-      <li>
-        <b>25 to 100 doors.</b> The size where self-management stops being casual. Real money
-        moving, a handful of late accounts every quarter, and a violation or two that could be
-        argued. This is the shape Parcel was built around.
-      </li>
-      <li>
-        <b>100 to 500 doors.</b> A management company would quote thousands a month at this size.
-        Enough owners that the portal starts taking real load off the board, and enough vendor
-        contracts that re-bidding pays for the software several times over.
-      </li>
-      <li>
-        <b>Over 500 doors.</b> The per lot rate is at its lowest here. Committees matter, elections
-        are contested, and the record is what protects the board. Parcel runs at this size; the
-        constraint is usually whether the board wants to self-manage at all.
-      </li>
+  <!-- ── The directory. Condo Control and Vantaca both put a segmented ────────
+       selector near the top; theirs offers two or three roles. Yours are the
+       three axes that decide the answer, and every option is on screen at
+       once, because a visitor who has to open a menu to find themselves has
+       already been asked to do work. ──────────────────────────────────────── -->
+  <section class="find">
+    <div class="page">
+      <p class="t-label" id="find-h">Find your association</p>
+      <nav class="dir" aria-labelledby="find-h">
+        <div class="col">
+          <p class="col-h">By size</p>
+          <ul>
+            {SIZES.map((s) => <li><a href={`#${s.id}`}>{s.range}</a></li>)}
+          </ul>
+        </div>
+        <div class="col">
+          <p class="col-h">By type</p>
+          <ul>
+            {TYPES.map((t) => <li><a href={`#${t.id}`}>{t.name}</a></li>)}
+          </ul>
+        </div>
+        <div class="col">
+          <p class="col-h">By situation</p>
+          <ul>
+            <li><a href="#self-managing">Self-managing for the first time</a></li>
+            <li><a href="#leaving">Leaving a management company</a></li>
+            <li><a href="#turnover">Newly seated after developer turnover</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ── By size. Four equal cells ruled into one object, which is Condo ──────
+       Control's four-card platform row rebuilt in this system: the 1px gap is
+       --c-edge showing through, so the cards share their strokes instead of
+       drawing four doubled borders. Each carries its own plat, and the plats
+       grow. ──────────────────────────────────────────────────────────────── -->
+  <section id="size" class="sized">
+    <div class="page">
+      <h2 class="t-sheet">By size</h2>
+      <p class="intro t-lede">
+        Lot count sets the price, and the rate falls as the association grows. It also sets which
+        part of the work hurts most.
+      </p>
+
+      <div class="cards">
+        {SIZES.map((s) => (
+          <article class="card" id={s.id}>
+            <p class="card-range t-mono">{s.range}</p>
+            <h3 class="t-title">{s.title}</h3>
+            <p class="card-body">{s.body}</p>
+            <div class="card-art">
+              <Plat cols={s.plat.cols} rows={s.plat.rows} size={s.plat.size} small={s.plat.small} />
+              <p class="card-work">Where the work is: {s.work}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="foot">
+        <span class="fl">Four brackets</span>
+        <a class="fv" href="/pricing">Starts at $10 a month</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── By type. The site's own two-track band, used exactly once, because ───
+       what separates these four is a specification and a spec sheet is what
+       the rail was drawn for. ──────────────────────────────────────────────── -->
+  <Band title="By type" field id="type" note="How compliance works" noteHref="/compliance">
+    <ul class="types">
+      {TYPES.map((t) => (
+        <li id={t.id}>
+          <div class="who">
+            <h3 class="t-title">{t.name}</h3>
+            <p class="spec t-mono">{t.spec}</p>
+          </div>
+          <p class="what">{t.body}</p>
+        </li>
+      ))}
     </ul>
-  </Band>
-
-  <Band title="By type" field id="type">
-    <ul class="rows">
-      <li>
-        <b>Homeowners associations.</b> The default case. Declaration, bylaws, rules, a plat, an
-        assessment, and an architectural committee.
-      </li>
-      <li>
-        <b>Condominium associations.</b> Heavier statutory obligations in most states, and stricter
-        reserve rules. Parcel holds condominium specific requirements separately where the statute
-        treats them differently, because a rule that binds condominiums and not HOAs applied to the
-        wrong entity is as wrong as no rule at all.
-      </li>
-      <li>
-        <b>Planned communities.</b> Sub-associations, shared amenities, and more than one set of
-        documents. Parcel reads each and keeps them apart.
-      </li>
-      <li>
-        <b>Civic and neighborhood associations.</b> Lighter statutory duties, smaller budgets,
-        often no assessment at all. These pay a reduced rate.
-      </li>
-    </ul>
-  </Band>
-
-  <Band title="Self-managing for the first time" id="self-managing">
-    <p>
-      You have decided not to hire a manager, or you already did and it did not work.
-    </p>
-    <p class="coda">
-      The hard part is not the bookkeeping. It is that nobody knows what the documents say, and
-      every decision carries a low worry of having done something void.
+    <p class="foot types-foot">
+      <span class="fl">Four types</span>
+      <span class="fv">What differs is which statute applies, and where it says nothing</span>
     </p>
   </Band>
 
-  <Band title="Leaving a management company" field id="leaving" note="See the comparison" noteHref="/vs/management-company">
-    <p>
-      Read your contract for the notice period and the records return clause first. That second
-      clause decides how painful the next month is.
-    </p>
-    <p>
-      Parcel prepares the termination notice your contract requires, the records request, and a
-      transition checklist, then loads the ledgers, documents and roster as they arrive. Migration
-      is included.
-    </p>
-    <p class="coda">
-      Format specific import for Buildium, PayHOA and TownSq exports is being built. A generic
-      import of units, owners and balances works today, so no promise on timing yet.
-    </p>
-  </Band>
+  <!-- ── By situation. PayHOA's alternating text-and-artefact blocks, with ─────
+       the artefacts being a sheet and a statutory panel rather than product
+       screenshots. The first case has no artefact, which is why it leads at
+       full width instead of sitting in a lopsided split. ──────────────────── -->
+  <section class="situations">
+    <div class="page">
+      <h2 class="t-sheet">Where your board is starting from</h2>
 
-  <Band title="A brand new board after developer turnover" id="turnover" note="Read about turnover" noteHref="/blog/hoa-developer-turnover">
-    <p>
-      You have a box of documents and no idea whether it is complete, and one deadline is already
-      running that most boards miss.
-    </p>
-    <p class="coda">
-      There is nothing to migrate from, so there is no switching cost at all. It is the cheapest
-      moment to start properly.
-    </p>
-  </Band>
+      <article class="lead" id="self-managing">
+        <h3 class="t-headline">Self-managing for the first time</h3>
+        <p>The board decided not to hire a manager, and no one on it has run an association before.</p>
+        <p>
+          Parcel reads the declaration, the bylaws and the rules, answers a question out of them,
+          and shows the page the answer came from. Where a provision has not been read, it says so
+          rather than filling the gap.
+        </p>
+        <p class="coda">
+          The hard part is not the bookkeeping. It is that nobody knows what the documents say, so
+          every decision carries a low worry of having done something void.
+        </p>
+      </article>
+
+      <article class="split" id="leaving">
+        <div class="arg">
+          <h3 class="t-headline">Leaving a management company</h3>
+          <p>
+            Read your contract first, for the notice period and the records return clause. That
+            second clause decides how painful the next month is.
+          </p>
+          <p>
+            Parcel prepares the termination notice your contract requires, the records request and
+            a transition checklist. It then loads the ledgers, documents and roster as they arrive.
+            Migration is included.
+          </p>
+          <div class="gate">
+            <p class="t-mono gate-h">Being built, not shipped</p>
+            <p>
+              Format specific import for Buildium, PayHOA and TownSq exports is not finished. A
+              generic import of units, owners and balances works today. No date is promised for the
+              rest.
+            </p>
+          </div>
+          <p class="onward t-mono"><a href="/vs/management-company">Read the comparison</a></p>
+        </div>
+        <div class="art">
+          <Panel
+            label="Leaving a manager"
+            rows={TRANSITION}
+            footing={{ label: "Migration", value: "Included" }}
+          />
+        </div>
+      </article>
+
+      <article class="split flip" id="turnover">
+        <div class="arg">
+          <h3 class="t-headline">Newly seated after developer turnover</h3>
+          <p>Turnover hands the board a set of records, and no way to tell whether the set is complete.</p>
+          <p>
+            There is nothing to migrate from, so there is no switching cost at all. This is the
+            cheapest moment to start properly.
+          </p>
+          <p class="onward t-mono"><a href="/blog/hoa-developer-turnover">Read about turnover</a></p>
+        </div>
+        <div class="art">
+          <div class="panel--statutory">
+            <p class="t-label">One clock is already running</p>
+            <p class="lede">
+              A construction defect claim runs from substantial completion, not from the day the
+              board was seated. The board that inherits the community does not inherit a fresh
+              period.
+            </p>
+            <p class="note">
+              Parcel dates the period from the record you hand it and names the section it read.
+              Where the record does not carry the date, it says so instead of guessing.
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <section class="close on-ink">
     <div class="page">
@@ -115,7 +302,166 @@ import Band from "../components/Band.astro";
 </Base>
 
 <style>
+  /* ── The directory ─────────────────────────────────────────────────────── */
+
+  .find {
+    background: var(--field);
+    border-bottom: var(--stroke-rule);
+    padding-block: clamp(32px, 3.4vw, 52px);
+  }
+  .find > .page > .t-label { margin-bottom: var(--s-5); }
+
+  /* One object ruled into cells, not three floating boxes. The gap is 1px of
+     --c-edge showing through, the way the product's stat grid is built. */
+  .dir {
+    display: grid;
+    gap: 1px;
+    background: var(--c-edge);
+    border: var(--stroke-edge);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px) { .dir { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .col { background: var(--card); padding: var(--s-5) clamp(16px, 1.6vw, 22px) var(--s-4); min-width: 0; }
+  .col-h {
+    margin: 0 0 var(--s-3);
+    font-size: var(--t-mono-label);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .col ul { list-style: none; margin: 0; padding: 0; }
+  .col li { border-top: var(--stroke-hairline); }
+  .col a { display: block; padding-block: 10px; font-size: var(--t-micro); }
+
+  /* ── By size ───────────────────────────────────────────────────────────── */
+
+  .sized .intro { margin: var(--s-4) 0 0; max-width: 30em; }
+
+  .cards {
+    margin-top: clamp(28px, 3vw, 44px);
+    display: grid;
+    gap: 1px;
+    background: var(--c-edge);
+    border: var(--stroke-edge);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .card {
+    background: var(--card);
+    padding: var(--s-6) clamp(20px, 2vw, 28px) var(--s-6);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-range {
+    margin: 0 0 var(--s-3);
+    font-size: var(--t-mono-label);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+  .card h3 { max-width: 22ch; }
+  .card-body { margin: var(--s-4) 0 0; max-width: 40ch; text-wrap: pretty; }
+
+  /* Bottom aligned, so the plats read as one growing sequence across the four
+     cells even where the prose above them runs to different lengths. */
+  .card-art { margin: var(--s-8) 0 0; padding-top: var(--s-5); border-top: var(--stroke-hairline); }
+  @media (min-width: 760px) { .card-art { margin-top: auto; } }
+  .card-work {
+    margin: var(--s-4) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* Every list ends in a footing. Label uppercase on the left, the sentence it
+     reconciles to in sentence case on the right, because eleven px of tracked
+     capitals is a label and not a place to put a clause. */
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-6);
+    justify-content: space-between;
+    margin: var(--s-5) 0 0;
+    padding-top: var(--s-3);
+    border-top: var(--stroke-consequence);
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+  }
+  .fl {
+    font-size: var(--t-mono-label);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .fv { font-size: var(--t-mono-data); }
+  /* A standalone link is a target, not a word in a sentence, so it gets the
+     24px the target-size rule asks for rather than a bare line box. */
+  a.fv { display: inline-block; padding-block: var(--s-1); }
+
+  /* ── By type ───────────────────────────────────────────────────────────── */
+
+  .types { list-style: none; margin: 0; padding: 0; }
+  .types > li {
+    border-top: var(--stroke-hairline);
+    padding-block: var(--s-5);
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 860px) {
+    .types > li { grid-template-columns: minmax(0, 15em) minmax(0, 1fr); column-gap: clamp(24px, 2.6vw, 44px); }
+  }
+  .types .spec { margin: var(--s-2) 0 0; color: var(--ink-3); }
+  .types .what { margin: 0; text-wrap: pretty; }
+  .types-foot { margin-top: var(--s-5) !important; }
+
+  /* ── By situation ──────────────────────────────────────────────────────── */
+
+  .situations .lead { margin-top: clamp(28px, 3vw, 44px); max-width: var(--read); }
+  .situations .lead p { margin: var(--s-4) 0 0; }
+
+  .split {
+    margin-top: clamp(40px, 4.4vw, 72px);
+    padding-top: clamp(32px, 3.4vw, 52px);
+    border-top: var(--stroke-rule);
+    display: grid;
+    gap: clamp(28px, 3vw, 48px);
+  }
+  @media (min-width: 960px) {
+    .split { grid-template-columns: minmax(0, 1fr) minmax(0, 25em); align-items: start; }
+    .split.flip > .arg { order: 2; }
+    .split.flip > .art { order: 1; }
+  }
+  .arg > * + * { margin-top: var(--s-4); }
+  .arg p { margin: 0; text-wrap: pretty; }
+  .art { min-width: 0; }
+
+  /* The gated claim: informational tier, so a hairline row and no box. */
+  .gate { border-top: var(--stroke-rule); padding-top: var(--s-4); }
+  .gate-h {
+    margin: 0 0 var(--s-2);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .gate p { color: var(--ink-2); }
+
+  .onward { letter-spacing: 0.14em; text-transform: uppercase; }
+  .onward a { display: inline-block; padding-block: var(--s-1); }
+
+  /* ── Closing ───────────────────────────────────────────────────────────── */
+
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
   .close h2 { color: var(--paper); max-width: 26ch; }
   .close .actions { margin-top: var(--s-6); }
+
+  h1 { max-width: 20ch; }
 </style>

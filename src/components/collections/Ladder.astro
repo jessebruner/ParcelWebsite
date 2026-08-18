@@ -1,0 +1,217 @@
+---
+/**
+ * THE LADDER, AS A DATED TIMELINE.
+ *
+ * A delinquency ladder is a sequence of dated events with a waiting period
+ * between each pair, so a timeline is its natural shape rather than a decorative
+ * choice. The day marker is the spine; the step name and its citation hang off
+ * it; the gap between two steps is drawn as a gap, because the gap is the part a
+ * board gets wrong.
+ *
+ * Two things this component will not do.
+ *
+ * It will not print a citation it was not given. ParcelHOA's fl.ts records a
+ * section reference for step 2 only, and says so in a note. The app shows an
+ * em-dash there. This site's copy linter bans em dashes in any form, so the
+ * absence is spelled out in words instead. Either way the rule is the same one:
+ * a plausible-looking citation that is wrong is worse than an honest gap.
+ *
+ * It will not use the ruled, line-numbered margin. That motif belongs to the
+ * document viewer and to generated notices, and Margin.tsx names marketing
+ * pages as the place it must not appear.
+ *
+ * The clock between two steps is a clay fill. Clay is the running-clock fill in
+ * this system and it never sets text, because it fails contrast as a foreground.
+ */
+
+export interface Step {
+  /** Rung number, as `step` in ParcelHOA's DelinquencyStep. */
+  n: number;
+  /** Days after the due date, as `daysAfterDue`. */
+  day: number;
+  /** The step's own label, verbatim from the jurisdiction record. */
+  name: string;
+  /** The recorded section reference, or null when none was recorded. */
+  ref: string | null;
+  /** What the step is, in a sentence. */
+  what: string;
+  /** Who acts on it, and in what order. */
+  who: string;
+  /**
+   * The cure period before the next step, in days, taken from the gap between
+   * this step's threshold and the next one. Optional: the last step has none.
+   */
+  cure?: number;
+  /** 0 to 1. Draws a running clock across the cure period. */
+  elapsed?: number;
+}
+
+interface Props {
+  steps: Step[];
+  caption: string;
+}
+
+const { steps, caption } = Astro.props;
+---
+
+<figure class="ladder">
+  <ol>
+    {steps.map((s) => (
+      <li>
+        <div class="step">
+          <div class="marker">
+            <span class="day">Day {s.day}</span>
+            <span class="n">Step {s.n}</span>
+          </div>
+          <div class="what">
+            <h3 class="t-title">{s.name}</h3>
+            <p class="ref">
+              {s.ref ? s.ref : "No section reference recorded"}
+            </p>
+            <p class="says">{s.what}</p>
+            <p class="sig">{s.who}</p>
+          </div>
+        </div>
+
+        {s.cure !== undefined && (
+          <div class="gap">
+            <div class="rule" aria-hidden="true"></div>
+            <div class="wait">
+              <p class="cure">{s.cure} days to cure</p>
+              {s.elapsed !== undefined && (
+                <>
+                  <span class="clock">
+                    <span style={`width:${Math.round(s.elapsed * 100)}%`}></span>
+                  </span>
+                  <p class="clocktext">
+                    {Math.round(s.elapsed * s.cure)} of {s.cure} days elapsed on this lot
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </li>
+    ))}
+  </ol>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .ladder {
+    margin: 0;
+    border: var(--stroke-consequence);
+    background: var(--card);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li + li { border-top: var(--stroke-hairline); }
+
+  .step {
+    display: grid;
+    gap: var(--s-2) var(--s-5);
+    padding: var(--s-5) var(--s-6);
+  }
+  @media (min-width: 620px) {
+    .step { grid-template-columns: 7.5em minmax(0, 1fr); gap: var(--s-5); }
+  }
+
+  .marker { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2); }
+  @media (min-width: 620px) {
+    .marker { display: block; padding-top: 3px; }
+  }
+  .day {
+    display: block;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--t-mono-data);
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .n {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .what { min-width: 0; }
+  .what h3 { color: var(--ink); }
+  .ref {
+    margin: var(--s-2) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+  .says { margin: var(--s-3) 0 0; color: var(--ink-body); }
+  .sig {
+    margin: var(--s-2) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* The waiting period, drawn as a set-back inset so the pause reads as a pause. */
+  .gap {
+    display: grid;
+    gap: var(--s-3);
+    padding: 0 var(--s-6) var(--s-5);
+  }
+  @media (min-width: 620px) {
+    .gap { grid-template-columns: 7.5em minmax(0, 1fr); gap: var(--s-5); }
+  }
+  .rule { border-top: var(--stroke-edge); margin-top: 10px; }
+  .wait { min-width: 0; }
+  .cure {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .clock {
+    display: block;
+    width: min(100%, 16em);
+    height: 12px;
+    margin-top: var(--s-2);
+    background: var(--field);
+    /* Ink, not the --c-edge hairline Panel's meter uses. That hairline is
+       1.41:1 against the card and this gauge is the only place the cure period
+       is shown as a quantity. Clay against the field track is 3.28:1. */
+    border: 1px solid var(--ink);
+  }
+  .clock > span { display: block; height: 100%; background: var(--clay); }
+  .clocktext {
+    margin: var(--s-2) 0 0;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  figcaption {
+    padding: var(--s-3) var(--s-6) var(--s-4);
+    border-top: var(--stroke-consequence);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+</style>
