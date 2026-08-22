@@ -1,0 +1,311 @@
+---
+/**
+ * Dynamic Blog Post Route.
+ *
+ * Renders authoritative HOA guides with structured statutory citations, procedural hero art,
+ * and clear typography.
+ */
+import Base from "../../layouts/Base.astro";
+import BlogHeaderArt from "../../components/blog/BlogHeaderArt.astro";
+import CitationBlock from "../../components/blog/CitationBlock.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import { BLOG_POSTS, type BlogPost } from "../../data/blog";
+
+export function getStaticPaths() {
+  return BLOG_POSTS.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+---
+
+<Base
+  title={`${post.title} | Common Parcel Field Guides`}
+  description={post.description}
+  path={`/blog/${post.slug}`}
+  shareTitle={post.title}
+>
+  <article class="post-layout" itemscope itemtype="https://schema.org/Article">
+    <!-- Header / Hero -->
+    <header class="post-hero">
+      <div class="page">
+        <nav class="post-breadcrumbs" aria-label="Breadcrumbs">
+          <a href="/blog" class="crumb-link">Field Guides</a>
+          <span class="crumb-separator" aria-hidden="true">/</span>
+          <span class="crumb-current">{post.category}</span>
+        </nav>
+
+        <h1 class="t-display post-title" itemprop="headline">{post.title}</h1>
+        <p class="t-lede post-lede" itemprop="description">{post.lede}</p>
+
+        <div class="post-meta">
+          <div class="post-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <span class="author-label t-mono-label">Author</span>
+            <span class="author-name" itemprop="name">{post.author.name}</span>
+            <span class="author-role t-micro">({post.author.role})</span>
+          </div>
+
+          <div class="meta-divider" aria-hidden="true"></div>
+
+          <div class="post-date-group">
+            <span class="date-label t-mono-label">Published</span>
+            <time datetime={post.publishedAt} class="published-date t-mono" itemprop="datePublished">
+              {post.publishedAt}
+            </time>
+          </div>
+
+          <div class="meta-divider" aria-hidden="true"></div>
+
+          <div class="post-read-time">
+            <span class="read-label t-mono-label">Reading Time</span>
+            <span class="read-time t-mono">{post.readTime}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Procedural Hero Art -->
+    <div class="page post-art-wrap">
+      <BlogHeaderArt seed={post.artSeed} scene={post.artScene} mode="hero" />
+    </div>
+
+    <!-- Post Body -->
+    <div class="page post-body-container">
+      <div class="post-content" itemprop="articleBody">
+        {post.sections.map((section) => (
+          <section class="post-section">
+            {section.heading && (
+              <h2 class="t-sheet post-section-heading">{section.heading}</h2>
+            )}
+
+            {section.paragraphs.map((p) => (
+              <p class="post-paragraph">{p}</p>
+            ))}
+
+            {section.callout && (
+              <div class:list={["post-callout", `callout--${section.callout.type}`]}>
+                {section.callout.title && (
+                  <div class="callout-header t-mono-label">{section.callout.title}</div>
+                )}
+                <p class="callout-text">{section.callout.text}</p>
+              </div>
+            )}
+
+            {section.list && (
+              <div class="post-list-block">
+                {section.list.title && (
+                  <h3 class="t-title list-title">{section.list.title}</h3>
+                )}
+                <ul class="rows post-list">
+                  {section.list.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        ))}
+
+        <!-- Primary Sources and Statutory Citations -->
+        <CitationBlock citations={post.citations} />
+
+        <!-- Editorial Author Card -->
+        <div class="post-author-box">
+          <div class="author-box-content">
+            <span class="t-mono-label">About Common Parcel Guides</span>
+            <p class="author-box-bio">
+              Common Parcel provides verified governance tools and statutory workflows for self-managed
+              condominium associations and HOAs. These operational guides cite statutory reference
+              provisions to assist volunteer board members with annual compliance duties.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- CTA -->
+  <CtaBand
+    headline="Organize your association records today"
+    lede="Common Parcel keeps required books, notices, and owner records in one place for your board."
+  />
+</Base>
+
+<style>
+  .post-layout {
+    background: var(--paper);
+    padding-bottom: var(--pad-y);
+  }
+  .post-hero {
+    padding-top: clamp(32px, 5vw, 64px);
+    padding-bottom: clamp(24px, 3vw, 40px);
+    border-bottom: var(--stroke-rule);
+  }
+  .post-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-4);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .crumb-link {
+    color: var(--terracotta);
+    text-decoration: none;
+  }
+  .crumb-link:hover {
+    text-decoration: underline;
+  }
+  .crumb-separator {
+    color: var(--ink-3);
+  }
+  .crumb-current {
+    color: var(--ink-2);
+  }
+  .post-title {
+    max-width: 26ch;
+    margin-bottom: var(--s-4);
+  }
+  .post-lede {
+    max-width: 44ch;
+    color: var(--ink-2);
+    margin-bottom: var(--s-6);
+  }
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: var(--stroke-hairline);
+  }
+  .meta-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--c-edge);
+  }
+  .post-author, .post-date-group, .post-read-time {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .author-label, .date-label, .read-label {
+    color: var(--ink-3);
+  }
+  .author-name {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: var(--t-micro);
+  }
+  .author-role {
+    color: var(--ink-3);
+  }
+  .published-date, .read-time {
+    color: var(--ink);
+    font-size: var(--t-mono-data);
+  }
+
+  .post-art-wrap {
+    margin-top: clamp(24px, 3vw, 40px);
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+
+  .post-body-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 900px) {
+    .post-body-container {
+      grid-template-columns: minmax(0, 44em);
+    }
+  }
+
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-8);
+  }
+  .post-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .post-section-heading {
+    margin-top: var(--s-4);
+    color: var(--ink);
+  }
+  .post-paragraph {
+    font-size: var(--t-body);
+    line-height: 1.65;
+    color: var(--ink-body);
+    margin: 0;
+  }
+
+  /* Callout styling */
+  .post-callout {
+    margin-top: var(--s-3);
+    margin-bottom: var(--s-3);
+    padding: var(--s-5) var(--s-6);
+    border: var(--stroke-rule);
+    background: var(--card);
+  }
+  .callout--statutory {
+    background: var(--night);
+    color: var(--paper);
+    border: 1px solid var(--plum);
+  }
+  .callout--statutory .callout-header {
+    color: var(--sand);
+  }
+  .callout--statutory .callout-text {
+    color: var(--mist);
+  }
+  .callout--note {
+    background: var(--field);
+    border-left: 4px solid var(--terracotta);
+  }
+  .callout--note .callout-header {
+    color: var(--terracotta);
+  }
+  .callout-header {
+    margin-bottom: var(--s-2);
+    letter-spacing: 0.14em;
+  }
+  .callout-text {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-body);
+    line-height: 1.55;
+  }
+
+  .post-list-block {
+    margin-top: var(--s-3);
+  }
+  .list-title {
+    margin-bottom: var(--s-3);
+  }
+  .post-list {
+    margin-top: var(--s-2);
+  }
+
+  .post-author-box {
+    margin-top: var(--s-8);
+    padding: var(--s-6);
+    background: var(--field);
+    border-top: 2px solid var(--terracotta);
+  }
+  .author-box-bio {
+    margin: var(--s-2) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+</style>

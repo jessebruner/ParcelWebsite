@@ -736,7 +736,7 @@ export const COMPARISONS: PageSpec[] = [
       {
         title: "Where Parcel is the better choice",
         field: true,
-        note: ["Leaving a management company", "/compare/management-company"],
+        note: ["Self-management with Common Parcel", "/why-common-parcel"],
         body: [
           { rows: [
             "You worry about doing something void. Fines get voided for skipped hearings, notices for wrong periods.",

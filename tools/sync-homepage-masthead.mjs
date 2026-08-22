@@ -116,7 +116,15 @@ export function generateBehaviorScript() {
     `      }\n` +
     `    }\n` +
     `    function closeModal() { if (dialog.open) dialog.close(); }\n` +
-    `    document.querySelectorAll("[data-open-modal='early-access']").forEach(function(el) { el.addEventListener("click", openModal); });\n` +
+    `    document.addEventListener("click", function(e) {\n` +
+    `      var target = e.target;\n` +
+    `      if (!target) return;\n` +
+    `      var btn = target.closest("button, a, [data-open-modal]");\n` +
+    `      if (!btn) return;\n` +
+    `      if (btn.getAttribute("data-open-modal") === "early-access" || btn.textContent.trim() === "Get early access") {\n` +
+    `        openModal(e);\n` +
+    `      }\n` +
+    `    });\n` +
     `    if (closeBtn) closeBtn.addEventListener("click", closeModal);\n` +
     `    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);\n` +
     `    if (doneBtn) doneBtn.addEventListener("click", closeModal);\n` +
@@ -208,6 +216,12 @@ export function verifyBehaviorScript(scriptText) {
     throw new Error("Behavior script missing dContainers hover event listeners and aria-expanded sync");
   }
 
+  // Check document-level CTA delegation for 'Get early access' buttons
+  const ctaDelegation = /btn\.getAttribute\(\s*["']data-open-modal["']\s*\)\s*===\s*["']early-access["']\s*\|\|\s*btn\.textContent\.trim\(\)\s*===\s*["']Get early access["']/;
+  if (!ctaDelegation.test(scriptText)) {
+    throw new Error("Behavior script missing document-level CTA delegation for 'Get early access' buttons");
+  }
+
   // Check that bare fake-success submit handler does NOT exist
   if (/form\.addEventListener\(\s*["']submit["']\s*,\s*function\s*\(\s*e\s*\)\s*\{\s*e\.preventDefault\(\);\s*(?:if\s*\(\s*formView\s*\)\s*)?formView\.style\.display\s*=\s*["']none["'];\s*(?:if\s*\(\s*successView\s*\)\s*)?successView\.style\.display\s*=\s*["']block["'];?\s*\}\)/.test(scriptText)) {
     throw new Error("Behavior script contains stale bare fake-success submit handler");
@@ -262,10 +276,14 @@ export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss
   template = template.replace(new RegExp(MARK.replace(/[*]/g, "\\*") + "[\\s\\S]*?/\\* end masthead \\*/"), "");
   const lastStyleClose = template.lastIndexOf("</style>");
   if (lastStyleClose === -1) throw new Error("no </style> in the bundle template");
+  const MODAL_SUPPRESSION_CSS = `\n/* Suppress bundle-owned modal in favor of unified dialog */\n[data-screen-label="Early access form"], div[data-screen-label="Early access form"] { display: none !important; pointer-events: none !important; visibility: hidden !important; }\n`;
   template =
     template.slice(0, lastStyleClose) +
-    `\n${MARK}\n${mastheadCss}\n/* end masthead */\n` +
+    `\n${MARK}\n${mastheadCss}\n${MODAL_SUPPRESSION_CSS}/* end masthead */\n` +
     template.slice(lastStyleClose);
+
+  // Suppress bundle-owned duplicate modal markup if present in template
+  template = template.replace(/<div[^>]*data-screen-label="Early access form"[\s\S]*?<\/div>\s*<\/div>/, '<!-- bundle modal suppressed in favor of unified early-access-modal -->');
 
   const modalMatch = /<dialog id="early-access-modal"[\s\S]*?<\/dialog>/.exec(builtPageRaw);
   const DIALOG_MARK = "<!-- injected: early-access-modal -->";

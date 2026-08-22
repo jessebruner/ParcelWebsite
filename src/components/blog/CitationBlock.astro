@@ -1,0 +1,151 @@
+---
+/**
+ * CitationBlock component.
+ *
+ * Renders structured primary sources, statutory citations, and retrieval dates.
+ * Enforces verifiable reference presentation across legal and governance guides.
+ */
+import type { Citation } from "../../data/blog";
+
+interface Props {
+  citations: Citation[];
+  heading?: string;
+}
+
+const { citations, heading = "Primary Sources and Statutory Citations" } = Astro.props;
+if (!citations || citations.length === 0) return null;
+---
+
+<aside class="citation-panel" aria-label={heading}>
+  <div class="citation-header">
+    <span class="citation-icon" aria-hidden="true">§</span>
+    <h3 class="citation-title t-mono-label">{heading}</h3>
+  </div>
+
+  <ol class="citation-list">
+    {citations.map((c, idx) => (
+      <li class="citation-item">
+        <div class="citation-meta">
+          <span class="citation-index t-mono-label">[{idx + 1}]</span>
+          <span class="citation-source-name">{c.source}</span>
+          <span class="citation-section t-mono">{c.section}</span>
+        </div>
+        <div class="citation-body">
+          <div class="citation-item-title">
+            {c.url ? (
+              <a href={c.url} target="_blank" rel="noopener noreferrer" class="citation-link">
+                {c.title}
+                <span class="ext-arrow" aria-hidden="true">↗</span>
+              </a>
+            ) : (
+              <span>{c.title}</span>
+            )}
+          </div>
+          {c.note && <p class="citation-note">{c.note}</p>}
+          <div class="citation-retrieval t-mono-label">
+            Retrieved: <time datetime={c.retrievedAt}>{c.retrievedAt}</time>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</aside>
+
+<style>
+  .citation-panel {
+    margin-top: var(--s-8);
+    background: var(--card);
+    border: var(--stroke-consequence);
+    padding: clamp(20px, 3vw, 32px);
+  }
+  .citation-header {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    border-bottom: var(--stroke-rule);
+    padding-bottom: var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+  .citation-icon {
+    font-family: var(--font-serif);
+    font-size: var(--t-title);
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .citation-title {
+    margin: 0;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+  }
+  .citation-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+  .citation-item {
+    border-bottom: var(--stroke-hairline);
+    padding-bottom: var(--s-4);
+  }
+  .citation-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .citation-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-1);
+  }
+  .citation-index {
+    color: var(--ink-3);
+  }
+  .citation-source-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--t-micro);
+    color: var(--ink);
+  }
+  .citation-section {
+    background: var(--field);
+    padding: 2px 6px;
+    font-size: var(--t-mono-label);
+    color: var(--terracotta);
+    border: var(--stroke-rule);
+  }
+  .citation-body {
+    margin-left: 0;
+  }
+  .citation-item-title {
+    font-family: var(--font-serif);
+    font-size: var(--t-body);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .citation-link {
+    color: var(--terracotta);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .citation-link:hover {
+    color: var(--terracotta-deep);
+  }
+  .ext-arrow {
+    font-size: 0.85em;
+    margin-left: 2px;
+  }
+  .citation-note {
+    margin: var(--s-1) 0 0;
+    font-size: var(--t-micro);
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .citation-retrieval {
+    margin-top: var(--s-2);
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+  }
+</style>

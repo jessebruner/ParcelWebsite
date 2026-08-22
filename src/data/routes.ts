@@ -20,16 +20,10 @@ export const PRODUCT_NAV: Route[] = [
   { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following verified state notice periods." },
 ];
 
-export const COMPARE_NAV: Route[] = [
-  { path: "/compare/management-company", label: "vs. Management Companies", blurb: "Compare self-management with Common Parcel to traditional management." },
-  { path: "/compare/payhoa", label: "vs. PayHOA", blurb: "Compare dues collection against complete governance workflows." },
-  { path: "/compare/buildium", label: "vs. Buildium", blurb: "Built for self-managed HOAs without per-seat complexity." },
-  { path: "/compare/townsq", label: "vs. TownSq", blurb: "Focus on procedural governance and finances over social feeds." },
-];
-
 export const COMPANY_NAV: Route[] = [
   { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations." },
   { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
+  { path: "/blog", label: "Blog", blurb: "Practical guides and statutory references for self-managed associations." },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
 ];
 
@@ -43,6 +37,7 @@ export const TOP_NAV: Route[] = [
 export const COMPANY: Route[] = [
   { path: "/about", label: "About" },
   { path: "/why-common-parcel", label: "Why Common Parcel" },
+  { path: "/blog", label: "Blog" },
   { path: "/pricing", label: "Pricing" },
   { path: "/security", label: "Security" },
   { path: "/contact", label: "Contact" },
@@ -65,14 +60,12 @@ export const ALL_ROUTES: string[] = [
   "/product/vendors-and-insurance",
   "/product/resident-portal",
   "/product/records-and-audit",
-  "/compare/management-company",
-  "/compare/payhoa",
-  "/compare/buildium",
-  "/compare/townsq",
   "/pricing",
   "/security",
   "/about",
   "/why-common-parcel",
+  "/blog",
+  "/blog/board-transition-records-retention-checklist",
   "/contact",
   "/privacy",
   "/terms",
