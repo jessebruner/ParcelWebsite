@@ -1,213 +1,367 @@
 ---
+/**
+ * ABOUT IS A PAGE ABOUT THE COMPANY.
+ *
+ * The version this replaces was a product page wearing an About label: an
+ * authority matrix, a document-extraction panel and a statutory-indexing band,
+ * then two sentences about Jesse at the bottom. Everything above the founder
+ * block now lives on /product and /security, where a reader looking for it
+ * will actually be.
+ *
+ * What is left is what a board member wants from an About page and can get
+ * nowhere else: who we are, what we are for, what we believe, and who is
+ * behind it.
+ *
+ * NO HERON HERE, AND THE FIRST DRAFT HAD ONE.
+ * Mark.astro says "do not use this to decorate a section". I put a 64px heron
+ * beside the founder block and wrote a comment arguing that About is where the
+ * identity is the subject rather than an ornament. Then I counted the rendered
+ * page: three herons. Masthead.astro carries one at 34px and SiteFooter.astro
+ * carries one at 38px, on every page. Mine was the largest of the three and it
+ * was standing in for a photograph we do not have, which is the definition of
+ * decorating a section. The component doc was right.
+ *
+ * The founder block uses a card instead: name, city, and how to reach him, set
+ * like something printed. It is honest without a face, and a photograph drops
+ * into the same slot when Jesse sends one.
+ */
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
-import Band from "../components/Band.astro";
 import PixelSky from "../components/PixelSky.astro";
-import Panel from "../components/Panel.astro";
+import Plat from "../components/Plat.astro";
 
-const extractionRows = [
-  { label: "Assessment schedule", value: "Monthly, 1st", cite: "Sample Declaration § 4.2" },
-  { label: "Grace period", value: "15 days", cite: "Sample Declaration § 4.4" },
-  { label: "Late fee assessment", value: "$25.00", cite: "Sample Declaration § 4.5" },
-  { label: "Architectural response clock", value: "30 days statutory", cite: "Sample Bylaws § 7.1", chip: "CLOCK" },
-  { label: "Quorum requirement", value: "35% of voting power", cite: "Sample Bylaws § 2.3" },
+/**
+ * Six beliefs. Each is a claim we can defend from something already shipped or
+ * already published, because a manifesto is the easiest place on a website to
+ * write a sentence nobody can stand behind.
+ */
+const BELIEFS = [
+  {
+    n: "01",
+    claim: "A volunteer is not an employee",
+    body:
+      "Almost every product in this category is sold to management companies, and it is built for somebody who sits in it all day and was trained on it. Nobody on your board is that person. If a screen needs explaining, we built it wrong.",
+  },
+  {
+    n: "02",
+    claim: "The money stays yours",
+    body:
+      "Owners pay into the association's own account, at the association's own bank, in the association's own name. We never hold it, and there is no balance sitting with us that we could hold.",
+  },
+  {
+    n: "03",
+    claim: "Every rule points at where it came from",
+    body:
+      "We will not act on a rule we cannot show you in your own recorded documents or your state's code. When we cannot find it, the software says so rather than guessing well.",
+  },
+  {
+    n: "04",
+    claim: "Nobody should be able to act alone",
+    /*
+     * "should", not "does". The two-officer gate is a control we apply where
+     * the risk calls for it, not a property of every action in the product,
+     * and /security is careful to say "where the workflow enforces the gate".
+     * A manifesto states what we think ought to be true; it may not borrow the
+     * present tense to imply coverage we have not built.
+     */
+    body:
+      "A fine or a lien changes what a neighbour owes. An action that heavy should take a second officer to approve it, and any single officer should be able to stop it alone.",
+  },
+  {
+    n: "05",
+    claim: "Boring is the point",
+    body:
+      "Your board turns over, and next year's treasurer will not be trained either. We would rather build something forgettable that still works in January than something impressive that has to be learned again.",
+  },
+  {
+    n: "06",
+    claim: "You can leave whenever you want",
+    body:
+      "The records belong to the association, not to us. Export them in any billing cycle, including the one you cancel in, and take them wherever you go next. Month to month, no long-term contract.",
+  },
 ];
+
+/* A neighbourhood, coming up one house at a time. */
+const HOMES = [3, 9, 10, 16, 21, 22, 28, 33, 34, 40, 41, 45];
 ---
 
 <Base
   title="About Common Parcel"
-  description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Direct statutory citations and clear board authority."
+  description="Common Parcel is built in Detroit for homeowner and condominium associations that run themselves. Our mission, what we believe, and who is behind it."
   path="/about"
 >
   <Hero eyebrow="About" seed={401}>
-    <h1 class="t-display">Built for the board, not the manager</h1>
+    <h1 class="t-display">We build for the people who volunteer</h1>
     <p class="t-lede">
-      Most software in this category is sold to property management companies. It assumes a full-time
-      administrator exists. For a self-managed board, that person does not.
+      Common Parcel is a small company in Detroit. We make software for homeowner and condominium
+      associations that run themselves, without a management company in the middle.
     </p>
   </Hero>
 
-  <section class="ab-matrix">
-    <div class="page">
-      <h2 class="t-sheet">Who decides, and what the software runs</h2>
-      <p class="ab-matrix-lede">
-        The board keeps every decision. The software does the repeat work and keeps the record.
-      </p>
-
-      <div class="ab-grid">
-        <article class="ab-card ab-card--board">
-          <div class="ab-card-head">
-            <span class="t-mono-label">The Board</span>
-            <h3 class="t-title">Authority and discretion</h3>
-          </div>
-          <ul class="ab-card-list">
-            <li><b>Discretionary votes.</b> Architectural requests, owner appeals, and variance reviews.</li>
-            <li><b>Financial control.</b> Vendor contract selections and annual operating budgets.</li>
-            <li><b>Dual-officer signatures.</b> Consequential actions like liens and fines require two officers.</li>
-            <li><b>Governance.</b> Conducting member meetings and approving published minutes.</li>
-          </ul>
-        </article>
-
-        <article class="ab-card ab-card--parcel">
-          <div class="ab-card-head">
-            <span class="t-mono-label">Common Parcel</span>
-            <h3 class="t-title">Evidence and execution</h3>
-          </div>
-          <ul class="ab-card-list">
-            <li><b>Citations on verified rules.</b> Exact declaration provisions attached to notices where configured.</li>
-            <li><b>Automated bookkeeping.</b> Direct dues collection, ledger postings, and bank reconciliation.</li>
-            <li><b>Statutory clocks.</b> Response deadlines and delinquency ladders tracked to the calendar.</li>
-            <li><b>Numbered audit log.</b> Attributed records for board approvals, dues entries, and export requests.</li>
-          </ul>
-        </article>
+  <section class="ab-mission">
+    <div class="page ab-mission-inner">
+      <div class="ab-mission-text">
+        <h2 class="t-sheet">Our mission</h2>
+        <p class="ab-statement">
+          Help associations save time and money, so the people who live there can spend both on the
+          neighbourhood instead.
+        </p>
+        <p class="ab-mission-body">
+          Every evening a volunteer spends tracking down a late payment or retyping a violation notice is an
+          evening the neighbourhood does not get back. Every dollar that goes to a management fee is a dollar
+          that does not go to the roads, the pool or the reserve.
+        </p>
+        <p class="ab-mission-body">
+          That is the whole of it. We are not trying to make running an association feel important. We are
+          trying to make it take less of your life and less of your money.
+        </p>
       </div>
-    </div>
-  </section>
-
-  <section class="ab-proof">
-    <div class="page">
-      <div class="ab-proof-layout">
-        <div class="ab-proof-text">
-          <h2 class="t-sheet">Configured from your actual documents</h2>
-          <p>
-            An association is governed by its recorded declaration and bylaws, interacting with state law.
-            Generic tools ask volunteers to key in hundreds of form fields and guess at statutory rules.
-          </p>
-          <p>
-            Common Parcel indexes the recorded text directly, extracts the operating rules, and displays the
-            governing citations across resident notices and workflows.
-          </p>
-        </div>
-        <div class="ab-proof-panel">
-          <Panel
-            label="Document Extraction"
-            note="Illustrative rules"
-            rows={extractionRows}
-            caption="Illustrative declaration and bylaw extraction"
-          />
-        </div>
+      <div class="ab-mission-art">
+        <Plat cols={6} rows={8} marks={HOMES} settle={0.09} />
+        <p class="ab-art-caption">One association, coming online.</p>
       </div>
     </div>
   </section>
 
   <PixelSky mode="band" scene="dawn" seed={409} />
 
-  <Band title="Statutory indexing and transparency" field>
-    <p>
-      Property acts and condominium rules vary across jurisdictions. When we index a statute, we cite the
-      exact section.
-    </p>
-    <p>
-      When a citation cannot be verified in the association's recorded documents or state code, the platform
-      marks it unverified rather than guessing.
-    </p>
-    <p class="coda">If we cannot show you where a rule comes from, we say so.</p>
-  </Band>
+  <section class="ab-beliefs">
+    <div class="page">
+      <h2 class="t-sheet">What we believe</h2>
+      <p class="ab-beliefs-lede">
+        Six things we settled before writing any of it, and check new work against.
+      </p>
 
-  <Band title="Who is building Common Parcel" note="Email Jesse" noteHref="/contact">
-    <p>
-      Jesse Bruner. Detroit, Michigan.
-    </p>
-    <p>
-      Common Parcel is designed and engineered in Detroit specifically for volunteer-led homeowner and
-      condominium associations.
-    </p>
-    <p class="coda">
-      Have questions about your community's setup? Reach out directly.
-    </p>
-  </Band>
+      <ol class="ab-belief-grid">
+        {BELIEFS.map((b) => (
+          <li class="ab-belief">
+            <span class="ab-belief-n t-mono-label">{b.n}</span>
+            <h3 class="t-title">{b.claim}</h3>
+            <p>{b.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ab-founder">
+    <div class="page ab-founder-inner">
+      <div class="ab-founder-card">
+        <p class="ab-founder-name">Jesse Bruner</p>
+        <p class="ab-founder-role t-mono-label">Founder</p>
+        <p class="ab-founder-where">Detroit, Michigan</p>
+      </div>
+      <div class="ab-founder-text">
+        <h2 class="t-sheet">Who is building this</h2>
+
+        {/*
+          DELIBERATELY EMPTY, AND VISIBLY SO.
+
+          The founder story is the one section of this site that cannot be
+          written from the repository. Why he started it, what he did before,
+          and whether this is one person or several are facts only Jesse has,
+          and a plausible invention here is the hardest thing on the site to
+          correct later: a reader who believes a made-up origin story never
+          finds out otherwise. Asked in the website-work channel on 2026-08-22.
+          This block does not go to production in this state.
+        */}
+        <p class="ab-pending">
+          <span class="t-mono-label">Awaiting copy</span>
+          Jesse's own account of why he started this goes here, in his words rather than ours.
+        </p>
+
+        {/*
+          NOT "he reads the early access form himself".
+          That was the first draft, and on 2026-08-22 the live form was found to
+          be in demo mode: formEndpoint defaults to the empty string, so submit
+          fakes a 600ms delay and shows the success screen without transmitting.
+          Nobody reads that form because nothing arrives. Do not restore a
+          sentence about it until the endpoint is set and a test submission has
+          actually landed somewhere.
+        */}
+        <p class="ab-founder-contact">
+          Questions about your association? <a href="/contact">Email Jesse</a>.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <section class="close on-ink">
     <div class="page">
-      <h2 class="t-sheet">Tell us about your association.</h2>
+      <h2 class="t-sheet">Tell us about your association</h2>
+      <p class="close-lede">A person replies, and it is the founder.</p>
+      {/*
+        MODAL INTEGRATION POINT. Jesse's brief puts an Early Access modal behind
+        this CTA, and Antigravity is building EarlyAccessModal.astro on
+        feat/nav-product-system. Until that merges this is an anchor to
+        /contact, which is honestly how a board gets early access today: by
+        emailing him. Swap the anchor for the modal trigger, do not change the
+        label.
+      */}
       <div class="actions">
-        <a class="btn btn--on-ink" href="/contact">Ask about your association</a>
+        <a class="btn btn--on-ink" href="/contact">Get early access</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ── Authority Matrix ─────────────────────────────────────────────────── */
+  /* ── Mission ──────────────────────────────────────────────────────────── */
 
-  .ab-matrix { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
-  .ab-matrix h2 { max-width: 24ch; }
-  .ab-matrix-lede {
+  .ab-mission { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-mission-inner { display: grid; gap: var(--s-12); align-items: start; }
+  @media (min-width: 900px) {
+    .ab-mission-inner { grid-template-columns: 1.35fr 1fr; gap: clamp(40px, 5vw, 88px); }
+  }
+
+  .ab-statement {
+    margin: var(--s-6) 0 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-headline);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.28;
+    color: var(--ink);
+    max-width: 20em;
+    border-left: 4px solid var(--terracotta);
+    padding-left: var(--s-6);
+  }
+  .ab-mission-body {
+    margin: var(--s-6) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--ink-body);
+    max-width: 40em;
+  }
+
+  .ab-mission-art {
+    background: var(--night);
+    padding: clamp(24px, 3vw, 40px);
+    border: var(--stroke-consequence);
+  }
+  .ab-art-caption {
+    margin: var(--s-6) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+  }
+
+  /* ── Beliefs ──────────────────────────────────────────────────────────── */
+
+  .ab-beliefs { background: var(--field); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-beliefs-lede {
     margin: var(--s-4) 0 0;
+    font-size: var(--t-lede);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 34em;
+  }
+
+  .ab-belief-grid {
+    list-style: none;
+    margin: clamp(32px, 4vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 700px) { .ab-belief-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1080px) { .ab-belief-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .ab-belief {
+    background: var(--card);
+    border: var(--stroke-edge);
+    border-top: 4px solid var(--terracotta);
+    padding: clamp(20px, 2.2vw, 30px);
+    /* No shadow and no radius are available, so the hover has to be a colour
+       and a hairline. 120ms is under the point where a cursor sweep across the
+       grid reads as movement. */
+    transition: border-color 120ms linear, background-color 120ms linear;
+  }
+  .ab-belief:hover {
+    background: var(--held);
+    border-color: var(--bisque-edge);
+    border-top-color: var(--terracotta);
+  }
+  @media (prefers-reduced-motion: reduce) { .ab-belief { transition: none; } }
+
+  .ab-belief-n { display: block; color: var(--terracotta); letter-spacing: 0.18em; }
+  .ab-belief h3 { margin: var(--s-3) 0 0; color: var(--ink); max-width: 18ch; }
+  .ab-belief p { margin: var(--s-4) 0 0; font-size: var(--t-body); line-height: 1.55; color: var(--ink-body); }
+
+  /* ── Founder ──────────────────────────────────────────────────────────── */
+
+  .ab-founder { padding-block: var(--pad-y); border-bottom: var(--stroke-rule); }
+  .ab-founder-inner { display: grid; gap: var(--s-8); align-items: start; }
+  @media (min-width: 760px) {
+    .ab-founder-inner { grid-template-columns: auto 1fr; gap: clamp(32px, 4vw, 72px); }
+  }
+
+  /* Set like something printed: card stock, the consequence stroke, and a
+     terracotta rule along the top. A photograph replaces the whole block
+     without the surrounding grid changing. */
+  .ab-founder-card {
+    background: var(--card);
+    border: var(--stroke-consequence);
+    border-top: 4px solid var(--terracotta);
+    padding: clamp(24px, 2.6vw, 34px);
+    min-width: 15em;
+  }
+
+  .ab-founder-name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .ab-founder-role {
+    margin: var(--s-2) 0 0;
+    color: var(--terracotta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .ab-founder-where {
+    margin: var(--s-5) 0 0;
+    padding-top: var(--s-4);
+    border-top: var(--stroke-rule);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-data);
+    color: var(--ink-3);
+  }
+
+  .ab-pending {
+    margin: var(--s-6) 0 0;
+    padding: var(--s-5) var(--s-6);
+    border: var(--stroke-held);
+    background: var(--held);
+    color: var(--ink-2);
     font-size: var(--t-body);
     line-height: 1.55;
-    color: var(--ink-body);
-    max-width: 56ch;
+    max-width: 40em;
   }
-
-  .ab-grid {
-    margin-top: clamp(28px, 3.4vw, 48px);
-    display: grid;
-    gap: var(--s-8);
-  }
-  @media (min-width: 760px) {
-    .ab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 3.5vw, 48px); }
-  }
-
-  .ab-card {
-    border: var(--stroke-consequence);
-    background: var(--paper);
-    padding: clamp(20px, 2.5vw, 32px);
-    display: flex;
-    flex-direction: column;
-  }
-  .ab-card--board { border-top: 4px solid var(--terracotta); }
-  .ab-card--parcel { border-top: 4px solid var(--night); }
-
-  .ab-card-head span {
+  .ab-pending .t-mono-label {
     display: block;
-    color: var(--ink-3);
-    letter-spacing: 0.14em;
+    color: var(--terracotta);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     margin-bottom: var(--s-2);
   }
-  .ab-card-head h3 { color: var(--ink); }
 
-  .ab-card-list {
-    list-style: none;
+  .ab-founder-contact {
     margin: var(--s-6) 0 0;
-    padding: 0;
-  }
-  .ab-card-list > li {
-    border-top: var(--stroke-hairline);
-    padding-block: var(--s-3);
-    color: var(--ink-body);
-    font-size: var(--t-body);
-    line-height: 1.5;
-  }
-  .ab-card-list > li:first-child { border-top: none; padding-top: 0; }
-  .ab-card-list b { color: var(--ink); }
-
-  /* ── Document Extraction Proof ────────────────────────────────────────── */
-
-  .ab-proof { background: var(--field); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
-  .ab-proof-layout {
-    display: grid;
-    gap: var(--s-8);
-    align-items: start;
-  }
-  @media (min-width: 860px) {
-    .ab-proof-layout { grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 4vw, 64px); }
-  }
-
-  .ab-proof-text h2 { max-width: 20ch; }
-  .ab-proof-text p {
-    margin: var(--s-4) 0 0;
     font-size: var(--t-body);
     line-height: 1.55;
     color: var(--ink-body);
+    max-width: 40em;
   }
-
-  .ab-proof-panel { margin-top: var(--s-2); }
 
   /* ── The close ────────────────────────────────────────────────────────── */
 
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
   .close h2 { color: var(--paper); max-width: 26ch; }
+  .close-lede { margin: var(--s-4) 0 0; color: var(--mist); font-size: var(--t-lede); }
   .close .actions { margin-top: var(--s-6); }
 </style>
