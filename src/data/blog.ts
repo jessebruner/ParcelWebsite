@@ -351,7 +351,6 @@ export const BLOG_POSTS: BlogPost[] = [
       role: "Detroit, Michigan",
     },
     category: "Board Governance",
-    readTime: "10 min read",
     artSeed: 102,
     artScene: "dusk",
     lede: "The annual meeting is the one meeting owners show up for. It is also the one where a missed notice or a missing quorum turns a routine evening into a do-over. This is the run sheet. What to send, what to have in the room, and what to do when the count comes up short.",
