@@ -65,6 +65,75 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "how-to-run-a-smooth-hoa-annual-meeting",
+    title: "How to run a smooth HOA annual meeting",
+    description: "What to send, what to have in the room, and what to do when the count comes up short.",
+    publishedAt: "2026-08-22",
+    author: {
+      name: "Common Parcel",
+      role: "Detroit, Michigan",
+    },
+    category: "Board Governance",
+    artSeed: 207,
+    artScene: "dusk",
+    lede: "The annual meeting is the one meeting owners show up for. It is also the one where a missed notice or a missing quorum turns a routine evening into a do-over. This is the run sheet. What to send, what to have in the room, and what to do when the count comes up short.",
+    sections: [
+      {
+        heading: "The annual meeting run sheet",
+        list: {
+          title: "Run sheet checklist",
+          items: [
+            "Read your bylaws and, if your state has one, its association statute to confirm notice windows and quorum thresholds",
+            "Calendar the meeting date and book the venue early",
+            "Send written notice to all members in the required window and archive proof of notice",
+            "Print agenda and verified ballot materials",
+            "Confirm quorum requirements in advance",
+            "Start on time and set clear speaking limits for open comment",
+            "Tally ballots openly and record the result in the minutes",
+            "Draft formal minutes directly from the meeting record",
+          ],
+        },
+      },
+      {
+        heading: "Know which rules bind you",
+        paragraphs: [
+          "Start with the recorded declaration, articles, and bylaws. Then check any state law that actually applies to your association. Together they determine the notice, quorum, voting, and meeting rules you must follow.",
+          "If the sources seem to conflict, do not guess which one controls. Identify the exact provisions and get local legal advice before the board relies on a contested reading.",
+        ],
+      },
+      {
+        heading: "Set the date early and send notice",
+        paragraphs: [
+          "Put the date on the calendar the day after the last annual meeting. Good venues book out. So do the officers you need in the room.",
+          "Send written notice to every member at the address the association keeps on file. Use the notice window that applies to your association. If two sources appear to set different periods, resolve that conflict before sending.",
+          "The notice names the date, the time, the place, and the matters on the agenda, including the board election. Keep a copy of what you sent and when. If someone contests the meeting later, that record helps show what notice the board sent and when.",
+        ],
+      },
+      {
+        heading: "Build the agenda and run the election",
+        paragraphs: [
+          "Print the agenda, hand it out, and follow it: call to order; proof of notice and quorum; approval of prior minutes; officer and committee reports; the election; unfinished business; new business; adjournment.",
+          "If directors are elected at this meeting, follow the nomination, ballot, proxy, and counting rules that apply to your association. If your documents allow electronic ballots or proxies, follow the exact procedure they set. Count them in the open. Record the result in the minutes.",
+        ],
+      },
+      {
+        heading: "Plan for the short count and run the room",
+        paragraphs: [
+          "Quorum is the minimum number of votes present for the meeting to count. Whether you can adjourn and reconvene with a lower bar is set by your bylaws and, where it applies, your state's statute; know your number before the meeting so nobody is guessing in the room.",
+          "Start on time. Keep each item to its block. Set a limit on owner comments and state it up front. One person speaks at a time.",
+          "Minutes record what was decided and who was elected, not a transcript. Draft them from the meeting record. Approve them at the next meeting.",
+        ],
+      },
+      {
+        heading: "The year's quiet work behind the meeting",
+        paragraphs: [
+          "The annual meeting sits on the year's quiet work: the dues billed and collected, the books kept current, the notices sent and filed, and the election run. Common Parcel keeps that record for self-managed associations so volunteer directors get their evenings back.",
+        ],
+      },
+    ],
+    citations: [],
+  },
+  {
     slug: "board-transition-records-retention-checklist",
     title: "A Volunteer Board Transition and Records Organization Guide",
     description: "Operational principles for handing off association books, vendor contracts, architectural records, and meeting minutes between outgoing and incoming board officers.",
@@ -243,7 +312,8 @@ export const BLOG_POSTS: BlogPost[] = [
             title: "MCL 450.2487(2), in part",
             text: "\"Any shareholder or member of record of a corporation that is organized on a stock or membership basis, in person or by attorney or other agent, may during regular business hours inspect for any proper purpose the corporation's stock ledger, a list of its shareholders or members, and its other books and records, if the shareholder or member gives the corporation written demand describing with reasonable particularity the purpose of the inspection and the records the shareholder or member desires to inspect, and the records sought are directly connected with the purpose.\"",
           },
-        ],
+        ],
+
         list: {
           title: "What that means in practice",
           items: [
