@@ -20,9 +20,9 @@ interface Props {
   /** The count the page loads at. */
   lots?: number;
   presets?: number[];
-  /** Per door, per month, for the management company comparison. */
-  anchorLow: number;
-  anchorHigh: number;
+  /** Per door, per month, for the management company comparison. Optional. */
+  anchorLow?: number;
+  anchorHigh?: number;
 }
 
 const { brackets, minimum, lots = 60, presets = [12, 60, 240, 900], anchorLow, anchorHigh } = Astro.props;
@@ -118,17 +118,19 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
     </div>
   </figure>
 
-  <div class="pc-anchor">
-    <p class="pc-anchor-line" data-anchor>
-      A management company at {money(anchorLow, 0)} to {money(anchorHigh, 0)} per door would bill
-      {" "}{money(p.lots * anchorLow, 0)} to {money(p.lots * anchorHigh, 0)} a month at this count.
-    </p>
-    <p class="pc-src">
-      Those are typical ranges from industry reporting, not a survey. That fee also buys a person,
-      and Parcel does not attend your meeting or answer your phone.
-    </p>
-    <p class="pc-onward"><a href="#comparison">See the charge comparison</a></p>
-  </div>
+  {anchorLow !== undefined && anchorHigh !== undefined && (
+    <div class="pc-anchor">
+      <p class="pc-anchor-line" data-anchor>
+        A management company at {money(anchorLow, 0)} to {money(anchorHigh, 0)} per door would bill
+        {" "}{money(p.lots * anchorLow, 0)} to {money(p.lots * anchorHigh, 0)} a month at this count.
+      </p>
+      <p class="pc-src">
+        Those are typical ranges from industry reporting, not a survey. That fee also buys a person,
+        and Parcel does not attend your meeting or answer your phone.
+      </p>
+      <p class="pc-onward"><a href="#comparison">See the charge comparison</a></p>
+    </div>
+  )}
 </div>
 
 <style>
@@ -338,7 +340,7 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
 <script>
   import { price, money, clampLots, type Bracket } from "./brackets";
 
-  interface Cfg { brackets: Bracket[]; minimum: number; anchorLow: number; anchorHigh: number; }
+  interface Cfg { brackets: Bracket[]; minimum: number; anchorLow?: number; anchorHigh?: number; }
 
   const root = document.querySelector<HTMLElement>("[data-calc]");
   if (root) {
@@ -368,9 +370,14 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
         row.querySelector<HTMLElement>("[data-band-amount]")!.textContent = money(b.amount);
       });
 
-      q<HTMLElement>("[data-anchor]").textContent =
-        `A management company at ${money(cfg.anchorLow, 0)} to ${money(cfg.anchorHigh, 0)} per door ` +
-        `would bill ${money(p.lots * cfg.anchorLow, 0)} to ${money(p.lots * cfg.anchorHigh, 0)} a month at this count.`;
+      if (cfg.anchorLow !== undefined && cfg.anchorHigh !== undefined) {
+        const anchorEl = root.querySelector<HTMLElement>("[data-anchor]");
+        if (anchorEl) {
+          anchorEl.textContent =
+            `A management company at ${money(cfg.anchorLow, 0)} to ${money(cfg.anchorHigh, 0)} per door ` +
+            `would bill ${money(p.lots * cfg.anchorLow, 0)} to ${money(p.lots * cfg.anchorHigh, 0)} a month at this count.`;
+        }
+      }
 
       for (const b of root.querySelectorAll<HTMLButtonElement>("[data-preset]")) {
         b.setAttribute("aria-pressed", String(Number(b.dataset.preset) === lots));

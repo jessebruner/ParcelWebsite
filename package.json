@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "links": "node tools/check-links.mjs",
     "voice": "node tools/voice-lint.mjs",
-    "verify": "npm run build && npm run links"
+    "verify": "npm run build && npm run links && npm run voice"
   },
   "dependencies": {
     "astro": "7.2.3"

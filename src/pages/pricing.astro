@@ -34,10 +34,6 @@ const BRACKETS: Bracket[] = [
 ];
 const MINIMUM = 10;
 
-/** Per door, per month, for full management. Industry reporting, not a survey. */
-const MANAGER_LOW = 15;
-const MANAGER_HIGH = 25;
-
 const included = [
   {
     title: "The money",
@@ -56,9 +52,8 @@ const included = [
   },
 ];
 
-/** Row order follows /blog/hoa-management-company-cost, which sources it. */
 const contract: [string, string, string][] = [
-  ["Base management", `$${MANAGER_LOW} to $${MANAGER_HIGH} per door, per month`, "$0.40 to $2.50 per lot, per month"],
+  ["Base fee", "Per door, per month", "$0.40 to $2.50 per lot, per month"],
   ["Setup and onboarding", "Once, up front", "Nothing"],
   ["Statutory notice mailings", "Per notice, plus postage", "Nothing per notice"],
   ["Resale and estoppel packets", "Per request, often capped by statute", "Nothing per packet"],
@@ -119,8 +114,6 @@ const schema = JSON.stringify({
           brackets={BRACKETS}
           minimum={MINIMUM}
           lots={60}
-          anchorLow={MANAGER_LOW}
-          anchorHigh={MANAGER_HIGH}
         />
         <ul class="rows pr-terms">
           <li><b>Billed monthly.</b> No contract, so any month can be your last.</li>
