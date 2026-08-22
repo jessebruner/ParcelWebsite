@@ -23,7 +23,16 @@ export interface BlogCallout {
 
 export interface BlogSection {
   heading?: string;
-  paragraphs: string[];
+  /**
+   * Optional, because a section may be a checklist and nothing else.
+   *
+   * This was required, and a post whose first section was a bare run sheet
+   * did not just fail its own page: astro build errored and left dist
+   * incomplete, so npm run verify could not run at all. A schema that takes
+   * the whole build down when a writer omits an optional-looking field is a
+   * schema problem, not a writer problem.
+   */
+  paragraphs?: string[];
   callout?: BlogCallout;
   /**
    * More than one callout in a section. A statutory guide quotes two or three
@@ -369,7 +378,7 @@ export function readingMinutes(post: BlogPost): number {
   const parts: string[] = [post.lede];
   for (const section of post.sections) {
     if (section.heading) parts.push(section.heading);
-    parts.push(...section.paragraphs);
+    parts.push(...(section.paragraphs ?? []));
     for (const c of [section.callout, ...(section.callouts ?? [])]) {
       if (!c) continue;
       if (c.title) parts.push(c.title);

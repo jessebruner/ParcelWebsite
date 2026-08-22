@@ -102,7 +102,7 @@ const minutes = readingMinutes(post);
               <h2 class="t-sheet post-section-heading">{section.heading}</h2>
             )}
 
-            {section.paragraphs.map((p) => (
+            {(section.paragraphs ?? []).map((p) => (
               <p class="post-paragraph" set:html={bold(p)} />
             ))}
 
