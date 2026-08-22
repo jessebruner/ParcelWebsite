@@ -24,6 +24,49 @@ import { fileURLToPath } from "node:url";
 
 export const JS_MARK_START = "/* injected: masthead and modal behaviour */";
 export const JS_MARK_END = "/* end masthead and modal behaviour */";
+export const BUNDLE_OPEN_ACCESS_BINDING = 'sc-camel-on-click="{{ openAccess }}"';
+export const UNIFIED_OPEN_ACCESS_BINDING = 'data-open-modal="early-access"';
+export const BUNDLE_MODAL_START = '\n  <div style="{{ modalStyle }}" sc-camel-on-click="{{ closeAccess }}" role="dialog" aria-modal="true" aria-label="Get early access" data-screen-label="Early access form">';
+export const BUNDLE_MODAL_TAIL = "\n</div>\n\n</x-dc>";
+
+function occurrences(text, needle) {
+  return text.split(needle).length - 1;
+}
+
+/**
+ * Remove the bundle-owned dialog at stable template boundaries and point the
+ * two homepage CTAs at the Astro dialog. This deliberately does not parse
+ * nested HTML with a non-greedy regex: the old modal contains many nested
+ * divs, and doing that left most of the form dangling after the footer.
+ */
+export function rewriteHomepageAccessSurface(template) {
+  const bindingCount = occurrences(template, BUNDLE_OPEN_ACCESS_BINDING);
+  if (bindingCount !== 2) {
+    throw new Error(`expected 2 bundle openAccess bindings, found ${bindingCount}`);
+  }
+
+  const modalStartCount = occurrences(template, BUNDLE_MODAL_START);
+  if (modalStartCount !== 1) {
+    throw new Error(`expected 1 bundle early-access modal start, found ${modalStartCount}`);
+  }
+
+  const start = template.indexOf(BUNDLE_MODAL_START);
+  const tail = template.indexOf(BUNDLE_MODAL_TAIL, start);
+  if (tail === -1) {
+    throw new Error("bundle early-access modal tail boundary missing");
+  }
+
+  let rewritten = template.slice(0, start) + template.slice(tail);
+  rewritten = rewritten.split(BUNDLE_OPEN_ACCESS_BINDING).join(UNIFIED_OPEN_ACCESS_BINDING);
+
+  if (occurrences(rewritten, BUNDLE_OPEN_ACCESS_BINDING) !== 0) {
+    throw new Error("bundle openAccess binding remains after rewrite");
+  }
+  if (rewritten.includes('data-screen-label="Early access form"')) {
+    throw new Error("bundle early-access modal remains after rewrite");
+  }
+  return rewritten;
+}
 
 export function generateBehaviorScript() {
   return (
@@ -118,12 +161,10 @@ export function generateBehaviorScript() {
     `    function closeModal() { if (dialog.open) dialog.close(); }\n` +
     `    document.addEventListener("click", function(e) {\n` +
     `      var target = e.target;\n` +
-    `      if (!target) return;\n` +
-    `      var btn = target.closest("button, a, [data-open-modal]");\n` +
+    `      if (!target || !target.closest) return;\n` +
+    `      var btn = target.closest("[data-open-modal='early-access']");\n` +
     `      if (!btn) return;\n` +
-    `      if (btn.getAttribute("data-open-modal") === "early-access" || btn.textContent.trim() === "Get early access") {\n` +
-    `        openModal(e);\n` +
-    `      }\n` +
+    `      openModal(e);\n` +
     `    });\n` +
     `    if (closeBtn) closeBtn.addEventListener("click", closeModal);\n` +
     `    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);\n` +
@@ -216,15 +257,32 @@ export function verifyBehaviorScript(scriptText) {
     throw new Error("Behavior script missing dContainers hover event listeners and aria-expanded sync");
   }
 
-  // Check document-level CTA delegation for 'Get early access' buttons
-  const ctaDelegation = /btn\.getAttribute\(\s*["']data-open-modal["']\s*\)\s*===\s*["']early-access["']\s*\|\|\s*btn\.textContent\.trim\(\)\s*===\s*["']Get early access["']/;
+  // Check document-level delegation by stable behavior attribute, never copy.
+  const ctaDelegation = /target\.closest\(\s*["']\[data-open-modal=["']early-access["']\]["']\s*\)[\s\S]*?if\s*\(\s*!btn\s*\)\s*return;[\s\S]*?openModal\(e\)/;
   if (!ctaDelegation.test(scriptText)) {
-    throw new Error("Behavior script missing document-level CTA delegation for 'Get early access' buttons");
+    throw new Error("Behavior script missing data-open-modal delegation");
   }
 
   // Check that bare fake-success submit handler does NOT exist
   if (/form\.addEventListener\(\s*["']submit["']\s*,\s*function\s*\(\s*e\s*\)\s*\{\s*e\.preventDefault\(\);\s*(?:if\s*\(\s*formView\s*\)\s*)?formView\.style\.display\s*=\s*["']none["'];\s*(?:if\s*\(\s*successView\s*\)\s*)?successView\.style\.display\s*=\s*["']block["'];?\s*\}\)/.test(scriptText)) {
     throw new Error("Behavior script contains stale bare fake-success submit handler");
+  }
+}
+
+export function verifyHomepageTemplate(template) {
+  const unifiedTargets = occurrences(template, UNIFIED_OPEN_ACCESS_BINDING);
+  if (unifiedTargets !== 3) {
+    throw new Error(`expected 3 unified early-access controls, found ${unifiedTargets}`);
+  }
+  if (occurrences(template, BUNDLE_OPEN_ACCESS_BINDING) !== 0) {
+    throw new Error("bundle openAccess binding is still reachable");
+  }
+  if (template.includes('data-screen-label="Early access form"')) {
+    throw new Error("bundle early-access modal remains in homepage template");
+  }
+  const unifiedDialogs = occurrences(template, '<dialog id="early-access-modal"');
+  if (unifiedDialogs !== 1) {
+    throw new Error(`expected 1 unified early-access dialog, found ${unifiedDialogs}`);
   }
 }
 
@@ -258,6 +316,7 @@ export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss
     /<header data-screen-label="Masthead"[\s\S]*?<\/header>/.exec(template);
   if (!existing) throw new Error("no masthead found in the bundle template");
   template = template.replace(existing[0], header);
+  template = rewriteHomepageAccessSurface(template);
 
   const DEAD_RULES = [
     /\.nav-links \{[^}]*\}/g,
@@ -276,14 +335,10 @@ export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss
   template = template.replace(new RegExp(MARK.replace(/[*]/g, "\\*") + "[\\s\\S]*?/\\* end masthead \\*/"), "");
   const lastStyleClose = template.lastIndexOf("</style>");
   if (lastStyleClose === -1) throw new Error("no </style> in the bundle template");
-  const MODAL_SUPPRESSION_CSS = `\n/* Suppress bundle-owned modal in favor of unified dialog */\n[data-screen-label="Early access form"], div[data-screen-label="Early access form"] { display: none !important; pointer-events: none !important; visibility: hidden !important; }\n`;
   template =
     template.slice(0, lastStyleClose) +
-    `\n${MARK}\n${mastheadCss}\n${MODAL_SUPPRESSION_CSS}/* end masthead */\n` +
+    `\n${MARK}\n${mastheadCss}\n/* end masthead */\n` +
     template.slice(lastStyleClose);
-
-  // Suppress bundle-owned duplicate modal markup if present in template
-  template = template.replace(/<div[^>]*data-screen-label="Early access form"[\s\S]*?<\/div>\s*<\/div>/, '<!-- bundle modal suppressed in favor of unified early-access-modal -->');
 
   const modalMatch = /<dialog id="early-access-modal"[\s\S]*?<\/dialog>/.exec(builtPageRaw);
   const DIALOG_MARK = "<!-- injected: early-access-modal -->";
@@ -300,6 +355,7 @@ export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss
   verifyBehaviorScript(behaviorScript);
 
   template = template.replace("</body>", behaviorScript + "\n</body>");
+  verifyHomepageTemplate(template);
 
   lines[at.template] = JSON.stringify(template).replace(/<\//g, "<\\u002F");
   const resultHtml = lines.join("\n");
@@ -341,6 +397,7 @@ if (isMain) {
   if (!parsed.template.includes("/* injected: masthead.css */")) throw new Error("masthead.css not injected");
 
   verifyBehaviorScript(parsed.template);
+  verifyHomepageTemplate(parsed.template);
 
   const navLabels = [...injected[0].matchAll(/(?:class="[^"]*navlink[^"]*"[^>]*>[\s\S]*?<span>([^<]+)<\/span>|class="[^"]*navlink[^"]*"[^>]*>([^<]+)<\/a>)/g)]
     .map((m) => (m[1] || m[2]).trim());
@@ -348,7 +405,7 @@ if (isMain) {
   console.log(`  markup identical to the component output: yes (${injected[0].length} chars)`);
   console.log(`  masthead.css injected: ${mastheadCss.split("\n").length} lines`);
   console.log(`  bundle's competing rules removed: ${removed}`);
-  console.log(`  behavior verified: hover sync, mailto fallback, validation, no bare fake-success`);
+  console.log(`  behavior verified: 3 unified triggers, 1 dialog, hover sync, mailto fallback, validation`);
   console.log(`  links: ${navLabels.join(" · ")}`);
   console.log(`  all four payloads parse; manifest ${Object.keys(parsed.manifest).length} assets`);
 }
