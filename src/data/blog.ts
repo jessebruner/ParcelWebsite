@@ -76,7 +76,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Board Governance",
     artSeed: 207,
     artScene: "dusk",
-    lede: "Owners rely on the annual meeting to hear what changed and choose what comes next. A missed notice or an unexpected quorum shortfall can turn a routine evening into a do-over. This is the run sheet: what to send, what to have in the room, and what to do when the count comes up short.",
+    lede: "A missed notice or a short count turns the annual meeting into a do-over. This is the run sheet: what to send, what to have in the room, and what to do when the count comes up short.",
     sections: [
       {
         heading: "The annual meeting run sheet",
@@ -104,7 +104,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Set the date early and send notice",
         paragraphs: [
-          "Choose the date early enough to secure the venue and the people your meeting needs.",
+          "Put the date on the calendar the day after the last annual meeting. Good venues book out. So do the officers you need in the room.",
           "Send the required notice to everyone entitled to receive it, using the address or delivery method your records support. Use the notice window that applies to your association. If two sources appear to set different periods, resolve that conflict before sending.",
           "A useful notice clearly names the date, time, place, matters members will vote on, and remote-participation instructions where applicable. Keep a copy of what you sent and when. If someone contests the meeting later, that record helps show what notice the board sent and when.",
         ],
