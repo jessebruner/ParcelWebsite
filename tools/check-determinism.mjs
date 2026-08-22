@@ -87,7 +87,7 @@ console.log("✓ No unpinned build-time Date reads found in components or build 
 // 2. Skewed-epoch positive verification: verify that build outputs respond to SOURCE_DATE_EPOCH
 const TEST_EPOCH = "978307200"; // 2001-01-01T00:00:00Z
 console.log(`Verifying date sink response with skewed SOURCE_DATE_EPOCH=${TEST_EPOCH}...`);
-rmSync("dist", { recursive: true, force: true });
+rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 execSync(`${npmCmd} run build`, { stdio: "inherit", env: { ...process.env, SOURCE_DATE_EPOCH: TEST_EPOCH } });
 
 const sitemapContent = readFileSync("dist/sitemap.xml", "utf8");
@@ -113,11 +113,11 @@ if (!epoch) {
 process.env.SOURCE_DATE_EPOCH = epoch;
 
 console.log(`Checking build determinism with SOURCE_DATE_EPOCH=${epoch}...`);
-rmSync("dist", { recursive: true, force: true });
+rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 execSync(`${npmCmd} run build`, { stdio: "inherit", env: process.env });
 const hash1 = hashDir("dist");
 
-rmSync("dist", { recursive: true, force: true });
+rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 
 execSync(`${npmCmd} run build`, { stdio: "inherit", env: process.env });
 const hash2 = hashDir("dist");

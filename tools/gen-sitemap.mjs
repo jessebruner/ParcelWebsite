@@ -1,7 +1,8 @@
 /**
  * Sitemap from the route manifest. Written into dist after the build.
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+mkdirSync("dist", { recursive: true });
 const src = readFileSync("src/data/routes.ts", "utf8");
 const declared = Array.from(src.matchAll(/path:\s*"([^"]+)"/g), (m) => m[1]);
 const routes = [...new Set(["/", "/pricing", ...declared])]
