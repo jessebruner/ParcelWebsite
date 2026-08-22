@@ -219,12 +219,12 @@ const description = "Explore Common Parcel: automated dues collection, resident 
           <a href="/compare/management-company" class="compare-link-card">
             <span class="card-label">Comparison 01</span>
             <div class="card-name">Common Parcel vs Management Companies</div>
-            <div class="card-desc">Keep full board control while saving thousands in management overhead.</div>
+            <div class="card-desc">Keep full board control while handling routine clerical tasks in software.</div>
           </a>
           <a href="/compare/payhoa" class="compare-link-card">
             <span class="card-label">Comparison 02</span>
             <div class="card-name">Common Parcel vs PayHOA</div>
-            <div class="card-desc">Modern interface, complete governance workflows, and zero hidden lock-in fees.</div>
+            <div class="card-desc">Compare dues collection against complete governance workflows.</div>
           </a>
         </div>
       </div>
@@ -280,9 +280,9 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     padding: 2px 6px;
     font-weight: 500;
   }
-  .status-badge.paid { background: #e6f4ea; color: #137333; }
-  .status-badge.pending { background: #fef7e0; color: #b06000; }
-  .status-badge.active { background: var(--held); color: var(--terracotta); }
+  .status-badge.paid { background: var(--held); color: var(--terracotta-deep); border: 1px solid var(--bisque-edge); }
+  .status-badge.pending { background: var(--field); color: var(--ink-2); border: 1px solid var(--c-edge); }
+  .status-badge.active { background: var(--held); color: var(--terracotta); border: 1px solid var(--bisque-edge); }
 
   .mock-portal-card {
     background: var(--paper);
@@ -372,7 +372,7 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     border: 1px solid var(--c-edge);
     background: var(--card);
   }
-  .vote-tag.approved { border-color: #34a853; color: #137333; }
+  .vote-tag.approved { border-color: var(--c-edge); color: var(--ink); background: var(--held); }
   .vote-tag.pending { border-color: var(--bisque-edge); color: var(--terracotta); }
 
   .mock-gov-list {

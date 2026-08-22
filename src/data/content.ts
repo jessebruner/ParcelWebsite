@@ -629,6 +629,55 @@ export const FEATURES: PageSpec[] = [
       },
     ],
   },
+  {
+    slug: "records-and-audit",
+    title: "Records and audit",
+    description:
+      "Preserves meeting records, board resolutions, vendor contracts, and complete audit history so nothing gets lost across board transitions.",
+    eyebrow: "Records and audit",
+    h1: "Official records that outlast any board",
+    lede: "When officers rotate, institutional memory disappears. Parcel organizes minutes, resolutions, notices, and financial ledgers into an official record the next board inherits.",
+    bands: [
+      {
+        title: "What gets recorded",
+        body: [
+          {
+            panel: {
+              label: "Record · March",
+              note: "Numbered",
+              rows: [
+                { label: "Resolution 2026-04 · Roofing", chip: "Passed" },
+                { label: "Notice · Lot 77 Fence", chip: "Delivered" },
+                { label: "Invoice · Apex Landscaping", chip: "Reconciled" },
+                { label: "Annual Meeting Minutes", chip: "Signed" },
+              ],
+              footing: {
+                label: "Integrity",
+                value: "Verified",
+              },
+            },
+          },
+          {
+            rows: [
+              "Meeting notices, verified attendance, and signed minutes.",
+              "Board resolutions with documented voting tallies.",
+              "Vendor contracts, renewals, and reconciled invoices.",
+              "Notices, violation timelines, and hearing decisions.",
+              "Monthly financial statements and bank reconciliation records.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "Traceable change history",
+        field: true,
+        body: [
+          { p: "Every change to an account, rule, or record notes who made it and when." },
+          { coda: "The next board inherits structured association history instead of scattered email threads." },
+        ],
+      },
+    ],
+  },
 ];
 
 /* ── COMPARISONS ──────────────────────────────────────────────────────── */
@@ -809,17 +858,17 @@ export const COMPARISONS: PageSpec[] = [
     slug: "management-company",
     title: "Common Parcel vs a management company",
     description:
-      "A manager costs $15 to $25 per door per month and bills extra for the rest. What that buys, what it does not, and where software is the wrong answer.",
+      "What a management company provides, what it does not, and where software is the right or wrong answer for your board.",
     eyebrow: "Compare",
     h1: "Common Parcel vs hiring a management company",
-    lede: "This is the real decision most boards are making. The other comparisons are between tools. This one is between a tool and a person.",
+    lede: "This is the real decision most boards are making. The other comparisons are between tools. This one is between software and a property manager.",
     bands: [
       {
         title: "What a manager costs",
         body: [
-          { p: "$15 to $25 per door per month for full management. The smaller the association, the higher the rate, because below a certain size the work is not worth a manager's time." },
-          { p: "That is the base fee. Setup, statutory mailings, estoppel letters, special assessment administration, collections and lien filing, after hours calls, meeting attendance beyond a set number, records requests: all commonly billed on top." },
-          { coda: "Costs are rising because payroll is rising, and because insurance is pushing every association's budget up." },
+          { p: "Management companies charge a monthly base fee per lot, with additional charges for administrative tasks." },
+          { p: "Setup, statutory mailings, estoppel letters, special assessment administration, collections and lien filing, after hours calls, meeting attendance beyond a set number, and records requests are commonly billed on top." },
+          { coda: "Costs rise with payroll, and as portfolio workloads increase." },
         ],
       },
       {

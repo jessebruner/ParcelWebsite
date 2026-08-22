@@ -15,19 +15,20 @@ export const PRODUCT_NAV: Route[] = [
   { path: "/product/meetings-and-voting", label: "Elections and meetings", blurb: "Digital voting, meeting notices, live quorum, and minutes." },
   { path: "/product/documents-and-answers", label: "Documents and setup", blurb: "Reads your governing documents and answers owner questions." },
   { path: "/product/resident-portal", label: "Resident portal", blurb: "Self-serve balances, online payments, and request submissions." },
+  { path: "/product/records-and-audit", label: "Records and audit", blurb: "Maintains official association records and traceable decisions." },
   { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Nightly bank reconciliation and verifiable budget tracking." },
   { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following state notice periods." },
 ];
 
 export const COMPARE_NAV: Route[] = [
-  { path: "/compare/management-company", label: "vs. Management Companies", blurb: "Save thousands each year while keeping full board oversight." },
+  { path: "/compare/management-company", label: "vs. Management Companies", blurb: "Compare self-management with Common Parcel to traditional management." },
   { path: "/compare/payhoa", label: "vs. PayHOA", blurb: "Compare dues collection against complete governance workflows." },
   { path: "/compare/buildium", label: "vs. Buildium", blurb: "Built for self-managed HOAs without per-seat complexity." },
   { path: "/compare/townsq", label: "vs. TownSq", blurb: "Focus on procedural governance and finances over social feeds." },
 ];
 
 export const COMPANY_NAV: Route[] = [
-  { path: "/about", label: "About", blurb: "Our mission to help HOAs save time, save money, and build community." },
+  { path: "/about", label: "About", blurb: "Our mission to help associations save time and money." },
   { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "The principles and architecture behind our platform." },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
 ];
@@ -63,6 +64,7 @@ export const ALL_ROUTES: string[] = [
   "/product/documents-and-answers",
   "/product/vendors-and-insurance",
   "/product/resident-portal",
+  "/product/records-and-audit",
   "/compare/management-company",
   "/compare/payhoa",
   "/compare/buildium",

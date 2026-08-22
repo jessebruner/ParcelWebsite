@@ -30,19 +30,19 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
     <div class="nav-links">
       <!-- PRODUCT MEGA DROPDOWN -->
       <div class="nav-item has-dropdown">
-        <button type="button" class:list={["navlink nav-btn", { on: isProductActive }]} aria-expanded="false" aria-haspopup="true">
+        <button type="button" class:list={["navlink nav-btn", { on: isProductActive }]} aria-expanded="false">
           <span>Product</span>
           <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
             <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
           </svg>
         </button>
-        <div class="dropdown-menu mega-menu" role="menu">
+        <div class="dropdown-menu mega-menu">
           <div class="mega-menu-inner">
             <div class="mega-col main-col">
               <div class="menu-heading">Platform Features</div>
               <div class="menu-grid">
                 {PRODUCT_NAV.map((p) => (
-                  <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]} role="menuitem">
+                  <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]}>
                     <div class="menu-item-title">{p.label}</div>
                     {p.blurb && <div class="menu-item-blurb">{p.blurb}</div>}
                   </a>
@@ -53,14 +53,14 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
               <div class="menu-heading">Comparisons & Security</div>
               <div class="menu-grid compact">
                 {COMPARE_NAV.map((c) => (
-                  <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]} role="menuitem">
+                  <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]}>
                     <div class="menu-item-title">{c.label}</div>
                     {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
                   </a>
                 ))}
-                <a href="/security" class:list={["menu-item", { active: isCurrent("/security") }]} role="menuitem">
+                <a href="/security" class:list={["menu-item", { active: isCurrent("/security") }]}>
                   <div class="menu-item-title">Security & Audit</div>
-                  <div class="menu-item-blurb">Role-based controls, direct payments, and tamper-evident logs.</div>
+                  <div class="menu-item-blurb">Role-based controls, direct settlement, and verifiable records.</div>
                 </a>
               </div>
             </div>
@@ -77,16 +77,16 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
 
       <!-- COMPANY DROPDOWN -->
       <div class="nav-item has-dropdown">
-        <button type="button" class:list={["navlink nav-btn", { on: isCompanyActive }]} aria-expanded="false" aria-haspopup="true">
+        <button type="button" class:list={["navlink nav-btn", { on: isCompanyActive }]} aria-expanded="false">
           <span>Company</span>
           <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
             <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
           </svg>
         </button>
-        <div class="dropdown-menu standard-menu" role="menu">
+        <div class="dropdown-menu standard-menu">
           <div class="menu-grid">
             {COMPANY_NAV.map((c) => (
-              <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]} role="menuitem">
+              <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]}>
                 <div class="menu-item-title">{c.label}</div>
                 {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
               </a>
@@ -122,6 +122,26 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
       const open = mast.hasAttribute("data-open");
       open ? mast.removeAttribute("data-open") : mast.setAttribute("data-open", "");
       burger.setAttribute("aria-expanded", String(!open));
+    });
+
+    const dropdownContainers = mast.querySelectorAll<HTMLElement>(".has-dropdown");
+
+    dropdownContainers.forEach((container) => {
+      const btn = container.querySelector<HTMLButtonElement>(".nav-btn");
+
+      container.addEventListener("mouseenter", () => {
+        if (window.innerWidth > 860) {
+          container.classList.add("open");
+          btn?.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      container.addEventListener("mouseleave", () => {
+        if (window.innerWidth > 860) {
+          container.classList.remove("open");
+          btn?.setAttribute("aria-expanded", "false");
+        }
+      });
     });
 
     dropdownBtns.forEach((btn) => {
