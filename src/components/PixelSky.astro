@@ -26,11 +26,9 @@ interface Props {
 const { mode = "texture", scene = "dusk", seed = 7, crop } = Astro.props;
 const band = mode !== "scene";
 const h = mode === "band" ? 54 : 216;
-const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <canvas
-  id={id}
   class:list={["sky", mode]}
   width={384}
   height={h}

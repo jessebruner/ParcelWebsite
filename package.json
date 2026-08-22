@@ -8,9 +8,10 @@
     "build": "astro build && node tools/sync-homepage-masthead.mjs && node tools/gen-sitemap.mjs",
     "preview": "astro preview",
     "test": "node --test tests/pricing.test.mjs",
+    "determinism": "node tools/check-determinism.mjs",
     "links": "node tools/check-links.mjs",
     "voice": "node tools/voice-lint.mjs",
-    "verify": "npm run test && npm run build && npm run links && npm run voice"
+    "verify": "npm run test && npm run determinism && npm run links && npm run voice"
   },
   "dependencies": {
     "astro": "7.2.3"
