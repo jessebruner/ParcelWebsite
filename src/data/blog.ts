@@ -88,8 +88,8 @@ export const BLOG_POSTS: BlogPost[] = [
             "Send written notice to all members in the required window and archive proof of notice",
             "Print agenda and verified ballot materials",
             "Confirm quorum requirements in advance",
-            "Start on time and set clear speaking limits for open comment",
-            "Tally ballots openly and record the result in the minutes",
+            "Start on time and confirm speaking rules or limits for open comment",
+            "Follow the counting procedure your documents and any applicable statute set, and record the result in the minutes",
             "Draft formal minutes directly from the meeting record",
           ],
         },
@@ -106,21 +106,21 @@ export const BLOG_POSTS: BlogPost[] = [
         paragraphs: [
           "Put the date on the calendar the day after the last annual meeting. Good venues book out. So do the officers you need in the room.",
           "Send written notice to every member at the address the association keeps on file. Use the notice window that applies to your association. If two sources appear to set different periods, resolve that conflict before sending.",
-          "The notice names the date, the time, the place, and the matters on the agenda, including the board election. Keep a copy of what you sent and when. If someone contests the meeting later, that record helps show what notice the board sent and when.",
+          "The notice names the date, the time, and the place, and includes what your governing documents and any applicable statute require the notice to state. Keep a copy of what you sent and when. If someone contests the meeting later, that record helps show what notice the board sent and when.",
         ],
       },
       {
         heading: "Build the agenda and run the election",
         paragraphs: [
           "Print the agenda, hand it out, and follow it: call to order; proof of notice and quorum; approval of prior minutes; officer and committee reports; the election; unfinished business; new business; adjournment.",
-          "If directors are elected at this meeting, follow the nomination, ballot, proxy, and counting rules that apply to your association. If your documents allow electronic ballots or proxies, follow the exact procedure they set. Count them in the open. Record the result in the minutes.",
+          "If directors are elected at this meeting, follow the nomination, ballot, proxy, and counting rules that apply to your association. If your documents allow electronic ballots or proxies, follow the exact procedure they set. Follow the counting procedure your documents and any applicable statute set, and record the result in the minutes.",
         ],
       },
       {
         heading: "Plan for the short count and run the room",
         paragraphs: [
           "Quorum is the minimum number of votes present for the meeting to count. Whether you can adjourn and reconvene with a lower bar is set by your bylaws and, where it applies, your state's statute; know your number before the meeting so nobody is guessing in the room.",
-          "Start on time. Keep each item to its block. Set a limit on owner comments and state it up front. One person speaks at a time.",
+          "Start on time. Keep each item to its block. Check whether owners have a speaking right before you set a time limit, then state the rule up front. One person speaks at a time.",
           "Minutes record what was decided and who was elected, not a transcript. Draft them from the meeting record. Approve them at the next meeting.",
         ],
       },
