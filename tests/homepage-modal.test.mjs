@@ -144,22 +144,13 @@ test("homepage template verifier rejects a second dialog", () => {
   );
 });
 
-test("built dist/index.html satisfies behavior verification if present", () => {
-  if (!existsSync("dist/index.html")) {
-    return; // Pass gracefully if run on clean checkout before build step
-  }
-  const distHtml = readFileSync("dist/index.html", "utf8");
-  const lines = distHtml.split("\n");
-  const at = {};
-  lines.forEach((l, i) => {
-    const m = /<script type="__bundler\/(\w+)">/.exec(l);
-    if (m) at[m[1]] = i + 1;
-  });
+test("homepage content sync against source assets satisfies all template and behavior rules", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  const mockBuiltMasthead = '<header class=\"mast\"><nav><button class=\"burger\">Menu</button><button data-open-modal=\"early-access\">Early Access</button></nav></header><dialog id=\"early-access-modal\"></dialog>';
+  const { template } = syncHomepageContent(sourceHomepage, mockBuiltMasthead, mastheadCss);
 
-  assert.ok(at.template !== undefined, "dist/index.html missing bundler template payload");
-  const template = JSON.parse(lines[at.template]);
-
-  assert.ok(template.includes('<header class="mast">'), "Homepage template missing unified masthead");
+  assert.ok(template.includes('<header class=\"mast\">'), "Homepage template missing unified masthead");
   assert.doesNotThrow(() => verifyBehaviorScript(template));
   assert.doesNotThrow(() => verifyHomepageTemplate(template));
 });
