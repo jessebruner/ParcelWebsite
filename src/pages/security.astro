@@ -7,9 +7,9 @@ import Panel from "../components/Panel.astro";
 
 const logSampleRows = [
   { label: "Assessment invoice run (60 lots)", value: "2026-08-01 00:00", cite: "Automated schedule #1042" },
-  { label: "Notice of violation: Lot 14", value: "2026-08-05 14:22", cite: "Signed: J. Miller & R. Chen #1043" },
+  { label: "Notice of violation: Lot 14", value: "2026-08-05 14:22", cite: "Signed: 2 officers #1043" },
   { label: "ACH dues payment received: Lot 29", value: "2026-08-07 09:15", cite: "Stripe payout settled #1044" },
-  { label: "Association data export generated", value: "2026-08-10 16:40", cite: "Manifest sha256: 4b9e2... #1045" },
+  { label: "Association data export generated", value: "2026-08-10 16:40", cite: "Manifest report #1045" },
 ];
 ---
 
@@ -17,7 +17,6 @@ const logSampleRows = [
   title="Security and Account Access"
   description="Where association records live, who can reach them, what is logged, and how to export association files."
   path="/security"
-  reviewed="August 2026"
 >
   <Hero eyebrow="Security" seed={512}>
     <h1 class="t-display">Where your records live, and who can reach them</h1>
@@ -63,8 +62,8 @@ const logSampleRows = [
         <div class="sec-col-text">
           <h2 class="t-sheet">Two officers to authorize. One to halt.</h2>
           <p>
-            Statutory notices, fines, and liens carry legal consequences. Common Parcel requires two distinct
-            board officers to sign before any statutory action is executed.
+            Consequential actions such as notices, fines, and liens require two distinct current officers
+            where the workflow enforces the gate.
           </p>
           <p>
             A database constraint enforces this rule directly: there is no single-click batch approval and no
@@ -79,9 +78,9 @@ const logSampleRows = [
         <div class="sec-col-panel">
           <Panel
             label="Numbered Audit Log"
-            note="Attributed actions"
+            note="Illustrative record"
             rows={logSampleRows}
-            caption="Sample audit trail records"
+            caption="Illustrative audit trail records"
           />
         </div>
       </div>
@@ -109,7 +108,7 @@ const logSampleRows = [
         <article class="role-card">
           <span class="t-mono-label">Platform Staff</span>
           <h3 class="t-title">Recorded administrative console</h3>
-          <p>Staff access for technical support is restricted, and recorded in a separate platform access log.</p>
+          <p>Staff access for technical support is isolated from ordinary customer archives and recorded in a separate platform access log.</p>
         </article>
       </div>
     </div>
@@ -117,12 +116,12 @@ const logSampleRows = [
 
   <Band title="Association data export and manifest" note="Report a problem" noteHref="/contact" field>
     <p>
-      An export of financial ledgers, documents, meeting minutes, and the complete numbered audit trail is
-      available at any time, including the month an association closes its account.
+      An export of financial ledgers, documents, meeting minutes, and association activity records is
+      available at any time, including when closing an account.
     </p>
     <p>
-      Every generated export includes an archive manifest report with SHA-256 verification hashes for all
-      included files. The association's data belongs to the association.
+      Every generated export includes an archive manifest report detailing record counts, completion status,
+      and any reported file or query errors. The association's data belongs to the association.
     </p>
   </Band>
 

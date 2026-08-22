@@ -6,19 +6,18 @@ import PixelSky from "../components/PixelSky.astro";
 import Panel from "../components/Panel.astro";
 
 const extractionRows = [
-  { label: "Assessment schedule", value: "Monthly, 1st", cite: "Declaration § 4.2 (p. 18)" },
-  { label: "Grace period", value: "15 days", cite: "Declaration § 4.4 (p. 19)" },
-  { label: "Late fee assessment", value: "$25.00", cite: "Declaration § 4.5 (p. 19)" },
-  { label: "Architectural response clock", value: "30 days statutory", cite: "Bylaws § 7.1 (p. 31)", chip: "CLOCK" },
-  { label: "Quorum requirement", value: "35% of voting power", cite: "Bylaws § 2.3 (p. 8)" },
+  { label: "Assessment schedule", value: "Monthly, 1st", cite: "Sample Declaration § 4.2" },
+  { label: "Grace period", value: "15 days", cite: "Sample Declaration § 4.4" },
+  { label: "Late fee assessment", value: "$25.00", cite: "Sample Declaration § 4.5" },
+  { label: "Architectural response clock", value: "30 days statutory", cite: "Sample Bylaws § 7.1", chip: "CLOCK" },
+  { label: "Quorum requirement", value: "35% of voting power", cite: "Sample Bylaws § 2.3" },
 ];
 ---
 
 <Base
-  title="About"
+  title="About Common Parcel"
   description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Direct statutory citations and clear board authority."
   path="/about"
-  reviewed="August 2026"
 >
   <Hero eyebrow="About" seed={401}>
     <h1 class="t-display">Built for the board, not the manager</h1>
@@ -44,7 +43,7 @@ const extractionRows = [
           <ul class="ab-card-list">
             <li><b>Discretionary votes.</b> Architectural requests, owner appeals, and variance reviews.</li>
             <li><b>Financial control.</b> Vendor contract selections and annual operating budgets.</li>
-            <li><b>Dual-officer signatures.</b> Liens, fines, and statutory collection steps require two officers.</li>
+            <li><b>Dual-officer signatures.</b> Consequential actions like liens and fines require two officers.</li>
             <li><b>Governance.</b> Conducting member meetings and approving published minutes.</li>
           </ul>
         </article>
@@ -55,10 +54,10 @@ const extractionRows = [
             <h3 class="t-title">Evidence and execution</h3>
           </div>
           <ul class="ab-card-list">
-            <li><b>Citations on every action.</b> Exact declaration page and line numbers attached to notices.</li>
+            <li><b>Citations on verified rules.</b> Exact declaration provisions attached to notices where configured.</li>
             <li><b>Automated bookkeeping.</b> Direct dues collection, ledger postings, and bank reconciliation.</li>
             <li><b>Statutory clocks.</b> Response deadlines and delinquency ladders tracked to the calendar.</li>
-            <li><b>Numbered audit log.</b> Immutable records of every approval, payment, and file export.</li>
+            <li><b>Numbered audit log.</b> Attributed records for board approvals, dues entries, and export requests.</li>
           </ul>
         </article>
       </div>
@@ -75,16 +74,16 @@ const extractionRows = [
             Generic tools ask volunteers to key in hundreds of form fields and guess at statutory rules.
           </p>
           <p>
-            Common Parcel reads the recorded text directly, extracts the operating rules, and displays the
-            governing citations across all resident notices and workflows.
+            Common Parcel indexes the recorded text directly, extracts the operating rules, and displays the
+            governing citations across resident notices and workflows.
           </p>
         </div>
         <div class="ab-proof-panel">
           <Panel
             label="Document Extraction"
-            note="Governing Rules"
+            note="Illustrative rules"
             rows={extractionRows}
-            caption="Verified declaration and bylaw rules"
+            caption="Illustrative declaration and bylaw extraction"
           />
         </div>
       </div>
@@ -95,8 +94,8 @@ const extractionRows = [
 
   <Band title="Statutory indexing and transparency" field>
     <p>
-      Property acts and common interest community statutes vary across jurisdictions. Common Parcel maps
-      workflows directly to authoritative statutory sections.
+      Property acts and common interest community statutes vary across jurisdictions. Common Parcel indexes
+      supported state property statutes.
     </p>
     <p>
       When a citation cannot be verified in the association's documents or indexed state code, the platform
