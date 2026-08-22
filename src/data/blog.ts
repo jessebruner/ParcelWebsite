@@ -146,21 +146,21 @@ export const BLOG_POSTS: BlogPost[] = [
     artSeed: 61,
     artScene: "dawn",
     lede:
-      "Most of the risk in leaving a management company is not the notice letter. It is the six weeks afterwards, when a board finds out which records it never actually held. Michigan gives you a way to ask first, and it is a different way depending on how your community was created.",
+      "Most of the risk in leaving a management company is not the notice letter. It comes afterward, when a board finds out which records it never actually held. Michigan gives some owners, members and directors ways to ask first, and the right path depends on how the community and association were created.",
     sections: [
       {
         heading: "Start with which law covers you",
         paragraphs: [
-          "Michigan associations come in two legal shapes with different records rights. Getting this wrong means quoting a statute that does not apply to your association, which is the fastest way to have a request ignored.",
-          "**A condominium.** If your community was created by a recorded master deed and your neighbours are co-owners of units, the Michigan Condominium Act, 1978 PA 59, covers you. That act uses the terms \"association of co-owners\" and \"condominium project\", and the records sections quoted below are its.",
-          "**A subdivision association.** If your community was created by a recorded declaration of covenants and you own a platted lot, the Condominium Act does not reach you. Your records rights come from your own recorded declaration and bylaws, and, if the association is incorporated, from the Michigan Nonprofit Corporation Act, 1982 PA 162.",
+          "This guide follows two Michigan records paths that often matter to self-managed boards. They are not the only legal forms a community can take. Quoting a section that does not apply can leave the association relying on a right it does not have.",
+          "**A condominium.** If your community was created by a recorded master deed and your neighbors are co-owners of units, the Michigan Condominium Act, 1978 PA 59, covers you. That act uses the terms \"association of co-owners\" and \"condominium project\". Its records sections are quoted below.",
+          "**A subdivision association that is not a condominium.** Its records rights may come from the recorded declaration and bylaws and, if the association is incorporated under it, the Michigan Nonprofit Corporation Act, 1982 PA 162.",
           "One trap worth naming, because it catches boards and it nearly caught this guide. A site condominium is a condominium. Owners hold a unit that happens to be a building envelope on land rather than an apartment, the lawns look like any subdivision, and the Condominium Act applies anyway. What the street looks like decides nothing.",
-          "You can settle which shape you are in an afternoon. Pull the recorded document that created the community from your county register of deeds, and look up the association by name in the state business entity search. A recorded master deed points at the Condominium Act. A declaration of covenants with a nonprofit filing points at the other path. If the document does not make it obvious, that is a question for a Michigan attorney rather than a guess.",
+          "Start with the recorded document that created the community and the association's state business filing. A recorded master deed points toward the Condominium Act. A declaration of covenants and a nonprofit filing may point toward the corporate path. Those records help identify the question; they are not a substitute for a Michigan attorney when the answer remains unclear.",
         ],
         callout: {
           type: "note",
-          title: "Why it is worth the afternoon",
-          text: "The condominium records right is broader, faster and free to exercise. The corporate one has a written demand, a purpose to satisfy, and a courthouse at the end of it.",
+          title: "The procedures are different",
+          text: "MCL 559.157(1) says condominium records must be available at convenient times and does not state a written-demand or proper-purpose requirement. MCL 450.2487(2) requires a qualifying corporate member to make a particular written demand for a proper purpose. Neither cited section promises a completion date or says every request is free.",
         },
       },
       {
@@ -191,7 +191,7 @@ export const BLOG_POSTS: BlogPost[] = [
         },
       },
       {
-        heading: "The audit rule most boards never voted on",
+        heading: "Check the annual audit or opt-out vote",
         paragraphs: [
           "This is the part of the Condominium Act that surprises boards, and it is much better found while the manager is still under contract than after.",
         ],
@@ -212,7 +212,7 @@ export const BLOG_POSTS: BlogPost[] = [
           items: [
             "Did the association's annual revenue exceed $20,000.00 in each of the last several years?",
             "For each of those years, was there an audit or a review, and where is the report?",
-            "For any year without one, where is the recorded member vote to opt out?",
+            "For any year without one, where is the association's documentation of the member vote to opt out?",
           ],
         },
       },
@@ -220,43 +220,46 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: "The vote belongs to the members",
         paragraphs: [
           "Read subsections (2) and (3) together and the shape is clear. An audit or a review is what the statute requires above $20,000.00 in annual revenue. Opting out is allowed, and it is not a board decision and not a permanent one: the statute puts the vote with the members, requires a majority of them, and requires it again every year.",
-          "That distinction is the whole point of quoting the words rather than summarising them. A board that believes it can decide to skip the audit has read a summary, and there are plenty of those. A board that inherits several years of books with neither a report nor a recorded vote has inherited a problem, and the problem does not get cheaper with time.",
+          "That distinction is the whole point of quoting the words rather than summarizing them. A board that believes it can decide to skip the audit has read a summary, and there are plenty of those. Several years with neither a report nor documentation of a member vote need review before the association makes its next annual decision.",
         ],
       },
       {
         heading: "What a subdivision member can ask for",
         paragraphs: [
-          "If the association is a Michigan nonprofit corporation, a member's inspection right comes from the Nonprofit Corporation Act, and it works differently. Section 487(2) allows inspection during regular business hours, and it asks the member to earn it.",
+          "For a corporation organized on a stock or membership basis, Section 487(2) gives a shareholder or member of record a qualified inspection right. It works differently from the condominium sections and does not apply merely because someone lives in the community.",
         ],
         callouts: [
           {
             type: "statutory",
             title: "MCL 450.2487(2), in part",
-            text: "\"... may during regular business hours inspect for any proper purpose the corporation's stock ledger, a list of its shareholders or members, and its other books and records, if the shareholder or member gives the corporation written demand describing with reasonable particularity the purpose of the inspection and the records the shareholder or member desires to inspect, and the records sought are directly connected with the purpose.\"",
+            text: "\"Any shareholder or member of record of a corporation that is organized on a stock or membership basis, in person or by attorney or other agent, may during regular business hours inspect for any proper purpose the corporation's stock ledger, a list of its shareholders or members, and its other books and records, if the shareholder or member gives the corporation written demand describing with reasonable particularity the purpose of the inspection and the records the shareholder or member desires to inspect, and the records sought are directly connected with the purpose.\"",
           },
         ],
         list: {
           title: "What that means in practice",
           items: [
             "**Proper purpose has a definition, in the same subsection.** It means \"a purpose that is reasonably related to a person's interest as a shareholder or member\".",
-            "**Send it to the corporation, not the manager.** The subsection requires delivery to the registered office in this state or the principal place of business. The manager's office is neither.",
+            "**Use one of the two locations the subsection names.** Deliver the demand to the corporation's registered office in Michigan or its principal place of business. Do not assume a manager's office qualifies; verify the corporation's filing and business address.",
             "**Date it.** Under Section 487(3), if the corporation does not permit the inspection within 5 business days of receiving the demand, or imposes unreasonable conditions on it, the member may apply to the circuit court for the county holding the principal place of business or registered office for an order compelling it.",
             "**What you asked for changes who has to prove what.** For the membership list, the corporation carries the burden of showing the purpose was improper. For the other books and records, the member carries the burden of showing the demand was in the right form, the purpose was proper, and the records asked for connect to it.",
-            "**So write one careful letter naming a real purpose**, rather than a broad request for everything. The narrow request is the one that is easier to enforce.",
+            "**A current director has a separate path.** Section 487(4) says a director may examine corporate books and records for a purpose reasonably related to the director's position. A board taking control should identify whether it is acting through the corporation, a director, or an individual member before choosing its request.",
+            "**Member access can be limited.** Under Section 487(7), corporate articles, bylaws or a board resolution may limit inspection after the required good-faith determination, including for privacy or free-association concerns. Section 487(8) then requires a reasonable way for members to communicate about director elections and other corporate affairs when the membership list is limited.",
+            "**Copies may carry a reasonable charge.** Section 487(9)(b) allows the corporation to recover reasonable labor and material costs for copies. An inspection right is not a promise that every format is free.",
+            "**For the member path, write one careful letter naming a real purpose**, rather than a broad request for everything. The demand is easier to evaluate when the records connect directly to the stated purpose.",
           ],
         },
       },
       {
         heading: "The handover list",
         paragraphs: [
-          "Ask for all of it in one letter, in writing, before you give notice. A manager under contract answers a records request. A manager who has been terminated answers slowly.",
+          "Build the handover list before giving notice, then request the records and account controls through the authority the board, a director, or a qualifying member actually has. The management agreement may add turnover duties beyond the statutes discussed here.",
         ],
         list: {
           title: "What to ask for",
           items: [
-            "**Recorded and governing.** The master deed or declaration and every recorded amendment, the bylaws, the articles of incorporation, current rules, and every board resolution still in force. The recorded ones you can pull yourself from the register of deeds for a few dollars, so ask mainly to learn what the manager believes is current.",
+            "**Recorded and governing.** The master deed or declaration and every recorded amendment, the bylaws, the articles of incorporation, current rules, and every board resolution still in force. Pull the recorded documents from the register of deeds as an independent check on what the manager identifies as current.",
             "**Financial.** The general ledger for this year and last, bank statements for every account the association holds, the reconciliation for each of those months, the budget as adopted and the meeting that adopted it, reserve account statements, filed tax returns, and every audit or review report.",
-            "**Per unit or per lot.** The roster with each owner's mailing address of record, the balance owed and the date each balance was struck, every payment plan in force and its terms, and every open violation with the date it was noticed.",
+            "**Per unit or per lot.** For an authorized board handover, identify the owner roster and mailing addresses the association is entitled to hold, the balance owed and its as-of date, payment plans in force, and open violations with their notice dates. Do not treat an ordinary member's inspection right as permission to publish private owner data.",
             "**Contracts.** Every vendor agreement with its renewal date and its cancellation notice window, certificates of insurance for each vendor, and the association's own policies with declarations pages.",
             "**The meeting record.** Minutes and resolutions as far back as they exist, election results, and retained ballots or proxies.",
             "**Anything holding a clock.** Recorded liens and their dates, pending legal matters, open insurance claims, and any notice period already running against an owner.",
@@ -267,22 +270,22 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Do it in this order",
         paragraphs: [
-          "Read the management agreement first, for one thing only: the notice window. Thirty and sixty days are both common, and some agreements set a date each year rather than a rolling window. Every other date in your plan hangs off that one.",
-          "Send the records request while the agreement is still live. Cite the section that covers your association, list what you want, and name a date.",
-          "Check what arrived against the list before you give notice. This is the step boards skip, and it is the only one that cannot be done later.",
+          "Read the management agreement first for its termination, notice and turnover terms. Then check the governing documents and applicable law for any separate approval or notice requirement.",
+          "Request the records while the agreement is still live. State whether the request comes from the association, a director, or a qualifying member; cite only a section that applies; list what you want; and name a date.",
+          "Check what arrived against the list before the handover date. Missing records are easier to identify while the existing systems and contacts are still available.",
           "Then give notice, in the form the agreement requires. Certified mail, if that is what it says.",
-          "Move control in the last two weeks: bank signatories, registered agent, processor, mailbox, and the vendors who need a new address for an invoice.",
+          "Use the final handover period to move control: bank signatories, registered agent, processor, mailbox, and the vendors who need a new address for an invoice.",
         ],
         callout: {
           type: "warning",
-          title: "The one that goes wrong",
-          text: "Handovers that go badly almost always reversed the middle two steps. The notice went out first, the records request second, and by then the manager had no reason left to hurry.",
+          title: "Do not leave the records until last",
+          text: "Giving notice before anyone inventories the records can turn the handover into a reconstruction. Know what the association has, what it is missing, and who controls each account before the final transfer date.",
         },
       },
       {
-        heading: "What usually goes missing",
+        heading: "Records worth checking twice",
         paragraphs: [
-          "Five gaps show up again and again, and each one is easier to close with a question than with a reconstruction.",
+          "These five gaps can make a handover harder, and each is easier to close with a question than with a reconstruction.",
         ],
         list: {
           items: [
@@ -290,7 +293,7 @@ export const BLOG_POSTS: BlogPost[] = [
             "**Vendor renewal dates.** Contracts arrive as scans and the renewal and cancellation dates sit in a paragraph in the middle. A board that misses one renews landscaping for a year on the old terms.",
             "**The monthly reconciliations.** Bank statements arrive and the reconciliation does not, because it lived in the manager's accounting system rather than in a file. Without it, the ledger and the bank are two numbers with nothing joining them.",
             "**Audit and review reports, and the opt-out votes.** See above. This is the gap that costs money later.",
-            "**Owner mailing addresses of record.** The address an owner asked to be reached at is not always the property address, and a notice sent to the wrong one may not count as sent.",
+            "**Owner mailing addresses of record.** The address an owner asked the association to use is not always the property address. Confirm the authorized address source before the next required notice.",
           ],
         },
       },
@@ -301,9 +304,9 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
         list: {
           items: [
-            "**Your notice period.** It is in your management agreement and nowhere else.",
+            "**Your notice and approval requirements.** Start with the management agreement, then check the governing documents and applicable law. A Michigan attorney can resolve a conflict among them.",
             "**Whether your declaration or bylaws require a member vote to change managers.** Some do. Read yours.",
-            "**Which act covers you.** The recorded document that created your community settles it. If reading it leaves you unsure, that is a cheap question to put to a Michigan attorney.",
+            "**Which act covers you.** The recorded documents and corporate filing usually show the path. If they leave you unsure, put that focused question to a Michigan attorney.",
             "**Whether this text still reads the same way.** Michigan amends both acts. The retrieval dates below are the dates these sections were read.",
           ],
         },
