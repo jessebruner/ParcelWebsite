@@ -25,13 +25,24 @@ function hashDir(dir) {
   return hash.digest("hex");
 }
 
-console.log("Checking build determinism...");
-execSync("npm.cmd run build", { stdio: "inherit" });
+let epoch = process.env.SOURCE_DATE_EPOCH;
+if (!epoch) {
+  try {
+    epoch = execSync("git log -1 --format=%ct").toString().trim();
+  } catch {
+    epoch = "1755835200";
+  }
+}
+
+process.env.SOURCE_DATE_EPOCH = epoch;
+
+console.log(`Checking build determinism with SOURCE_DATE_EPOCH=${epoch}...`);
+execSync("npm.cmd run build", { stdio: "inherit", env: process.env });
 const hash1 = hashDir("dist");
 
 rmSync("dist", { recursive: true, force: true });
 
-execSync("npm.cmd run build", { stdio: "inherit" });
+execSync("npm.cmd run build", { stdio: "inherit", env: process.env });
 const hash2 = hashDir("dist");
 
 if (hash1 !== hash2) {
@@ -39,4 +50,4 @@ if (hash1 !== hash2) {
   process.exit(1);
 }
 
-console.log(`Build is 100% deterministic (dist SHA-256: ${hash1.slice(0, 16)}...)`);
+console.log(`Build is reproducible from source (SOURCE_DATE_EPOCH=${epoch}, dist SHA-256: ${hash1.slice(0, 16)}...)`);

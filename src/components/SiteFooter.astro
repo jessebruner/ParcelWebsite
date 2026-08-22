@@ -4,7 +4,8 @@ import { TOP_NAV, LEGAL } from "../data/routes";
 
 interface Props { reviewed?: string; }
 const { reviewed } = Astro.props;
-const year = new Date().getFullYear();
+const epoch = process.env.SOURCE_DATE_EPOCH ? parseInt(process.env.SOURCE_DATE_EPOCH, 10) * 1000 : Date.now();
+const year = new Date(epoch).getFullYear();
 
 const cols = [
   {
