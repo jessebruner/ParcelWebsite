@@ -33,8 +33,9 @@ const auditRows = [
         <p class="t-label">Payment safety</p>
         <h2 class="t-sheet">Common Parcel never holds HOA funds</h2>
         <p>
-          Owners pay through the association's connected Stripe account. The money is processed
-          for the association and paid out to its bank account. It never enters a Common Parcel balance.
+          When online payments are enabled, owners pay through the association's connected Stripe
+          account. The money is processed for the association and paid out to its bank account. It
+          never enters a Common Parcel balance.
         </p>
       </div>
 
@@ -45,8 +46,8 @@ const auditRows = [
             <div class="sec-money-icon sec-money-icon--owner" aria-hidden="true">
               <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
-            <h3 class="t-title">Owner pays dues</h3>
-            <p>ACH, card, or scheduled autopay</p>
+            <h3 class="t-title">Owner pays dues online</h3>
+            <p>ACH or card, based on the connected account</p>
           </article>
           <span class="sec-arrow" aria-hidden="true">→</span>
           <article>
@@ -107,6 +108,7 @@ const auditRows = [
       </div>
 
       <div class="sec-approval-visual" aria-label="Example board approval path">
+        <p class="sec-example-label">Example when a second review is required</p>
         <ol>
           <li><span>Draft</span><strong>Prepared for review</strong></li>
           <li><span>Officer</span><strong>First review</strong></li>
@@ -218,6 +220,7 @@ const auditRows = [
   .sec-approval-copy h2, .sec-records-copy h2 { max-width: 20ch; }
   .sec-approval-copy > p:not(.t-label), .sec-records-copy > p:not(.t-label) { max-width: 48ch; margin: var(--s-4) 0 0; }
   .sec-approval-visual { border: var(--stroke-consequence); background: var(--night); color: var(--paper); }
+  .sec-example-label { margin: 0; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--on-dark-rule); color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase; }
   .sec-approval-visual ol { list-style: none; margin: 0; padding: var(--s-5); }
   .sec-approval-visual li { position: relative; display: grid; grid-template-columns: 92px 1fr; gap: var(--s-4); padding: var(--s-4); border-bottom: 1px solid var(--on-dark-rule); }
   .sec-approval-visual li::before { content: ""; position: absolute; left: 7px; top: 23px; width: 6px; height: 6px; background: var(--amber); }
