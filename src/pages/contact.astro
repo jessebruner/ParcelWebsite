@@ -2,23 +2,178 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
+import PixelSky from "../components/PixelSky.astro";
+
+const checklist = [
+  {
+    num: "01",
+    title: "Location and state",
+    desc: "Your state and city so we can look at the applicable property statutes and governing rules.",
+  },
+  {
+    num: "02",
+    title: "Lot or door count",
+    desc: "The number of lots or condominium units to calculate your exact monthly billing rate.",
+  },
+  {
+    num: "03",
+    title: "Current management setup",
+    desc: "Whether you currently self-manage with spreadsheets or are transitioning from a management company.",
+  },
+  {
+    num: "04",
+    title: "Current questions or priorities",
+    desc: "Specific bylaws, upcoming annual meetings, delinquency cycles, or transition deadlines you have.",
+  },
+];
 ---
+
 <Base
   title="Contact"
-  description="Email the founder directly. No form routing, no queue."
+  description="Email founder Jesse Bruner directly. Direct founder communication for self-managed HOA boards."
   path="/contact"
+  reviewed="August 2026"
 >
-  <Hero eyebrow="Contact">
-    <h1 class="t-display">Talk to a person</h1>
-    <p class="t-lede">jesse@commonparcel.com</p>
+  <Hero eyebrow="Contact" seed={607}>
+    <h1 class="t-display">Talk directly to the founder</h1>
+    <p class="t-lede">
+      Direct communication with no ticketing queue, sales handoff, or automated triage.
+    </p>
   </Hero>
-  <Band title="What to expect">
-    <p>I read this myself and answer. There is no queue and no routing.</p>
-    <p class="coda">Tell me your state and roughly how many lots and I can usually say something useful in the first reply.</p>
-  </Band>
 
-  <Band title="Where we are" field>
-    <p>Common Parcel<br />1420 Washington Blvd, Ste 301<br />Detroit, MI 48226</p>
-  </Band>
+  <section class="cnt-direct">
+    <div class="page">
+      <div class="cnt-card">
+        <div class="cnt-card-body">
+          <span class="t-mono-label">Direct email</span>
+          <h2 class="t-sheet">jesse@commonparcel.com</h2>
+          <p>
+            Email Jesse Bruner directly. Every message is read and answered by the founder who designs
+            and writes the software.
+          </p>
+        </div>
+        <div class="cnt-card-action">
+          <a class="btn btn--primary" href="mailto:jesse@commonparcel.com">Open email to Jesse</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <section class="cnt-guide">
+    <div class="page">
+      <h2 class="t-sheet">What to include in your note</h2>
+      <p class="cnt-guide-lede">
+        You do not need an elaborate request. Sharing a few key details helps provide a specific and
+        useful response.
+      </p>
+
+      <div class="cnt-grid">
+        {checklist.map((item) => (
+          <article class="cnt-item">
+            <span class="item-num">{item.num}</span>
+            <h3 class="t-title">{item.title}</h3>
+            <p>{item.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <PixelSky mode="band" scene="dawn" seed={613} />
+
+  <Band title="Office and mail" field>
+    <p>
+      <b>Common Parcel</b><br />
+      1420 Washington Blvd, Ste 301<br />
+      Detroit, MI 48226
+    </p>
+    <p class="coda">
+      Written correspondence and statutory review materials can be sent to our Detroit address.
+    </p>
+  </Band>
 </Base>
+
+<style>
+  /* ── Direct Email Card ────────────────────────────────────────────────── */
+
+  .cnt-direct { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .cnt-card {
+    border: var(--stroke-consequence);
+    background: var(--field);
+    padding: clamp(24px, 3.5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+  @media (min-width: 760px) {
+    .cnt-card {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .cnt-card-body span {
+    display: block;
+    color: var(--ink-3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--s-2);
+  }
+  .cnt-card-body h2 {
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: clamp(20px, 2.5vw, 32px);
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--s-3);
+  }
+  .cnt-card-body p {
+    color: var(--ink-body);
+    font-size: var(--t-body);
+    line-height: 1.55;
+    max-width: 52ch;
+    margin: 0;
+  }
+  .cnt-card-action { flex-shrink: 0; }
+
+  /* ── What to Include Guide ────────────────────────────────────────────── */
+
+  .cnt-guide { background: var(--paper); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .cnt-guide h2 { max-width: 24ch; }
+  .cnt-guide-lede {
+    margin: var(--s-4) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-body);
+    max-width: 56ch;
+  }
+
+  .cnt-grid {
+    margin-top: clamp(28px, 3.4vw, 48px);
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 760px) {
+    .cnt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-8); }
+  }
+
+  .cnt-item {
+    border-top: var(--stroke-consequence);
+    padding-top: var(--s-4);
+  }
+  .item-num {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    color: var(--terracotta);
+    letter-spacing: 0.14em;
+    margin-bottom: var(--s-2);
+  }
+  .cnt-item h3 { color: var(--ink); font-size: var(--t-title); }
+  .cnt-item p {
+    margin: var(--s-3) 0 0;
+    color: var(--ink-body);
+    font-size: var(--t-body);
+    line-height: 1.55;
+  }
+</style>

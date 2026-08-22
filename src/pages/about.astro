@@ -2,45 +2,212 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
+import PixelSky from "../components/PixelSky.astro";
+import Panel from "../components/Panel.astro";
+
+const extractionRows = [
+  { label: "Assessment schedule", value: "Monthly, 1st", cite: "Declaration § 4.2 (p. 18)" },
+  { label: "Grace period", value: "15 days", cite: "Declaration § 4.4 (p. 19)" },
+  { label: "Late fee assessment", value: "$25.00", cite: "Declaration § 4.5 (p. 19)" },
+  { label: "Architectural response clock", value: "30 days statutory", cite: "Bylaws § 7.1 (p. 31)", chip: "CLOCK" },
+  { label: "Quorum requirement", value: "35% of voting power", cite: "Bylaws § 2.3 (p. 8)" },
+];
 ---
+
 <Base
   title="About"
-  description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Written by one person who read the statutes by hand."
+  description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Direct statutory citations and clear board authority."
   path="/about"
+  reviewed="August 2026"
 >
-  <Hero eyebrow="About">
+  <Hero eyebrow="About" seed={401}>
     <h1 class="t-display">Built for the board, not the manager</h1>
-    <p class="t-lede">Most software in this category is sold to management companies. It assumes a trained administrator exists. For a self-managed board, that person does not.</p>
+    <p class="t-lede">
+      Most software in this category is sold to property management companies. It assumes a full-time
+      administrator exists. For a self-managed board, that person does not.
+    </p>
   </Hero>
-  <Band title="The difference that produces">
-    <p>There are a few neighbors with day jobs and a legal obligation, and the software has to do the work instead of handing it to somebody.</p>
-    <p class="coda">That is the whole difference, and it shows up in every screen.</p>
+
+  <section class="ab-matrix">
+    <div class="page">
+      <h2 class="t-sheet">Who decides, and what the software runs</h2>
+      <p class="ab-matrix-lede">
+        Common Parcel separates legal governance from repetitive operational administration.
+      </p>
+
+      <div class="ab-grid">
+        <article class="ab-card ab-card--board">
+          <div class="ab-card-head">
+            <span class="t-mono-label">The Board</span>
+            <h3 class="t-title">Authority and discretion</h3>
+          </div>
+          <ul class="ab-card-list">
+            <li><b>Discretionary votes.</b> Architectural requests, owner appeals, and variance reviews.</li>
+            <li><b>Financial control.</b> Vendor contract selections and annual operating budgets.</li>
+            <li><b>Dual-officer signatures.</b> Liens, fines, and statutory collection steps require two officers.</li>
+            <li><b>Governance.</b> Conducting member meetings and approving published minutes.</li>
+          </ul>
+        </article>
+
+        <article class="ab-card ab-card--parcel">
+          <div class="ab-card-head">
+            <span class="t-mono-label">Common Parcel</span>
+            <h3 class="t-title">Evidence and execution</h3>
+          </div>
+          <ul class="ab-card-list">
+            <li><b>Citations on every action.</b> Exact declaration page and line numbers attached to notices.</li>
+            <li><b>Automated bookkeeping.</b> Direct dues collection, ledger postings, and bank reconciliation.</li>
+            <li><b>Statutory clocks.</b> Response deadlines and delinquency ladders tracked to the calendar.</li>
+            <li><b>Numbered audit log.</b> Immutable records of every approval, payment, and file export.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="ab-proof">
+    <div class="page">
+      <div class="ab-proof-layout">
+        <div class="ab-proof-text">
+          <h2 class="t-sheet">Configured from your actual documents</h2>
+          <p>
+            An association is governed by its recorded declaration and bylaws, interacting with state law.
+            Generic tools ask volunteers to key in hundreds of form fields and guess at statutory rules.
+          </p>
+          <p>
+            Common Parcel reads the recorded text directly, extracts the operating rules, and displays the
+            governing citations across all resident notices and workflows.
+          </p>
+        </div>
+        <div class="ab-proof-panel">
+          <Panel
+            label="Document Extraction"
+            note="Governing Rules"
+            rows={extractionRows}
+            caption="Verified declaration and bylaw rules"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <PixelSky mode="band" scene="dawn" seed={409} />
+
+  <Band title="Statutory indexing and transparency" field>
+    <p>
+      Property acts and common interest community statutes vary across jurisdictions. Common Parcel maps
+      workflows directly to authoritative statutory sections.
+    </p>
+    <p>
+      When a citation cannot be verified in the association's documents or indexed state code, the platform
+      marks it unverified rather than guessing.
+    </p>
+    <p class="coda">A board of volunteers needs dependable legal grounding, not simulated certainty.</p>
   </Band>
 
-  <Band title="Why the documents matter so much" field>
-    <p>An association is governed by its own declaration and bylaws, which interact with state law differently in every state. No two associations are the same.</p>
-    <p class="coda">That is why generic property software fits this so badly, and why Parcel starts by reading your documents instead of asking you to describe them.</p>
-  </Band>
-
-  <Band title="Why it admits what it does not know">
-    <p>A board of volunteers can be sued for what it does. Anything Parcel produces might be read aloud by a lawyer.</p>
-    <p>So a citation that cannot be traced to a page in your own documents is not printed. A statutory clock resting on a provision nobody has read does not run. Where the answer is unknown, the interface says unknown.</p>
-    <p class="coda">That is a slower product than one that guesses. It is the only kind worth having here.</p>
-  </Band>
-
-  <Band title="Who is building it" field note="Email me" noteHref="/contact">
-    <p>Jesse Bruner. Detroit, Michigan.</p>
-    <p>I read the statutes for this by hand, one provision at a time, and recorded where each one came from. There are a few hundred still to read and the product says which.</p>
+  <Band title="Who is building Common Parcel" note="Email Jesse" noteHref="/contact">
+    <p>
+      Jesse Bruner. Detroit, Michigan.
+    </p>
+    <p>
+      Common Parcel is designed and engineered in Detroit specifically for volunteer-led homeowner and
+      condominium associations.
+    </p>
+    <p class="coda">
+      Have questions about your community's setup? Reach out directly.
+    </p>
   </Band>
 
   <section class="close on-ink">
     <div class="page">
-      <h2 class="t-sheet">Tell me about your association.</h2>
-      <div class="actions"><a class="btn btn--on-ink" href="/contact">Ask about your association</a></div>
+      <h2 class="t-sheet">Tell us about your association.</h2>
+      <div class="actions">
+        <a class="btn btn--on-ink" href="/contact">Ask about your association</a>
+      </div>
     </div>
   </section>
 </Base>
+
 <style>
+  /* ── Authority Matrix ─────────────────────────────────────────────────── */
+
+  .ab-matrix { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-matrix h2 { max-width: 24ch; }
+  .ab-matrix-lede {
+    margin: var(--s-4) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-body);
+    max-width: 56ch;
+  }
+
+  .ab-grid {
+    margin-top: clamp(28px, 3.4vw, 48px);
+    display: grid;
+    gap: var(--s-8);
+  }
+  @media (min-width: 760px) {
+    .ab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 3.5vw, 48px); }
+  }
+
+  .ab-card {
+    border: var(--stroke-consequence);
+    background: var(--paper);
+    padding: clamp(20px, 2.5vw, 32px);
+    display: flex;
+    flex-direction: column;
+  }
+  .ab-card--board { border-top: 4px solid var(--terracotta); }
+  .ab-card--parcel { border-top: 4px solid var(--night); }
+
+  .ab-card-head span {
+    display: block;
+    color: var(--ink-3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--s-2);
+  }
+  .ab-card-head h3 { color: var(--ink); }
+
+  .ab-card-list {
+    list-style: none;
+    margin: var(--s-6) 0 0;
+    padding: 0;
+  }
+  .ab-card-list > li {
+    border-top: var(--stroke-hairline);
+    padding-block: var(--s-3);
+    color: var(--ink-body);
+    font-size: var(--t-body);
+    line-height: 1.5;
+  }
+  .ab-card-list > li:first-child { border-top: none; padding-top: 0; }
+  .ab-card-list b { color: var(--ink); }
+
+  /* ── Document Extraction Proof ────────────────────────────────────────── */
+
+  .ab-proof { background: var(--field); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-proof-layout {
+    display: grid;
+    gap: var(--s-8);
+    align-items: start;
+  }
+  @media (min-width: 860px) {
+    .ab-proof-layout { grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 4vw, 64px); }
+  }
+
+  .ab-proof-text h2 { max-width: 20ch; }
+  .ab-proof-text p {
+    margin: var(--s-4) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-body);
+  }
+
+  .ab-proof-panel { margin-top: var(--s-2); }
+
+  /* ── The close ────────────────────────────────────────────────────────── */
+
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
   .close h2 { color: var(--paper); max-width: 26ch; }
   .close .actions { margin-top: var(--s-6); }
