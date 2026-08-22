@@ -135,8 +135,8 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "board-transition-records-retention-checklist",
-    title: "A Volunteer Board Transition and Records Organization Guide",
-    description: "Operational principles for handing off association books, vendor contracts, architectural records, and meeting minutes between outgoing and incoming board officers.",
+    title: "HOA board transition checklist: records every new board needs",
+    description: "A practical handover checklist for accounts, finances, contracts, owner requests, and meeting records when HOA officers change.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",
@@ -145,35 +145,72 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Board Governance",
     artSeed: 101,
     artScene: "dusk",
-    lede: "When board members rotate off an association board, institutional knowledge and administrative access often disappear with them. Here is a procedural guide to maintaining clean continuity across leadership transitions.",
+    lede: "Board turnover goes badly when the incoming officers inherit passwords they cannot reset, contracts they cannot find, and bank records no one can explain. Use this checklist before outgoing officers lose access.",
     sections: [
       {
-        heading: "Keep association records in one place",
+        heading: "Build the handover before the term ends",
         paragraphs: [
-          "In many self-managed communities, records end up scattered across personal email accounts, private laptops, and physical boxes stored in past presidents' basements.",
-          "Establishing a single, shared association repository ensures that incoming officers inherit complete documentation without relying on ad-hoc personal file transfers.",
+          "Start while the outgoing officers can still open every account and explain every folder. A zip file handed over on election night is not a transition plan.",
+          "Use one checklist with an owner and a transfer status for every account, record set, key, and unfinished decision. The new board should be able to see what arrived and what is still missing.",
         ],
-        callout: {
-          type: "note",
-          title: "Custody Principle",
-          text: "Association records belong to the non-profit entity, not to individual directors or officers. Official records should always reside in an association-owned workspace with distinct administrative roles.",
+        list: {
+          title: "Start with these handover items",
+          items: [
+            "Association email accounts and shared file storage",
+            "Bank, accounting, payment, insurance, and vendor portals",
+            "Website, domain, mailing address, locks, keys, and access codes",
+            "Current officer roster, vendor contacts, and emergency contacts",
+          ],
         },
       },
       {
-        heading: "Essential categories for annual turnover",
+        heading: "Move access out of personal accounts",
         paragraphs: [
-          "An orderly handover checklist organizes documents by operational function. This allows the incoming treasurer, secretary, and president to inspect their respective functional areas immediately upon election.",
-          "Document repositories should preserve dated records alongside audit histories for all vendor quotes, architectural decisions, and financial reconciliations.",
+          "A new treasurer should not need the former treasurer's personal email to reset the bank password. Move each service to an association-controlled address, then add the incoming officers with their own accounts.",
+          "Test the new access before removing the old officer. Record who can administer each service, who can only view it, and who can approve a payment or change.",
+        ],
+      },
+      {
+        heading: "Reconcile the money before access changes",
+        paragraphs: [
+          "The incoming treasurer needs a starting point they can prove. Match the bank balance to the ledger, list every unpaid invoice, and explain every item that is still unreconciled.",
         ],
         list: {
-          title: "Core records turnover categories",
+          title: "Financial handover",
           items: [
-            "Financial ledgers, approved annual budgets, and year-end balance sheets",
-            "Executed vendor contracts, certificates of insurance, and active warranties",
-            "Approved architectural review submissions, approvals, and denial notices",
-            "Signed board meeting minutes, notice certificates, and annual meeting records",
+            "Bank statements, current ledger, and the latest reconciliation",
+            "Approved budget, reserve records, and current assessment schedule",
+            "Open invoices, reimbursements, deposits, and delinquent balances",
+            "Signed contracts with renewal, cancellation, and payment dates",
           ],
         },
+      },
+      {
+        heading: "Name every open decision",
+        paragraphs: [
+          "Do not make the next board reconstruct unfinished work from an inbox. List each open item, the last action taken, the next deadline, and the person waiting for an answer.",
+        ],
+        list: {
+          title: "Open work to carry forward",
+          items: [
+            "Owner requests and architectural applications awaiting a decision",
+            "Rule or collection matters and the stage each one has reached",
+            "Vendor work orders, insurance claims, and promised follow-ups",
+            "Upcoming meetings, notice dates, elections, filings, and renewals",
+          ],
+        },
+        callout: {
+          type: "warning",
+          title: "Do not delete yet",
+          text: "Your governing documents, state law, contracts, insurer, and tax advisers may set retention requirements. Confirm what applies before anyone deletes or destroys a record.",
+        },
+      },
+      {
+        heading: "Close the handover at a board meeting",
+        paragraphs: [
+          "Put the handover on the agenda. Record what the board received, which access was tested, what is still missing, and who will close each gap.",
+          "Remove former officers only after the new access works. Keep the completed checklist with the meeting record so the next transition starts from a known point.",
+        ],
       },
     ],
     /*
