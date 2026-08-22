@@ -4,244 +4,254 @@ import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 import PixelSky from "../components/PixelSky.astro";
 import Panel from "../components/Panel.astro";
+import SecurityRoles from "../components/security/SecurityRoles.astro";
 
-const logSampleRows = [
-  { label: "Assessment invoice run (60 lots)", value: "2026-08-01 00:00", cite: "Automated schedule #1042" },
-  { label: "Notice of violation: Lot 14", value: "2026-08-05 14:22", cite: "Signed: 2 officers #1043" },
-  { label: "ACH dues payment received: Lot 29", value: "2026-08-07 09:15", cite: "Stripe payout settled #1044" },
-  { label: "Association data export generated", value: "2026-08-10 16:40", cite: "Manifest report #1045" },
+const auditRows = [
+  { label: "Meeting notice approved", value: "Board officer", cite: "Approval recorded" },
+  { label: "Association export created", value: "Board officer", cite: "Manifest included" },
+  { label: "Support record viewed", value: "Platform staff", cite: "Access recorded" },
+  { label: "Payment received", value: "Connected account", cite: "Processor reference" },
 ];
 ---
 
 <Base
-  title="Security and Account Access"
-  description="Where association records live, who can reach them, what is logged, and how to export association files."
+  title="HOA Security and Account Access"
+  description="Learn how Common Parcel protects HOA funds and records with connected-account payments, role-based access, board approvals, recorded actions, and association exports."
   path="/security"
 >
   <Hero eyebrow="Security" seed={512}>
-    <h1 class="t-display">Where your records live, and who can reach them</h1>
+    <h1 class="t-display">Protect your HOA's money and records</h1>
     <p class="t-lede">
-      Owners pay into the association's own bank account. Common Parcel never holds the money, and the
-      actions that carry legal weight take two officers to sign.
+      Common Parcel never holds HOA funds. Residents and officers get different access, and
+      important board actions wait for the right people to review them.
     </p>
   </Hero>
 
-  <section class="sec-custody">
+  <section class="sec-money">
     <div class="page">
-      <h2 class="t-sheet">Direct bank settlement with zero software custody</h2>
-      <p class="sec-lede">
-        Owners pay assessments through a connected Stripe account directly into the association's bank account.
-        Common Parcel does not hold association funds, maintain account balances, or sit in custody of your money.
-      </p>
+      <div class="sec-section-head">
+        <p class="t-label">Payment safety</p>
+        <h2 class="t-sheet">Common Parcel never holds HOA funds</h2>
+        <p>
+          Owners pay through the association's connected Stripe account. The money is processed
+          for the association and paid out to its bank account. It never enters a Common Parcel balance.
+        </p>
+      </div>
 
-      <div class="sec-flow">
-        <div class="sec-step">
-          <span class="step-num">01</span>
-          <h3 class="t-title">Owner payment</h3>
-          <p>Resident pays dues online via ACH, card, or scheduled autopay.</p>
+      <div class="sec-money-map" aria-label="How an owner payment reaches the association">
+        <div class="sec-money-path">
+          <article>
+            <span class="sec-step-number">01</span>
+            <div class="sec-money-icon sec-money-icon--owner" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <h3 class="t-title">Owner pays dues</h3>
+            <p>ACH, card, or scheduled autopay</p>
+          </article>
+          <span class="sec-arrow" aria-hidden="true">→</span>
+          <article>
+            <span class="sec-step-number">02</span>
+            <div class="sec-money-icon sec-money-icon--stripe" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <h3 class="t-title">Stripe processes the payment</h3>
+            <p>The association's connected account</p>
+          </article>
+          <span class="sec-arrow" aria-hidden="true">→</span>
+          <article>
+            <span class="sec-step-number">03</span>
+            <div class="sec-money-icon sec-money-icon--bank" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <h3 class="t-title">The HOA receives the payout</h3>
+            <p>The association's own bank account</p>
+          </article>
         </div>
-        <div class="sec-arrow" aria-hidden="true">→</div>
-        <div class="sec-step">
-          <span class="step-num">02</span>
-          <h3 class="t-title">Connected Stripe account</h3>
-          <p>Processing runs directly through the association's dedicated account.</p>
-        </div>
-        <div class="sec-arrow" aria-hidden="true">→</div>
-        <div class="sec-step">
-          <span class="step-num">03</span>
-          <h3 class="t-title">Association bank</h3>
-          <p>Payouts deposit directly into the association's depository account.</p>
+        <div class="sec-outside">
+          <span>Common Parcel</span>
+          <p>Runs the workflow without holding the balance</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="sec-approval">
+  <section class="sec-access">
     <div class="page">
-      <div class="sec-grid">
-        <div class="sec-col-text">
-          <h2 class="t-sheet">Two officers to authorize. One to halt.</h2>
-          <p>
-            Consequential actions such as notices, fines, and liens require two distinct current officers
-            where the workflow enforces the gate.
-          </p>
-          <p>
-            A database constraint enforces this rule directly: there is no single-click batch approval and no
-            way for the software to sign on behalf of the board.
-          </p>
-          <p class="sec-coda">
-            Halting an action is different. Any individual board officer can pause a pending action alone,
-            because stopping is safe.
-          </p>
-        </div>
-
-        <div class="sec-col-panel">
-          <Panel
-            label="Numbered Audit Log"
-            note="Illustrative record"
-            rows={logSampleRows}
-            caption="Illustrative audit trail records"
-          />
-        </div>
+      <div class="sec-section-head">
+        <p class="t-label">Account access</p>
+        <h2 class="t-sheet">Role-based access protects private records</h2>
+        <p>
+          Residents work with their approved lots. Board officers work with association records.
+          Support access uses a separate administrative console and its own access log.
+        </p>
       </div>
+      <SecurityRoles />
+      <p class="sec-swipe">Swipe to compare roles →</p>
     </div>
   </section>
 
   <PixelSky mode="band" scene="dusk" seed={518} />
 
-  <section class="sec-access">
-    <div class="page">
-      <h2 class="t-sheet">Access is scoped strictly by role</h2>
-      <div class="sec-roles">
-        <article class="role-card">
-          <span class="t-mono-label">Homeowners</span>
-          <h3 class="t-title">Personal records</h3>
-          <p>Residents access statements and documents for their owned lots, submit requests, and vote in elections.</p>
-        </article>
+  <section class="sec-approval">
+    <div class="page sec-approval-grid">
+      <div class="sec-approval-copy">
+        <p class="t-label">Board approval</p>
+        <h2 class="t-sheet">Important board actions get a second review</h2>
+        <p>
+          A fine, lien, or notice does not go out until the required board officers approve it.
+          Common Parcel cannot sign for them, and support staff cannot approve them while viewing an account.
+        </p>
+        <p>
+          Stopping is different. An officer can pause a pending action before it goes out.
+        </p>
+      </div>
 
-        <article class="role-card">
-          <span class="t-mono-label">Board Officers</span>
-          <h3 class="t-title">Association governance</h3>
-          <p>Officers view the association roster, ledgers, vendor agreements, violation workflows, and voting tallies.</p>
-        </article>
-
-        <article class="role-card">
-          <span class="t-mono-label">Platform Staff</span>
-          <h3 class="t-title">Recorded administrative console</h3>
-          <p>Staff access for technical support is isolated from ordinary customer archives and recorded in a separate platform access log.</p>
-        </article>
+      <div class="sec-approval-visual" aria-label="Example board approval path">
+        <ol>
+          <li><span>Draft</span><strong>Prepared for review</strong></li>
+          <li><span>Officer</span><strong>First review</strong></li>
+          <li><span>Officer</span><strong>Second review</strong></li>
+          <li><span>Board</span><strong>Ready to send</strong></li>
+        </ol>
+        <div class="sec-halt">
+          <span aria-hidden="true">■</span>
+          <p><strong>Pause the action</strong><br />An officer can stop it before it is sent.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <Band title="Association data export and manifest" note="Report a problem" noteHref="/contact" field>
-    <p>
-      An export of financial ledgers, documents, meeting minutes, and association activity records is
-      available at any time, including when closing an account.
-    </p>
-    <p>
-      Every generated export includes an archive manifest report detailing record counts, completion status,
-      and any reported file or query errors. The association's data belongs to the association.
-    </p>
+  <section class="sec-records">
+    <div class="page sec-records-grid">
+      <div class="sec-records-copy">
+        <p class="t-label">Recorded actions</p>
+        <h2 class="t-sheet">See who acted and what changed</h2>
+        <p>
+          Approvals, exports, and administrative support access create records that identify the actor
+          and the event. Ordinary page views are not presented as a universal activity log.
+        </p>
+      </div>
+      <Panel
+        label="Example Activity"
+        note="Illustrative records"
+        rows={auditRows}
+        caption="Examples of recorded product and support activity"
+      />
+    </div>
+  </section>
+
+  <Band title="Take your association's records with you" note="Ask about exports" noteHref="/contact" field>
+    <div class="sec-export">
+      <div class="sec-file-stack" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div>
+        <p>
+          A board officer can request a private archive of association ledgers, documents, meeting
+          minutes, and activity records, including when the association leaves Common Parcel.
+        </p>
+        <p>
+          The archive includes a manifest that reports record counts, completion status, and any file
+          or query errors found while the export was built.
+        </p>
+      </div>
+    </div>
   </Band>
 
   <section class="close on-ink">
     <div class="page">
-      <h2 class="t-sheet">Have security or audit questions?</h2>
+      <h2 class="t-sheet">Ask how your HOA's records are protected</h2>
+      <p>Bring the questions your board or attorney needs answered.</p>
       <div class="actions">
-        <a class="btn btn--on-ink" href="/contact">Ask Jesse directly</a>
+        <a class="btn btn--on-ink" href="/contact">Ask a security question</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ── Custody Section ─────────────────────────────────────────────────── */
+  .sec-section-head { max-width: 48em; }
+  .sec-section-head h2 { max-width: 22ch; }
+  .sec-section-head > p:last-child { max-width: 56ch; margin: var(--s-4) 0 0; }
 
-  .sec-custody { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
-  .sec-custody h2 { max-width: 24ch; }
-  .sec-lede {
-    margin: var(--s-4) 0 0;
-    font-size: var(--t-body);
-    line-height: 1.55;
-    color: var(--ink-body);
-    max-width: 58ch;
+  .sec-money { border-bottom: var(--stroke-rule); background: var(--paper); }
+  .sec-money-map { position: relative; margin-top: clamp(32px, 4vw, 60px); padding: clamp(24px, 3vw, 40px); border: var(--stroke-consequence); background: var(--field); }
+  .sec-money-path { display: grid; gap: var(--s-4); align-items: center; }
+  @media (min-width: 800px) { .sec-money-path { grid-template-columns: 1fr auto 1fr auto 1fr; } }
+  .sec-money-path article { min-height: 210px; padding: var(--s-5); border: var(--stroke-edge); background: var(--card); }
+  .sec-step-number { color: var(--terracotta); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em; }
+  .sec-money-path h3 { margin-top: var(--s-5); color: var(--ink); }
+  .sec-money-path p { margin: var(--s-2) 0 0; color: var(--ink-3); font-size: var(--t-micro); }
+  .sec-arrow { display: none; color: var(--terracotta); font-family: var(--font-mono); font-size: 28px; animation: sec-flow-pulse 2.4s steps(3, end) infinite; }
+  @media (min-width: 800px) { .sec-arrow { display: block; } }
+  .sec-money-icon {
+    display: grid; grid-template-columns: repeat(4, 8px); grid-template-rows: repeat(4, 8px);
+    width: 44px; height: 44px; margin-top: var(--s-5); padding: 5px; border: var(--stroke-edge); background: var(--field);
   }
+  .sec-money-icon span { width: 8px; height: 8px; background: var(--terracotta); }
+  .sec-money-icon--owner span:nth-child(1) { grid-column: 2; grid-row: 1; }
+  .sec-money-icon--owner span:nth-child(2) { grid-column: 2; grid-row: 2; }
+  .sec-money-icon--owner span:nth-child(3) { grid-column: 1; grid-row: 3; }
+  .sec-money-icon--owner span:nth-child(4) { grid-column: 2; grid-row: 3; }
+  .sec-money-icon--owner span:nth-child(5) { grid-column: 3; grid-row: 3; }
+  .sec-money-icon--owner span:nth-child(6) { grid-column: 2; grid-row: 4; background: var(--ink); }
+  .sec-money-icon--stripe span:nth-child(1) { grid-column: 1 / 5; grid-row: 1; width: 32px; background: var(--plum); }
+  .sec-money-icon--stripe span:nth-child(2) { grid-column: 1 / 5; grid-row: 2; width: 32px; background: var(--plum); }
+  .sec-money-icon--stripe span:nth-child(3) { grid-column: 1 / 5; grid-row: 3; width: 32px; }
+  .sec-money-icon--stripe span:nth-child(n + 4) { display: none; }
+  .sec-money-icon--bank span:nth-child(1) { grid-column: 1 / 5; grid-row: 1; width: 32px; background: var(--ink); }
+  .sec-money-icon--bank span:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .sec-money-icon--bank span:nth-child(3) { grid-column: 3; grid-row: 2; }
+  .sec-money-icon--bank span:nth-child(4) { grid-column: 1 / 5; grid-row: 3; width: 32px; background: var(--ink); }
+  .sec-money-icon--bank span:nth-child(n + 5) { display: none; }
+  .sec-outside { display: grid; grid-template-columns: auto 1fr; gap: var(--s-4); align-items: center; margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1.5px dashed var(--clay); }
+  .sec-outside span { padding: var(--s-2) var(--s-3); border: var(--stroke-edge); background: var(--paper); color: var(--ink); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase; }
+  .sec-outside p { margin: 0; color: var(--ink-2); font-size: var(--t-micro); }
 
-  .sec-flow {
-    margin-top: clamp(28px, 3.4vw, 48px);
-    display: grid;
-    gap: var(--s-4);
-    align-items: center;
-  }
-  @media (min-width: 760px) {
-    .sec-flow {
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      column-gap: var(--s-4);
-    }
-  }
+  .sec-access { border-bottom: var(--stroke-rule); background: var(--field); }
+  .sec-swipe { margin: var(--s-3) 0 0; color: var(--terracotta); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase; }
+  @media (min-width: 800px) { .sec-swipe { display: none; } }
 
-  .sec-step {
-    border: var(--stroke-consequence);
-    background: var(--paper);
-    padding: var(--s-5);
-  }
-  .step-num {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: var(--t-mono-label);
-    color: var(--terracotta);
-    letter-spacing: 0.14em;
-    margin-bottom: var(--s-2);
-  }
-  .sec-step h3 { color: var(--ink); font-size: var(--t-title); margin-bottom: var(--s-2); }
-  .sec-step p { color: var(--ink-body); font-size: var(--t-micro); line-height: 1.5; margin: 0; }
+  .sec-approval { border-bottom: var(--stroke-rule); background: var(--paper); }
+  .sec-approval-grid, .sec-records-grid { display: grid; gap: clamp(32px, 5vw, 80px); align-items: start; }
+  @media (min-width: 900px) { .sec-approval-grid, .sec-records-grid { grid-template-columns: minmax(16em, 0.8fr) minmax(24em, 1.2fr); } }
+  .sec-approval-copy h2, .sec-records-copy h2 { max-width: 20ch; }
+  .sec-approval-copy > p:not(.t-label), .sec-records-copy > p:not(.t-label) { max-width: 48ch; margin: var(--s-4) 0 0; }
+  .sec-approval-visual { border: var(--stroke-consequence); background: var(--night); color: var(--paper); }
+  .sec-approval-visual ol { list-style: none; margin: 0; padding: var(--s-5); }
+  .sec-approval-visual li { position: relative; display: grid; grid-template-columns: 92px 1fr; gap: var(--s-4); padding: var(--s-4); border-bottom: 1px solid var(--on-dark-rule); }
+  .sec-approval-visual li::before { content: ""; position: absolute; left: 7px; top: 23px; width: 6px; height: 6px; background: var(--amber); animation: sec-review-pulse 3.2s steps(2, end) infinite; }
+  .sec-approval-visual li:nth-child(2)::before { animation-delay: 0.4s; }
+  .sec-approval-visual li:nth-child(3)::before { animation-delay: 0.8s; }
+  .sec-approval-visual li:nth-child(4)::before { animation-delay: 1.2s; }
+  .sec-approval-visual li span { color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase; }
+  .sec-approval-visual li strong { color: var(--paper); font-weight: 600; }
+  .sec-halt { display: grid; grid-template-columns: auto 1fr; gap: var(--s-4); align-items: center; padding: var(--s-5); background: var(--night-active); }
+  .sec-halt > span { color: var(--amber); font-size: 20px; }
+  .sec-halt p { margin: 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
+  .sec-halt strong { color: var(--paper); }
 
-  .sec-arrow {
-    display: none;
-    font-family: var(--font-mono);
-    font-size: 24px;
-    color: var(--ink-3);
-    text-align: center;
-  }
-  @media (min-width: 760px) {
-    .sec-arrow { display: block; }
-  }
-
-  /* ── Approval & Audit ─────────────────────────────────────────────────── */
-
-  .sec-approval { background: var(--field); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
-  .sec-grid {
-    display: grid;
-    gap: var(--s-8);
-    align-items: start;
-  }
-  @media (min-width: 860px) {
-    .sec-grid { grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 4vw, 64px); }
-  }
-
-  .sec-col-text h2 { max-width: 22ch; }
-  .sec-col-text p {
-    margin: var(--s-4) 0 0;
-    font-size: var(--t-body);
-    line-height: 1.55;
-    color: var(--ink-body);
-  }
-  .sec-coda { font-weight: 500; color: var(--ink) !important; }
-
-  /* ── Access Scoping ───────────────────────────────────────────────────── */
-
-  .sec-access { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
-  .sec-access h2 { max-width: 22ch; }
-  .sec-roles {
-    margin-top: clamp(28px, 3.4vw, 48px);
-    display: grid;
-    gap: var(--s-6);
-  }
-  @media (min-width: 760px) {
-    .sec-roles { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s-6); }
-  }
-
-  .role-card {
-    border-top: var(--stroke-consequence);
-    padding-top: var(--s-4);
-  }
-  .role-card span {
-    display: block;
-    color: var(--ink-3);
-    margin-bottom: var(--s-2);
-  }
-  .role-card h3 { color: var(--ink); }
-  .role-card p {
-    margin: var(--s-3) 0 0;
-    color: var(--ink-body);
-    font-size: var(--t-micro);
-    line-height: 1.55;
-  }
-
-  /* ── The close ────────────────────────────────────────────────────────── */
+  .sec-records { border-bottom: var(--stroke-rule); background: var(--field); }
+  .sec-export { display: grid; gap: var(--s-6); align-items: start; }
+  @media (min-width: 680px) { .sec-export { grid-template-columns: 120px 1fr; } }
+  .sec-export p { max-width: 54ch; }
+  .sec-file-stack { position: relative; width: 96px; height: 112px; }
+  .sec-file-stack span { position: absolute; width: 72px; height: 88px; border: var(--stroke-consequence); background: var(--paper); }
+  .sec-file-stack span:nth-child(1) { left: 20px; top: 0; background: var(--bisque); }
+  .sec-file-stack span:nth-child(2) { left: 10px; top: 10px; background: var(--field); }
+  .sec-file-stack span:nth-child(3) { left: 0; top: 20px; background: repeating-linear-gradient(to bottom, var(--paper) 0 12px, var(--c-edge) 12px 13px); }
 
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
-  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close h2 { max-width: 22ch; color: var(--paper); }
+  .close p { max-width: 44ch; margin: var(--s-4) 0 0; color: var(--mist); }
   .close .actions { margin-top: var(--s-6); }
+
+  @keyframes sec-flow-pulse {
+    0%, 100% { opacity: 0.45; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(3px); }
+  }
+  @keyframes sec-review-pulse {
+    0%, 65%, 100% { background: var(--on-dark-tile); }
+    20%, 45% { background: var(--amber); }
+  }
 </style>
