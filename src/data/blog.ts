@@ -83,7 +83,6 @@ export const BLOG_POSTS: BlogPost[] = [
         list: {
           title: "Run sheet checklist",
           items: [
-            "Read the recorded declaration, articles, bylaws, and any state law that applies to confirm notice windows and quorum thresholds",
             "Calendar the meeting date and book the venue early",
             "Send the required notice to everyone entitled to receive it and archive proof of notice",
             "Prepare an agenda and the ballot materials your rules require",
@@ -93,13 +92,11 @@ export const BLOG_POSTS: BlogPost[] = [
             "Draft formal minutes directly from the meeting record",
           ],
         },
-      },
-      {
-        heading: "Know which rules bind you",
-        paragraphs: [
-          "Start with the recorded declaration, articles, and bylaws. Then check any state law that actually applies to your association. Together they determine the notice, quorum, voting, and meeting rules you must follow.",
-          "If the sources seem to conflict, do not guess which one controls. Identify the exact provisions and get local legal advice before the board relies on a contested reading.",
-        ],
+        callout: {
+          type: "note",
+          title: "Your documents come first",
+          text: "Notice windows, quorum thresholds, voting rules, speaking rights, and minute approval can vary. Read the recorded declaration, articles, bylaws, and any state law that applies before setting the meeting rules. If two sources seem to conflict, get local advice rather than guessing.",
+        },
       },
       {
         heading: "Set the date early and send notice",
@@ -112,14 +109,14 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Build the agenda and run the election",
         paragraphs: [
-          "Prepare an agenda that matches the business your notice and governing documents allow. Give it to attendees and follow it so owners can see where the meeting is going.",
+          "Prepare an agenda that matches the business in the meeting notice. Give it to attendees and follow it so owners can see where the meeting is going.",
           "If directors are elected at this meeting, follow the nomination, ballot, proxy, secrecy, and counting rules that apply to your association. Record the result in the minutes without exposing a ballot that must remain private.",
         ],
       },
       {
         heading: "Plan for the short count and run the room",
         paragraphs: [
-          "Quorum is the minimum participation required before the meeting can conduct business. Whether you can adjourn and reconvene with a lower bar depends on the rules that apply to your association; know the threshold before the meeting so nobody is guessing in the room.",
+          "Quorum is the minimum participation required before the meeting can conduct business. Know the threshold before the meeting so nobody is guessing in the room. If the count falls short, pause before taking business and follow the adjournment or reconvening rule that applies.",
           "Start on time. Keep each item to its block. Explain the speaking rules at the start and apply them consistently. One person speaks at a time.",
           "Minutes record what was decided and who was elected, not a transcript. Draft them from the meeting record, then route them through the approval process your association uses.",
         ],
