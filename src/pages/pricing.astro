@@ -30,7 +30,7 @@ const included = [
 const faqs: [string, string][] = [
   ["What does the software price include?", "Every association gets the same software features. There are no feature plans to compare or upgrade later."],
   ["How is the monthly price calculated?", "Each group of lots is charged at the rate shown in the calculator. The lower rate applies only to the lots in that group."],
-  ["Is postal mail included?", "No. Postage and mail delivery are billed separately when the association asks for physical mail."],
+  ["Is postal mail included?", "No. Postal mail is outside the software price. We have not set the mail price yet, and certified-mail service is not connected."],
   ["Is there a setup fee or long contract?", "There is no setup fee. Billing is monthly, and the association can request an export when it leaves."],
 ];
 
@@ -42,17 +42,17 @@ const schema = JSON.stringify({
   name: "Common Parcel",
   description: "HOA management software priced per lot with the same feature set for every association.",
   offers: {
-    "@type": "Offer",
+    "@type": "AggregateOffer",
     priceCurrency: "USD",
-    price: "10.00",
-    description: "Graduated per-lot monthly pricing with a $10 monthly minimum. Postal mail and delivery are billed separately.",
+    lowPrice: "10.00",
+    description: "Graduated per-lot monthly pricing with a $10 monthly minimum. Postal mail is outside the software price and its price has not been set.",
   },
 });
 ---
 
 <Base
   title="HOA Software Pricing"
-  description="See your monthly Common Parcel software price by lot count. Every association gets the same features; postage and mail delivery are separate."
+  description="See your monthly Common Parcel software price by lot count. Every association gets the same features; postal mail is separate and its price is not set."
   path="/pricing"
   reviewed="August 2026"
   schema={schema}
@@ -61,7 +61,7 @@ const schema = JSON.stringify({
     <h1 class="t-display">Simple pricing for your entire HOA</h1>
     <p class="t-lede">
       Enter your lot count to see the monthly software price. Every association gets the same
-      features. Postage and mail delivery are billed separately.
+      features. Postal mail is outside the software price, and its price has not been set.
     </p>
   </Hero>
 
@@ -116,8 +116,8 @@ const schema = JSON.stringify({
         <p class="t-label">Your bill</p>
         <h2 class="t-sheet">Know what can cost extra</h2>
         <p>
-          The calculator shows the software subscription. Physical mail creates a real delivery
-          cost, so it appears separately when the association uses it.
+          The calculator shows the software subscription. Postal mail is outside that price.
+          We have not set the mail price yet.
         </p>
       </div>
 
@@ -140,11 +140,11 @@ const schema = JSON.stringify({
             <dd>$0</dd>
           </div>
           <div class="pr-receipt-separate">
-            <dt>Postage and mail delivery</dt>
-            <dd>Billed when used</dd>
+            <dt>Postal mail</dt>
+            <dd>Price not set</dd>
           </div>
         </dl>
-        <p>Mail costs are not included in the calculator total.</p>
+        <p>Mail is not included in the calculator total. Certified-mail service is not connected yet.</p>
       </div>
     </div>
   </section>
