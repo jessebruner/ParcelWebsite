@@ -29,7 +29,7 @@ export const COMPARE_NAV: Route[] = [
 
 export const COMPANY_NAV: Route[] = [
   { path: "/about", label: "About", blurb: "Our mission to help associations save time and money." },
-  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "The principles and architecture behind our platform." },
+  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
 ];
 
