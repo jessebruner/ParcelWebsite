@@ -305,6 +305,12 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
         return;
       }
 
+      const lotsNum = parseInt(lots, 10);
+      if (isNaN(lotsNum) || lotsNum < 1 || lotsNum > 50000 || String(lotsNum) !== lots) {
+        showError("Please enter a valid lot count between 1 and 50,000.");
+        return;
+      }
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         showError("Please enter a valid email address.");
@@ -317,7 +323,7 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
         const mailBody = encodeURIComponent(`Association: ${assoc}\nName: ${name}\nLots: ${lots}\nEmail: ${email}\n\n`);
         window.location.href = `mailto:jesse@commonparcel.com?subject=${subject}&body=${mailBody}`;
 
-        if (successTitle) successTitle.textContent = "Email draft opened.";
+        if (successTitle) successTitle.textContent = "Check your email app";
         if (successBody) {
           successBody.innerHTML = 'Your email application should open with your inquiry details prefilled. If it did not open, email us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
         }

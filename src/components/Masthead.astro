@@ -6,11 +6,11 @@
  * mega menus for Product and Company.
  */
 import Mark from "./Mark.astro";
-import { PRODUCT_NAV, COMPARE_NAV, COMPANY_NAV } from "../data/routes";
+import { PRODUCT_NAV, COMPANY_NAV } from "../data/routes";
 
 const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => here === href;
-const isProductActive = here.startsWith("/product") || here.startsWith("/compare");
+const isProductActive = here.startsWith("/product");
 const isCompanyActive = here === "/about" || here === "/why-common-parcel" || here === "/blog";
 ---
 
@@ -50,14 +50,12 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
               </div>
             </div>
             <div class="mega-col side-col">
-              <div class="menu-heading">Comparisons & Security</div>
+              <div class="menu-heading">Platform & Security</div>
               <div class="menu-grid compact">
-                {COMPARE_NAV.map((c) => (
-                  <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]}>
-                    <div class="menu-item-title">{c.label}</div>
-                    {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
-                  </a>
-                ))}
+                <a href="/product" class:list={["menu-item", { active: isCurrent("/product") }]}>
+                  <div class="menu-item-title">Product Overview</div>
+                  <div class="menu-item-blurb">Explore how Common Parcel supports self-managed associations.</div>
+                </a>
                 <a href="/security" class:list={["menu-item", { active: isCurrent("/security") }]}>
                   <div class="menu-item-title">Security & Audit</div>
                   <div class="menu-item-blurb">Common Parcel never holds HOA funds, and key actions leave clear records.</div>

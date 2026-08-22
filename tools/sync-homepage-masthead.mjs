@@ -104,90 +104,177 @@ if (modalMatch) {
 }
 
 /* The navigation and modal need client handlers on the bundled homepage */
-const JS_MARK = "/* injected: masthead behaviour */";
-if (!template.includes(JS_MARK)) {
-  const script =
-    `<script>${JS_MARK}\n` +
-    `(function(){\n` +
-    `  var m = document.querySelector(".mast");\n` +
-    `  if (!m) return;\n` +
-    `  var b = m.querySelector(".burger");\n` +
-    `  var dBtns = m.querySelectorAll(".has-dropdown > .nav-btn");\n` +
-    `  if (b) b.addEventListener("click", function() {\n` +
-    `    var o = m.hasAttribute("data-open");\n` +
-    `    if (o) { m.removeAttribute("data-open"); } else { m.setAttribute("data-open", ""); }\n` +
-    `    b.setAttribute("aria-expanded", String(!o));\n` +
-    `  });\n` +
-    `  dBtns.forEach(function(btn) {\n` +
-    `    btn.addEventListener("click", function(e) {\n` +
-    `      e.stopPropagation();\n` +
-    `      var parent = btn.closest(".has-dropdown");\n` +
-    `      var isOpen = parent && parent.classList.contains("open");\n` +
-    `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `        if (el !== parent) { el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false"); }\n` +
-    `      });\n` +
-    `      if (isOpen) { parent.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }\n` +
-    `      else if (parent) { parent.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }\n` +
-    `    });\n` +
-    `  });\n` +
-    `  document.addEventListener("click", function(e) {\n` +
-    `    if (!m.contains(e.target)) {\n` +
-    `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `        el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
-    `      });\n` +
-    `    }\n` +
-    `  });\n` +
-    `  var dialog = document.getElementById("early-access-modal");\n` +
-    `  if (dialog) {\n` +
-    `    var closeBtn = document.getElementById("ea-close-btn");\n` +
-    `    var cancelBtn = document.getElementById("ea-cancel-btn");\n` +
-    `    var doneBtn = document.getElementById("ea-done-btn");\n` +
-    `    var formView = document.getElementById("ea-form-view");\n` +
-    `    var successView = document.getElementById("ea-success-view");\n` +
-    `    var form = document.getElementById("early-access-form");\n` +
-    `    function openModal(e) {\n` +
-    `      if (e) e.preventDefault();\n` +
-    `      if (!dialog.open) {\n` +
-    `        if (formView) formView.style.display = "block";\n` +
-    `        if (successView) successView.style.display = "none";\n` +
-    `        dialog.showModal();\n` +
-    `        var inp = dialog.querySelector("input");\n` +
-    `        if (inp) inp.focus();\n` +
-    `      }\n` +
-    `    }\n` +
-    `    function closeModal() { if (dialog.open) dialog.close(); }\n` +
-    `    document.querySelectorAll("[data-open-modal='early-access']").forEach(function(el) { el.addEventListener("click", openModal); });\n` +
-    `    if (closeBtn) closeBtn.addEventListener("click", closeModal);\n` +
-    `    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);\n` +
-    `    if (doneBtn) doneBtn.addEventListener("click", closeModal);\n` +
-    `    dialog.addEventListener("click", function(e) {\n` +
-    `      var r = dialog.getBoundingClientRect();\n` +
-    `      var inside = r.top <= e.clientY && e.clientY <= r.top + r.height && r.left <= e.clientX && e.clientX <= r.left + r.width;\n` +
-    `      if (!inside) closeModal();\n` +
-    `    });\n` +
-    `    if (form) form.addEventListener("submit", function(e) {\n` +
-    `      e.preventDefault();\n` +
-    `      if (formView) formView.style.display = "none";\n` +
-    `      if (successView) successView.style.display = "block";\n` +
-    `    });\n` +
-    `  }\n` +
-    `  document.addEventListener("keydown", function(e) {\n` +
-    `    if (e.key !== "Escape") return;\n` +
-    `    m.removeAttribute("data-open");\n` +
-    `    if (b) b.setAttribute("aria-expanded", "false");\n` +
-    `    m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `      el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
-    `    });\n` +
-    `  });\n` +
-    `})();\n` +
-    `</script>`;
-  template = template.replace("</body>", script + "\n</body>");
-}
+const JS_MARK_START = "/* injected: masthead and modal behaviour */";
+const JS_MARK_END = "/* end masthead and modal behaviour */";
+
+// Clean out previous injections idempotently
+template = template.replace(/<script>\s*\/\* injected: masthead behaviour \*\/[\s\S]*?<\/script>/g, "");
+template = template.replace(new RegExp(`<script>\\s*${JS_MARK_START.replace(/[*]/g, "\\*")}[\\s\\S]*?${JS_MARK_END.replace(/[*]/g, "\\*")}\\s*<\\/script>`, "g"), "");
+
+const script =
+  `<script>${JS_MARK_START}\n` +
+  `(function(){\n` +
+  `  var m = document.querySelector(".mast");\n` +
+  `  if (m) {\n` +
+  `    var b = m.querySelector(".burger");\n` +
+  `    var dBtns = m.querySelectorAll(".has-dropdown > .nav-btn");\n` +
+  `    var dContainers = m.querySelectorAll(".has-dropdown");\n` +
+  `    if (b) b.addEventListener("click", function() {\n` +
+  `      var o = m.hasAttribute("data-open");\n` +
+  `      if (o) { m.removeAttribute("data-open"); } else { m.setAttribute("data-open", ""); }\n` +
+  `      b.setAttribute("aria-expanded", String(!o));\n` +
+  `    });\n` +
+  `    dContainers.forEach(function(container) {\n` +
+  `      var btn = container.querySelector(".nav-btn");\n` +
+  `      container.addEventListener("mouseenter", function() {\n` +
+  `        if (window.innerWidth > 860) {\n` +
+  `          container.classList.add("open");\n` +
+  `          if (btn) btn.setAttribute("aria-expanded", "true");\n` +
+  `        }\n` +
+  `      });\n` +
+  `      container.addEventListener("mouseleave", function() {\n` +
+  `        if (window.innerWidth > 860) {\n` +
+  `          container.classList.remove("open");\n` +
+  `          if (btn) btn.setAttribute("aria-expanded", "false");\n` +
+  `        }\n` +
+  `      });\n` +
+  `    });\n` +
+  `    dBtns.forEach(function(btn) {\n` +
+  `      btn.addEventListener("click", function(e) {\n` +
+  `        e.stopPropagation();\n` +
+  `        var parent = btn.closest(".has-dropdown");\n` +
+  `        var isOpen = parent && parent.classList.contains("open");\n` +
+  `        m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+  `          if (el !== parent) { el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false"); }\n` +
+  `        });\n` +
+  `        if (isOpen) { if (parent) parent.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }\n` +
+  `        else if (parent) { parent.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }\n` +
+  `      });\n` +
+  `    });\n` +
+  `    document.addEventListener("click", function(e) {\n` +
+  `      if (!m.contains(e.target)) {\n` +
+  `        m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+  `          el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
+  `        });\n` +
+  `      }\n` +
+  `    });\n` +
+  `    document.addEventListener("keydown", function(e) {\n` +
+  `      if (e.key !== "Escape") return;\n` +
+  `      m.removeAttribute("data-open");\n` +
+  `      if (b) b.setAttribute("aria-expanded", "false");\n` +
+  `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+  `        el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
+  `      });\n` +
+  `    });\n` +
+  `  }\n` +
+  `  var dialog = document.getElementById("early-access-modal");\n` +
+  `  if (dialog) {\n` +
+  `    var endpoint = dialog.getAttribute("data-endpoint") || "";\n` +
+  `    var closeBtn = document.getElementById("ea-close-btn");\n` +
+  `    var cancelBtn = document.getElementById("ea-cancel-btn");\n` +
+  `    var doneBtn = document.getElementById("ea-done-btn");\n` +
+  `    var formView = document.getElementById("ea-form-view");\n` +
+  `    var successView = document.getElementById("ea-success-view");\n` +
+  `    var successTitle = document.getElementById("ea-success-title");\n` +
+  `    var successBody = document.getElementById("ea-success-body");\n` +
+  `    var errorBox = document.getElementById("ea-form-error");\n` +
+  `    var form = document.getElementById("early-access-form");\n` +
+  `    function showError(msg) {\n` +
+  `      if (!errorBox) return;\n` +
+  `      errorBox.textContent = msg;\n` +
+  `      errorBox.style.display = "block";\n` +
+  `    }\n` +
+  `    function clearError() {\n` +
+  `      if (!errorBox) return;\n` +
+  `      errorBox.textContent = "";\n` +
+  `      errorBox.style.display = "none";\n` +
+  `    }\n` +
+  `    function openModal(e) {\n` +
+  `      if (e) e.preventDefault();\n` +
+  `      if (!dialog.open) {\n` +
+  `        clearError();\n` +
+  `        if (formView) formView.style.display = "block";\n` +
+  `        if (successView) successView.style.display = "none";\n` +
+  `        dialog.showModal();\n` +
+  `        var inp = dialog.querySelector("input");\n` +
+  `        if (inp) inp.focus();\n` +
+  `      }\n` +
+  `    }\n` +
+  `    function closeModal() { if (dialog.open) dialog.close(); }\n` +
+  `    document.querySelectorAll("[data-open-modal='early-access']").forEach(function(el) { el.addEventListener("click", openModal); });\n` +
+  `    if (closeBtn) closeBtn.addEventListener("click", closeModal);\n` +
+  `    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);\n` +
+  `    if (doneBtn) doneBtn.addEventListener("click", closeModal);\n` +
+  `    dialog.addEventListener("click", function(e) {\n` +
+  `      var r = dialog.getBoundingClientRect();\n` +
+  `      var inside = r.top <= e.clientY && e.clientY <= r.top + r.height && r.left <= e.clientX && e.clientX <= r.left + r.width;\n` +
+  `      if (!inside) closeModal();\n` +
+  `    });\n` +
+  `    if (form) form.addEventListener("submit", function(e) {\n` +
+  `      e.preventDefault();\n` +
+  `      clearError();\n` +
+  `      var formData = new FormData(form);\n` +
+  `      var assoc = (formData.get("association") || "").trim();\n` +
+  `      var name = (formData.get("name") || "").trim();\n` +
+  `      var lots = (formData.get("lots") || "").trim();\n` +
+  `      var email = (formData.get("email") || "").trim();\n` +
+  `      if (!assoc || !name || !lots || !email) {\n` +
+  `        showError("Please complete all required fields.");\n` +
+  `        return;\n` +
+  `      }\n` +
+  `      var lotsNum = parseInt(lots, 10);\n` +
+  `      if (isNaN(lotsNum) || lotsNum < 1 || lotsNum > 50000 || String(lotsNum) !== lots) {\n` +
+  `        showError("Please enter a valid lot count between 1 and 50,000.");\n` +
+  `        return;\n` +
+  `      }\n` +
+  `      var emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n` +
+  `      if (!emailRegex.test(email)) {\n` +
+  `        showError("Please enter a valid email address.");\n` +
+  `        return;\n` +
+  `      }\n` +
+  `      if (!endpoint) {\n` +
+  `        var subject = encodeURIComponent("Early Access Inquiry: " + assoc);\n` +
+  `        var mailBody = encodeURIComponent("Association: " + assoc + "\\nName: " + name + "\\nLots: " + lots + "\\nEmail: " + email + "\\n\\n");\n` +
+  `        window.location.href = "mailto:jesse@commonparcel.com?subject=" + subject + "&body=" + mailBody;\n` +
+  `        if (successTitle) successTitle.textContent = "Check your email app";\n` +
+  `        if (successBody) {\n` +
+  `          successBody.innerHTML = 'Your email application should open with your inquiry details prefilled. If it did not open, email us directly at <a href=\"mailto:jesse@commonparcel.com\" style=\"color: var(--terracotta); text-decoration: underline;\">jesse@commonparcel.com</a>.';\n` +
+  `        }\n` +
+  `        if (formView) formView.style.display = "none";\n` +
+  `        if (successView) successView.style.display = "block";\n` +
+  `        return;\n` +
+  `      }\n` +
+  `      var submitBtn = document.getElementById("ea-submit-btn");\n` +
+  `      if (submitBtn) submitBtn.disabled = true;\n` +
+  `      fetch(endpoint, {\n` +
+  `        method: "POST",\n` +
+  `        headers: { "Content-Type": "application/json" },\n` +
+  `        body: JSON.stringify({ association: assoc, name: name, lots: lots, email: email, timestamp: new Date(Date.now() /* SOURCE_DATE_EPOCH */).toISOString() })\n` +
+  `      }).then(function(res) {\n` +
+  `        if (!res.ok) throw new Error("Server returned status " + res.status);\n` +
+  `        if (successTitle) successTitle.textContent = "Request received.";\n` +
+  `        if (successBody) successBody.textContent = "Thank you for your interest. We will follow up directly by email.";\n` +
+  `        if (formView) formView.style.display = "none";\n` +
+  `        if (successView) successView.style.display = "block";\n` +
+  `      }).catch(function(err) {\n` +
+  `        if (errorBox) {\n` +
+  `          errorBox.innerHTML = 'Unable to submit your request. Please email us directly at <a href=\"mailto:jesse@commonparcel.com\" style=\"color: var(--terracotta); text-decoration: underline;\">jesse@commonparcel.com</a>.';\n` +
+  `          errorBox.style.display = "block";\n` +
+  `        }\n` +
+  `      }).finally(function() {\n` +
+  `        if (submitBtn) submitBtn.disabled = false;\n` +
+  `      });\n` +
+  `    });\n` +
+  `  }\n` +
+  `})();\n` +
+  `${JS_MARK_END}</script>`;
+
+template = template.replace("</body>", script + "\n</body>");
 
 lines[at.template] = JSON.stringify(template).replace(/<\//g, "<\\u002F");
 writeFileSync(TARGET_PAGE, lines.join("\n"));
 
-/* ── 3. Verify ───────────────────────────────────────────────────────────── */
+/* ── 3. Verify ──────────────────────────────────────────────────────────── */
 const out = readFileSync(TARGET_PAGE, "utf8").split("\n");
 const oAt = {};
 out.forEach((l, i) => {
@@ -202,11 +289,30 @@ if (!injected) throw new Error("masthead missing after write");
 if (injected[0] !== header) throw new Error("injected masthead differs from the component output");
 if (!parsed.template.includes(MARK)) throw new Error("masthead.css not injected");
 
+// Behavior assertions
+if (!parsed.template.includes(JS_MARK_START) || !parsed.template.includes(JS_MARK_END)) {
+  throw new Error("masthead & modal behavior script not injected");
+}
+if (!parsed.template.includes("mailto:jesse@commonparcel.com")) {
+  throw new Error("homepage behavior missing mailto:jesse@commonparcel.com fallback");
+}
+if (!parsed.template.includes("Check your email app")) {
+  throw new Error("homepage behavior missing truthful 'Check your email app' success state");
+}
+if (!parsed.template.includes("parseInt(lots, 10)")) {
+  throw new Error("homepage behavior missing integer lots validation");
+}
+// Check that bare fake-success without mailto/endpoint does NOT exist in template
+if (/form\.addEventListener\("submit",\s*function\(e\)\s*\{\s*e\.preventDefault\(\);\s*if\s*\(formView\)\s*formView\.style\.display\s*=\s*"none";\s*if\s*\(successView\)\s*successView\.style\.display\s*=\s*"block";\s*\}\)/.test(parsed.template)) {
+  throw new Error("homepage contains stale fake-success submit handler without validation/mailto");
+}
+
 const navLabels = [...injected[0].matchAll(/(?:class="[^"]*navlink[^"]*"[^>]*>[\s\S]*?<span>([^<]+)<\/span>|class="[^"]*navlink[^"]*"[^>]*>([^<]+)<\/a>)/g)]
   .map((m) => (m[1] || m[2]).trim());
 console.log("masthead synced from Masthead.astro");
 console.log(`  markup identical to the component output: yes (${injected[0].length} chars)`);
 console.log(`  masthead.css injected: ${mastheadCss.split("\n").length} lines`);
 console.log(`  bundle's competing rules removed: ${removed}`);
+console.log(`  behavior verified: hover sync, mailto fallback, validation, no bare fake-success`);
 console.log(`  links: ${navLabels.join(" · ")}`);
 console.log(`  all four payloads parse; manifest ${Object.keys(parsed.manifest).length} assets`);

@@ -9,15 +9,15 @@ export interface Route {
 }
 
 export const PRODUCT_NAV: Route[] = [
-  { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Invoices on schedule, collects online, and reconciles your bank." },
+  { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Invoices on schedule, collects online when connected, and tracks balances." },
   { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "Logs violations against your rules with proper cure periods." },
-  { path: "/product/vendors-and-insurance", label: "Vendor contracts", blurb: "Tracks renewals, gets competitive quotes, and checks invoices." },
-  { path: "/product/meetings-and-voting", label: "Elections and meetings", blurb: "Digital voting, meeting notices, live quorum, and minutes." },
+  { path: "/product/vendors-and-insurance", label: "Vendor contracts", blurb: "Tracks renewals, drafts quote requests for review, and checks invoices." },
+  { path: "/product/meetings-and-voting", label: "Elections and meetings", blurb: "Digital voting, meeting notices, live quorum, and draft minutes." },
   { path: "/product/documents-and-answers", label: "Documents and setup", blurb: "Reads your governing documents and answers owner questions." },
-  { path: "/product/resident-portal", label: "Resident portal", blurb: "Self-serve balances, online payments, and request submissions." },
+  { path: "/product/resident-portal", label: "Resident portal", blurb: "Self-serve balances, request submissions, and documents." },
   { path: "/product/records-and-audit", label: "Proof for every decision", blurb: "Maintains official association records and traceable decisions." },
-  { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Nightly bank reconciliation and verifiable budget tracking." },
-  { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following state notice periods." },
+  { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Assisted bank reconciliation and verifiable budget tracking." },
+  { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following verified state notice periods." },
 ];
 
 export const COMPARE_NAV: Route[] = [
@@ -28,7 +28,7 @@ export const COMPARE_NAV: Route[] = [
 ];
 
 export const COMPANY_NAV: Route[] = [
-  { path: "/about", label: "About", blurb: "Our mission to help associations save time and money." },
+  { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations." },
   { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
 ];

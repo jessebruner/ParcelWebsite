@@ -49,7 +49,7 @@ export const FEATURES: PageSpec[] = [
     slug: "dues-and-payments",
     title: "Dues and payments",
     description:
-      "Invoiced at the amount your declaration sets, on the date it sets. Receipts post the same day and the ledger reconciles overnight.",
+      "Invoiced at the amount your declaration sets, on the date it sets. Receipts post the same day and payment records stay organized for the treasurer.",
     eyebrow: "Dues and payments",
     h1: "Dues go out on time, every period",
     lede: "Parcel bills the assessment your declaration sets, on the date it sets. It does not ask you to type the amount, and it does not need reminding when the quarter turns.",
@@ -120,10 +120,10 @@ export const FEATURES: PageSpec[] = [
     slug: "collections",
     title: "Collections",
     description:
-      "A graduated delinquency ladder that runs on your state's periods, holds when a board says hold, and waits for two officers before anything statutory leaves.",
+      "A graduated delinquency ladder that runs on verified state notice periods, holds when a board says hold, and waits for two officers before anything statutory leaves.",
     eyebrow: "Collections",
     h1: "What happens when someone stops paying",
-    lede: "Parcel sends the reminder, then the late notice, then the demand, on the dates your documents and your state require. Moving faster than that is how a board loses the argument later.",
+    lede: "Parcel sends the reminder, then the late notice, then the demand, on the dates your documents and verified state rules require. Moving faster than that is how a board loses the argument later.",
     bands: [
       {
         title: "The order notices go out in",
@@ -161,11 +161,11 @@ export const FEATURES: PageSpec[] = [
                   } },
           { rows: [
             "**Reminder.** A friendly note, on the day your grace period ends.",
-            "**Formal notice.** The late notice your documents and your state require.",
+            "**Formal notice.** The late notice your documents and verified state rules require.",
             "**Demand.** The letter before a lien, with the amount broken out.",
             "**Lien warning.** Prepared, cited, and waiting for signature.",
           ] },
-          { coda: "Each step's timing comes from your state's statute and your own documents. Not from a setting somebody picked." },
+          { coda: "Each step's timing comes from verified state statutes and your own documents. Not from a setting somebody picked." },
         ],
       },
       {
@@ -177,7 +177,7 @@ export const FEATURES: PageSpec[] = [
         title: "Where it stops",
         body: [
           { p: "Nothing with legal weight goes out on its own. A demand, a lien warning or a statutory notice needs two officers to sign, and the record shows who signed, when, and on what basis." },
-          { p: "If your state's collection procedure has not been read yet, the ladder does not advance and the interface says which provision is missing." },
+          { p: "Where Common Parcel has a verified rule for your state, the ladder reflects that procedure. If your state's collection procedure has not been verified yet, the ladder does not advance and the interface says which provision is missing." },
         ],
       },
       {
@@ -196,10 +196,10 @@ export const FEATURES: PageSpec[] = [
     slug: "accounting-and-budgets",
     title: "Accounting and budgets",
     description:
-      "Nightly bank reconciliation, budgets that carry the vote that adopted them, and a full export for your accountant any month.",
+      "Assisted bank reconciliation, budgets that carry the vote that adopted them, and a full export for your accountant any month.",
     eyebrow: "Accounting and budgets",
-    h1: "Ledgers that reconcile, budgets that show their vote",
-    lede: "Every charge, payment, fee and credit lands in one ledger, and the bank reconciles against it overnight.",
+    h1: "Ledgers that track balances, budgets that show their vote",
+    lede: "Every charge, payment, fee and credit lands in one ledger, keeping bank activity and association records organized.",
     bands: [
       {
         title: "Reconciliation",
@@ -230,7 +230,7 @@ export const FEATURES: PageSpec[] = [
                                       "label": "Budget against actual",
                                       "value": "+$1,206"
                             }
-                  } },{ p: "The bank reconciles overnight. A reconciliation that does not cover every transaction is not accepted as complete, so reconciled means reconciled." }],
+                  } },{ p: "Reconciliation sessions keep imported bank activity matched against ledger entries. A reconciliation that does not account for every transaction is flagged, helping the treasurer keep books clean." }],
       },
       {
         title: "Budgets",
@@ -267,7 +267,7 @@ export const FEATURES: PageSpec[] = [
       "Violations logged against the rule they break, with the cure window, the hearing notice your state requires, and a check on how often that rule has been enforced before.",
     eyebrow: "Rules and enforcement",
     h1: "Enforce community rules fairly and consistently",
-    lede: "A fine only sticks if the steps before it were done properly. Parcel runs each one on the clock your state sets, and will not produce the fine until the hearing is on the record.",
+    lede: "A fine only sticks if the steps before it were done properly. Parcel runs each one on the clock your documents and verified state rules set, and will not produce the fine until the hearing is on the record.",
     bands: [
       {
         title: "The sequence",
@@ -308,7 +308,7 @@ export const FEATURES: PageSpec[] = [
             "Formal notice, citing the specific rule.",
             "Cure window, on a real clock.",
             "Re-inspection when the window closes.",
-            "Notice of hearing, on your state's required period.",
+            "Notice of hearing, on your verified state's required period.",
             "Hearing, with the outcome recorded.",
             "Fine, at the amount your documents allow, inside any statutory cap.",
             "Appeal, where your documents provide one.",
@@ -334,7 +334,7 @@ export const FEATURES: PageSpec[] = [
         note: ["See meetings and voting", "/product/meetings-and-voting"],
         body: [{ statutory: {
           label: "No fine without the procedure",
-          lede: "A fine cannot be produced without a recorded hearing notice that satisfies your state's period and a recorded outcome. Not a warning. The action is unavailable.",
+          lede: "A fine cannot be produced without a recorded hearing notice that satisfies your verified state period and a recorded outcome. Not a warning. The action is unavailable.",
           note: "Requests for an exception on disability grounds run on different law and a different timeline. Treating one as a violation appeal is its own liability. That process is designed and not built yet.",
         } }],
       },
@@ -344,7 +344,7 @@ export const FEATURES: PageSpec[] = [
     slug: "meetings-and-voting",
     title: "Meetings and voting",
     description:
-      "Notice on the statutory schedule, an agenda from open business, quorum against the live roster, and minutes drafted when the vote closes.",
+      "Notice on the statutory schedule, an agenda from open business, quorum against the live roster, and factual draft minutes from the meeting record.",
     eyebrow: "Meetings and voting",
     h1: "Run clean meetings and verifiable elections",
     lede: "An association runs on that cycle. Nearly everything with legal weight passes through it, and skipping a step usually makes the result void rather than untidy.",
@@ -385,7 +385,7 @@ export const FEATURES: PageSpec[] = [
             "**The agenda** assembles itself from business that is actually open: the motions waiting, the approvals pending, the deadlines landing.",
             "**Quorum** is counted against the roster you have today, not the one from last year.",
             "**Motions** carry into votes and the votes carry into the record.",
-            "**Minutes** are drafted when the vote closes and adopted at the next meeting.",
+            "**Minutes** draft directly from the meeting record; the board reviews and adopts them at the next meeting.",
           ] },
           { coda: "Video conferencing is built in, and the calendar publishes a feed your board can subscribe to." },
         ],
@@ -494,10 +494,10 @@ export const FEATURES: PageSpec[] = [
     slug: "vendors-and-insurance",
     title: "Vendors and insurance",
     description:
-      "Contracts get re-bid before they renew, with the going rate beside each quote. Policies are read, renewals land on the calendar, and invoices are checked against the contract.",
+      "Surfaces contracts before they renew, helps draft quote requests for board review, and checks invoices against agreements.",
     eyebrow: "Vendors and insurance",
-    h1: "Contracts get re-bid before they renew",
-    lede: "Parcel watches every renewal date and goes out for fresh quotes before it arrives, with the going rate for that work beside them. You still choose the vendor.",
+    h1: "Stay ahead of vendor renewals and compare quotes",
+    lede: "Parcel watches every renewal date and helps draft quote requests for your board to review and send before the deadline arrives.",
     bands: [
       {
         title: "Contracts",
@@ -530,8 +530,8 @@ export const FEATURES: PageSpec[] = [
                                       "value": "$4,750"
                             }
                   } },
-          { p: "Every contract has a renewal date and a notice period, and Parcel counts back from both. Before a contract renews it goes and gets fresh quotes, and puts the going rate for that work in your area beside them." },
-          { coda: "You pick the vendor. Parcel refuses to let the date pass unnoticed." },
+          { p: "Every contract has a renewal date and a notice period, and Parcel counts back from both. Before a contract renews, it alerts the board, drafts requests for fresh quotes, and lets you compare recorded vendor bids." },
+          { coda: "You review and send the requests, and you pick the vendor. Parcel surfaces the renewal so the date does not pass unnoticed." },
         ],
       },
       {
