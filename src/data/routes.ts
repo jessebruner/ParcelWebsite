@@ -67,7 +67,6 @@ export const ALL_ROUTES: string[] = [
   "/blog",
   "/blog/board-transition-records-retention-checklist",
   "/blog/michigan-hoa-records-request",
-  "/blog/how-to-run-a-smooth-hoa-annual-meeting",
   "/contact",
   "/privacy",
   "/terms",
