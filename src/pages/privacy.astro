@@ -4,10 +4,9 @@ import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 ---
 <Base
-  title="Privacy"
-  description="How Common Parcel handles association data, website analytics, payments, and record exports."
+  title="Privacy Policy"
+  description="How Common Parcel handles association records, website analytics, payment processing, and record exports."
   path="/privacy"
-  reviewed="August 2026"
 >
   <Hero eyebrow="Privacy">
     <h1 class="t-display">How we handle data</h1>
@@ -18,25 +17,36 @@ import Band from "../components/Band.astro";
     <p>The association retains full ownership of its records. Common Parcel processes ledgers, governing documents, owner rosters, meeting minutes, and operational files solely to provide software services to your board and residents.</p>
   </Band>
 
-  <Band title="Website analytics and server logs" field>
-    <p>This website uses Google Analytics to measure aggregate site traffic and page visits. Standard server access logs record technical connection data (including IP addresses and browser types) for operational reliability, diagnostics, and site security.</p>
+  <Band title="Website analytics and cookies" field>
+    <p>This website uses Google Analytics (tag ID G-H6PRXV1WLS) to record page visits, browser types, device categories, and session statistics. Google Analytics stores a client identifier in first-party cookies (such as _ga) to distinguish distinct sessions.</p>
+    <p>We use this data to understand site usage and improve performance. Visitors can manage or block cookies through their browser settings or by installing the Google Analytics Opt-out Browser Add-on.</p>
+  </Band>
+
+  <Band title="Server access logs">
+    <p>Web servers generate access logs recording technical connection details, including IP addresses, request timestamps, requested URLs, and HTTP status codes. These logs are maintained for technical diagnostics, platform stability, and abuse prevention.</p>
+  </Band>
+
+  <Band title="Payment processing and bank custody" field>
+    <p>Dues and assessment payments are processed through Stripe via connected accounts. Financial transaction details and payment card information are processed directly by Stripe under PCI-DSS compliance standards. Common Parcel does not store credit card numbers, bank account logins, or hold association balances.</p>
   </Band>
 
   <Band title="Data isolation and access boundaries">
     <ul class="rows">
-      <li><b>Bank custody:</b> Dues and assessments process through the association's connected Stripe account directly into the association's bank account. Common Parcel does not hold association balances.</li>
-      <li><b>Scoped resident access:</b> Homeowners only see records, assessments, and notifications for their own lots.</li>
-      <li><b>Staff support boundary:</b> Customer data is isolated by association. Authorized staff support access is restricted, audited, and recorded in platform access logs.</li>
-      <li><b>Attributed records:</b> Statutory actions, board approvals, and administrative console access are recorded with attributed timestamps.</li>
+      <li><b>Bank custody:</b> Dues deposit directly into the association depository bank account through its connected Stripe account.</li>
+      <li><b>Scoped resident access:</b> Homeowners only view records, assessments, and notices relevant to their owned lots.</li>
+      <li><b>Staff support boundary:</b> Association records are separated by account. Technical support access by staff is restricted, recorded, and audited in platform access logs.</li>
+      <li><b>Attributed records:</b> Board decisions, notices, approvals, and console actions are stored with attributed timestamps and officer identity records.</li>
     </ul>
   </Band>
 
-  <Band title="Data export and portability" field>
-    <p>An export of your association's ledgers, documents, minutes, and timestamped activity record with an archive manifest is available at any time, including the month you close an account.</p>
+  <Band title="Data export, retention, and deletion" field>
+    <p>An export of financial ledgers, documents, meeting minutes, and timestamped activity records with an archive manifest report is available at any time, including when closing an account.</p>
+    <p>Associations may request account closure and record deletion upon written request from authorized board officers.</p>
   </Band>
 
   <Band title="Direct contact and requests" note="Email Jesse" noteHref="/contact">
-    <p>If you have questions about data handling, privacy practices, or wish to request data access or deletion, write to <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
+    <p>For questions regarding privacy practices, data handling, or data access requests, contact <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
   </Band>
 
 </Base>
+

@@ -59,21 +59,22 @@ const faqs: [string, string][] = [
 
 const schema = JSON.stringify({
   "@context": "https://schema.org",
-  "@type": "Product",
+  "@type": "WebApplication",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web browser",
   name: "Common Parcel",
   description: "HOA management software for self-managed boards, priced per lot with a $10 monthly minimum.",
   offers: {
-    "@type": "AggregateOffer",
+    "@type": "Offer",
     priceCurrency: "USD",
-    lowPrice: "10",
-    offerCount: "1",
+    price: "10.00",
     description: "Graduated per lot, per month. $2.50 each for the first 10 lots, $1.10 for lots 11 to 70, $0.40 for lots 71 and above, with a $10 monthly minimum.",
   },
 });
 ---
 
 <Base
-  title="Pricing"
+  title="HOA Software Pricing"
   description="Graduated per lot, per month, with a $10 minimum. Everything included. No contract, no setup fee, and no charge to owners for paying their dues."
   path="/pricing"
   reviewed="August 2026"

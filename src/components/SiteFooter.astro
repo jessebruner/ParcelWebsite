@@ -5,7 +5,7 @@ import { TOP_NAV, LEGAL } from "../data/routes";
 interface Props { reviewed?: string; }
 const { reviewed } = Astro.props;
 const epoch = process.env.SOURCE_DATE_EPOCH ? parseInt(process.env.SOURCE_DATE_EPOCH, 10) * 1000 : Date.now();
-const year = new Date(epoch).getFullYear();
+const year = new Date(epoch).getUTCFullYear();
 
 const cols = [
   {
@@ -69,7 +69,7 @@ const cols = [
     margin-top: var(--s-12); padding-top: var(--s-4); border-top: 1px solid var(--on-dark-rule);
     font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--on-dark-label); }
-  .legal { display: flex; gap: var(--s-4); }
-  .legal a { color: var(--on-dark-label); text-decoration: none; }
+  .legal { display: flex; gap: var(--s-4); align-items: center; }
+  .legal a { display: inline-flex; align-items: center; min-height: 24px; padding-block: 2px; color: var(--on-dark-label); text-decoration: none; }
   .legal a:hover { color: var(--paper); }
 </style>

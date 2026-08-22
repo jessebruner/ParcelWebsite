@@ -35,7 +35,7 @@ const site = "https://commonparcel.com";
 const canonical = `${site}${path === "/" ? "/" : path}`;
 const pageTitle = title.includes("Common Parcel") ? title : `${title} — Common Parcel`;
 const share = shareTitle ?? pageTitle;
-const robots = noindex ? "noindex, nofollow" : "index, follow, max-snippet:-1, max-image-preview:large";
+const robots = noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max-image-preview:large";
 ---
 
 <!doctype html>

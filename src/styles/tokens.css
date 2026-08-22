@@ -199,6 +199,11 @@ section { padding-block: var(--pad-y); }
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+.rail-note a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
 
 .body > * + * { margin-top: var(--s-4); }
 .body p { margin: 0; text-wrap: pretty; }
