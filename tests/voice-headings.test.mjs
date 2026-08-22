@@ -39,12 +39,14 @@ for (const [heading, code] of REJECTED) {
  * homepage bundle, which is the only page called near-final. If a heading rule
  * fires on one of these, the rule is wrong, not the homepage.
  *
- * "Empower residents." is deliberately absent: `empower` is on the linter's
- * banned-word list and the homepage says it anyway. That conflict is real and
- * is recorded in docs/VOICE.md for the owner to settle. Asserting it clean
- * here would paper over it.
+ * "Empower residents." was absent from this list while `empower` sat on the
+ * banned-word list and the homepage said it anyway. Jesse settled that on
+ * 2026-08-22 in favour of the homepage. It is asserted here now, so putting
+ * `empower` back on the list fails this test rather than quietly failing the
+ * approved page.
  */
 const APPROVED = [
+  "Empower residents.",
   "Simplify due-collection.",
   "Let Common Parcel keep track of violations.",
   "Get the best price with Automatic Contract Renewal.",

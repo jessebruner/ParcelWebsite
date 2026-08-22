@@ -31,7 +31,7 @@ import { join, relative } from "node:path";
 const BANNED_WORDS = [
   "leverage", "synerg", "solution", "ecosystem", "best-in-class", "world-class",
   "cutting-edge", "state-of-the-art", "next-generation", "robust", "holistic",
-  "end-to-end", "seamless", "frictionless", "scalable", "empower", "supercharge",
+  "end-to-end", "seamless", "frictionless", "scalable", "supercharge",
   "unlock", "unleash", "elevate", "revolution", "disrupt", "game-changer",
   "one-stop shop", "peace of mind", "delv", "underscore", "tapestry", "intricat",
   "meticulous", "pivotal", "realm", "navigate", "foster", "showcase", "boast",

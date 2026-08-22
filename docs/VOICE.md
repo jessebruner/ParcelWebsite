@@ -163,8 +163,14 @@ lint problems on homepage: 0
 
 "8/8 pages clean" has meant seven Astro pages and a fragment of the eighth.
 
-That gap has an awkward consequence worth stating rather than burying:
-`empower` is on the banned-word list, and the approved homepage says "Empower
-residents." If the homepage's visible copy were linted, the reference page
-would fail. The guide and the reference disagree, and the owner decides which
-one moves.
+That gap surfaced one real conflict. `empower` was on the banned-word list and
+the approved homepage says "Empower residents." Jesse settled it on 2026-08-22
+in favour of the homepage, so `empower` came off the list.
+
+The reasoning is worth keeping, because it decides the next case too. The list
+exists to catch copy that reads as generated. "Empower residents." is a plain
+two-word imperative about the reader; the words on the list are abstractions
+standing in for a benefit nobody has stated. `empower` was on the list because
+it appears on every published list of AI tells, which is a reason to look at a
+word, not a reason to ban it. When the guide and a page Jesse has approved
+disagree, the guide moves.
