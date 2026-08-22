@@ -414,7 +414,7 @@ export const FEATURES: PageSpec[] = [
       "Upload the declaration, bylaws and rules. Parcel reads them, shows each provision with the page it sits on, and answers questions from your own documents.",
     eyebrow: "Documents and answers",
     h1: "Ask your declaration a question",
-    lede: "The most common drain on a board's time is answering the same question again. Can I put a shed there. When are dues late. What color can I paint the door.",
+    lede: "Boards answer the same questions again and again: Can I put a shed there? When are dues late? What color can I paint the door?",
     bands: [
       {
         title: "See the facts inside your governing documents",
@@ -564,7 +564,7 @@ export const FEATURES: PageSpec[] = [
       "Owners look up a balance, pay, read the rules that apply to them, submit a request and vote. Every question they answer alone is one the board never gets.",
     eyebrow: "Resident portal",
     h1: "Built so owners stop calling you",
-    lede: "Most owners sign in twice a year. So the portal has to work for somebody who has never seen it and will not come back. Its job is to take work off the board, not to build a community.",
+    lede: "Owners should not need training to check a balance, find a document, or submit a request. The portal gives them one clear place to start and takes routine questions off the board.",
     bands: [
       {
         title: "Give owners one place to start",
