@@ -311,8 +311,10 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
 
       if (!endpoint) {
         // Honest demo mode handling
-        if (successTitle) successTitle.textContent = "Demo mode \u2014 nothing was transmitted.";
-        if (successBody) successBody.textContent = "To inquire about early access, contact us directly at contact@commonparcel.com.";
+        if (successTitle) successTitle.textContent = "Demo mode — nothing was transmitted.";
+        if (successBody) {
+          successBody.innerHTML = 'To inquire about early access, contact us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
+        }
         if (formView) formView.style.display = "none";
         if (successView) successView.style.display = "block";
         return;
@@ -337,7 +339,10 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
         if (formView) formView.style.display = "none";
         if (successView) successView.style.display = "block";
       } catch (err) {
-        showError("Unable to submit your request. Please email us directly at contact@commonparcel.com.");
+        if (errorBox) {
+          errorBox.innerHTML = 'Unable to submit your request. Please email us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
+          errorBox.style.display = "block";
+        }
       } finally {
         const submitBtn = document.getElementById("ea-submit-btn") as HTMLButtonElement | null;
         if (submitBtn) submitBtn.disabled = false;
