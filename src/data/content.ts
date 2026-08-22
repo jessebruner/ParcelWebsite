@@ -89,7 +89,7 @@ export const FEATURES: PageSpec[] = [
                             }
                   } },{ rows: [
           "Invoices every lot on your schedule, at your amount.",
-          "Takes autopay, bank transfer and card.",
+          "Takes bank transfer and card when connected.",
           "Logs a mailed cheque against the right lot.",
           "Posts receipts the same day.",
           "Applies late fees the way your documents describe them.",
@@ -578,9 +578,9 @@ export const FEATURES: PageSpec[] = [
                                                 "value": "$285"
                                       },
                                       {
-                                                "label": "Autopay",
-                                                "value": "On",
-                                                "cite": "Next 1 April"
+                                                "label": "Last payment",
+                                                "value": "$285",
+                                                "cite": "1 March"
                                       },
                                       {
                                                 "label": "Can I put a shed on my lot?",
@@ -599,7 +599,7 @@ export const FEATURES: PageSpec[] = [
                             }
                   } },{ rows: [
           "See what they owe, and what it is made of.",
-          "Pay, or set up autopay.",
+          "Pay online when payments are connected.",
           "Download a statement or a receipt.",
           "Look up the rule that applies to them, with the section it comes from.",
           "Submit a request or an architectural application, with photos.",
@@ -621,9 +621,9 @@ export const FEATURES: PageSpec[] = [
           { p: "An owner finds their address and claims it. The board confirms." },
           { p: "Membership comes from a board decision, never from signing up. A duplicate claim is accepted and left for the board, because a spouse, a tenant and an heir can all be legitimate at one address." },
           { statutory: {
-            label: "At launch",
-            lede: "Paying through the portal is built and not yet switched on.",
-            note: "Balances, statements, requests, rules and votes run today.",
+            label: "When connected",
+            lede: "Online payments route directly to the association's bank.",
+            note: "Balances, statements, requests, rules and votes run in the portal.",
           } },
         ],
       },
