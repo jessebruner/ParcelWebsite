@@ -24,15 +24,7 @@ import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 import PixelSky from "../components/PixelSky.astro";
 import RateCalculator from "../components/pricing/RateCalculator.astro";
-import type { Bracket } from "../components/pricing/brackets";
-
-const BRACKETS: Bracket[] = [
-  { upTo: 10, rate: 2.5, label: "First 10" },
-  { upTo: 70, rate: 1.1, label: "11 to 70" },
-  { upTo: 500, rate: 0.4, label: "71 to 500" },
-  { upTo: null, rate: 0.5, label: "Above 500" },
-];
-const MINIMUM = 10;
+import { DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "../components/pricing/brackets";
 
 const included = [
   {
@@ -52,17 +44,6 @@ const included = [
   },
 ];
 
-const contract: [string, string, string][] = [
-  ["Base fee", "Per door, per month", "$0.40 to $2.50 per lot, per month"],
-  ["Setup and onboarding", "Once, up front", "Nothing"],
-  ["Statutory notice mailings", "Per notice, plus postage", "Nothing per notice"],
-  ["Resale and estoppel packets", "Per request, often capped by statute", "Nothing per packet"],
-  ["Collections and lien filing", "Per action, sometimes a share of what is recovered", "Included"],
-  ["Records requests", "Per page, or per hour", "Included"],
-  ["After hours calls", "Per call", "Parcel does not take calls"],
-  ["Meetings beyond a set number", "Per meeting", "Parcel does not attend meetings"],
-];
-
 const faqs: [string, string][] = [
   ["Is there a free trial?",
    "Founding associations are being onboarded now. Ask and we will talk about what makes sense for yours."],
@@ -73,7 +54,7 @@ const faqs: [string, string][] = [
   ["What happens to the price as we grow?",
    "It follows the lot count, and the average per lot falls as the count rises. The rate card above is the whole price list."],
   ["What happens if we leave?",
-   "Billing stops. A full export of ledgers, documents, minutes and the record is available in the month you leave."],
+   "Billing stops. An export of ledgers, documents, minutes and the audit log with an archive manifest is available in the month you leave."],
 ];
 
 const schema = JSON.stringify({
@@ -86,7 +67,7 @@ const schema = JSON.stringify({
     priceCurrency: "USD",
     lowPrice: "10",
     offerCount: "1",
-    description: "Graduated per lot, per month. $2.50 each for the first 10 lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, $0.50 above 500, with a $10 monthly minimum.",
+    description: "Graduated per lot, per month. $2.50 each for the first 10 lots, $1.10 for lots 11 to 70, $0.40 for lots 71 and above, with a $10 monthly minimum.",
   },
 });
 ---
@@ -111,15 +92,14 @@ const schema = JSON.stringify({
       <h2 class="t-sheet">What your association pays</h2>
       <div class="pr-price-body">
         <RateCalculator
-          brackets={BRACKETS}
-          minimum={MINIMUM}
+          brackets={DEFAULT_BRACKETS}
+          minimum={DEFAULT_MINIMUM}
           lots={60}
         />
         <ul class="rows pr-terms">
           <li><b>Billed monthly.</b> No contract, so any month can be your last.</li>
           <li><b>Migration is included.</b> Ledgers, documents, minutes and the roster load as they arrive.</li>
-          <li><b>A full export in any month,</b> the month you leave included: ledgers, documents, minutes, the record.</li>
-          <li><b>Civic and neighborhood associations pay a reduced rate.</b> Ask for the number.</li>
+          <li><b>An association export in any month,</b> the month you leave included: ledgers, documents, minutes, and the audit log with an archive manifest.</li>
         </ul>
       </div>
     </div>
@@ -130,7 +110,7 @@ const schema = JSON.stringify({
       <h2 class="t-sheet">Set the budget line from three numbers.</h2>
       <dl class="pr-figs">
         <div>
-          <dt class="pr-fig">${MINIMUM}</dt>
+          <dt class="pr-fig">${DEFAULT_MINIMUM}</dt>
           <dd>The least any association pays in a month, whatever the bands add to.</dd>
         </div>
         <div>
@@ -168,56 +148,15 @@ const schema = JSON.stringify({
 
   <PixelSky mode="band" scene="dawn" seed={317} />
 
-  <section class="pr-vs" id="comparison">
+  <section class="pr-statutory-sec">
     <div class="page">
-      <div class="pr-vs-head">
-        <h2 class="t-sheet">A manager's base fee is not the whole invoice.</h2>
-        <p class="pr-vs-lede">
-          These are the charges a management contract commonly bills on top of the per door fee, and
-          what each one costs here.
-        </p>
-      </div>
-
-      <div class="scroll-x pr-table">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Charge</th>
-              <th scope="col">A management company</th>
-              <th scope="col">Common Parcel</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contract.map(([charge, manager, parcel]) => (
-              <tr>
-                <th scope="row">{charge}</th>
-                <td>{manager}</td>
-                <td>{parcel}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <th scope="row">Billed on top of the base fee</th>
-              <td class="num">7 of 7</td>
-              <td class="num">0 of 7</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <p class="pr-src">
-        Manager figures are typical ranges from industry reporting, not a survey we ran. Your own
-        contract is the authority on what yours bills.
-      </p>
-
       <aside class="panel--statutory pr-statutory">
         <p class="t-label">Statutory</p>
         <p class="lede">
           Many states cap what an association may charge an owner for a resale or estoppel packet.
         </p>
         <p class="note">
-          A per packet software charge comes out of that cap. Parcel does not add one, so the cap
+          A per packet software charge comes out of that cap. Common Parcel does not add one, so the cap
           stays where the statute put it.
         </p>
       </aside>
@@ -320,46 +259,12 @@ const schema = JSON.stringify({
   .pr-card-link a { display: inline-block; padding-block: var(--s-1); }
   .pr-included .coda { max-width: 52ch; }
 
-  /* ── The comparison ──────────────────────────────────────────────────── */
+  /* ── Statutory note ─────────────────────────────────────────────────── */
 
-  .pr-vs-head h2 { max-width: 26ch; }
-  .pr-vs-lede {
-    margin: var(--s-5) 0 0;
-    font-size: var(--t-body);
-    line-height: 1.55;
-    color: var(--ink-body);
-    max-width: 56ch;
-  }
-  .pr-table { margin-top: clamp(28px, 3.4vw, 48px); }
-  .pr-table table { min-width: 34em; }
-  .pr-table th[scope="row"] {
-    font-family: var(--font-sans);
-    font-size: var(--t-body);
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--ink);
-    border-bottom: var(--stroke-hairline);
-    padding-right: var(--s-5);
-  }
-  .pr-table tfoot th[scope="row"], .pr-table tfoot td {
-    border-top: var(--stroke-consequence);
-    border-bottom: none;
-    padding-top: var(--s-3);
-  }
-  .pr-table tfoot th[scope="row"] { font-weight: 600; }
-  .pr-table tfoot td { color: var(--ink); font-weight: 600; }
+  .pr-statutory-sec { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .pr-statutory { margin: 0; }
 
-  .pr-src {
-    margin: var(--s-5) 0 0;
-    font-size: var(--t-micro);
-    line-height: 1.55;
-    color: var(--ink-3);
-    max-width: 62ch;
-  }
-  .pr-statutory { margin-top: clamp(32px, 4vw, 56px); }
-
-  /* ── The close ───────────────────────────────────────────────────────── */
+  /* ── The close ────────────────────────────────────────────────────────── */
 
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
   .close h2 { color: var(--paper); max-width: 26ch; }

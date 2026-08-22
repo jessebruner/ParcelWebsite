@@ -24,15 +24,15 @@ import Band from "../components/Band.astro";
 
   <Band title="Data isolation and access boundaries">
     <ul class="rows">
-      <li><b>Bank custody:</b> Owners pay into the association's own bank account. Common Parcel does not hold association funds and is not in the money transmission path.</li>
+      <li><b>Bank custody:</b> Dues and assessments process through the association's connected Stripe account directly into the association's bank account. Common Parcel does not hold association balances.</li>
       <li><b>Scoped resident access:</b> Homeowners only see records, assessments, and notifications for their own lots.</li>
-      <li><b>Association separation:</b> Multi-tenant boundaries ensure one association's data is never visible to another.</li>
-      <li><b>Attributed records:</b> Administrative reads and statutory actions are logged with attributed timestamps.</li>
+      <li><b>Staff support boundary:</b> Customer data is isolated by association. Authorized staff support access is restricted, audited, and recorded in platform access logs.</li>
+      <li><b>Attributed records:</b> Statutory actions, board approvals, and administrative console access are recorded with attributed timestamps.</li>
     </ul>
   </Band>
 
   <Band title="Data export and portability" field>
-    <p>A full export of your association's ledgers, documents, minutes, and timestamped activity record is available at any time, including the month you close an account.</p>
+    <p>An export of your association's ledgers, documents, minutes, and timestamped activity record with an archive manifest is available at any time, including the month you close an account.</p>
   </Band>
 
   <Band title="Direct contact and requests" note="Email Jesse" noteHref="/contact">

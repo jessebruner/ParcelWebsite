@@ -94,10 +94,16 @@ export function extractCopy(html) {
 
   const out = [];
   const t = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(s);
-  if (t) out.push(t[1]);
+  if (t) out.push(`<!-- voice-title -->${t[1].trim()}`);
   for (const re of [/<meta\s+name="description"\s+content="([^"]*)"/i, /<meta\s+property="og:title"\s+content="([^"]*)"/i]) {
     const m = re.exec(s);
-    if (m) out.push(m[1]);
+    if (m) {
+      if (re.source.includes("og:title")) {
+        out.push(`<!-- voice-title -->${m[1].trim()}`);
+      } else {
+        out.push(m[1]);
+      }
+    }
   }
   for (const m of s.matchAll(/<!--([\s\S]*?)-->/g)) if (/voice-(allow|surface)/i.test(m[1])) out.push(`<!--${m[1]}-->`);
 
@@ -132,10 +138,12 @@ export function lint(text, surface = "general") {
   const lines = text.split("\n");
 
   lines.forEach((line, i) => {
-    const low = line.toLowerCase();
+    const isTitle = line.startsWith("<!-- voice-title -->");
+    const rawLine = isTitle ? line.replace("<!-- voice-title -->", "") : line;
+    const low = rawLine.toLowerCase();
     const push = (code, msg) => { if (!allow.has(code)) problems.push([i + 1, code, msg]); };
 
-    if (line.includes("—") || line.includes("–")) push("EM_DASH", line.trim().slice(0, 70));
+    if (!isTitle && (rawLine.includes("—") || rawLine.includes("–"))) push("EM_DASH", rawLine.trim().slice(0, 70));
     for (const w of BANNED_WORDS) if (hit(low, w)) push("BANNED_WORD", `'${w}'`);
     for (const f of BANNED_FRAMES) if (low.includes(f)) push("BANNED_FRAME", `'${f}'`);
     for (const r of REVERSALS) if (r.test(low)) push("REVERSAL", line.trim().slice(0, 60));
@@ -158,7 +166,10 @@ export function lint(text, surface = "general") {
     for (const p of PRESUMPTION) if (low.includes(p)) push("PRESUMPTION", `'${p}'`);
   });
 
-  const excl = (text.match(/!/g) || []).length;
+  const cleanForPunctuation = lines
+    .filter((l) => !l.startsWith("<!--"))
+    .join("\n");
+  const excl = (cleanForPunctuation.match(/!/g) || []).length;
   if (excl > 1 && !allow.has("EXCLAMATION")) problems.push([0, "EXCLAMATION", `${excl} exclamation marks`]);
   return problems;
 }
@@ -189,26 +200,32 @@ function walk(dir, out = []) {
   return out;
 }
 
-if (!existsSync("dist")) {
-  console.error("No dist/. Run `npm run build` first.");
-  process.exit(2);
-}
+import { fileURLToPath } from "node:url";
 
-let total = 0;
-const files = walk("dist");
-for (const file of files) {
-  const html = readFileSync(file, "utf8");
-  const surface = surfaceFor(file, html);
-  const problems = lint(extractCopy(html), surface);
-  const name = relative("dist", file).replace(/\\/g, "/");
-  if (!problems.length) continue;
-  total += problems.length;
-  console.log(`\n${name}  [${surface}]  ${problems.length} problem(s)`);
-  for (const [ln, code, msg] of problems) console.log(`  [${code}] ${ln ? "line " + ln : "doc"}: ${msg}`);
-}
+const isMain = process.argv[1] && (process.argv[1].endsWith("voice-lint.mjs") || fileURLToPath(import.meta.url) === process.argv[1]);
 
-if (total) {
-  console.log(`\n${total} problem(s). The judgment half of the pre-flight is still yours.`);
-  process.exit(1);
+if (isMain) {
+  if (!existsSync("dist")) {
+    console.error("No dist/. Run `npm run build` first.");
+    process.exit(2);
+  }
+
+  let total = 0;
+  const files = walk("dist");
+  for (const file of files) {
+    const html = readFileSync(file, "utf8");
+    const surface = surfaceFor(file, html);
+    const problems = lint(extractCopy(html), surface);
+    const name = relative("dist", file).replace(/\\/g, "/");
+    if (!problems.length) continue;
+    total += problems.length;
+    console.log(`\n${name}  [${surface}]  ${problems.length} problem(s)`);
+    for (const [ln, code, msg] of problems) console.log(`  [${code}] ${ln ? "line " + ln : "doc"}: ${msg}`);
+  }
+
+  if (total) {
+    console.log(`\n${total} problem(s). The judgment half of the pre-flight is still yours.`);
+    process.exit(1);
+  }
+  console.log(`${files.length} pages clean.`);
 }
-console.log(`${files.length} pages clean.`);

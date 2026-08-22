@@ -5,32 +5,32 @@ import Band from "../components/Band.astro";
 ---
 <Base
   title="Security"
-  description="Where association records live, who can reach them, what is logged, and how to get everything out."
+  description="Where association records live, who can reach them, what is logged, and how to export association files."
   path="/security"
   reviewed="August 2026"
 >
   <Hero eyebrow="Security">
     <h1 class="t-display">Where your records live, and who can reach them</h1>
   </Hero>
-  <Band title="Your money never passes through us">
-    <p>Owners pay into the association's own bank account, in the association's own name. Parcel is not in that path and has no ability to move association money.</p>
+  <Band title="Custody and payments">
+    <p>Owners pay through a connected Stripe account directly into the association's bank account. Common Parcel does not hold association funds, maintain account balances, or sit in custody of your money.</p>
   </Band>
 
-  <Band title="Every action is attributed" field>
-    <p>Parcel keeps a numbered record of what happened, who did it, when, and on what basis. Reads are recorded as well as writes, so who looked at this has an answer.</p>
+  <Band title="Attributed audit log and platform access" field>
+    <p>Common Parcel maintains a numbered audit log for statutory actions, approvals, operational changes, and export generation. Platform staff access in the administrative console is recorded in a separate platform access log.</p>
   </Band>
 
-  <Band title="Anything statutory takes two officers">
-    <p>A lien, a fine, or a statutory notice needs two distinct board members to sign. There is no batch approval and no way for the software to sign for a board. A database constraint enforces it, so a retry or a second server cannot satisfy it alone.</p>
-    <p class="coda">Stopping something is different. Any board member can halt an action alone, because halting is safe.</p>
+  <Band title="Two-officer approval on statutory actions">
+    <p>A lien, a fine, or a statutory notice needs two distinct board officers to sign. There is no batch approval and no way for the software to sign for a board. A database constraint enforces it, so a retry or a second server cannot satisfy it alone.</p>
+    <p class="coda">Stopping an action is different. Any board officer can halt an action alone, because halting is safe.</p>
   </Band>
 
-  <Band title="Access is scoped by office" field>
-    <p>A resident sees their own lots and nothing else. Committee members see the queue they were given. Officers see the association. Nobody sees another association.</p>
+  <Band title="Access is scoped by role" field>
+    <p>A resident sees records for their own lots. Officers see their association. Staff access for technical support is restricted, monitored, and recorded in platform access logs.</p>
   </Band>
 
-  <Band title="You can take it all out" note="Report a problem" noteHref="/contact">
-    <p>A full export of ledgers, documents, minutes and the record is available any month, including the month you leave. The records belong to the association.</p>
+  <Band title="Association data export" note="Report a problem" noteHref="/contact">
+    <p>An export of ledgers, documents, minutes, and the audit log with an archive manifest report is available at any time, including the month you close an account. The records belong to the association.</p>
   </Band>
 
 </Base>

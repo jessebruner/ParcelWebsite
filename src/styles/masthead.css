@@ -24,8 +24,8 @@
     letter-spacing: -0.025em; color: var(--ink); white-space: nowrap;
   }
   /* The beak warms on hover, the way it does on the homepage. */
-  .lockup :global(svg rect:nth-of-type(2)) { transition: fill 0.16s ease; }
-  .lockup:hover :global(svg rect:nth-of-type(2)) { fill: var(--terracotta-deep); }
+  .lockup svg rect:nth-of-type(2) { transition: fill 0.16s ease; }
+  .lockup:hover svg rect:nth-of-type(2) { fill: var(--terracotta-deep); }
 
   nav { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
   .nav-links {
