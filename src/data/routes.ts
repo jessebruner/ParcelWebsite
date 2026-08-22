@@ -66,6 +66,7 @@ export const ALL_ROUTES: string[] = [
   "/why-common-parcel",
   "/blog",
   "/blog/board-transition-records-retention-checklist",
+  "/blog/michigan-hoa-records-request",
   "/contact",
   "/privacy",
   "/terms",

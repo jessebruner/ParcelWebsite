@@ -23,6 +23,22 @@ interface Props {
 }
 
 const { post } = Astro.props;
+
+/**
+ * **Lead-in.** rest -> <b>Lead-in.</b> rest
+ *
+ * Same convention and same one-line implementation as Blocks.astro, so a
+ * writer moving between a product page and a post does not have to remember
+ * which file uses which markup. Nothing else in the copy is marked up.
+ */
+function bold(s: string): string {
+  return s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+}
+
+/** `callout` then `callouts`, so a section may hold one or several. */
+function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
+  return [section.callout, ...(section.callouts ?? [])].filter(Boolean);
+}
 ---
 
 <Base
@@ -85,17 +101,17 @@ const { post } = Astro.props;
             )}
 
             {section.paragraphs.map((p) => (
-              <p class="post-paragraph">{p}</p>
+              <p class="post-paragraph" set:html={bold(p)} />
             ))}
 
-            {section.callout && (
-              <div class:list={["post-callout", `callout--${section.callout.type}`]}>
-                {section.callout.title && (
-                  <div class="callout-header t-mono-label">{section.callout.title}</div>
+            {calloutsOf(section).map((c) => (
+              <div class:list={["post-callout", `callout--${c.type}`]}>
+                {c.title && (
+                  <div class="callout-header t-mono-label">{c.title}</div>
                 )}
-                <p class="callout-text">{section.callout.text}</p>
+                <p class="callout-text">{c.text}</p>
               </div>
-            )}
+            ))}
 
             {section.list && (
               <div class="post-list-block">
@@ -104,7 +120,7 @@ const { post } = Astro.props;
                 )}
                 <ul class="rows post-list">
                   {section.list.items.map((item) => (
-                    <li>{item}</li>
+                    <li set:html={bold(item)} />
                   ))}
                 </ul>
               </div>

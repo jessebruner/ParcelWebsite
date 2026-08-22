@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build && node tools/sync-homepage-masthead.mjs && node tools/gen-sitemap.mjs",
     "preview": "astro preview",
-    "test": "node --test tests/pricing.test.mjs tests/voice-headings.test.mjs tests/homepage-modal.test.mjs tests/blog.test.mjs",
+    "test": "node --test tests/pricing.test.mjs tests/voice-headings.test.mjs tests/blog-citations.test.mjs tests/homepage-modal.test.mjs tests/blog.test.mjs",
     "determinism": "node tools/check-determinism.mjs",
     "links": "node tools/check-links.mjs",
     "voice": "node tools/voice-lint.mjs",
