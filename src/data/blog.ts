@@ -155,12 +155,12 @@ export const BLOG_POSTS: BlogPost[] = [
           "**A condominium.** If your community was created by a recorded master deed and your neighbors are co-owners of units, the Michigan Condominium Act, 1978 PA 59, covers you. That act uses the terms \"association of co-owners\" and \"condominium project\". Its records sections are quoted below.",
           "**A subdivision association that is not a condominium.** Its records rights may come from the recorded declaration and bylaws and, if the association is incorporated under it, the Michigan Nonprofit Corporation Act, 1982 PA 162.",
           "One trap worth naming, because it catches boards and it nearly caught this guide. A site condominium is a condominium. Owners hold a unit that happens to be a building envelope on land rather than an apartment, the lawns look like any subdivision, and the Condominium Act applies anyway. What the street looks like decides nothing.",
-          "Start with the recorded document that created the community and the association's state business filing. A recorded master deed points toward the Condominium Act. A declaration of covenants and a nonprofit filing may point toward the corporate path. Those records help identify the question; they are not a substitute for a Michigan attorney when the answer remains unclear.",
+          "Start with the recorded document that created the community and the association's state business filing. A recorded master deed points toward the Condominium Act. A declaration of covenants and a nonprofit filing may point toward the corporate path. Those records tell you which question you are asking. If they still leave it unclear, that is a cheap question to put to a Michigan attorney.",
         ],
         callout: {
           type: "note",
           title: "The procedures are different",
-          text: "MCL 559.157(1) says condominium records must be available at convenient times and does not state a written-demand or proper-purpose requirement. MCL 450.2487(2) requires a qualifying corporate member to make a particular written demand for a proper purpose. Neither cited section promises a completion date or says every request is free.",
+          text: "MCL 559.157(1) says condominium records must be available at convenient times and does not state a written-demand or proper-purpose requirement. MCL 450.2487(2) requires a qualifying corporate member to make a particular written demand for a proper purpose. Neither section names a deadline, and neither says a request costs nothing.",
         },
       },
       {
@@ -191,7 +191,7 @@ export const BLOG_POSTS: BlogPost[] = [
         },
       },
       {
-        heading: "Check the annual audit or opt-out vote",
+        heading: "Check the audit rule before the handover",
         paragraphs: [
           "This is the part of the Condominium Act that surprises boards, and it is much better found while the manager is still under contract than after.",
         ],
@@ -220,7 +220,7 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: "The vote belongs to the members",
         paragraphs: [
           "Read subsections (2) and (3) together and the shape is clear. An audit or a review is what the statute requires above $20,000.00 in annual revenue. Opting out is allowed, and it is not a board decision and not a permanent one: the statute puts the vote with the members, requires a majority of them, and requires it again every year.",
-          "That distinction is the whole point of quoting the words rather than summarizing them. A board that believes it can decide to skip the audit has read a summary, and there are plenty of those. Several years with neither a report nor documentation of a member vote need review before the association makes its next annual decision.",
+          "That distinction is the whole point of quoting the words rather than summarizing them. A board that believes it can decide to skip the audit has read a summary, and there are plenty of those. Several years with neither a report nor documentation of a member vote is a gap the next board inherits. Find it while the manager is still under contract, not after.",
         ],
       },
       {
@@ -272,14 +272,14 @@ export const BLOG_POSTS: BlogPost[] = [
         paragraphs: [
           "Read the management agreement first for its termination, notice and turnover terms. Then check the governing documents and applicable law for any separate approval or notice requirement.",
           "Request the records while the agreement is still live. State whether the request comes from the association, a director, or a qualifying member; cite only a section that applies; list what you want; and name a date.",
-          "Check what arrived against the list before the handover date. Missing records are easier to identify while the existing systems and contacts are still available.",
+          "Check what arrived against the list before the handover date. This is the step boards skip, and it is the one the old systems and the people who know them are still around for.",
           "Then give notice, in the form the agreement requires. Certified mail, if that is what it says.",
           "Use the final handover period to move control: bank signatories, registered agent, processor, mailbox, and the vendors who need a new address for an invoice.",
         ],
         callout: {
           type: "warning",
           title: "Do not leave the records until last",
-          text: "Giving notice before anyone inventories the records can turn the handover into a reconstruction. Know what the association has, what it is missing, and who controls each account before the final transfer date.",
+          text: "The handover that turns into a reconstruction is the one where notice went out before anyone inventoried the records. Know what the association has, what is missing, and who controls each account before the final transfer date.",
         },
       },
       {
