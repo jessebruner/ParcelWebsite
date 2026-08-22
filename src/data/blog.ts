@@ -47,7 +47,6 @@ export interface BlogPost {
     role: string;
   };
   category: "Statutory Guidance" | "Operations" | "Board Governance" | "Financial Controls";
-  readTime: string;
   artSeed: number;
   artScene?: "dusk" | "dawn";
   lede: string;
@@ -66,7 +65,6 @@ export const BLOG_POSTS: BlogPost[] = [
       role: "Detroit, Michigan",
     },
     category: "Board Governance",
-    readTime: "4 min read",
     artSeed: 101,
     artScene: "dusk",
     lede: "When board members rotate off an association board, institutional knowledge and administrative access often disappear with them. Here is a procedural guide to maintaining clean continuity across leadership transitions.",
@@ -145,7 +143,6 @@ export const BLOG_POSTS: BlogPost[] = [
       role: "Detroit, Michigan",
     },
     category: "Statutory Guidance",
-    readTime: "9 min read",
     artSeed: 61,
     artScene: "dawn",
     lede:
@@ -352,4 +349,34 @@ export function getAllPosts(): BlogPost[] {
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((p) => p.slug === slug);
+}
+
+/**
+ * READING TIME IS COUNTED, NOT TYPED.
+ *
+ * `readTime` used to be a string on each post. "9 min read" on the Michigan
+ * post was my guess at the length of my own post, printed beside a real date
+ * and a real author, where a guess reads as a measurement. This counts the
+ * words a reader reads at 225 a minute. The rate is a stated assumption, the
+ * count is not, and neither drifts when a post is edited.
+ *
+ * The index card and the post header both call this, so they cannot disagree.
+ */
+export function readingMinutes(post: BlogPost): number {
+  const parts: string[] = [post.lede];
+  for (const section of post.sections) {
+    if (section.heading) parts.push(section.heading);
+    parts.push(...section.paragraphs);
+    for (const c of [section.callout, ...(section.callouts ?? [])]) {
+      if (!c) continue;
+      if (c.title) parts.push(c.title);
+      parts.push(c.text);
+    }
+    if (section.list) {
+      if (section.list.title) parts.push(section.list.title);
+      parts.push(...section.list.items);
+    }
+  }
+  const words = parts.join(" ").replace(/\*\*/g, "").split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 225));
 }

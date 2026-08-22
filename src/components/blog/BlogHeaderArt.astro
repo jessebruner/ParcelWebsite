@@ -96,13 +96,29 @@ for (let r = 0; r < gridRows; r++) {
     preserveAspectRatio="xMidYMid slice"
     class="blog-art-svg"
   >
+    {/*
+      EVERY TOKEN GOES IN style, NOT IN fill OR stroke.
+
+      A presentation attribute is not a declaration. MDN's own sentence about
+      them is "Presentation attribute values are parsed as CSS values, not
+      declarations", and var() substitution is defined over declarations, so
+      fill="var(--night)" is not substituted: the attribute is invalid and fill
+      falls back to its initial value, which is black. A style attribute holds
+      real declarations and var() resolves there.
+
+      This file briefly had the tokens in the attributes because I told
+      Antigravity that form worked. It does not, and none of us has a browser
+      to notice a page of black rectangles, so the safe form is the one that is
+      unambiguous rather than the one that is shorter.
+    */}
+
     <!-- Background dusk / dawn bands -->
     {bands.map((b) => (
-      <rect x="0" y={b.y} width={width} height={b.h} fill={b.color} />
+      <rect x="0" y={b.y} width={width} height={b.h} style={`fill:${b.color}`} />
     ))}
 
     <!-- Subdued grid matrix -->
-    <g stroke="var(--night-hover)" stroke-width="1">
+    <g style="stroke:var(--night-hover);stroke-width:1">
       {Array.from({ length: gridCols + 1 }).map((_, i) => (
         <line x1={40 + i * cellW} y1="30" x2={40 + i * cellW} y2={height - 30} />
       ))}
@@ -118,16 +134,13 @@ for (let r = 0; r < gridRows; r++) {
         y={p.y}
         width={p.w}
         height={p.h}
-        fill={p.fill}
-        stroke={p.stroke}
-        stroke-width="1.5"
-        fill-opacity={p.opacity}
+        style={`fill:${p.fill};stroke:${p.stroke};stroke-width:1.5;fill-opacity:${p.opacity}`}
       />
     ))}
 
     <!-- Framing baseline and accents -->
-    <line x1="0" y1={height - 1} x2={width} y2={height - 1} stroke="var(--terracotta)" stroke-width="2" />
-    <circle cx={mode === "hero" ? width - 80 : width - 50} cy={60} r={mode === "hero" ? 28 : 18} fill="var(--sand)" fill-opacity="0.85" />
+    <line x1="0" y1={height - 1} x2={width} y2={height - 1} style="stroke:var(--terracotta);stroke-width:2" />
+    <circle cx={mode === "hero" ? width - 80 : width - 50} cy={60} r={mode === "hero" ? 28 : 18} style="fill:var(--sand);fill-opacity:0.85" />
   </svg>
 </div>
 

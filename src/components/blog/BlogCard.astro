@@ -4,7 +4,7 @@
  *
  * Renders an article card on the /blog index grid.
  */
-import type { BlogPost } from "../../data/blog";
+import { readingMinutes, type BlogPost } from "../../data/blog";
 import BlogHeaderArt from "./BlogHeaderArt.astro";
 
 interface Props {
@@ -22,7 +22,7 @@ const { post } = Astro.props;
     <div class="blog-card-meta">
       <span class="blog-category t-mono-label">{post.category}</span>
       <span class="meta-separator" aria-hidden="true">·</span>
-      <span class="blog-time t-mono-label">{post.readTime}</span>
+      <span class="blog-time t-mono-label">{readingMinutes(post)} min</span>
     </div>
     <h2 class="blog-card-title">
       <a href={`/blog/${post.slug}`} class="blog-title-link">

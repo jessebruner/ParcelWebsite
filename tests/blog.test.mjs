@@ -3,7 +3,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { BLOG_POSTS, getAllPosts, getPostBySlug } from "../src/data/blog.ts";
+import { BLOG_POSTS, getAllPosts, getPostBySlug, readingMinutes } from "../src/data/blog.ts";
 import { ALL_ROUTES } from "../src/data/routes.ts";
 
 test("blog posts have valid structure and metadata", () => {
@@ -17,7 +17,17 @@ test("blog posts have valid structure and metadata", () => {
     assert.match(post.publishedAt, /^\d{4}-\d{2}-\d{2}$/, "publishedAt must be YYYY-MM-DD");
     assert.ok(post.author && post.author.name && post.author.role, "author name and role required");
     assert.ok(["Statutory Guidance", "Operations", "Board Governance", "Financial Controls"].includes(post.category), "valid category");
-    assert.ok(post.readTime && post.readTime.includes("min read"), "readTime must format as 'X min read'");
+    /*
+     * readTime used to be a hand-typed string, and this line asserted its
+     * shape. Checking the shape of a guess only proves the guess was
+     * well-formatted. Reading time is now counted from the post by
+     * readingMinutes(), so the assertion is that the count is a sane positive
+     * integer and that nobody has reintroduced a typed field beside it.
+     */
+    assert.equal(post.readTime, undefined, "readTime is counted by readingMinutes(), not typed on the post");
+    const minutes = readingMinutes(post);
+    assert.ok(Number.isInteger(minutes) && minutes > 0, `readingMinutes must be a positive integer, got ${minutes}`);
+    assert.ok(minutes < 120, `readingMinutes of ${minutes} is implausible; the counter is probably reading the wrong field`);
     assert.ok(Number.isInteger(post.artSeed), "artSeed must be an integer");
     assert.ok(post.lede && typeof post.lede === "string", "lede is required");
     assert.ok(Array.isArray(post.sections) && post.sections.length > 0, "sections must not be empty");

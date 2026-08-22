@@ -9,7 +9,7 @@ import Base from "../../layouts/Base.astro";
 import BlogHeaderArt from "../../components/blog/BlogHeaderArt.astro";
 import CitationBlock from "../../components/blog/CitationBlock.astro";
 import CtaBand from "../../components/ui/CtaBand.astro";
-import { BLOG_POSTS, type BlogPost } from "../../data/blog";
+import { BLOG_POSTS, readingMinutes, type BlogPost } from "../../data/blog";
 
 export function getStaticPaths() {
   return BLOG_POSTS.map((post) => ({
@@ -39,10 +39,12 @@ function bold(s: string): string {
 function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
   return [section.callout, ...(section.callouts ?? [])].filter(Boolean);
 }
+
+const minutes = readingMinutes(post);
 ---
 
 <Base
-  title={`${post.title} | Common Parcel Field Guides`}
+  title={`${post.title} | Common Parcel`}
   description={post.description}
   path={`/blog/${post.slug}`}
   shareTitle={post.title}
@@ -52,7 +54,7 @@ function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
     <header class="post-hero">
       <div class="page">
         <nav class="post-breadcrumbs" aria-label="Breadcrumbs">
-          <a href="/blog" class="crumb-link">Field Guides</a>
+          <a href="/blog" class="crumb-link">Blog</a>
           <span class="crumb-separator" aria-hidden="true">/</span>
           <span class="crumb-current">{post.category}</span>
         </nav>
@@ -80,7 +82,7 @@ function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
 
           <div class="post-read-time">
             <span class="read-label t-mono-label">Reading Time</span>
-            <span class="read-time t-mono">{post.readTime}</span>
+            <span class="read-time t-mono">{minutes} min</span>
           </div>
         </div>
       </div>
@@ -131,14 +133,21 @@ function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
         <!-- Primary Sources and Statutory Citations -->
         <CitationBlock citations={post.citations} />
 
-        <!-- Editorial Author Card -->
+        <!--
+          The card at the foot of every post. It said "Common Parcel provides
+          verified governance tools and statutory workflows", which claims
+          something nobody has verified, and "these guides cite statutory
+          reference provisions", which is not true of a post that cites
+          nothing. It now says what the guides are and who writes them.
+        -->
         <div class="post-author-box">
           <div class="author-box-content">
-            <span class="t-mono-label">About Common Parcel Guides</span>
+            <span class="t-mono-label">About these guides</span>
             <p class="author-box-bio">
-              Common Parcel provides verified governance tools and statutory workflows for self-managed
-              condominium associations and HOAs. These operational guides cite statutory reference
-              provisions to assist volunteer board members with annual compliance duties.
+              Common Parcel builds software for HOA and condominium boards that run their own
+              association. We write these guides for the same boards. Where one quotes a statute,
+              the section and the date it was read are printed at the foot of the post, so you can
+              open it yourself. None of it is legal advice.
             </p>
           </div>
         </div>
@@ -147,9 +156,10 @@ function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
   </article>
 
   <!-- CTA -->
+  <!-- "required books" asserted a legal requirement this site has not sourced. -->
   <CtaBand
-    headline="Organize your association records today"
-    lede="Common Parcel keeps required books, notices, and owner records in one place for your board."
+    headline="Keep your association's records in one place"
+    lede="Common Parcel holds the ledgers, notices and owner records a self-managed board has to be able to find."
   />
 </Base>
 
