@@ -1,0 +1,283 @@
+---
+/**
+ * Early Access Modal Component
+ *
+ * Ported from the homepage modal to provide a consistent, accessible dialog
+ * across every page of the site.
+ */
+---
+
+<dialog id="early-access-modal" class="ea-dialog" aria-labelledby="ea-modal-title" aria-modal="true">
+  <div class="ea-card">
+    <div class="ea-top">
+      <span class="ea-eyebrow">Early access</span>
+      <button type="button" class="ea-close-btn" id="ea-close-btn" aria-label="Close dialog">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Active Form View -->
+    <div id="ea-form-view">
+      <h2 id="ea-modal-title" class="ea-title">Tell Parcel about your association.</h2>
+      <p class="ea-lede">A person replies - the founder.</p>
+
+      <form id="early-access-form" class="ea-form">
+        <div class="ea-fields">
+          <div class="ea-field">
+            <label for="ea-assoc" class="ea-label">Association name</label>
+            <input id="ea-assoc" name="association" type="text" required placeholder="Oakridge Estates" class="ea-input" />
+          </div>
+
+          <div class="ea-field-row">
+            <div class="ea-field">
+              <label for="ea-name" class="ea-label">Your name</label>
+              <input id="ea-name" name="name" type="text" required placeholder="M. Torres" class="ea-input" />
+            </div>
+            <div class="ea-field">
+              <label for="ea-lots" class="ea-label">Lots</label>
+              <input id="ea-lots" name="lots" type="number" min="1" max="50000" required placeholder="118" class="ea-input" />
+            </div>
+          </div>
+
+          <div class="ea-field">
+            <label for="ea-email" class="ea-label">Email</label>
+            <input id="ea-email" name="email" type="email" required placeholder="you@example.com" class="ea-input" />
+          </div>
+        </div>
+
+        <div id="ea-form-error" class="ea-error" style="display: none;"></div>
+
+        <div class="ea-actions">
+          <button type="submit" class="btn btn--primary" id="ea-submit-btn">Request early access</button>
+          <button type="button" class="btn" id="ea-cancel-btn">Cancel</button>
+        </div>
+
+        <p class="ea-footnote">No spam &middot; a founder replies directly within 24 hours</p>
+      </form>
+    </div>
+
+    <!-- Success View -->
+    <div id="ea-success-view" class="ea-success" style="display: none;">
+      <div class="ea-heron-icon">
+        <svg viewBox="0 0 48 48" width="52" height="52" fill="#2E2A24" aria-hidden="true">
+          <rect x="24" y="4" width="9" height="6"></rect>
+          <rect x="33" y="6" width="12" height="3" fill="#8A4B2A"></rect>
+          <rect x="25" y="10" width="5" height="10"></rect>
+          <rect x="12" y="20" width="21" height="11"></rect>
+          <rect x="18" y="31" width="3" height="13"></rect>
+          <rect x="23" y="31" width="3" height="13"></rect>
+        </svg>
+      </div>
+      <h2 class="ea-title">Request received.</h2>
+      <p class="ea-lede">A founder will reply to your email directly.</p>
+      <div class="ea-actions" style="margin-top: 24px;">
+        <button type="button" class="btn btn--primary" id="ea-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .ea-dialog {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: auto;
+    max-width: 560px;
+    width: calc(100% - 32px);
+  }
+  .ea-dialog::backdrop {
+    background: rgba(20, 18, 15, 0.72);
+    backdrop-filter: blur(2px);
+  }
+  .ea-card {
+    background: var(--card, #FFFFFF);
+    border: 1.5px solid var(--ink, #2E2A24);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+    padding: clamp(24px, 4vw, 32px);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+  .ea-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--s-3, 12px);
+  }
+  .ea-eyebrow {
+    font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terracotta, #8A4B2A);
+    font-weight: 600;
+  }
+  .ea-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-3, #6E6559);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+  .ea-close-btn:hover {
+    color: var(--ink, #2E2A24);
+  }
+  .ea-title {
+    font-family: var(--font-serif, Literata, Georgia, serif);
+    font-size: clamp(22px, 3vw, 26px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--ink, #2E2A24);
+    margin: 0 0 6px;
+  }
+  .ea-lede {
+    font-family: var(--font-sans, 'Bricolage Grotesque', sans-serif);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-2, #4A453C);
+    margin: 0 0 20px;
+  }
+  .ea-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .ea-field-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 480px) {
+    .ea-field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .ea-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ea-label {
+    font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3, #6E6559);
+  }
+  .ea-input {
+    font-family: var(--font-sans, 'Bricolage Grotesque', sans-serif);
+    font-size: 15px;
+    color: var(--ink, #2E2A24);
+    background: var(--paper, #FBF8F4);
+    border: 1px solid var(--c-edge, #D6CFC4);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ea-input:focus {
+    border-color: var(--ink, #2E2A24);
+    box-shadow: 0 0 0 2px rgba(46, 42, 36, 0.12);
+  }
+  .ea-error {
+    font-family: var(--font-sans, 'Bricolage Grotesque', sans-serif);
+    font-size: 13px;
+    color: #A32A2A;
+    margin-top: 12px;
+  }
+  .ea-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .ea-footnote {
+    font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3, #6E6559);
+    margin: 18px 0 0;
+  }
+  .ea-success {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ea-heron-icon {
+    margin-bottom: 12px;
+  }
+</style>
+
+<script>
+  function setupEarlyAccessModal() {
+    const dialog = document.getElementById("early-access-modal") as HTMLDialogElement | null;
+    if (!dialog) return;
+
+    const closeBtn = document.getElementById("ea-close-btn");
+    const cancelBtn = document.getElementById("ea-cancel-btn");
+    const doneBtn = document.getElementById("ea-done-btn");
+    const formView = document.getElementById("ea-form-view");
+    const successView = document.getElementById("ea-success-view");
+    const form = document.getElementById("early-access-form") as HTMLFormElement | null;
+
+    function openDialog() {
+      if (dialog && !dialog.open) {
+        if (formView) formView.style.display = "block";
+        if (successView) successView.style.display = "none";
+        dialog.showModal();
+        const firstInput = dialog.querySelector<HTMLInputElement>("input");
+        firstInput?.focus();
+      }
+    }
+
+    function closeDialog() {
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+    }
+
+    document.querySelectorAll("[data-open-modal='early-access']").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        openDialog();
+      });
+    });
+
+    closeBtn?.addEventListener("click", closeDialog);
+    cancelBtn?.addEventListener("click", closeDialog);
+    doneBtn?.addEventListener("click", closeDialog);
+
+    dialog.addEventListener("click", (e) => {
+      const rect = dialog.getBoundingClientRect();
+      const isInDialog = (
+        rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+      );
+      if (!isInDialog) {
+        closeDialog();
+      }
+    });
+
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // Smoothly transition to received view
+      if (formView) formView.style.display = "none";
+      if (successView) successView.style.display = "block";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupEarlyAccessModal);
+  } else {
+    setupEarlyAccessModal();
+  }
+</script>

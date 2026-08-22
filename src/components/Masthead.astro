@@ -1,17 +1,17 @@
 ---
 /**
- * The masthead, matched to the homepage's.
+ * Global Masthead with Product & Company Dropdowns and Early Access CTA.
  *
- * Provides consistent top navigation across the entire site with the same lockup,
- * typography, and responsive hamburger menu.
+ * Provides responsive navigation across desktop and mobile, with keyboard-accessible
+ * mega menus for Product and Company.
  */
 import Mark from "./Mark.astro";
-import { TOP_NAV } from "../data/routes";
-
-const LINKS = TOP_NAV.map((item) => ({ href: item.path, label: item.label }));
+import { PRODUCT_NAV, COMPARE_NAV, COMPANY_NAV } from "../data/routes";
 
 const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => here === href;
+const isProductActive = here.startsWith("/product") || here.startsWith("/compare");
+const isCompanyActive = here === "/about" || here === "/why-common-parcel" || here === "/blog";
 ---
 
 <header class="mast">
@@ -26,28 +26,153 @@ const isCurrent = (href: string) => here === href;
     <span></span><span></span><span></span>
   </button>
 
-  <nav id="nav" aria-label="Main">
+  <nav id="nav" aria-label="Main navigation">
     <div class="nav-links">
-      {LINKS.map((l) => (
-        <a class:list={["navlink", { on: isCurrent(l.href) }]} href={l.href}
-           aria-current={here === l.href ? "page" : undefined}>{l.label}</a>
-      ))}
+      <!-- PRODUCT MEGA DROPDOWN -->
+      <div class="nav-item has-dropdown">
+        <button type="button" class:list={["navlink nav-btn", { on: isProductActive }]} aria-expanded="false" aria-haspopup="true">
+          <span>Product</span>
+          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu mega-menu" role="menu">
+          <div class="mega-menu-inner">
+            <div class="mega-col main-col">
+              <div class="menu-heading">Platform Features</div>
+              <div class="menu-grid">
+                {PRODUCT_NAV.map((p) => (
+                  <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]} role="menuitem">
+                    <div class="menu-item-title">{p.label}</div>
+                    {p.blurb && <div class="menu-item-blurb">{p.blurb}</div>}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div class="mega-col side-col">
+              <div class="menu-heading">Comparisons & Security</div>
+              <div class="menu-grid compact">
+                {COMPARE_NAV.map((c) => (
+                  <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]} role="menuitem">
+                    <div class="menu-item-title">{c.label}</div>
+                    {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
+                  </a>
+                ))}
+                <a href="/security" class:list={["menu-item", { active: isCurrent("/security") }]} role="menuitem">
+                  <div class="menu-item-title">Security & Audit</div>
+                  <div class="menu-item-blurb">Role-based controls, direct payments, and tamper-evident logs.</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="nav-item">
+        <a class:list={["navlink", { on: isCurrent("/pricing") }]} href="/pricing" aria-current={here === "/pricing" ? "page" : undefined}>
+          Pricing
+        </a>
+      </div>
+
+      <!-- COMPANY DROPDOWN -->
+      <div class="nav-item has-dropdown">
+        <button type="button" class:list={["navlink nav-btn", { on: isCompanyActive }]} aria-expanded="false" aria-haspopup="true">
+          <span>Company</span>
+          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu standard-menu" role="menu">
+          <div class="menu-grid">
+            {COMPANY_NAV.map((c) => (
+              <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]} role="menuitem">
+                <div class="menu-item-title">{c.label}</div>
+                {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="nav-item">
+        <a class:list={["navlink", { on: isCurrent("/contact") }]} href="/contact" aria-current={here === "/contact" ? "page" : undefined}>
+          Contact
+        </a>
+      </div>
     </div>
-    <a class="nav-cta" href="/contact">Get in touch</a>
+
+    <!-- CTA -->
+    <button type="button" class="nav-cta" data-open-modal="early-access">
+      Early Access
+    </button>
   </nav>
 </header>
 
 <script>
-  const mast = document.querySelector<HTMLElement>(".mast");
-  const burger = mast?.querySelector<HTMLButtonElement>(".burger");
-  burger?.addEventListener("click", () => {
-    const open = mast!.hasAttribute("data-open");
-    open ? mast!.removeAttribute("data-open") : mast!.setAttribute("data-open", "");
-    burger.setAttribute("aria-expanded", String(!open));
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    mast?.removeAttribute("data-open");
-    burger?.setAttribute("aria-expanded", "false");
-  });
+  function initMasthead() {
+    const mast = document.querySelector<HTMLElement>(".mast");
+    if (!mast) return;
+
+    const burger = mast.querySelector<HTMLButtonElement>(".burger");
+    const dropdownBtns = mast.querySelectorAll<HTMLButtonElement>(".has-dropdown > .nav-btn");
+
+    burger?.addEventListener("click", () => {
+      const open = mast.hasAttribute("data-open");
+      open ? mast.removeAttribute("data-open") : mast.setAttribute("data-open", "");
+      burger.setAttribute("aria-expanded", String(!open));
+    });
+
+    dropdownBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const parent = btn.closest(".has-dropdown");
+        const isOpen = parent?.classList.contains("open");
+        
+        // Close siblings
+        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
+          if (el !== parent) {
+            el.classList.remove("open");
+            el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        if (isOpen) {
+          parent?.classList.remove("open");
+          btn.setAttribute("aria-expanded", "false");
+        } else {
+          parent?.classList.add("open");
+          btn.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+
+    // Close on escape or outside click
+    document.addEventListener("click", (e) => {
+      if (!mast.contains(e.target as Node)) {
+        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
+          el.classList.remove("open");
+          el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
+        });
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        mast.removeAttribute("data-open");
+        burger?.setAttribute("aria-expanded", "false");
+        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
+          el.classList.remove("open");
+          el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
+        });
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMasthead);
+  } else {
+    initMasthead();
+  }
 </script>

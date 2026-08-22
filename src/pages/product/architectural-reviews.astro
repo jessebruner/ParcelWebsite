@@ -1,0 +1,202 @@
+---
+/**
+ * Architectural Reviews Feature Page
+ */
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+
+const description = "Structured architectural review committee (ARC) workflows, digital homeowner submissions, private committee voting, and decision audit logs.";
+---
+
+<Base
+  title="Architectural Reviews"
+  description={description}
+  path="/product/architectural-reviews"
+  shareTitle="Common Parcel: Architectural Review Workflows"
+>
+  <Hero eyebrow="ARC & Compliance" scene="dusk" seed={83}>
+    <h1 class="t-display">Architectural reviews without neighbor disputes.</h1>
+    <p class="t-lede">
+      Structured submission forms, transparent committee voting, and verifiable decision letters keep your neighborhood compliant and harmonious.
+    </p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+    </div>
+  </Hero>
+
+  <!-- DIGITAL SUBMISSIONS -->
+  <section class="band">
+    <div class="page">
+      <div class="feature-two-up">
+        <div class="text-side">
+          <span class="t-label">Digital Submissions</span>
+          <h2 class="t-sheet">Homeowners submit complete requests on the first try.</h2>
+          <p class="t-lede">
+            Customizable submission templates guide homeowners through contractor licenses, property plot plans, paint swatches, and material samples.
+          </p>
+          <ul class="rows">
+            <li><b>Required Attachments:</b> Ensure contractor certificates and drawings are uploaded before review begins.</li>
+            <li><b>Automatic Receipt:</b> Homeowners receive immediate confirmation with a unique tracking number.</li>
+            <li><b>Statutory Clock:</b> Automatic timers ensure reviews finish well before state deadlines expire.</li>
+          </ul>
+        </div>
+        <div class="visual-side">
+          <div class="arc-form-mock">
+            <div class="form-header">
+              <div class="form-title">Architectural Application</div>
+              <span class="status-badge active">Form Step 2 of 3</span>
+            </div>
+            <div class="form-item">
+              <span class="item-label">Project Type</span>
+              <span class="item-value">Perimeter Privacy Fence (6ft Cedar)</span>
+            </div>
+            <div class="form-item">
+              <span class="item-label">Contractor Information</span>
+              <span class="item-value">Apex Fencing LLC (License #FC-9482)</span>
+            </div>
+            <div class="form-item">
+              <span class="item-label">Uploaded Documents</span>
+              <span class="item-value">plot_survey.pdf, cedar_swatch.jpg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMITTEE VOTING & AUDIT -->
+  <section class="band band--field">
+    <div class="page">
+      <div class="feature-two-up reverse">
+        <div class="text-side">
+          <span class="t-label">Committee Collaboration</span>
+          <h2 class="t-sheet">Private committee votes with permanent audit trails.</h2>
+          <p class="t-lede">
+            ARC members review plans privately, leave internal notes, and record their votes. The platform compiles final decision letters automatically.
+          </p>
+          <ul class="rows">
+            <li><b>Private Discussions:</b> Committee members discuss requests without leaking draft notes.</li>
+            <li><b>Structured Votes:</b> Approve, approve with conditions, or deny with specific declaration citations.</li>
+            <li><b>Permanent Log:</b> Every decision is permanently stored on the property parcel record.</li>
+          </ul>
+        </div>
+        <div class="visual-side">
+          <div class="arc-voting-card">
+            <div class="card-head">
+              <div class="arc-meta">ARC #1048: Solar Panel Installation</div>
+              <div class="timer-pill">22 Days Remaining</div>
+            </div>
+            <div class="vote-rows">
+              <div class="voter-line">
+                <span class="voter-name">David K. (ARC Chair)</span>
+                <span class="status-badge paid">Approved</span>
+              </div>
+              <div class="voter-line">
+                <span class="voter-name">Elena R. (Board Member)</span>
+                <span class="status-badge paid">Approved with Conditions</span>
+              </div>
+              <div class="voter-line">
+                <span class="voter-name">Marcus W. (Secretary)</span>
+                <span class="status-badge pending">Awaiting Review</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    headline="Upgrade your architectural review process today."
+    lede="Request early access or calculate your association pricing."
+  />
+</Base>
+
+<style>
+  .feature-two-up {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(36px, 5vw, 72px);
+    align-items: center;
+  }
+  .feature-two-up.reverse .text-side { order: 2; }
+  .feature-two-up.reverse .visual-side { order: 1; }
+
+  @media (max-width: 860px) {
+    .feature-two-up, .feature-two-up.reverse {
+      grid-template-columns: 1fr;
+      gap: var(--s-6);
+    }
+    .feature-two-up.reverse .text-side { order: 1; }
+    .feature-two-up.reverse .visual-side { order: 2; }
+  }
+
+  .text-side { display: flex; flex-direction: column; gap: var(--s-3); }
+
+  .arc-form-mock {
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--c-edge);
+    padding-bottom: var(--s-3);
+  }
+  .form-title { font-family: var(--font-serif); font-size: 16px; font-weight: 600; color: var(--ink); }
+  .form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--paper);
+    padding: 8px 12px;
+    border: 1px solid var(--c-hairline);
+  }
+  .item-label { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; color: var(--ink-3); }
+  .item-value { font-size: 13px; font-weight: 600; color: var(--ink); }
+
+  .status-badge {
+    font-family: var(--font-mono); font-size: 11px; padding: 2px 6px; font-weight: 500;
+  }
+  .status-badge.active { background: var(--held); color: var(--terracotta); }
+  .status-badge.paid { background: #e6f4ea; color: #137333; }
+  .status-badge.pending { background: #fef7e0; color: #b06000; }
+
+  .arc-voting-card {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    padding: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--c-edge);
+    padding-bottom: var(--s-3);
+  }
+  .arc-meta { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+  .timer-pill {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; background: var(--field); padding: 3px 6px;
+  }
+  .vote-rows { display: flex; flex-direction: column; gap: var(--s-2); }
+  .voter-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--paper);
+    border: 1px solid var(--c-hairline);
+  }
+  .voter-name { font-size: 13px; color: var(--ink); font-weight: 500; }
+</style>

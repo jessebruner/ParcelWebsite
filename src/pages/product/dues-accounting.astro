@@ -1,0 +1,289 @@
+---
+/**
+ * Dues & Accounting Feature Page
+ */
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+
+const description = "Automated dues collection, direct bank deposits, accounts receivable tracking, and real-time financial reporting for self-managed HOAs.";
+---
+
+<Base
+  title="Dues & Financials"
+  description={description}
+  path="/product/dues-accounting"
+  shareTitle="Common Parcel: Automated HOA Dues & Bookkeeping"
+>
+  <Hero eyebrow="Financial Operations" scene="dusk" seed={19}>
+    <h1 class="t-display">Collect dues on time with zero bookkeeping headaches.</h1>
+    <p class="t-lede">
+      Direct bank settlement, automatic digital invoicing, and real-time financial ledgers designed for HOA treasurers.
+    </p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+    </div>
+  </Hero>
+
+  <!-- DIRECT SETTLEMENT -->
+  <section class="band">
+    <div class="page">
+      <div class="feature-two-up">
+        <div class="text-side">
+          <span class="t-label">Direct Settlement</span>
+          <h2 class="t-sheet">Money moves straight into your bank account.</h2>
+          <p class="t-lede">
+            Common Parcel connects directly to your association bank account through Stripe. Payments from homeowners deposit directly into your community account without middlemen holding funds.
+          </p>
+          <ul class="rows">
+            <li><b>ACH and Card:</b> Low-cost direct debit or card options for every homeowner.</li>
+            <li><b>Zero Software Holds:</b> Funds transfer directly into your depository account.</li>
+            <li><b>Automated Fee Allocation:</b> Convenience fees are split cleanly without confusing your ledger.</li>
+          </ul>
+        </div>
+        <div class="visual-side">
+          <div class="bank-flow-card">
+            <div class="flow-step">
+              <div class="flow-num">01</div>
+              <div class="flow-info">
+                <div class="flow-title">Homeowner Pays Dues</div>
+                <div class="flow-sub">ACH Debit or Credit Card</div>
+              </div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step highlight">
+              <div class="flow-num">02</div>
+              <div class="flow-info">
+                <div class="flow-title">Direct Bank Settlement</div>
+                <div class="flow-sub">Direct deposit to Association Account</div>
+              </div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <div class="flow-num">03</div>
+              <div class="flow-info">
+                <div class="flow-title">Auto-Reconciled Ledger</div>
+                <div class="flow-sub">Balance sheet updates in real time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVOICING & REMINDERS -->
+  <section class="band band--field">
+    <div class="page">
+      <div class="feature-two-up reverse">
+        <div class="text-side">
+          <span class="t-label">Automated Billing</span>
+          <h2 class="t-sheet">Scheduled invoices and polite digital reminders.</h2>
+          <p class="t-lede">
+            Set your assessment schedule once: annual, semi-annual, quarterly, or monthly. The system handles generation, notice distribution, and payment receipts automatically.
+          </p>
+          <ul class="rows">
+            <li><b>Scheduled Delivery:</b> Email notices sent on your custom schedule.</li>
+            <li><b>Physical Mail Pass-Through:</b> Send printed notices to offsite owners at exact postage cost.</li>
+            <li><b>Custom Grace Periods:</b> Automatic late notice calculations based on your declaration rules.</li>
+          </ul>
+        </div>
+        <div class="visual-side">
+          <div class="invoice-preview">
+            <div class="invoice-head">
+              <div class="inv-badge">Annual Assessment Notice</div>
+              <div class="inv-date">Due: Oct 01, 2026</div>
+            </div>
+            <div class="inv-body">
+              <div class="inv-line">
+                <span>2026-2027 General Assessment</span>
+                <span class="num">$480.00</span>
+              </div>
+              <div class="inv-line">
+                <span>Reserve Fund Contribution</span>
+                <span class="num">$120.00</span>
+              </div>
+              <div class="inv-total">
+                <span>Total Due</span>
+                <span class="num">$600.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINANCIAL REPORTING -->
+  <section class="band">
+    <div class="page">
+      <div class="feature-two-up">
+        <div class="text-side">
+          <span class="t-label">Financial Clarity</span>
+          <h2 class="t-sheet">Audit-ready statements at the click of a button.</h2>
+          <p class="t-lede">
+            No more reconciling spreadsheets at midnight before the annual meeting. Generate clean balance sheets, income statements, and aging reports anytime.
+          </p>
+          <ul class="rows">
+            <li><b>Accounts Receivable:</b> Track overdue accounts with clear collection logs.</li>
+            <li><b>Budget vs Actuals:</b> Compare actual spending against approved annual line items.</li>
+            <li><b>CPA and Tax Ready:</b> Export organized general ledger data for annual filings.</li>
+          </ul>
+        </div>
+        <div class="visual-side">
+          <div class="report-mock">
+            <div class="report-head">Financial Summary: Q3 2026</div>
+            <div class="report-grid">
+              <div class="report-stat">
+                <span class="stat-label">Total Collected</span>
+                <span class="stat-val num">$72,400</span>
+              </div>
+              <div class="report-stat">
+                <span class="stat-label">Collection Rate</span>
+                <span class="stat-val num">98.6%</span>
+              </div>
+              <div class="report-stat">
+                <span class="stat-label">Operating Cash</span>
+                <span class="stat-val num">$38,210</span>
+              </div>
+              <div class="report-stat">
+                <span class="stat-label">Reserve Balance</span>
+                <span class="stat-val num">$114,800</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    headline="Put your association dues on autopilot."
+    lede="Request early access or see how our simple per-lot pricing works for your neighborhood."
+  />
+</Base>
+
+<style>
+  .feature-two-up {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(36px, 5vw, 72px);
+    align-items: center;
+  }
+  .feature-two-up.reverse .text-side { order: 2; }
+  .feature-two-up.reverse .visual-side { order: 1; }
+
+  @media (max-width: 860px) {
+    .feature-two-up, .feature-two-up.reverse {
+      grid-template-columns: 1fr;
+      gap: var(--s-6);
+    }
+    .feature-two-up.reverse .text-side { order: 1; }
+    .feature-two-up.reverse .visual-side { order: 2; }
+  }
+
+  .text-side { display: flex; flex-direction: column; gap: var(--s-3); }
+
+  .bank-flow-card {
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    border: 1px solid var(--c-hairline);
+    background: var(--paper);
+  }
+  .flow-step.highlight {
+    border-color: var(--terracotta);
+    background: var(--held);
+  }
+  .flow-num {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--terracotta);
+  }
+  .flow-title { font-weight: 600; color: var(--ink); font-size: 14px; }
+  .flow-sub { font-size: 12px; color: var(--ink-3); }
+  .flow-arrow {
+    text-align: center;
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+    font-size: 16px;
+  }
+
+  .invoice-preview {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    padding: var(--s-6);
+  }
+  .invoice-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--c-edge);
+    padding-bottom: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .inv-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .inv-date { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+  .inv-body { display: flex; flex-direction: column; gap: var(--s-2); }
+  .inv-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-block: 4px;
+  }
+  .inv-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 16px;
+    border-top: 1.5px solid var(--ink);
+    padding-top: var(--s-3);
+    margin-top: var(--s-2);
+  }
+
+  .report-mock {
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-5);
+  }
+  .report-head {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: var(--stroke-hairline);
+    padding-bottom: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-3);
+  }
+  .report-stat {
+    background: var(--paper);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-3);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--ink-3); text-transform: uppercase; }
+  .stat-val { font-size: 22px; font-weight: 700; color: var(--ink); }
+</style>

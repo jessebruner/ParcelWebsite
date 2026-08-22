@@ -26,7 +26,7 @@ const TARGET_PAGE = "dist/index.html";
 const SOURCE_PAGE = "dist/pricing.html";
 const CSS = "src/styles/masthead.css";
 
-/* ── 1. The component's rendered output ─────────────────────────────────── */
+/* ── 1. The component's rendered output ───────────────────────────────────── */
 const built = readFileSync(SOURCE_PAGE, "utf8");
 const hm = /<header class="mast">[\s\S]*?<\/header>/.exec(built);
 if (!hm) throw new Error("no <header class=\"mast\"> in " + SOURCE_PAGE);
@@ -47,7 +47,7 @@ if (/data-astro-cid/.test(header)) {
 
 const mastheadCss = readFileSync(CSS, "utf8");
 
-/* ── 2. The bundle ──────────────────────────────────────────────────────── */
+/* ── 2. The bundle ────────────────────────────────────────────────────────── */
 const lines = readFileSync(SOURCE_HOMEPAGE, "utf8").split("\n");
 const at = {};
 lines.forEach((l, i) => {
@@ -95,18 +95,91 @@ template =
   `\n${MARK}\n${mastheadCss}\n/* end masthead */\n` +
   template.slice(lastStyleClose);
 
-/* The burger needs a handler. Astro bundles its script into a module the bundle
-   does not load, so the same behaviour goes in inline. */
+/* Inject Early Access dialog if present in built page */
+const modalMatch = /<dialog id="early-access-modal"[\s\S]*?<\/dialog>/.exec(built);
+const DIALOG_MARK = "<!-- injected: early-access-modal -->";
+if (modalMatch) {
+  template = template.replace(new RegExp(DIALOG_MARK + "[\\s\\S]*?<!-- end modal -->"), "");
+  template = template.replace("</body>", `${DIALOG_MARK}\n${modalMatch[0]}\n<!-- end modal -->\n</body>`);
+}
+
+/* The navigation and modal need client handlers on the bundled homepage */
 const JS_MARK = "/* injected: masthead behaviour */";
 if (!template.includes(JS_MARK)) {
   const script =
     `<script>${JS_MARK}\n` +
-    `(function(){var m=document.querySelector(".mast");if(!m)return;` +
-    `var b=m.querySelector(".burger");if(b)b.addEventListener("click",function(){` +
-    `var o=m.hasAttribute("data-open");if(o){m.removeAttribute("data-open")}else{m.setAttribute("data-open","")}` +
-    `b.setAttribute("aria-expanded",String(!o))});` +
-    `document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;` +
-    `m.removeAttribute("data-open");if(b)b.setAttribute("aria-expanded","false")})})();` +
+    `(function(){\n` +
+    `  var m = document.querySelector(".mast");\n` +
+    `  if (!m) return;\n` +
+    `  var b = m.querySelector(".burger");\n` +
+    `  var dBtns = m.querySelectorAll(".has-dropdown > .nav-btn");\n` +
+    `  if (b) b.addEventListener("click", function() {\n` +
+    `    var o = m.hasAttribute("data-open");\n` +
+    `    if (o) { m.removeAttribute("data-open"); } else { m.setAttribute("data-open", ""); }\n` +
+    `    b.setAttribute("aria-expanded", String(!o));\n` +
+    `  });\n` +
+    `  dBtns.forEach(function(btn) {\n` +
+    `    btn.addEventListener("click", function(e) {\n` +
+    `      e.stopPropagation();\n` +
+    `      var parent = btn.closest(".has-dropdown");\n` +
+    `      var isOpen = parent && parent.classList.contains("open");\n` +
+    `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+    `        if (el !== parent) { el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false"); }\n` +
+    `      });\n` +
+    `      if (isOpen) { parent.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }\n` +
+    `      else if (parent) { parent.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }\n` +
+    `    });\n` +
+    `  });\n` +
+    `  document.addEventListener("click", function(e) {\n` +
+    `    if (!m.contains(e.target)) {\n` +
+    `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+    `        el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
+    `      });\n` +
+    `    }\n` +
+    `  });\n` +
+    `  var dialog = document.getElementById("early-access-modal");\n` +
+    `  if (dialog) {\n` +
+    `    var closeBtn = document.getElementById("ea-close-btn");\n` +
+    `    var cancelBtn = document.getElementById("ea-cancel-btn");\n` +
+    `    var doneBtn = document.getElementById("ea-done-btn");\n` +
+    `    var formView = document.getElementById("ea-form-view");\n` +
+    `    var successView = document.getElementById("ea-success-view");\n` +
+    `    var form = document.getElementById("early-access-form");\n` +
+    `    function openModal(e) {\n` +
+    `      if (e) e.preventDefault();\n` +
+    `      if (!dialog.open) {\n` +
+    `        if (formView) formView.style.display = "block";\n` +
+    `        if (successView) successView.style.display = "none";\n` +
+    `        dialog.showModal();\n` +
+    `        var inp = dialog.querySelector("input");\n` +
+    `        if (inp) inp.focus();\n` +
+    `      }\n` +
+    `    }\n` +
+    `    function closeModal() { if (dialog.open) dialog.close(); }\n` +
+    `    document.querySelectorAll("[data-open-modal='early-access']").forEach(function(el) { el.addEventListener("click", openModal); });\n` +
+    `    if (closeBtn) closeBtn.addEventListener("click", closeModal);\n` +
+    `    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);\n` +
+    `    if (doneBtn) doneBtn.addEventListener("click", closeModal);\n` +
+    `    dialog.addEventListener("click", function(e) {\n` +
+    `      var r = dialog.getBoundingClientRect();\n` +
+    `      var inside = r.top <= e.clientY && e.clientY <= r.top + r.height && r.left <= e.clientX && e.clientX <= r.left + r.width;\n` +
+    `      if (!inside) closeModal();\n` +
+    `    });\n` +
+    `    if (form) form.addEventListener("submit", function(e) {\n` +
+    `      e.preventDefault();\n` +
+    `      if (formView) formView.style.display = "none";\n` +
+    `      if (successView) successView.style.display = "block";\n` +
+    `    });\n` +
+    `  }\n` +
+    `  document.addEventListener("keydown", function(e) {\n` +
+    `    if (e.key !== "Escape") return;\n` +
+    `    m.removeAttribute("data-open");\n` +
+    `    if (b) b.setAttribute("aria-expanded", "false");\n` +
+    `    m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
+    `      el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
+    `    });\n` +
+    `  });\n` +
+    `})();\n` +
     `</script>`;
   template = template.replace("</body>", script + "\n</body>");
 }
@@ -114,7 +187,7 @@ if (!template.includes(JS_MARK)) {
 lines[at.template] = JSON.stringify(template).replace(/<\//g, "<\\u002F");
 writeFileSync(TARGET_PAGE, lines.join("\n"));
 
-/* ── 3. Verify ──────────────────────────────────────────────────────────── */
+/* ── 3. Verify ───────────────────────────────────────────────────────────── */
 const out = readFileSync(TARGET_PAGE, "utf8").split("\n");
 const oAt = {};
 out.forEach((l, i) => {
@@ -129,7 +202,8 @@ if (!injected) throw new Error("masthead missing after write");
 if (injected[0] !== header) throw new Error("injected masthead differs from the component output");
 if (!parsed.template.includes(MARK)) throw new Error("masthead.css not injected");
 
-const navLabels = [...injected[0].matchAll(/class="navlink"[^>]*>([^<]+)</g)].map((m) => m[1].trim());
+const navLabels = [...injected[0].matchAll(/(?:class="[^"]*navlink[^"]*"[^>]*>[\s\S]*?<span>([^<]+)<\/span>|class="[^"]*navlink[^"]*"[^>]*>([^<]+)<\/a>)/g)]
+  .map((m) => (m[1] || m[2]).trim());
 console.log("masthead synced from Masthead.astro");
 console.log(`  markup identical to the component output: yes (${injected[0].length} chars)`);
 console.log(`  masthead.css injected: ${mastheadCss.split("\n").length} lines`);

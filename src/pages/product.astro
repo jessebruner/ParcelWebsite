@@ -1,0 +1,444 @@
+---
+/**
+ * Product Hub Overview
+ * The complete operating system for self-managed HOAs.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import StakeholderGrid from "../components/ui/StakeholderGrid.astro";
+import FeatureCard from "../components/ui/FeatureCard.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+
+const description = "Explore Common Parcel: automated dues collection, resident portals, architectural review workflows, and official record keeping built for self-managed HOAs.";
+---
+
+<Base
+  title="Platform Capabilities"
+  description={description}
+  path="/product"
+  shareTitle="Common Parcel: Software for Self-Managed HOAs"
+>
+  <Hero eyebrow="Platform Capabilities" scene="dusk" seed={42}>
+    <h1 class="t-display">The operating system for self-managed HOAs.</h1>
+    <p class="t-lede">
+      Common Parcel replaces fragmented spreadsheets and expensive management companies with clean software built specifically for board officers and homeowners.
+    </p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+    </div>
+  </Hero>
+
+  <!-- STAKEHOLDER VALUE -->
+  <section class="band band--field">
+    <div class="page">
+      <div class="section-intro">
+        <span class="t-label">Designed for Your Community</span>
+        <h2 class="t-sheet">Built for everyone in the neighborhood.</h2>
+        <p class="t-lede">
+          Software that makes board volunteering sustainable while giving homeowners instant clarity.
+        </p>
+      </div>
+      <StakeholderGrid />
+    </div>
+  </section>
+
+  <!-- FEATURE PILLARS -->
+  <section class="band">
+    <div class="page">
+      <div class="section-intro">
+        <span class="t-label">Core Pillars</span>
+        <h2 class="t-sheet">Four pillars for complete community operations.</h2>
+      </div>
+
+      <!-- Pillar 1: Dues & Accounting -->
+      <FeatureCard
+        eyebrow="Financial Operations"
+        title="Automated dues collection and direct bank deposits."
+        description="Homeowners pay online via ACH or debit card directly into your association bank account. Auto-reconciliation keeps your financial statements accurate in real time."
+        href="/product/dues-accounting"
+        linkText="Explore Financial Tools"
+      >
+        <div slot="details">
+          <ul class="rows">
+            <li><b>Direct Settlement:</b> Payments deposit straight to the association account.</li>
+            <li><b>Automated Reminders:</b> Scheduled digital invoices and optional physical mail delivery.</li>
+            <li><b>Real-Time Ledgers:</b> Instant balance sheets and accounts receivable tracking.</li>
+          </ul>
+        </div>
+        <div slot="visual">
+          <div class="mock-table">
+            <div class="mock-row head">
+              <span>Lot / Unit</span>
+              <span>Owner</span>
+              <span>Dues Status</span>
+              <span>Balance</span>
+            </div>
+            <div class="mock-row">
+              <span class="num">Lot 14</span>
+              <span>Miller, R.</span>
+              <span class="status-badge paid">Paid (ACH)</span>
+              <span class="num">$0.00</span>
+            </div>
+            <div class="mock-row">
+              <span class="num">Lot 15</span>
+              <span>Chang, E.</span>
+              <span class="status-badge paid">Paid (Card)</span>
+              <span class="num">$0.00</span>
+            </div>
+            <div class="mock-row">
+              <span class="num">Lot 16</span>
+              <span>Patel, S.</span>
+              <span class="status-badge pending">Invoice Sent</span>
+              <span class="num">$185.00</span>
+            </div>
+          </div>
+        </div>
+      </FeatureCard>
+
+      <!-- Pillar 2: Resident Portal -->
+      <FeatureCard
+        eyebrow="Homeowner Experience"
+        title="A modern portal your neighbors will actually enjoy."
+        description="No clunky passwords or forgotten logins. Homeowners can view payment history, submit maintenance requests, and access community documents from any phone or computer."
+        href="/product/resident-portal"
+        linkText="See Homeowner Features"
+        reverse={true}
+      >
+        <div slot="details">
+          <ul class="rows">
+            <li><b>1-Click Online Dues:</b> Simple self-serve payment flows.</li>
+            <li><b>Community Directory:</b> Verified resident contact information.</li>
+            <li><b>Official Document Library:</b> By-laws, CC&Rs, and meeting minutes available 24/7.</li>
+          </ul>
+        </div>
+        <div slot="visual">
+          <div class="mock-portal-card">
+            <div class="portal-header">
+              <div class="portal-greeting">Welcome back, Sarah</div>
+              <div class="portal-lot">Unit 402 - Annual Dues: Current</div>
+            </div>
+            <div class="portal-tiles">
+              <div class="portal-tile">
+                <span class="tile-icon">Payment</span>
+                <span class="tile-title">Pay Annual Dues</span>
+                <span class="tile-sub">Next due Oct 1</span>
+              </div>
+              <div class="portal-tile">
+                <span class="tile-icon">Docs</span>
+                <span class="tile-title">Governing Docs</span>
+                <span class="tile-sub">12 files posted</span>
+              </div>
+              <div class="portal-tile">
+                <span class="tile-icon">Requests</span>
+                <span class="tile-title">Submit ARC Form</span>
+                <span class="tile-sub">1 active ticket</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </FeatureCard>
+
+      <!-- Pillar 3: Architectural Reviews -->
+      <FeatureCard
+        eyebrow="Architectural Reviews"
+        title="Structured architectural reviews without neighborhood friction."
+        description="Manage paint, roofing, solar, and landscaping submissions with structured workflows, committee voting, and automatic audit logs for every decision."
+        href="/product/architectural-reviews"
+        linkText="View Architectural Workflows"
+      >
+        <div slot="details">
+          <ul class="rows">
+            <li><b>Digital Submissions:</b> Homeowners attach contractor plans and material photos.</li>
+            <li><b>Committee Review:</b> Private board discussion and recorded votes.</li>
+            <li><b>Formal Notices:</b> Downloadable formal decision letters with statutory citations.</li>
+          </ul>
+        </div>
+        <div slot="visual">
+          <div class="mock-arc">
+            <div class="arc-badge">ARC Request #1048</div>
+            <div class="arc-title">Solar Panel Installation</div>
+            <div class="arc-meta">Submitted by Lot 28 on August 14</div>
+            <div class="arc-votes">
+              <div class="vote-tag approved">President: Approved</div>
+              <div class="vote-tag approved">ARC Chair: Approved</div>
+              <div class="vote-tag pending">Secretary: Reviewing</div>
+            </div>
+          </div>
+        </div>
+      </FeatureCard>
+
+      <!-- Pillar 4: Governance & Records -->
+      <FeatureCard
+        eyebrow="Governance & Security"
+        title="Permanent, tamper-evident records for future board success."
+        description="Every vote, resolution, financial report, and vendor agreement is permanently cataloged. When board officers transition, incoming leaders inherit clean records instantly."
+        href="/product/governance-records"
+        linkText="Explore Governance Tools"
+        reverse={true}
+      >
+        <div slot="details">
+          <ul class="rows">
+            <li><b>Digital Voting:</b> Quorum tracking and verifiable ballot records.</li>
+            <li><b>Vendor Management:</b> Central contracts, insurance certificates, and renewal alerts.</li>
+            <li><b>Smooth Board Transitions:</b> Hand off community operations in minutes.</li>
+          </ul>
+        </div>
+        <div slot="visual">
+          <div class="mock-gov-list">
+            <div class="gov-item">
+              <div class="gov-name">2026 Annual General Meeting Minutes</div>
+              <span class="status-badge paid">Official Record</span>
+            </div>
+            <div class="gov-item">
+              <div class="gov-name">Landscaping Maintenance Agreement (2026-2027)</div>
+              <span class="status-badge active">Active Contract</span>
+            </div>
+            <div class="gov-item">
+              <div class="gov-name">Master Association Insurance Policy Certificate</div>
+              <span class="status-badge active">Current</span>
+            </div>
+          </div>
+        </div>
+      </FeatureCard>
+    </div>
+  </section>
+
+  <!-- COMPARISON CALLOUT -->
+  <section class="band band--field">
+    <div class="page">
+      <div class="compare-teaser">
+        <div class="teaser-text">
+          <span class="t-label">Compare Options</span>
+          <h2 class="t-headline">How does Common Parcel compare to alternatives?</h2>
+          <p class="t-lede">
+            Whether you are evaluating outside management firms or legacy software suites, see why self-managed boards choose Common Parcel.
+          </p>
+        </div>
+        <div class="teaser-links">
+          <a href="/compare/management-companies" class="compare-link-card">
+            <span class="card-label">Comparison 01</span>
+            <div class="card-name">Common Parcel vs Management Companies</div>
+            <div class="card-desc">Keep full board control while saving thousands in management overhead.</div>
+          </a>
+          <a href="/compare/legacy-software" class="compare-link-card">
+            <span class="card-label">Comparison 02</span>
+            <div class="card-name">Common Parcel vs Legacy HOA Software</div>
+            <div class="card-desc">Modern interface, transparent per-door pricing, and zero hidden lock-in fees.</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <CtaBand
+    headline="Ready to see Common Parcel in action?"
+    lede="Request early access for your neighborhood or calculate your association rate."
+  />
+</Base>
+
+<style>
+  .section-intro {
+    max-width: 36em;
+    margin-bottom: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  /* Mockup styles */
+  .mock-table {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--t-micro);
+    border: 1px solid var(--c-edge);
+  }
+  .mock-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.2fr 1fr;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--c-hairline);
+    align-items: center;
+  }
+  .mock-row.head {
+    background: var(--field);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--c-edge);
+  }
+  .mock-row:last-child { border-bottom: none; }
+
+  .status-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    font-weight: 500;
+  }
+  .status-badge.paid { background: #e6f4ea; color: #137333; }
+  .status-badge.pending { background: #fef7e0; color: #b06000; }
+  .status-badge.active { background: var(--held); color: var(--terracotta); }
+
+  .mock-portal-card {
+    background: var(--paper);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-4);
+  }
+  .portal-header {
+    border-bottom: var(--stroke-hairline);
+    padding-bottom: var(--s-3);
+    margin-bottom: var(--s-3);
+  }
+  .portal-greeting {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .portal-lot {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .portal-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+  }
+  .portal-tile {
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tile-icon {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .tile-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .tile-sub {
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+
+  .mock-arc {
+    background: var(--paper);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  .arc-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .arc-title {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .arc-meta {
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .arc-votes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: var(--s-2);
+  }
+  .vote-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--c-edge);
+    background: var(--card);
+  }
+  .vote-tag.approved { border-color: #34a853; color: #137333; }
+  .vote-tag.pending { border-color: var(--bisque-edge); color: var(--terracotta); }
+
+  .mock-gov-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .gov-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--paper);
+    border: 1px solid var(--c-edge);
+    font-size: 13px;
+  }
+  .gov-name {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* Compare teaser */
+  .compare-teaser {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .compare-teaser { grid-template-columns: 1fr; }
+  }
+  .teaser-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .compare-link-card {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-4) var(--s-5);
+    text-decoration: none;
+    transition: border-color 0.16s ease, transform 0.16s ease;
+  }
+  .compare-link-card:hover {
+    border-color: var(--terracotta);
+    transform: translateX(4px);
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .card-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 2px 0 4px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+</style>
