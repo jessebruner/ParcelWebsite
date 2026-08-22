@@ -22,6 +22,17 @@ function sourceTemplateAfterMastheadReplacement() {
   );
 }
 
+function replaceOccurrence(source, target, replacement, occurrence) {
+  let at = -1;
+  let from = 0;
+  for (let index = 0; index <= occurrence; index += 1) {
+    at = source.indexOf(target, from);
+    assert.notEqual(at, -1, `missing occurrence ${occurrence} of ${target}`);
+    from = at + target.length;
+  }
+  return source.slice(0, at) + replacement + source.slice(at + target.length);
+}
+
 test("generated homepage behavior script passes all verification rules", () => {
   const script = generateBehaviorScript();
   assert.doesNotThrow(() => verifyBehaviorScript(script));
@@ -54,6 +65,33 @@ test("mutation test: removing mouseleave hover sync fails verification", () => {
   assert.throws(
     () => verifyBehaviorScript(mutated),
     /Behavior script missing dContainers hover event listeners and aria-expanded sync/
+  );
+});
+
+test("mutation test: removing only the mouseenter width guard fails verification", () => {
+  const script = generateBehaviorScript();
+  const mutated = replaceOccurrence(script, "if (window.innerWidth > 860)", "if (true)", 0);
+  assert.throws(
+    () => verifyBehaviorScript(mutated),
+    /mouseenter hover sync must use the 860px viewport guard/
+  );
+});
+
+test("mutation test: removing only the mouseleave width guard fails verification", () => {
+  const script = generateBehaviorScript();
+  const mutated = replaceOccurrence(script, "if (window.innerWidth > 860)", "if (true)", 1);
+  assert.throws(
+    () => verifyBehaviorScript(mutated),
+    /mouseleave hover sync must use the 860px viewport guard/
+  );
+});
+
+test("mutation test: drifting the hover breakpoint fails verification", () => {
+  const script = generateBehaviorScript();
+  const mutated = script.replaceAll("if (window.innerWidth > 860)", "if (window.innerWidth > 1)");
+  assert.throws(
+    () => verifyBehaviorScript(mutated),
+    /mouseenter hover sync must use the 860px viewport guard/
   );
 });
 

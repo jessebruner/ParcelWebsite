@@ -257,18 +257,26 @@ export function verifyBehaviorScript(scriptText) {
     throw new Error("Behavior script missing dContainers hover event listeners and aria-expanded sync");
   }
 
-  // A phone has no hover. If the hover sync is not width-guarded, the first tap
-  // on a dropdown fires mouseenter and click together and the menu opens then
-  // closes. The block check above does not catch that: replacing the condition
-  // with `if (true)` left all 14 tests green. Measured, not assumed.
-  //
-  // Written without a regex on purpose. This shell collapses backslashes when a
-  // pattern is passed through a command string, which is how two lint rules in
-  // this repo shipped dead earlier today, matching nothing while reporting clean.
-  const enterAt = scriptText.indexOf('addEventListener("mouseenter"');
-  const guardWindow = enterAt < 0 ? "" : scriptText.slice(enterAt, enterAt + 220);
-  if (!guardWindow.includes("window.innerWidth >")) {
-    throw new Error("Behavior script hover sync is not guarded by a viewport-width check");
+  // A phone has no hover. Both hover listeners must use the same breakpoint as
+  // the mobile navigation CSS, or a synthetic hover event can fight the first
+  // tap. Inspect each listener region separately so one intact guard cannot
+  // hide a regression in the other.
+  const hoverBlockStart = scriptText.indexOf("dContainers.forEach(function(container) {");
+  const hoverBlockEnd = scriptText.indexOf("dBtns.forEach(function(btn) {", hoverBlockStart);
+  const hoverBlock = hoverBlockStart < 0 || hoverBlockEnd < 0
+    ? ""
+    : scriptText.slice(hoverBlockStart, hoverBlockEnd);
+  const enterAt = hoverBlock.indexOf('addEventListener("mouseenter"');
+  const leaveAt = hoverBlock.indexOf('addEventListener("mouseleave"');
+  const requiredHoverGuard = "if (window.innerWidth > 860)";
+  const enterRegion = enterAt < 0 || leaveAt < 0 ? "" : hoverBlock.slice(enterAt, leaveAt);
+  const leaveRegion = leaveAt < 0 ? "" : hoverBlock.slice(leaveAt);
+
+  if (!enterRegion.includes(requiredHoverGuard)) {
+    throw new Error("Behavior script mouseenter hover sync must use the 860px viewport guard");
+  }
+  if (!leaveRegion.includes(requiredHoverGuard)) {
+    throw new Error("Behavior script mouseleave hover sync must use the 860px viewport guard");
   }
 
   // Check document-level delegation by stable behavior attribute, never copy.
