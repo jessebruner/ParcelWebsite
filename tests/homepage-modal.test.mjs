@@ -60,6 +60,15 @@ test("mutation test: removing lot count bounds validation fails verification", (
   );
 });
 
+test("mutation test: removing CTA delegation for Get early access fails verification", () => {
+  const script = generateBehaviorScript();
+  const mutated = script.replace('btn.textContent.trim() === "Get early access"', 'false');
+  assert.throws(
+    () => verifyBehaviorScript(mutated),
+    /Behavior script missing document-level CTA delegation for 'Get early access' buttons/
+  );
+});
+
 test("mutation test: injecting bare fake-success submit handler fails verification", () => {
   const script = generateBehaviorScript();
   const mutated = script + '\nform.addEventListener("submit", function(e) { e.preventDefault(); if (formView) formView.style.display = "none"; if (successView) successView.style.display = "block"; });';

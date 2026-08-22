@@ -1,0 +1,96 @@
+---
+/**
+ * Blog index page.
+ *
+ * Provides HOA board field guides, statutory citations, and procedural governance notes.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import PixelSky from "../components/PixelSky.astro";
+import BlogCard from "../components/blog/BlogCard.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import { getAllPosts } from "../data/blog";
+
+const posts = getAllPosts();
+---
+
+<Base
+  title="HOA Field Guides and Governance Resources"
+  description="Practical guides, statutory references, and operational walk-throughs for self-managed HOA boards and volunteer officers."
+  path="/blog"
+  shareTitle="Common Parcel Field Guides for Self-Managed HOAs"
+>
+  <Hero eyebrow="Resources" seed={89}>
+    <h1 class="t-display">Field guides for self-managed boards</h1>
+    <p class="t-lede">
+      Practical guides, statutory references, and procedural walk-throughs written for volunteer
+      directors running associations without a paid property manager.
+    </p>
+  </Hero>
+
+  <section class="blog-index-section">
+    <div class="page">
+      <div class="blog-header-row">
+        <div>
+          <span class="t-label">Published Guides</span>
+          <h2 class="t-sheet">Governance and statutory guidance</h2>
+        </div>
+        <p class="blog-section-intro">
+          Every guide cites its primary statutory source, section numbers, and retrieval date so your board can verify requirements directly.
+        </p>
+      </div>
+
+      <div class="blog-grid">
+        {posts.map((post) => (
+          <BlogCard post={post} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <PixelSky mode="band" scene="dusk" seed={95} />
+
+  <CtaBand
+    headline="Put these governance workflows on autopilot"
+    lede="Common Parcel turns statutory requirements and declaration deadlines into organized board tasks."
+  />
+</Base>
+
+<style>
+  .blog-index-section {
+    padding-block: var(--pad-y);
+    background: var(--paper);
+  }
+  .blog-header-row {
+    margin-bottom: clamp(32px, 4vw, 56px);
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (min-width: 860px) {
+    .blog-header-row {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      justify-content: space-between;
+    }
+  }
+  .blog-header-row h2 {
+    margin-top: var(--s-2);
+  }
+  .blog-section-intro {
+    font-size: var(--t-lede);
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 44ch;
+    line-height: 1.5;
+  }
+  .blog-grid {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px) {
+    .blog-grid {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+  }
+</style>
