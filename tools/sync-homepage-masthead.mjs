@@ -257,6 +257,20 @@ export function verifyBehaviorScript(scriptText) {
     throw new Error("Behavior script missing dContainers hover event listeners and aria-expanded sync");
   }
 
+  // A phone has no hover. If the hover sync is not width-guarded, the first tap
+  // on a dropdown fires mouseenter and click together and the menu opens then
+  // closes. The block check above does not catch that: replacing the condition
+  // with `if (true)` left all 14 tests green. Measured, not assumed.
+  //
+  // Written without a regex on purpose. This shell collapses backslashes when a
+  // pattern is passed through a command string, which is how two lint rules in
+  // this repo shipped dead earlier today, matching nothing while reporting clean.
+  const enterAt = scriptText.indexOf('addEventListener("mouseenter"');
+  const guardWindow = enterAt < 0 ? "" : scriptText.slice(enterAt, enterAt + 220);
+  if (!guardWindow.includes("window.innerWidth >")) {
+    throw new Error("Behavior script hover sync is not guarded by a viewport-width check");
+  }
+
   // Check document-level delegation by stable behavior attribute, never copy.
   const ctaDelegation = /target\.closest\(\s*["']\[data-open-modal=["']early-access["']\]["']\s*\)[\s\S]*?if\s*\(\s*!btn\s*\)\s*return;[\s\S]*?openModal\(e\)/;
   if (!ctaDelegation.test(scriptText)) {
