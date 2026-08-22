@@ -30,17 +30,39 @@ const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
 // 1. Source-level guard: Forbid unpinned build-time Date reads outside epoch-aware sites
 console.log("Checking for unpinned build-time Date reads...");
 function checkFileForUnpinnedDate(filePath, content) {
-  // Check frontmatter in .astro or full content in tools
-  let textToCheck = content;
+  let lines = content.split(/\r?\n/);
+  let lineOffset = 1;
   if (filePath.endsWith(".astro")) {
-    const fmMatch = /^---\r?\n([\s\S]*?)\r?\n---/.exec(content);
-    textToCheck = fmMatch ? fmMatch[1] : "";
-  }
-  if (/\b(Date\.now|new Date)\b/.test(textToCheck)) {
-    if (!textToCheck.includes("SOURCE_DATE_EPOCH")) {
-      throw new Error(`Unpinned Date call in ${filePath}: file calls Date without referencing SOURCE_DATE_EPOCH`);
+    const fmStart = lines.findIndex((l) => l.trim() === "---");
+    if (fmStart !== -1) {
+      const fmEnd = lines.slice(fmStart + 1).findIndex((l) => l.trim() === "---");
+      if (fmEnd !== -1) {
+        lineOffset = fmStart + 2;
+        lines = lines.slice(fmStart + 1, fmStart + 1 + fmEnd);
+      } else {
+        lines = [];
+      }
+    } else {
+      lines = [];
     }
   }
+
+  lines.forEach((line, idx) => {
+    const lineNum = lineOffset + idx;
+    if (/\bDate\.now\b/.test(line)) {
+      if (!line.includes("SOURCE_DATE_EPOCH")) {
+        throw new Error(`Unpinned Date.now() call in ${filePath}:${lineNum}: line calls Date.now() without SOURCE_DATE_EPOCH check`);
+      }
+    }
+    if (/\bnew\s+Date\b/.test(line)) {
+      if (/\bnew\s+Date\s*\(\s*\)/.test(line)) {
+        throw new Error(`Unpinned new Date() call in ${filePath}:${lineNum}: empty new Date() reads wall clock`);
+      }
+      if (!line.includes("epoch") && !line.includes("SOURCE_DATE_EPOCH")) {
+        throw new Error(`Unpinned new Date(...) call in ${filePath}:${lineNum}: new Date argument must reference epoch or SOURCE_DATE_EPOCH`);
+      }
+    }
+  });
 }
 
 function scanDir(dir) {
