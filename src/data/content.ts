@@ -49,13 +49,13 @@ export const FEATURES: PageSpec[] = [
     slug: "dues-and-payments",
     title: "Dues and payments",
     description:
-      "Invoiced at the amount your declaration sets, on the date it sets. Receipts post the same day and payment records stay organized for the treasurer.",
+      "Invoice every lot from one board-approved schedule, collect online when connected, and keep payment records organized for the treasurer.",
     eyebrow: "Dues and payments",
     h1: "Dues go out on time, every period",
     lede: "Parcel bills the assessment your declaration sets, on the date it sets. It does not ask you to type the amount, and it does not need reminding when the quarter turns.",
     bands: [
       {
-        title: "What it does",
+        title: "Send dues without rebuilding the schedule",
         body: [
           { "panel": {
                             "label": "Assessments · March",
@@ -91,27 +91,27 @@ export const FEATURES: PageSpec[] = [
           "Invoices every lot on your schedule, at your amount.",
           "Takes bank transfer and card when connected.",
           "Logs a mailed cheque against the right lot.",
-          "Posts receipts the same day.",
+          "Posts a receipt when a payment clears.",
           "Applies late fees the way your documents describe them.",
           "Gives every owner a statement they can download.",
         ] }],
       },
       {
-        title: "How it works",
+        title: "Confirm the numbers before billing starts",
         field: true,
         body: [{ rows: [
           "**One.** Parcel reads the assessment, the due date, the grace period and the late fee out of your declaration, and shows each one with the page it came from.",
           "**Two.** You confirm what it read.",
-          "**Three.** The billing run goes out on the date your documents set, every period, without being started.",
+          "**Three.** You approve the schedule once. Parcel prepares each billing run from it.",
         ] }],
       },
       {
-        title: "Where it stops",
+        title: "Common Parcel never holds your HOA's money",
         note: ["See collections", "/product/collections"],
         body: [{ statutory: {
           label: "Custody",
-          lede: "Owners pay into the association's own account, in the association's own name. Parcel is not in that path and cannot move a dollar out of it.",
-          note: "Live card and bank payments are not switched on yet. Invoicing, ledgers and statements run today. Paying through Parcel arrives at launch.",
+          lede: "Owners pay into the association's own account, in the association's own name. Common Parcel never holds association funds or has authority to withdraw them.",
+          note: "Online card and bank payments switch on only after the association connects its own Stripe account. Invoicing, ledgers and statements do not depend on that connection.",
         } }],
       },
     ],
@@ -120,13 +120,13 @@ export const FEATURES: PageSpec[] = [
     slug: "collections",
     title: "Collections",
     description:
-      "A graduated delinquency ladder that runs on verified state notice periods, holds when a board says hold, and waits for two officers before anything statutory leaves.",
+      "A board-controlled delinquency plan that uses verified notice periods where available, pauses on command, and records every approval.",
     eyebrow: "Collections",
     h1: "What happens when someone stops paying",
-    lede: "Parcel sends the reminder, then the late notice, then the demand, on the dates your documents and verified state rules require. Moving faster than that is how a board loses the argument later.",
+    lede: "Parcel prepares each collection step from your documents and any verified rules that apply. The board can review, send, pause, or stop the plan.",
     bands: [
       {
-        title: "The order notices go out in",
+        title: "Control every collection step",
         body: [
           { "panel": {
                             "label": "Lot 63 · unpaid since 1 March",
@@ -165,29 +165,29 @@ export const FEATURES: PageSpec[] = [
             "**Demand.** The letter before a lien, with the amount broken out.",
             "**Lien warning.** Prepared, cited, and waiting for signature.",
           ] },
-          { coda: "Each step's timing comes from verified state statutes and your own documents. Not from a setting somebody picked." },
+          { coda: "Where Common Parcel has verified an applicable rule, the timing points back to that source and to your own documents." },
         ],
       },
       {
-        title: "Putting an account on hold",
+        title: "Pause collection when life happens",
         field: true,
-        body: [{ p: "When a board freezes an account for a hardship, a dispute, or a death in the family, accrual stops and the ladder stops. Not mostly stops." }],
+        body: [{ p: "When a board places an account on hold for a hardship, a dispute, or a death in the family, scheduled collection actions stop until the board releases the hold." }],
       },
       {
-        title: "Where it stops",
+        title: "Your board controls every collection action",
         body: [
-          { p: "Nothing with legal weight goes out on its own. A demand, a lien warning or a statutory notice needs two officers to sign, and the record shows who signed, when, and on what basis." },
+          { p: "Nothing with legal consequences goes out on its own. Where the workflow enforces a two-officer gate, the action waits for both approvals and records who approved it, when, and on what basis." },
           { p: "Where Common Parcel has a verified rule for your state, the ladder reflects that procedure. If your state's collection procedure has not been verified yet, the ladder does not advance and the interface says which provision is missing." },
         ],
       },
       {
-        title: "What Parcel cannot do yet",
+        title: "Certified mail is not connected yet",
         field: true,
         note: ["See rules and enforcement", "/product/rules-and-enforcement"],
         body: [{ statutory: {
           label: "Proof of mailing",
           lede: "Certified mail is not connected. Parcel can show that a notice was drafted and approved. It cannot yet show that it was served.",
-          note: "Until that ships, mail the notice yourself and record it. A screen that implied otherwise would be lying about whether an owner was served.",
+          note: "Until that connection ships, the board remains responsible for service and for recording proof outside Common Parcel.",
         } }],
       },
     ],
@@ -198,11 +198,11 @@ export const FEATURES: PageSpec[] = [
     description:
       "Assisted bank reconciliation, budgets that carry the vote that adopted them, and a full export for your accountant any month.",
     eyebrow: "Accounting and budgets",
-    h1: "Ledgers that track balances, budgets that show their vote",
+    h1: "Keep clean books without becoming an accountant",
     lede: "Every charge, payment, fee and credit lands in one ledger, keeping bank activity and association records organized.",
     bands: [
       {
-        title: "Reconciliation",
+        title: "Keep the ledger tied to the bank",
         body: [
           { "panel": {
                             "label": "Reconciliation · 31 March",
@@ -233,19 +233,19 @@ export const FEATURES: PageSpec[] = [
                   } },{ p: "Reconciliation sessions keep imported bank activity matched against ledger entries. A reconciliation that does not account for every transaction is flagged, helping the treasurer keep books clean." }],
       },
       {
-        title: "Budgets",
+        title: "Show owners how the budget was approved",
         field: true,
         body: [
           { p: "A budget moves through draft, proposed and adopted, and every version is kept. The adopted one carries the meeting that adopted it and the notice that preceded it." },
-          { coda: "That matters in an argument. When an owner disputes an assessment, the answer is the date it was adopted, the notice period it ran on, and the budget attached to it. Most software records the number and nothing about how the board got there." },
+          { coda: "When an owner disputes an assessment, the board can show the date it was adopted, the notice that preceded it, and the budget attached to the vote." },
         ],
       },
       {
-        title: "Special assessments",
-        body: [{ p: "The same machinery with a different vote threshold. Parcel reads the threshold your documents require, tracks the vote against it, and bills from the result." }],
+        title: "Bill from the approved result",
+        body: [{ p: "A special assessment uses the threshold in your documents. Parcel tracks the vote against it and prepares billing after the board confirms the result." }],
       },
       {
-        title: "Reports and the handoff",
+        title: "Give the next treasurer clean books",
         field: true,
         note: ["See dues and payments", "/product/dues-and-payments"],
         body: [
@@ -264,13 +264,13 @@ export const FEATURES: PageSpec[] = [
     slug: "rules-and-enforcement",
     title: "Rules and enforcement",
     description:
-      "Violations logged against the rule they break, with the cure window, the hearing notice your state requires, and a check on how often that rule has been enforced before.",
+      "Keep the rule, evidence, response window, hearing, and board decision together so enforcement stays consistent.",
     eyebrow: "Rules and enforcement",
     h1: "Enforce community rules fairly and consistently",
-    lede: "A fine only sticks if the steps before it were done properly. Parcel runs each one on the clock your documents and verified state rules set, and will not produce the fine until the hearing is on the record.",
+    lede: "Parcel keeps each enforcement step tied to the rule behind it. Where an applicable deadline or hearing rule has been verified, the workflow will not skip it.",
     bands: [
       {
-        title: "The sequence",
+        title: "Treat every case the same way",
         body: [
           { "panel": {
                             "label": "Lot 77 · fence height",
@@ -308,12 +308,12 @@ export const FEATURES: PageSpec[] = [
             "Formal notice, citing the specific rule.",
             "Cure window, on a real clock.",
             "Re-inspection when the window closes.",
-            "Notice of hearing, on your verified state's required period.",
+            "Notice of hearing, using a verified period where one applies.",
             "Hearing, with the outcome recorded.",
-            "Fine, at the amount your documents allow, inside any statutory cap.",
+            "Fine, at the amount your documents allow and within any verified cap that applies.",
             "Appeal, where your documents provide one.",
           ] },
-          { coda: "Every step is dated in the record. The record is the defence." },
+          { coda: "Every step is dated in the record, so the board can explain what happened and why." },
         ],
       },
       {
@@ -321,21 +321,21 @@ export const FEATURES: PageSpec[] = [
         field: true,
         body: [
           { p: "Before a fine is levied, Parcel looks at how the association has treated that rule before and says what it finds. How many times it has been enforced. How many open instances are sitting there right now." },
-          { coda: "A board fining one owner for something it has ignored eleven times is about to lose. Until now there was no way to see that from the inside." },
+          { coda: "A board that treats similar cases differently will struggle to explain the decision. The history makes that pattern visible before the vote." },
         ],
       },
       {
-        title: "Architectural review",
-        body: [{ p: "A request arrives, gets pre-screened against your own rules with the provisions quoted, and carries the response clock your state sets. The committee decides. Parcel never does." }],
+        title: "Give committees the rule and the deadline",
+        body: [{ p: "A request arrives, gets checked against your own rules with the provisions quoted, and shows a verified response deadline where one applies. The committee decides. Parcel never does." }],
       },
       {
-        title: "Where it stops",
+        title: "Keep the board responsible for every fine",
         field: true,
         note: ["See meetings and voting", "/product/meetings-and-voting"],
         body: [{ statutory: {
           label: "No fine without the procedure",
-          lede: "A fine cannot be produced without a recorded hearing notice that satisfies your verified state period and a recorded outcome. Not a warning. The action is unavailable.",
-          note: "Requests for an exception on disability grounds run on different law and a different timeline. Treating one as a violation appeal is its own liability. That process is designed and not built yet.",
+          lede: "Where a verified rule requires notice and a hearing, the workflow keeps the fine unavailable until both are recorded.",
+          note: "Requests tied to disability or another protected right need a separate process and qualified legal review. That process is designed and not built yet.",
         } }],
       },
     ],
@@ -344,13 +344,13 @@ export const FEATURES: PageSpec[] = [
     slug: "meetings-and-voting",
     title: "Meetings and voting",
     description:
-      "Notice on the statutory schedule, an agenda from open business, quorum against the live roster, and factual draft minutes from the meeting record.",
+      "Plan notice dates, build the agenda, track attendance, certify quorum against the current roster, and draft minutes from the meeting record.",
     eyebrow: "Meetings and voting",
-    h1: "Run clean meetings and verifiable elections",
-    lede: "An association runs on that cycle. Nearly everything with legal weight passes through it, and skipping a step usually makes the result void rather than untidy.",
+    h1: "Run meetings and elections owners can trust",
+    lede: "Meetings turn open questions into recorded board decisions. Parcel keeps the notice, agenda, attendance, vote, and minutes in one workflow.",
     bands: [
       {
-        title: "The meeting",
+        title: "Run the meeting from one record",
         body: [
           { "panel": {
                             "label": "Annual meeting · 14 November",
@@ -381,29 +381,29 @@ export const FEATURES: PageSpec[] = [
                             }
                   } },
           { rows: [
-            "**Notice** goes out on the period your state and your bylaws set, counted back from the date.",
-            "**The agenda** assembles itself from business that is actually open: the motions waiting, the approvals pending, the deadlines landing.",
-            "**Quorum** is counted against the roster you have today, not the one from last year.",
+            "**Notice** uses the period in your bylaws and any verified rule that applies, counted back from the meeting date.",
+            "**The agenda** brings together the motions, approvals, and deadlines the board still needs to handle.",
+            "**Quorum** is calculated against the current roster and certified by an officer.",
             "**Motions** carry into votes and the votes carry into the record.",
-            "**Minutes** draft directly from the meeting record; the board reviews and adopts them at the next meeting.",
+            "**Minutes** can be drafted from the meeting record. The board reviews and adopts them.",
           ] },
-          { coda: "Video conferencing is built in, and the calendar publishes a feed your board can subscribe to." },
+          { coda: "Add your existing meeting link, then publish a calendar feed your board can subscribe to." },
         ],
       },
       {
-        title: "Elections",
+        title: "Count votes against the current roster",
         field: true,
-        body: [{ p: "Electronic ballots and proxies where your state permits them, with paper ballots logged alongside. Eligibility comes from the roster. Quorum is live. A contested result has a record behind every number." }],
+        body: [{ p: "Where electronic ballots or proxies are permitted, Parcel keeps them with paper ballots and checks eligibility against the current roster. Every tally carries the records behind the number." }],
       },
       {
-        title: "Committees",
+        title: "Give each committee only its work",
         body: [{ p: "Architectural review, landscaping, whatever your bylaws create. Each committee gets the queue it is responsible for and nothing else." }],
       },
       {
-        title: "Signing",
+        title: "Keep approvals with the decision",
         field: true,
         note: ["See documents and answers", "/product/documents-and-answers"],
-        body: [{ p: "Anything statutory needs two officers. The signatures go into the record with the time and the reason." }],
+        body: [{ p: "Where Common Parcel enforces a two-officer gate, both approvals go into the record with the time and the reason." }],
       },
     ],
   },
@@ -417,11 +417,11 @@ export const FEATURES: PageSpec[] = [
     lede: "The most common drain on a board's time is answering the same question again. Can I put a shed there. When are dues late. What color can I paint the door.",
     bands: [
       {
-        title: "What happens when you upload",
+        title: "See the facts inside your governing documents",
         body: [
           { "panel": {
                             "label": "Reading your declaration",
-                            "note": "About 30 min",
+                            "note": "Board review",
                             "rows": [
                                       {
                                                 "label": "Assessment",
@@ -458,14 +458,14 @@ export const FEATURES: PageSpec[] = [
           { rows: [
             "**The documents are read.** Declaration, bylaws, rules, amendments, plat. Scans are fine.",
             "**Provisions come out as facts.** The assessment, the due date, the grace period, the late fee, the quorum threshold, the notice periods. Each carries the page and line it was read from.",
-            "**You confirm what it read.** A short list beside the source text. About thirty minutes for a typical set.",
+            "**You confirm what it read.** Review a short list beside the source text.",
             "**Unconfirmed facts cannot drive anything.** One gate in the code, and everything passes through it.",
             "**What it cannot find prints as unknown.** Not a default. Not a number from a similar association.",
           ] },
         ],
       },
       {
-        title: "Then the documents do the work",
+        title: "Answer routine questions with the source",
         field: true,
         body: [
           { p: "Questions come back with the section they rest on, so you can read it yourself and forward it to an owner who will argue." },
@@ -475,13 +475,13 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "Records requests",
-        body: [{ p: "An owner's request starts a clock with a dollar figure attached in several states. Parcel dates the request, runs the statutory window for your jurisdiction, searches the records it already holds, and logs what was produced." }],
+        title: "Track requests before a deadline is missed",
+        body: [{ p: "Parcel dates a records request, shows a verified deadline where one applies, searches the records it already holds, and prepares the production log for board review." }],
       },
       {
-        title: "Resale and estoppel",
+        title: "Prepare closing records without guessing",
         field: true,
-        body: [{ p: "A buyer's agent asks, and the packet assembles from confirmed facts. Where a required figure is unconfirmed, Parcel refuses to assemble rather than shipping a guess to a closing table." }],
+        body: [{ p: "Parcel prepares a resale packet from confirmed facts for board review. If a required figure is unconfirmed, the packet stays incomplete instead of carrying a guess to the closing table." }],
       },
       {
         title: "What it will not do",
@@ -494,13 +494,13 @@ export const FEATURES: PageSpec[] = [
     slug: "vendors-and-insurance",
     title: "Vendors and insurance",
     description:
-      "Surfaces contracts before they renew, helps draft quote requests for board review, and checks invoices against agreements.",
+      "Surface contracts before they renew, prepare quote requests for board review, and keep invoices beside the agreements behind them.",
     eyebrow: "Vendors and insurance",
     h1: "Stay ahead of vendor renewals and compare quotes",
-    lede: "Parcel watches every renewal date and helps draft quote requests for your board to review and send before the deadline arrives.",
+    lede: "Put each renewal date and notice period on one board calendar. Parcel counts back from both and helps prepare quote requests for board review.",
     bands: [
       {
-        title: "Contracts",
+        title: "See renewals before the deadline",
         body: [
           { "panel": {
                             "label": "Landscaping · renews 2 April",
@@ -520,14 +520,14 @@ export const FEATURES: PageSpec[] = [
                                                 "chip": "Lowest"
                                       },
                                       {
-                                                "label": "Going rate, your area",
-                                                "value": "$22,100",
-                                                "cite": "Benchmark"
+                                                "label": "Board review",
+                                                "value": "3 quotes",
+                                                "cite": "Ready to compare"
                                       }
                             ],
                             "footing": {
-                                      "label": "If you switch",
-                                      "value": "$4,750"
+                                      "label": "Decision",
+                                      "value": "Board chooses"
                             }
                   } },
           { p: "Every contract has a renewal date and a notice period, and Parcel counts back from both. Before a contract renews, it alerts the board, drafts requests for fresh quotes, and lets you compare recorded vendor bids." },
@@ -535,22 +535,22 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "Quotes and invoices",
+        title: "Compare every quote on the same facts",
         field: true,
         body: [
-          { p: "Send a request for quotes to several vendors from one screen. Replies arrive by email and the numbers come out of them into a table you can compare." },
-          { p: "An invoice gets checked against the contract it belongs to before it reaches you. A rate that does not match, a line that was not in the scope, a duplicate of last month: those surface before payment, not after." },
+          { p: "Prepare a request for several vendors from one screen, review it, and send it. Record the replies in one table so the board can compare the same facts." },
+          { p: "Compare an invoice with its contract before board approval. A changed rate, an out-of-scope line, or a duplicate stays visible beside the document that answers it." },
         ],
       },
       {
-        title: "Insurance",
+        title: "Put policy renewals on the board calendar",
         body: [
-          { p: "Policies are read the way governing documents are read. Coverage limits, deductibles and the renewal date come out as facts. The renewal lands on the calendar counted back from the notice date, and the certificate requests that eat a manager's week get answered from what Parcel already holds." },
-          { coda: "Insurance is the fastest rising line on most budgets right now. It is also the one most often handled by whoever remembers." },
+          { p: "Policies are read the way governing documents are read. Coverage limits, deductibles, renewal dates, and notice periods sit beside the source page for board confirmation." },
+          { coda: "The renewal belongs on the board calendar, not in one officer's memory." },
         ],
       },
       {
-        title: "Reserves",
+        title: "Plan reserves from the study you already have",
         field: true,
         note: ["See accounting and budgets", "/product/accounting-and-budgets"],
         body: [{ p: "Upload the reserve study and the numbers come out of it. Parcel tracks the funded position against what the study recommends, and says which it is missing when it only has one side." }],
@@ -567,11 +567,11 @@ export const FEATURES: PageSpec[] = [
     lede: "Most owners sign in twice a year. So the portal has to work for somebody who has never seen it and will not come back. Its job is to take work off the board, not to build a community.",
     bands: [
       {
-        title: "What an owner can do",
+        title: "Give owners one place to start",
         body: [
           { "panel": {
                             "label": "Portal · what an owner sees",
-                            "note": "0 to your inbox",
+                            "note": "Self-service",
                             "rows": [
                                       {
                                                 "label": "Balance",
@@ -594,8 +594,8 @@ export const FEATURES: PageSpec[] = [
                                       }
                             ],
                             "footing": {
-                                      "label": "Calls to the board",
-                                      "value": "None"
+                                      "label": "Board follow-up",
+                                      "value": "Only when needed"
                             }
                   } },{ rows: [
           "See what they owe, and what it is made of.",
@@ -607,7 +607,7 @@ export const FEATURES: PageSpec[] = [
         ] }],
       },
       {
-        title: "What the board gets back",
+        title: "Get routine questions out of your inbox",
         field: true,
         body: [
           { p: "The phone call that does not happen. The email that does not need answering. The violation that does not start because the owner read the rule first." },
@@ -615,7 +615,7 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "Claiming a lot",
+        title: "Let the board control portal access",
         note: ["See documents and answers", "/product/documents-and-answers"],
         body: [
           { p: "An owner finds their address and claims it. The board confirms." },
@@ -623,7 +623,7 @@ export const FEATURES: PageSpec[] = [
           { statutory: {
             label: "When connected",
             lede: "Online payments route directly to the association's bank.",
-            note: "Balances, statements, requests, rules and votes run in the portal.",
+            note: "Balances, statements, requests, rules, and eligible votes stay in the portal.",
           } },
         ],
       },
@@ -633,13 +633,13 @@ export const FEATURES: PageSpec[] = [
     slug: "records-and-audit",
     title: "Records and audit",
     description:
-      "Preserves meeting records, board resolutions, vendor contracts, and complete audit history so nothing gets lost across board transitions.",
+      "Keep meeting records, board resolutions, vendor contracts, and numbered change history together across board transitions.",
     eyebrow: "Records and audit",
-    h1: "Official records that outlast any board",
-    lede: "When officers rotate, institutional memory disappears. Parcel organizes minutes, resolutions, notices, and financial ledgers into an official record the next board inherits.",
+    h1: "Association records that outlast any board",
+    lede: "When officers rotate, institutional memory disappears. Keep minutes, resolutions, notices, and financial ledgers together so the next board inherits a usable association record.",
     bands: [
       {
-        title: "What gets recorded",
+        title: "Keep decisions with the records behind them",
         body: [
           {
             panel: {
@@ -652,8 +652,8 @@ export const FEATURES: PageSpec[] = [
                 { label: "Annual Meeting Minutes", chip: "Signed" },
               ],
               footing: {
-                label: "Integrity",
-                value: "Verified",
+                label: "Export",
+                value: "Included",
               },
             },
           },
@@ -669,10 +669,10 @@ export const FEATURES: PageSpec[] = [
         ],
       },
       {
-        title: "Traceable change history",
+        title: "Show who changed what",
         field: true,
         body: [
-          { p: "Every change to an account, rule, or record notes who made it and when." },
+          { p: "Changes to supported accounts, rules, and records note who made them and when." },
           { coda: "The next board inherits structured association history instead of scattered email threads." },
         ],
       },

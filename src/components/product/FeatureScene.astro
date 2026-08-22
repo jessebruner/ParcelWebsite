@@ -42,10 +42,10 @@ const TITLES: Record<string, string> = {
   {slug === "collections" && (
     <div class="timeline scene-body">
       <div class="timeline-rule"></div>
-      <div class="timeline-step"><span>01</span><b>Due date</b><i></i></div>
-      <div class="timeline-step"><span>02</span><b>Board review</b><i></i></div>
-      <div class="timeline-step"><span>03</span><b>Notice</b><i></i></div>
-      <div class="timeline-step"><span>04</span><b>Next action</b><i></i></div>
+      <div class="timeline-step"><b>Due date</b><i></i></div>
+      <div class="timeline-step"><b>Board review</b><i></i></div>
+      <div class="timeline-step"><b>Notice</b><i></i></div>
+      <div class="timeline-step"><b>Next action</b><i></i></div>
     </div>
   )}
 
@@ -58,6 +58,7 @@ const TITLES: Record<string, string> = {
       </div>
       <div class="ledger-lines"><i></i><i></i><i></i><i></i></div>
       <div class="budget-total"><span>Budget view</span><b>Board review</b></div>
+      <p class="scene-note">Illustrative budget view.</p>
     </div>
   )}
 
@@ -78,10 +79,10 @@ const TITLES: Record<string, string> = {
 
   {slug === "meetings-and-voting" && (
     <div class="meeting scene-body">
-      <div class="meeting-date"><span>Annual meeting</span><b>24</b><small>Agenda</small></div>
+      <div class="meeting-date"><span>Annual meeting</span><b>Vote</b><small>Agenda</small></div>
       <div class="ballot-stack">
-        <div class="ballot"><i></i><span>Ballot</span><b>01</b></div>
-        <div class="ballot"><i></i><span>Ballot</span><b>02</b></div>
+        <div class="ballot"><i></i><span>Ballot received</span></div>
+        <div class="ballot"><i></i><span>Ballot reviewed</span></div>
         <div class="quorum"><span>Quorum</span><i><b></b></i></div>
       </div>
     </div>
@@ -129,12 +130,13 @@ const TITLES: Record<string, string> = {
   {slug === "records-and-audit" && (
     <div class="records scene-body">
       <div class="record-list">
-        <div><b>0042</b><span>Meeting decision</span><i></i></div>
-        <div><b>0043</b><span>Board approval</span><i></i></div>
-        <div><b>0044</b><span>Document update</span><i></i></div>
-        <div><b>0045</b><span>Association export</span><i></i></div>
+        <div><span>Meeting decision</span><i></i></div>
+        <div><span>Board approval</span><i></i></div>
+        <div><span>Document update</span><i></i></div>
+        <div><span>Association export</span><i></i></div>
       </div>
-      <div class="export-box"><span class="pixel-box"></span><b>Export with manifest</b></div>
+      <div class="export-box"><span class="pixel-box"></span><b>Export package</b></div>
+      <p class="scene-note">Illustrative association records.</p>
     </div>
   )}
 </div>
@@ -193,7 +195,6 @@ const TITLES: Record<string, string> = {
   .timeline { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-2); align-content: center; }
   .timeline-rule { position: absolute; left: 10%; right: 10%; top: 50%; height: 2px; background: var(--on-dark-tile); }
   .timeline-step { position: relative; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; }
-  .timeline-step span { font-family: var(--font-mono); color: var(--on-dark-label); font-size: var(--t-mono-label); }
   .timeline-step b { font-size: var(--t-micro); background: var(--night); border: 1px solid var(--on-dark-tile); padding: var(--s-2); min-width: 86px; }
   .timeline-step i { width: 12px; height: 12px; background: var(--paper); border: 3px solid var(--plum); z-index: 1; }
   .timeline-step:nth-child(4) i { background: var(--amber); }
@@ -231,10 +232,9 @@ const TITLES: Record<string, string> = {
   .meeting-date span, .meeting-date small { color: var(--mist); font-size: var(--t-micro); }
   .meeting-date b { font: 600 var(--t-figure)/1 var(--font-serif); color: var(--paper); }
   .ballot-stack { display: grid; gap: var(--s-3); }
-  .ballot { border: 1px solid var(--on-dark-tile); background: var(--night); padding: var(--s-3); display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: var(--s-3); }
+  .ballot { border: 1px solid var(--on-dark-tile); background: var(--night); padding: var(--s-3); display: grid; grid-template-columns: 18px 1fr; align-items: center; gap: var(--s-3); }
   .ballot i { width: 14px; height: 14px; border: 2px solid var(--amber); }
   .ballot span { color: var(--mist); font-size: var(--t-micro); }
-  .ballot b { font: 500 var(--t-mono-label)/1 var(--font-mono); color: var(--on-dark-label); }
   .quorum { padding-top: var(--s-3); border-top: 1px solid var(--night-rule); display: grid; gap: var(--s-2); color: var(--mist); font-size: var(--t-micro); }
   .quorum i { height: 9px; background: var(--on-dark-tile); }
   .quorum b { display: block; width: 64%; height: 100%; background: var(--amber); }
@@ -278,8 +278,7 @@ const TITLES: Record<string, string> = {
   /* Records */
   .records { display: grid; grid-template-columns: 1.4fr 0.7fr; gap: var(--s-5); align-items: center; }
   .record-list { border-top: 1px solid var(--night-rule); }
-  .record-list > div { border-bottom: 1px solid var(--night-rule); min-height: 48px; display: grid; grid-template-columns: 48px 1fr 10px; align-items: center; gap: var(--s-3); }
-  .record-list b { font: 500 var(--t-mono-label)/1 var(--font-mono); color: var(--amber); }
+  .record-list > div { border-bottom: 1px solid var(--night-rule); min-height: 48px; display: grid; grid-template-columns: 1fr 10px; align-items: center; gap: var(--s-3); }
   .record-list span { font-size: var(--t-micro); }
   .record-list i { width: 8px; height: 8px; background: var(--slate); }
   .record-list > div:last-child i { background: var(--amber); }
