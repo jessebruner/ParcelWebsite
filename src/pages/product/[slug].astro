@@ -8,6 +8,7 @@ import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
 import CtaBand from "../../components/ui/CtaBand.astro";
+import FeatureScene from "../../components/product/FeatureScene.astro";
 import { FEATURES, type PageSpec } from "../../data/content";
 
 export function getStaticPaths() {
@@ -22,6 +23,19 @@ interface Props {
 }
 
 const { feature } = Astro.props;
+
+const FEATURE_ART: Record<string, { scene: "dusk" | "dawn"; seed: number }> = {
+  "dues-and-payments": { scene: "dusk", seed: 13 },
+  collections: { scene: "dusk", seed: 29 },
+  "accounting-and-budgets": { scene: "dawn", seed: 43 },
+  "rules-and-enforcement": { scene: "dusk", seed: 57 },
+  "meetings-and-voting": { scene: "dawn", seed: 71 },
+  "documents-and-answers": { scene: "dawn", seed: 89 },
+  "vendors-and-insurance": { scene: "dusk", seed: 103 },
+  "resident-portal": { scene: "dawn", seed: 127 },
+  "records-and-audit": { scene: "dusk", seed: 149 },
+};
+const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7 };
 ---
 
 <Base
@@ -30,12 +44,17 @@ const { feature } = Astro.props;
   path={`/product/${feature.slug}`}
   shareTitle={`Common Parcel: ${feature.title}`}
 >
-  <Hero eyebrow={feature.eyebrow} scene="dawn" seed={42}>
-    <h1 class="t-display">{feature.h1}</h1>
-    <p class="t-lede">{feature.lede}</p>
-    <div class="actions">
-      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
-      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+  <Hero eyebrow={feature.eyebrow} scene={art.scene} seed={art.seed}>
+    <div class="feature-hero">
+      <div class="feature-copy">
+        <h1 class="t-display">{feature.h1}</h1>
+        <p class="t-lede">{feature.lede}</p>
+        <div class="actions">
+          <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+          <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+        </div>
+      </div>
+      <FeatureScene slug={feature.slug} />
     </div>
   </Hero>
 
@@ -55,3 +74,20 @@ const { feature } = Astro.props;
     lede="Request early access for your association or review our pricing."
   />
 </Base>
+
+<style>
+  .feature-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+    gap: clamp(36px, 6vw, 88px);
+    align-items: end;
+  }
+  .feature-copy { min-width: 0; }
+  .feature-copy .t-display { font-size: clamp(40px, 5.2vw, 78px); }
+
+  @media (max-width: 900px) {
+    .feature-hero { grid-template-columns: 1fr; }
+    .feature-copy { max-width: 42em; }
+    .feature-hero :global(.feature-scene) { justify-self: stretch; width: 100%; }
+  }
+</style>
