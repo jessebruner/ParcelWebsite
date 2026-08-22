@@ -1,0 +1,55 @@
+---
+/**
+ * Why Common Parcel Page
+ * The principles and architecture behind Common Parcel.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+
+const description = "Why self-managed HOAs choose Common Parcel to automate operations, reduce costs, and protect board volunteers.";
+---
+
+<Base
+  title="Why Common Parcel"
+  description={description}
+  path="/why-common-parcel"
+  shareTitle="Why Common Parcel for Self-Managed HOAs"
+>
+  <Hero eyebrow="Why Common Parcel" scene="dusk" seed={77}>
+    <h1 class="t-display">Built specifically for self-managed community associations.</h1>
+    <p class="t-lede">
+      Most association software is built for property management companies managing portfolios. Common Parcel is purpose-built for volunteer board officers and homeowners.
+    </p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+    </div>
+  </Hero>
+
+  <Band title="Purpose-built for volunteers" field={true}>
+    <p class="t-lede">
+      Board members are volunteers with full-time jobs, families, and busy lives. You should not have to spend long hours collecting dues, tracking contractor invoices, or digging through old binders for by-laws.
+    </p>
+    <ul class="rows">
+      <li><b>Invoices on your schedule:</b> Dues go out automatically based on your declaration's dates.</li>
+      <li><b>Direct bank settlement:</b> Homeowner payments deposit straight into your association's account.</li>
+      <li><b>Clear records:</b> Every action, vote, and notice is logged and ready for future board officers.</li>
+    </ul>
+  </Band>
+
+  <Band title="Transparent pricing without lock-in">
+    <p class="t-lede">
+      Traditional property management companies charge thousands of dollars per month for routine clerical work. Common Parcel gives you the tools to run your neighborhood smoothly for a fraction of the cost.
+    </p>
+    <p>
+      Simple per-door subscription rates with zero hidden setup fees or termination penalties. You always own your association's records and financial history.
+    </p>
+  </Band>
+
+  <CtaBand
+    headline="Bring modern operations to your neighborhood."
+    lede="Request early access or review our transparent pricing."
+  />
+</Base>

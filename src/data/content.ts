@@ -266,7 +266,7 @@ export const FEATURES: PageSpec[] = [
     description:
       "Violations logged against the rule they break, with the cure window, the hearing notice your state requires, and a check on how often that rule has been enforced before.",
     eyebrow: "Rules and enforcement",
-    h1: "Violations, hearings, and fines that hold up",
+    h1: "Enforce community rules fairly and consistently",
     lede: "A fine only sticks if the steps before it were done properly. Parcel runs each one on the clock your state sets, and will not produce the fine until the hearing is on the record.",
     bands: [
       {
@@ -346,7 +346,7 @@ export const FEATURES: PageSpec[] = [
     description:
       "Notice on the statutory schedule, an agenda from open business, quorum against the live roster, and minutes drafted when the vote closes.",
     eyebrow: "Meetings and voting",
-    h1: "Notice, quorum, vote, minutes",
+    h1: "Run clean meetings and verifiable elections",
     lede: "An association runs on that cycle. Nearly everything with legal weight passes through it, and skipping a step usually makes the result void rather than untidy.",
     bands: [
       {
@@ -485,7 +485,7 @@ export const FEATURES: PageSpec[] = [
       },
       {
         title: "What it will not do",
-        note: ["See compliance", "/compliance"],
+        note: ["See security and audit", "/security"],
         body: [{ p: "It will not tell you what a provision means in a dispute. It will not opine on whether a rule is enforceable. It quotes your documents and shows you where the words are. The judgment is the board's and the law is your attorney's." }],
       },
     ],
@@ -687,7 +687,7 @@ export const COMPARISONS: PageSpec[] = [
       {
         title: "Where Parcel is the better choice",
         field: true,
-        note: ["Leaving a management company", "/vs/management-company"],
+        note: ["Leaving a management company", "/compare/management-company"],
         body: [
           { rows: [
             "You worry about doing something void. Fines get voided for skipped hearings, notices for wrong periods.",
@@ -800,7 +800,7 @@ export const COMPARISONS: PageSpec[] = [
       },
       {
         title: "Can you run both",
-        note: ["See use cases", "/use-cases"],
+        note: ["See all product features", "/product"],
         body: [{ p: "Yes, and some associations should. They solve different problems and neither is a system of record for the other. If your board already pays for TownSq and likes it, the question is whether the governance and the money are handled, not whether to replace the feed." }],
       },
     ],

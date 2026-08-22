@@ -1,0 +1,57 @@
+---
+/**
+ * Dynamic Feature Route Template
+ * Renders all feature pages defined in src/data/content.ts
+ */
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import Band from "../../components/Band.astro";
+import Blocks from "../../components/Blocks.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import { FEATURES, type PageSpec } from "../../data/content";
+
+export function getStaticPaths() {
+  return FEATURES.map((feat) => ({
+    params: { slug: feat.slug },
+    props: { feature: feat },
+  }));
+}
+
+interface Props {
+  feature: PageSpec;
+}
+
+const { feature } = Astro.props;
+---
+
+<Base
+  title={feature.title}
+  description={feature.description}
+  path={`/product/${feature.slug}`}
+  shareTitle={`Common Parcel: ${feature.title}`}
+>
+  <Hero eyebrow={feature.eyebrow} scene="dawn" seed={42}>
+    <h1 class="t-display">{feature.h1}</h1>
+    <p class="t-lede">{feature.lede}</p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
+      <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+    </div>
+  </Hero>
+
+  {feature.bands.map((band) => (
+    <Band
+      title={band.title}
+      field={band.field}
+      note={band.note ? band.note[0] : undefined}
+      noteHref={band.note ? band.note[1] : undefined}
+    >
+      <Blocks body={band.body} />
+    </Band>
+  ))}
+
+  <CtaBand
+    headline={`See ${feature.title.toLowerCase()} in Common Parcel.`}
+    lede="Request early access for your association or review our pricing."
+  />
+</Base>

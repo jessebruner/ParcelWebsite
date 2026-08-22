@@ -41,7 +41,7 @@ const BANNED_WORDS = [
   "crucial", "chase", "chasing", "vital", "comprehensive", "poised", "deep dive",
   "shed light on", "demystify",
 ];
-const WORD_EXCEPTIONS = { chase: [/purchas/g], chasing: [/purchasing/g], navigate: [/navigation/g] };
+const WORD_EXCEPTIONS = { chase: [/purchas/g], chasing: [/purchasing/g], navigate: [/navigation/g], solution: [/resolution/g] };
 
 const BANNED_FRAMES = [
   "say goodbye to", "look no further", "we've got you covered", "in today's fast-paced world",
