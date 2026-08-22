@@ -52,7 +52,7 @@ const BELIEFS = [
     n: "03",
     claim: "Every rule points at where it came from",
     body:
-      "We will not act on a rule we cannot show you in your own recorded documents or your state's code. When we cannot find it, the software says so rather than guessing well.",
+      "We will not act on a rule we cannot show you in your own recorded documents or your state's code. When we cannot find it, the software says so instead of filling in a likely answer.",
   },
   {
     n: "04",
@@ -69,9 +69,9 @@ const BELIEFS = [
   },
   {
     n: "05",
-    claim: "Boring is the point",
+    claim: "It should not need explaining",
     body:
-      "Your board turns over, and next year's treasurer will not be trained either. We would rather build something forgettable that still works in January than something impressive that has to be learned again.",
+      "Your board turns over, and next year's treasurer will not be trained either. Anything that needs a walkthrough is something we got wrong, however good it looks in a demo.",
   },
   {
     n: "06",
@@ -129,7 +129,7 @@ const HOMES = [3, 9, 10, 16, 21, 22, 28, 33, 34, 40, 41, 45];
     <div class="page">
       <h2 class="t-sheet">What we believe</h2>
       <p class="ab-beliefs-lede">
-        Six things we settled before writing any of it, and check new work against.
+        We decided these before writing any code, and we still check new work against them.
       </p>
 
       <ol class="ab-belief-grid">
@@ -155,19 +155,26 @@ const HOMES = [3, 9, 10, 16, 21, 22, 28, 33, 34, 40, 41, 45];
         <h2 class="t-sheet">Who is building this</h2>
 
         {/*
-          DELIBERATELY EMPTY, AND VISIBLY SO.
+          TODO: THE FOUNDER STORY, IN JESSE'S OWN WORDS.
 
-          The founder story is the one section of this site that cannot be
-          written from the repository. Why he started it, what he did before,
-          and whether this is one person or several are facts only Jesse has,
-          and a plausible invention here is the hardest thing on the site to
-          correct later: a reader who believes a made-up origin story never
-          finds out otherwise. Asked in the website-work channel on 2026-08-22.
-          This block does not go to production in this state.
+          Why he started this, what he did before, and whether this is one
+          person or several are facts only Jesse has. Asked in the website-work
+          channel on 2026-08-22 and still unanswered.
+
+          The first version of this block shipped a visible "Awaiting copy"
+          panel. Codex was right that a page should not tell a visitor it is
+          unfinished, so the two sentences below are the verified minimum: he is
+          in Detroit, the decisions are his, and the contact address reaches
+          him. Nothing there is inferred.
+
+          When the real account arrives it replaces those two sentences. Do not
+          write it for him: a plausible invention here is the hardest thing on
+          the site to correct later, because a reader who believes a made-up
+          origin story never finds out otherwise.
         */}
-        <p class="ab-pending">
-          <span class="t-mono-label">Awaiting copy</span>
-          Jesse's own account of why he started this goes here, in his words rather than ours.
+        <p class="ab-founder-body">
+          Common Parcel is built in Detroit, and every decision about what it will and will not do
+          is Jesse's.
         </p>
 
         {/*
@@ -332,22 +339,12 @@ const HOMES = [3, 9, 10, 16, 21, 22, 28, 33, 34, 40, 41, 45];
     color: var(--ink-3);
   }
 
-  .ab-pending {
+  .ab-founder-body {
     margin: var(--s-6) 0 0;
-    padding: var(--s-5) var(--s-6);
-    border: var(--stroke-held);
-    background: var(--held);
-    color: var(--ink-2);
-    font-size: var(--t-body);
+    font-size: var(--t-lede);
     line-height: 1.55;
+    color: var(--ink-body);
     max-width: 40em;
-  }
-  .ab-pending .t-mono-label {
-    display: block;
-    color: var(--terracotta);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin-bottom: var(--s-2);
   }
 
   .ab-founder-contact {

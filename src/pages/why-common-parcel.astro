@@ -42,11 +42,11 @@ const CONTRAST = [
   },
   {
     them: "Setup is a project with a kickoff call",
-    us: "Setup happens on a Sunday afternoon or it does not happen",
+    us: "Setup has to fit into one weekend, or it does not happen",
   },
   {
     them: "Someone is paid to notice the date",
-    us: "The date has to notice itself",
+    us: "Nobody is watching the calendar, so the software has to",
   },
   {
     them: "The same staff are there next year",
@@ -83,21 +83,25 @@ const LIMITS = [
     title: "It does not do the physical work",
     body: "Software does not attend your meeting and it does not walk the property after a storm. The parts of this job that need a person in the neighborhood still need a person in the neighborhood.",
     source: "/compare/management-company",
+    sourceLabel: "Compared with a management company",
   },
   {
     title: "It does not tell you what a rule means",
     body: "It quotes your documents and shows you where the words are. What a provision means in a dispute, and whether a rule is enforceable, is your board's judgment and your attorney's advice.",
     source: "/product/documents-and-answers",
+    sourceLabel: "Documents and answers",
   },
   {
     title: "Certified mail is not connected",
     body: "Common Parcel can show that a notice was drafted and approved. It cannot yet show that it was served.",
     source: "/product/collections",
+    sourceLabel: "Collections",
   },
   {
     title: "What it cannot find, it prints as unknown",
     body: "Not a default, and not a number borrowed from a similar association. A blank you have to fill is better than a plausible figure you did not check.",
     source: "/product/accounting-and-budgets",
+    sourceLabel: "Accounting and budgets",
   },
 ];
 ---
@@ -186,7 +190,7 @@ const LIMITS = [
           <li class="wy-limit">
             <h3 class="t-title">{l.title}</h3>
             <p>{l.body}</p>
-            <a class="wy-limit-src t-mono-label" href={l.source}>{l.source}</a>
+            <a class="wy-limit-src t-mono-label" href={l.source}>{l.sourceLabel}</a>
           </li>
         ))}
       </ul>
