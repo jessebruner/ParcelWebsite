@@ -56,14 +56,16 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
         <div id="ea-form-error" class="ea-error" role="alert" style="display: none;"></div>
 
         <div class="ea-actions">
-          <button type="submit" class="btn btn--primary" id="ea-submit-btn">Request early access</button>
+          <button type="submit" class="btn btn--primary" id="ea-submit-btn">
+            {formEndpoint ? "Request early access" : "Open email request"}
+          </button>
           <button type="button" class="btn" id="ea-cancel-btn">Cancel</button>
         </div>
 
         {formEndpoint ? (
           <p class="ea-footnote">Direct inquiry &middot; no marketing spam</p>
         ) : (
-          <p class="ea-footnote">Demo mode &middot; set the form endpoint to collect submissions</p>
+          <p class="ea-footnote">Opens your email app &middot; no automated transmission</p>
         )}
       </form>
     </div>
@@ -310,10 +312,14 @@ const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = As
       }
 
       if (!endpoint) {
-        // Honest demo mode handling
-        if (successTitle) successTitle.textContent = "Demo mode — nothing was transmitted.";
+        // Honest demo mode: open prefilled mailto draft
+        const subject = encodeURIComponent(`Early Access Inquiry: ${assoc}`);
+        const mailBody = encodeURIComponent(`Association: ${assoc}\nName: ${name}\nLots: ${lots}\nEmail: ${email}\n\n`);
+        window.location.href = `mailto:jesse@commonparcel.com?subject=${subject}&body=${mailBody}`;
+
+        if (successTitle) successTitle.textContent = "Email draft opened.";
         if (successBody) {
-          successBody.innerHTML = 'To inquire about early access, contact us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
+          successBody.innerHTML = 'Your email application should open with your inquiry details prefilled. If it did not open, email us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
         }
         if (formView) formView.style.display = "none";
         if (successView) successView.style.display = "block";
