@@ -1,0 +1,47 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="About"
+  description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Written by one person who read the statutes by hand."
+  path="/about"
+>
+  <Hero eyebrow="About">
+    <h1 class="t-display">Built for the board, not the manager</h1>
+    <p class="t-lede">Most software in this category is sold to management companies. It assumes a trained administrator exists. For a self-managed board, that person does not.</p>
+  </Hero>
+  <Band title="The difference that produces">
+    <p>There are a few neighbors with day jobs and a legal obligation, and the software has to do the work instead of handing it to somebody.</p>
+    <p class="coda">That is the whole difference, and it shows up in every screen.</p>
+  </Band>
+
+  <Band title="Why the documents matter so much" field>
+    <p>An association is governed by its own declaration and bylaws, which interact with state law differently in every state. No two associations are the same.</p>
+    <p class="coda">That is why generic property software fits this so badly, and why Parcel starts by reading your documents instead of asking you to describe them.</p>
+  </Band>
+
+  <Band title="Why it admits what it does not know">
+    <p>A board of volunteers can be sued for what it does. Anything Parcel produces might be read aloud by a lawyer.</p>
+    <p>So a citation that cannot be traced to a page in your own documents is not printed. A statutory clock resting on a provision nobody has read does not run. Where the answer is unknown, the interface says unknown.</p>
+    <p class="coda">That is a slower product than one that guesses. It is the only kind worth having here.</p>
+  </Band>
+
+  <Band title="Who is building it" field note="Email me" noteHref="/contact">
+    <p>Jesse Bruner. Detroit, Michigan.</p>
+    <p>I read the statutes for this by hand, one provision at a time, and recorded where each one came from. There are a few hundred still to read and the product says which.</p>
+  </Band>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-sheet">Tell me about your association.</h2>
+      <div class="actions"><a class="btn btn--on-ink" href="/contact">Ask about your association</a></div>
+    </div>
+  </section>
+</Base>
+<style>
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close .actions { margin-top: var(--s-6); }
+</style>

@@ -1,0 +1,53 @@
+---
+/**
+ * The masthead, matched to the homepage's.
+ *
+ * Provides consistent top navigation across the entire site with the same lockup,
+ * typography, and responsive hamburger menu.
+ */
+import Mark from "./Mark.astro";
+import { TOP_NAV } from "../data/routes";
+
+const LINKS = TOP_NAV.map((item) => ({ href: item.path, label: item.label }));
+
+const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const isCurrent = (href: string) => here === href;
+---
+
+<header class="mast">
+  <div class="lockup-pad">
+    <a class="lockup" href="/">
+      <Mark size={34} />
+      <span class="wordmark">Common Parcel</span>
+    </a>
+  </div>
+
+  <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="nav" aria-label="Main">
+    <div class="nav-links">
+      {LINKS.map((l) => (
+        <a class:list={["navlink", { on: isCurrent(l.href) }]} href={l.href}
+           aria-current={here === l.href ? "page" : undefined}>{l.label}</a>
+      ))}
+    </div>
+    <a class="nav-cta" href="/contact">Get in touch</a>
+  </nav>
+</header>
+
+<script>
+  const mast = document.querySelector<HTMLElement>(".mast");
+  const burger = mast?.querySelector<HTMLButtonElement>(".burger");
+  burger?.addEventListener("click", () => {
+    const open = mast!.hasAttribute("data-open");
+    open ? mast!.removeAttribute("data-open") : mast!.setAttribute("data-open", "");
+    burger.setAttribute("aria-expanded", String(!open));
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    mast?.removeAttribute("data-open");
+    burger?.setAttribute("aria-expanded", "false");
+  });
+</script>

@@ -1,0 +1,98 @@
+---
+/**
+ * The frame every page sits in, the homepage included.
+ *
+ * That last part is the whole point. An earlier attempt left the homepage on a
+ * separate stack with its own masthead, so the site had two navigations that
+ * could not see each other and there was no way from home into anything else.
+ * One layout, one nav, no exceptions.
+ *
+ * Head tags live here so the class of defect a page-by-page head invites cannot
+ * come back one page at a time.
+ */
+import "../styles/tokens.css";
+import "../styles/fonts.css";
+import Masthead from "../components/Masthead.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Absolute path, no trailing slash, matching src/data/routes.ts. */
+  path: string;
+  /** Overrides og:title where the share headline should differ. */
+  shareTitle?: string;
+  /** Renders a reviewed line in the footer. Freshness is a ranking input. */
+  reviewed?: string;
+  /** Extra JSON-LD, already stringified. */
+  schema?: string;
+}
+
+const { title, description, path, shareTitle, reviewed, schema } = Astro.props;
+const site = "https://commonparcel.com";
+const canonical = `${site}${path === "/" ? "/" : path}`;
+const share = shareTitle ?? title;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Common Parcel" />
+    <meta property="og:title" content={share} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${site}/og.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={share} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${site}/og.png`} />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="preload" href="/fonts/literata-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/bricolage-grotesque-200-800-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H6PRXV1WLS"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", "G-H6PRXV1WLS");
+    </script>
+
+    {schema && <script type="application/ld+json" set:html={schema} />}
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Masthead />
+    <main id="main"><slot /></main>
+    <SiteFooter reviewed={reviewed} />
+
+    <style>
+      .skip {
+        position: absolute; left: -9999px; top: 0;
+        background: var(--night); color: var(--paper);
+        padding: var(--s-3) var(--s-4);
+        font-family: var(--font-mono); font-size: var(--t-mono-label);
+        letter-spacing: 0.16em; text-transform: uppercase; z-index: 100;
+      }
+      .skip:focus { left: var(--s-4); top: var(--s-4); }
+    </style>
+  </body>
+</html>

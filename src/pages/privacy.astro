@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Privacy"
+  description="How Common Parcel handles association data, website analytics, payments, and record exports."
+  path="/privacy"
+  reviewed="August 2026"
+>
+  <Hero eyebrow="Privacy">
+    <h1 class="t-display">How we handle data</h1>
+    <p class="t-lede">The association owns its records. We process them on your behalf to run the platform.</p>
+  </Hero>
+
+  <Band title="Who owns the records">
+    <p>The association retains full ownership of its records. Common Parcel processes ledgers, governing documents, owner rosters, meeting minutes, and operational files solely to provide software services to your board and residents.</p>
+  </Band>
+
+  <Band title="Website analytics and server logs" field>
+    <p>This website uses Google Analytics to measure aggregate site traffic and page visits. Standard server access logs record technical connection data (including IP addresses and browser types) for operational reliability, diagnostics, and site security.</p>
+  </Band>
+
+  <Band title="Data isolation and access boundaries">
+    <ul class="rows">
+      <li><b>Bank custody:</b> Owners pay into the association's own bank account. Common Parcel does not hold association funds and is not in the money transmission path.</li>
+      <li><b>Scoped resident access:</b> Homeowners only see records, assessments, and notifications for their own lots.</li>
+      <li><b>Association separation:</b> Multi-tenant boundaries ensure one association's data is never visible to another.</li>
+      <li><b>Attributed records:</b> Administrative reads and statutory actions are logged with attributed timestamps.</li>
+    </ul>
+  </Band>
+
+  <Band title="Data export and portability" field>
+    <p>A full export of your association's ledgers, documents, minutes, and timestamped activity record is available at any time, including the month you close an account.</p>
+  </Band>
+
+  <Band title="Direct contact and requests" note="Email Jesse" noteHref="/contact">
+    <p>If you have questions about data handling, privacy practices, or wish to request data access or deletion, write to <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
+  </Band>
+
+</Base>

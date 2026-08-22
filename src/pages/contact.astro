@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Contact"
+  description="Email the founder directly. No form routing, no queue."
+  path="/contact"
+>
+  <Hero eyebrow="Contact">
+    <h1 class="t-display">Talk to a person</h1>
+    <p class="t-lede">jesse@commonparcel.com</p>
+  </Hero>
+  <Band title="What to expect">
+    <p>I read this myself and answer. There is no queue and no routing.</p>
+    <p class="coda">Tell me your state and roughly how many lots and I can usually say something useful in the first reply.</p>
+  </Band>
+
+  <Band title="Where we are" field>
+    <p>Common Parcel<br />1420 Washington Blvd, Ste 301<br />Detroit, MI 48226</p>
+  </Band>
+
+</Base>

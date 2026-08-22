@@ -1,0 +1,76 @@
+---
+/**
+ * THE SKY. Three modes, and the distinction is load-bearing.
+ *
+ * ParcelHOA's own PixelSky.tsx states the rule and I broke it: behind working
+ * text the sky is a TEXTURE, not a picture. Sky only, no treeline, no water, no
+ * heron, painted once. A heron behind a page heading is the mark appearing
+ * twice on one screen, and a scene stretched behind a hero is neither the
+ * picture it was composed as nor a background.
+ *
+ *   texture  sky only, hero height, painted once. Behind headings.
+ *   band     sky only, strip height, painted once. Between chapters.
+ *   scene    the whole marsh, animated. The homepage hero, and nowhere else.
+ *
+ * The canvas is small and scaled with image-rendering: pixelated, which is where
+ * the grid comes from. A CSS gradient would be the one soft edge in a system
+ * whose argument is that it is drawn on a grid.
+ */
+interface Props {
+  mode?: "texture" | "band" | "scene";
+  scene?: "dusk" | "dawn";
+  seed?: number;
+  /** Where in the ramp the strip sits. 0 is night, 1 is the horizon. */
+  crop?: number;
+}
+const { mode = "texture", scene = "dusk", seed = 7, crop } = Astro.props;
+const band = mode !== "scene";
+const h = mode === "band" ? 54 : 216;
+const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<canvas
+  id={id}
+  class:list={["sky", mode]}
+  width={384}
+  height={h}
+  aria-hidden="true"
+  data-mode={mode}
+  data-scene={scene}
+  data-seed={seed}
+  data-crop={crop ?? undefined}
+></canvas>
+
+<style>
+  .sky { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+  .band {
+    height: clamp(56px, 6vw, 84px);
+    border-top: var(--stroke-edge);
+    border-bottom: var(--stroke-edge);
+  }
+</style>
+
+<script>
+  import { Scene } from "../scripts/sky.js";
+
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const painted = new WeakSet<HTMLCanvasElement>();
+
+  function paint() {
+    for (const cv of document.querySelectorAll<HTMLCanvasElement>("canvas.sky")) {
+      if (painted.has(cv)) continue;
+      painted.add(cv);
+      const mode = cv.dataset.mode ?? "texture";
+      const s = new Scene(cv, {
+        scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk",
+        seed: Number(cv.dataset.seed) || 7,
+        band: mode !== "scene",
+      });
+      // Only the full scene moves, and only where nothing is being read.
+      if (mode === "scene" && !reduce) s.start();
+      else s.draw();
+    }
+  }
+  paint();
+  addEventListener("load", paint);
+</script>

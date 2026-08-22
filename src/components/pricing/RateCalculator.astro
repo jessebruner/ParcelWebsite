@@ -1,0 +1,399 @@
+---
+/**
+ * THE CALCULATOR, AND THE ARITHMETIC BESIDE IT.
+ *
+ * Two tracks. The control and the answer on the left, the working on the right.
+ * The working is the point: a treasurer taking a number to a board meeting gets
+ * asked where it came from, and "the site said so" is not an answer. So the
+ * sheet shows every band, how many of their lots landed in it, and what that
+ * band added, footed by a subtotal that reconciles to the rows above it.
+ *
+ * Rendered server side at the default count as well as recomputed on input, so
+ * the page is correct with scripting off. Both sides import ./brackets, which is
+ * the only place the maths lives.
+ */
+import { price, money, type Bracket } from "./brackets";
+
+interface Props {
+  brackets: Bracket[];
+  minimum: number;
+  /** The count the page loads at. */
+  lots?: number;
+  presets?: number[];
+  /** Per door, per month, for the management company comparison. */
+  anchorLow: number;
+  anchorHigh: number;
+}
+
+const { brackets, minimum, lots = 60, presets = [12, 60, 240, 900], anchorLow, anchorHigh } = Astro.props;
+
+const p = price(brackets, lots, minimum);
+const cfg = JSON.stringify({ brackets, minimum, anchorLow, anchorHigh });
+const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "lots"}`;
+---
+
+<div class="pc" data-calc data-cfg={cfg}>
+  <div class="pc-control">
+    <label class="pc-label" for="lots">How many lots does your association have?</label>
+    <input
+      id="lots"
+      class="pc-input"
+      type="number"
+      min="1"
+      max="5000"
+      step="1"
+      value={lots}
+      inputmode="numeric"
+      autocomplete="off"
+      aria-describedby="lots-hint"
+    />
+    <p class="pc-hint" id="lots-hint">A lot is a unit that owes an assessment. Common areas do not count.</p>
+
+    <div class="pc-presets" role="group" aria-label="Set the count to a common association size">
+      <span class="pc-presets-label" aria-hidden="true">Or try</span>
+      {presets.map((n) => (
+        <button
+          type="button"
+          class="pc-preset"
+          data-preset={n}
+          aria-label={count(n)}
+          aria-pressed={n === lots ? "true" : "false"}
+        >{n}</button>
+      ))}
+    </div>
+
+    <div class="pc-answer" aria-live="polite">
+      <p class="pc-out">
+        <span class="pc-figure" data-total>{money(p.total)}</span>
+        <span class="pc-per">a month</span>
+      </p>
+      <p class="pc-perlot" data-perlot>{money(p.perLot)} per lot, per month</p>
+      <p class="pc-floor" data-floor hidden={!p.floored}>
+        The bands add to <span data-raw>{money(p.raw)}</span>, so the {money(minimum, 0)} monthly minimum applies.
+      </p>
+    </div>
+  </div>
+
+  <figure class="pc-sheet">
+    <div class="pc-head">
+      <span class="pc-head-label" id="pc-working">How the brackets add up</span>
+      <span class="pc-head-note" data-count>{count(p.lots)}</span>
+    </div>
+
+    <div class="pc-scroll">
+      <table aria-labelledby="pc-working">
+        <thead>
+          <tr>
+            <th scope="col">Band</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Your lots</th>
+            <th scope="col">Adds</th>
+          </tr>
+        </thead>
+        <tbody>
+          {p.bands.map((b, i) => (
+            <tr class:list={["pc-row", { "is-empty": b.lots === 0 }]} data-band={i}>
+              <th scope="row">{b.label}</th>
+              <td class="num">{money(b.rate)}</td>
+              <td class="num" data-band-lots>{b.lots.toLocaleString("en-US")}</td>
+              <td class="num" data-band-amount>{money(b.amount)}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">The bands add to</th>
+            <td></td>
+            <td class="num" data-foot-lots>{p.lots.toLocaleString("en-US")}</td>
+            <td class="num" data-foot-raw>{money(p.raw)}</td>
+          </tr>
+          <tr data-floor-row hidden={!p.floored}>
+            <th scope="row">Monthly minimum</th>
+            <td></td>
+            <td></td>
+            <td class="num">{money(minimum)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </figure>
+
+  <div class="pc-anchor">
+    <p class="pc-anchor-line" data-anchor>
+      A management company at {money(anchorLow, 0)} to {money(anchorHigh, 0)} per door would bill
+      {" "}{money(p.lots * anchorLow, 0)} to {money(p.lots * anchorHigh, 0)} a month at this count.
+    </p>
+    <p class="pc-src">
+      Those are typical ranges from industry reporting, not a survey. That fee also buys a person,
+      and Parcel does not attend your meeting or answer your phone.
+    </p>
+    <p class="pc-onward"><a href="#comparison">See the charge comparison</a></p>
+  </div>
+</div>
+
+<style>
+  .pc { display: grid; gap: var(--s-8); }
+
+  @media (min-width: 900px) {
+    .pc {
+      grid-template-columns: minmax(14em, 19em) minmax(0, 1fr);
+      column-gap: clamp(32px, 4.5vw, 76px);
+      align-items: start;
+    }
+    .pc-anchor { grid-column: 1 / -1; }
+  }
+
+  /* ── The control ─────────────────────────────────────────────────────── */
+
+  .pc-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    font-weight: 600;
+    color: var(--ink);
+    max-width: 22ch;
+  }
+  /* A field on paper, not a box: the ink rule under it is the only edge with
+     real contrast, and a 1px --c-edge box around a control is a 1.3:1 boundary. */
+  .pc-input {
+    display: block;
+    width: 100%;
+    max-width: 7em;
+    margin-top: var(--s-4);
+    padding: var(--s-2) var(--s-3);
+    font-family: var(--font-mono);
+    font-size: var(--t-title);
+    font-variant-numeric: tabular-nums;
+    border: 0;
+    border-bottom: var(--stroke-consequence);
+    background: var(--field);
+    color: var(--ink);
+  }
+  .pc-hint {
+    margin: var(--s-3) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-3);
+    max-width: 30ch;
+  }
+
+  .pc-presets { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-4); margin-top: var(--s-4); }
+  .pc-presets-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  /* Buttons drawn as links. The pressed one loses the underline and takes the
+     ink rule, so the current count is marked by more than colour. */
+  .pc-preset {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-data);
+    font-variant-numeric: tabular-nums;
+    color: var(--terracotta);
+    background: transparent;
+    border: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .pc-preset:hover { background: var(--field); }
+  .pc-preset[aria-pressed="true"] {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: var(--stroke-consequence);
+    font-weight: 600;
+  }
+
+  .pc-answer { margin-top: var(--s-6); border-top: var(--stroke-consequence); padding-top: var(--s-5); }
+  .pc-out { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-3); }
+  .pc-figure {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--t-figure);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--terracotta);
+  }
+  .pc-per {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .pc-perlot {
+    margin: var(--s-3) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-data);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+  }
+  .pc-floor {
+    margin: var(--s-3) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 32ch;
+  }
+  .pc-floor[hidden] { display: none; }
+
+  /* ── The working ─────────────────────────────────────────────────────── */
+
+  .pc-sheet { border: var(--stroke-consequence); background: var(--paper); margin: 0; }
+  .pc-head {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+    padding: 11px 18px;
+    background: var(--night);
+  }
+  .pc-head-label, .pc-head-note {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .pc-head-label { color: var(--on-dark-label); }
+  .pc-head-note { color: var(--sand); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  .pc-scroll { overflow-x: auto; padding: var(--s-2) 18px var(--s-4); }
+
+  .pc-sheet th[scope="col"] {
+    border-bottom: var(--stroke-edge);
+    padding: var(--s-3) var(--s-4) var(--s-2) 0;
+    color: var(--ink-3);
+  }
+  .pc-sheet th[scope="col"]:last-child, .pc-sheet td:last-child { padding-right: 0; text-align: right; }
+  .pc-sheet th[scope="col"]:not(:first-child) { text-align: right; }
+
+  .pc-sheet tbody th[scope="row"] {
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink);
+    border-bottom: var(--stroke-hairline);
+    padding: var(--s-3) var(--s-4) var(--s-3) 0;
+    white-space: nowrap;
+  }
+  .pc-sheet tbody td { text-align: right; color: var(--ink); }
+  .pc-sheet tbody td:not(:last-child) { padding-right: var(--s-4); }
+  .pc-row.is-empty th[scope="row"], .pc-row.is-empty td { color: var(--ink-3); }
+
+  .pc-sheet tfoot th[scope="row"] {
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+  .pc-sheet tfoot th, .pc-sheet tfoot td {
+    border-top: var(--stroke-consequence);
+    border-bottom: none;
+    padding-top: var(--s-3);
+    text-align: right;
+  }
+  .pc-sheet tfoot th[scope="row"] { text-align: left; }
+  .pc-sheet tfoot tr:last-child th, .pc-sheet tfoot tr:last-child td {
+    border-top: var(--stroke-hairline);
+    color: var(--ink-2);
+    font-weight: 400;
+  }
+  .pc-sheet tfoot tr[hidden] { display: none; }
+
+  /* ── The comparison line ─────────────────────────────────────────────── */
+
+  .pc-anchor { border-top: var(--stroke-rule); padding-top: var(--s-5); }
+  .pc-anchor-line {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-lede);
+    line-height: 1.45;
+    color: var(--ink);
+    max-width: 40ch;
+  }
+  .pc-src {
+    margin: var(--s-3) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.55;
+    color: var(--ink-3);
+    max-width: 62ch;
+  }
+  .pc-onward {
+    margin: var(--s-3) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .pc-onward a { display: inline-block; padding-block: var(--s-1); }
+</style>
+
+<script>
+  import { price, money, clampLots, type Bracket } from "./brackets";
+
+  interface Cfg { brackets: Bracket[]; minimum: number; anchorLow: number; anchorHigh: number; }
+
+  const root = document.querySelector<HTMLElement>("[data-calc]");
+  if (root) {
+    const cfg: Cfg = JSON.parse(root.dataset.cfg!);
+    const input = root.querySelector<HTMLInputElement>("#lots")!;
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    const n = (v: number) => v.toLocaleString("en-US");
+
+    const render = (lots: number) => {
+      const p = price(cfg.brackets, lots, cfg.minimum);
+
+      q<HTMLElement>("[data-total]").textContent = money(p.total);
+      q<HTMLElement>("[data-perlot]").textContent = `${money(p.perLot)} per lot, per month`;
+      q<HTMLElement>("[data-count]").textContent = `${n(p.lots)} ${p.lots === 1 ? "lot" : "lots"}`;
+      q<HTMLElement>("[data-foot-lots]").textContent = n(p.lots);
+      q<HTMLElement>("[data-foot-raw]").textContent = money(p.raw);
+
+      const floor = q<HTMLElement>("[data-floor]");
+      floor.hidden = !p.floored;
+      q<HTMLElement>("[data-raw]").textContent = money(p.raw);
+      q<HTMLElement>("[data-floor-row]").hidden = !p.floored;
+
+      p.bands.forEach((b, i) => {
+        const row = q<HTMLElement>(`[data-band="${i}"]`);
+        row.classList.toggle("is-empty", b.lots === 0);
+        row.querySelector<HTMLElement>("[data-band-lots]")!.textContent = n(b.lots);
+        row.querySelector<HTMLElement>("[data-band-amount]")!.textContent = money(b.amount);
+      });
+
+      q<HTMLElement>("[data-anchor]").textContent =
+        `A management company at ${money(cfg.anchorLow, 0)} to ${money(cfg.anchorHigh, 0)} per door ` +
+        `would bill ${money(p.lots * cfg.anchorLow, 0)} to ${money(p.lots * cfg.anchorHigh, 0)} a month at this count.`;
+
+      for (const b of root.querySelectorAll<HTMLButtonElement>("[data-preset]")) {
+        b.setAttribute("aria-pressed", String(Number(b.dataset.preset) === lots));
+      }
+    };
+
+    input.addEventListener("input", () => {
+      // An empty field is a count of one, not a crash. The value is only written
+      // back on change so a half-typed "1" does not become "1" under the cursor.
+      render(clampLots(Number(input.value)));
+    });
+    input.addEventListener("change", () => {
+      const lots = clampLots(Number(input.value));
+      input.value = String(lots);
+      render(lots);
+    });
+
+    for (const b of root.querySelectorAll<HTMLButtonElement>("[data-preset]")) {
+      b.addEventListener("click", () => {
+        const lots = clampLots(Number(b.dataset.preset));
+        input.value = String(lots);
+        render(lots);
+      });
+    }
+  }
+</script>

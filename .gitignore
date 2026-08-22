@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.astro/
+root_index_orig.html

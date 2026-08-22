@@ -1,0 +1,74 @@
+---
+import Mark from "./Mark.astro";
+import { TOP_NAV, LEGAL } from "../data/routes";
+
+interface Props { reviewed?: string; }
+const { reviewed } = Astro.props;
+const year = new Date().getFullYear();
+
+const cols = [
+  {
+    head: "Platform",
+    links: [
+      { path: "/pricing", label: "Pricing" },
+      { path: "/security", label: "Security" },
+    ],
+  },
+  {
+    head: "Company",
+    links: [
+      { path: "/about", label: "About" },
+      { path: "/contact", label: "Contact" },
+    ],
+  },
+  {
+    head: "Legal",
+    links: LEGAL,
+  },
+];
+---
+<footer>
+  <div class="page inner">
+    <div class="brand">
+      <span class="lockup"><Mark size={38} fill="var(--paper)" beak="var(--amber)" /><span>Common Parcel</span></span>
+      <p class="addr t-mono">1420 Washington Blvd, Ste 301<br />Detroit, MI 48226</p>
+      <a class="mail t-mono" href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>
+    </div>
+    <div class="cols">
+      {cols.map(c => (
+        <div>
+          <p class="head">{c.head}</p>
+          <ul>{c.links.map(l => <li><a href={l.path}>{l.label}</a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="page baseline">
+    <span>Common Parcel {year} · Made in Detroit</span>
+    <span class="legal">{LEGAL.map(l => <a href={l.path}>{l.label}</a>)}</span>
+    {reviewed && <span>Reviewed {reviewed}</span>}
+  </div>
+</footer>
+
+<style>
+  footer { background: var(--night); color: var(--paper); padding-block: var(--s-12) var(--s-6); }
+  .inner { display: flex; justify-content: space-between; gap: var(--s-12); flex-wrap: wrap; }
+  .lockup { display: flex; align-items: center; gap: var(--s-3); }
+  .lockup > span { font-family: var(--font-serif); font-size: 23px; font-weight: 600; letter-spacing: -0.025em; white-space: nowrap; }
+  .addr { color: var(--on-dark-label); line-height: 1.8; margin: var(--s-4) 0 0; }
+  .mail { color: var(--amber); display: inline-flex; align-items: center; min-height: 24px; margin-top: var(--s-2); }
+  .cols { display: flex; gap: clamp(24px, 3.5vw, 64px); flex-wrap: wrap; }
+  .head { font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.16em;
+          text-transform: uppercase; color: var(--sand); margin: 0 0 var(--s-3); }
+  .cols ul { list-style: none; margin: 0; padding: 0; }
+  .cols a { display: inline-flex; align-items: center; min-height: 24px; color: var(--on-dark-label);
+            text-decoration: none; font-size: var(--t-micro); }
+  .cols a:hover { color: var(--paper); text-decoration: underline; }
+  .baseline { display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap;
+    margin-top: var(--s-12); padding-top: var(--s-4); border-top: 1px solid var(--on-dark-rule);
+    font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--on-dark-label); }
+  .legal { display: flex; gap: var(--s-4); }
+  .legal a { color: var(--on-dark-label); text-decoration: none; }
+  .legal a:hover { color: var(--paper); }
+</style>

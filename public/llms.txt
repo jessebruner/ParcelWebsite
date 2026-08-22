@@ -1,0 +1,92 @@
+# Common Parcel
+
+> HOA management software for self-managed homeowners associations. It reads an
+> association's own governing documents and then runs the dues, notices,
+> violations, elections and vendor contracts on the schedule those documents and
+> the relevant state statute already set. From $10 a month. Built in Detroit,
+> Michigan; available anywhere in the United States.
+
+Common Parcel is built for volunteer boards that run the association themselves,
+without a property management company, a bookkeeper, or a designated software
+person. It serves homeowners associations, condominium associations, planned
+communities, and civic or neighbourhood associations of five to a thousand-plus
+doors.
+
+Contact: jesse@commonparcel.com. The founder answers.
+Site: https://commonparcel.com/
+
+## What it does
+
+A board uploads its declaration, bylaws, rules and owner roster. Common Parcel
+reads those documents and extracts the numbers that govern everything else. The
+assessment amount, the due date, the grace period, the late fee, the meeting and
+voting rules. Each one is shown with the page and line it came from. Setup
+usually takes about thirty minutes.
+
+From then on it runs the association's recurring work automatically:
+
+- Invoices dues and collects them by autopay, ACH or card
+- Posts receipts to owner ledgers and reconciles the bank
+- Applies late fees and issues the delinquency ladder of reminder, demand and lien
+- Logs violations with photo and citation, and runs cure windows and re-inspections
+- Carries architectural review requests on their statutory response clock
+- Tracks vendor contracts and re-bids them before they renew
+- Runs elections with electronic ballots and proxies, and tracks quorum
+- Sends meeting notices and drafts minutes
+- Writes every action to a numbered audit trail
+
+## What the board still does
+
+Anything with legal or financial weight stops for a person. A lien, a fine, or a
+statutory notice requires two officers to sign; there is no batch approval and no
+way for the software to sign on the board's behalf. A typical month leaves the
+board two decisions and about twenty-two minutes of work.
+
+## Custody of funds
+
+Owners pay into the association's own bank account, in the association's own
+name. Common Parcel is not in that payment path and has no ability to move
+association money.
+
+## Citations
+
+Every notice quotes the provision, page and line it came from. If Common Parcel
+cannot locate the governing provision, it prints a dash and says so rather than
+inventing a citation.
+
+## Pricing
+
+Graduated per lot, per month, like a tax bracket: $2.50 each for the first 10
+lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, and $0.50 above 500,
+with a $10 monthly minimum.
+
+- A four-lot association pays $10 a month
+- A 100-lot association pays about $110 a month
+- A 1,000-lot association pays about $513 a month
+
+Everything is included. Collections, violations, elections, vendor management,
+documents and the record, with no feature tiers and no per-notice charge.
+Owners pay no fee to pay their dues. Civic and neighbourhood associations pay a
+reduced rate. Billing is month to month with no contract, no setup fee, and a
+full export of ledgers, documents, minutes and audit trail available in any
+month, including the month an association leaves.
+
+## Comparison
+
+A local property management company typically charges $15 to $25 per door per
+month, which is roughly $1,800 a month for a 100-home association. Other HOA
+software platforms typically tier to $1.50 to $2.00 per door and still expect a
+volunteer to configure the rules, remember the deadlines and write the notices.
+Common Parcel configures itself from the association's own documents and runs the
+month unattended.
+
+## Migration
+
+Common Parcel prepares the termination notice an existing management contract
+requires, the records request, and a thirty-day transition checklist, then loads
+the ledgers, documents and roster the association receives. There is no charge
+for migration.
+
+## Status
+
+Common Parcel is onboarding founding associations now.

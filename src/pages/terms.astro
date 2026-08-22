@@ -1,0 +1,38 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Terms"
+  description="Subscription terms, cancellation, data export, and software scope for Common Parcel."
+  path="/terms"
+  reviewed="August 2026"
+>
+  <Hero eyebrow="Terms">
+    <h1 class="t-display">Terms of service</h1>
+    <p class="t-lede">Month-to-month subscription terms for self-managed associations.</p>
+  </Hero>
+
+  <Band title="Subscription and billing">
+    <ul class="rows">
+      <li><b>Month-to-month:</b> Subscriptions are billed monthly with no annual contract or lock-in requirement.</li>
+      <li><b>Published rate card:</b> Pricing is graduated per lot based on the published rate schedule, with a $10 monthly minimum.</li>
+      <li><b>Setup and migration:</b> Onboarding and roster/document migration are included with service.</li>
+    </ul>
+  </Band>
+
+  <Band title="Cancellation and data export" field>
+    <p>An association may cancel service in any billing cycle. Complete export files of ledgers, governing documents, meeting minutes, and timestamped activity logs remain available to the association.</p>
+  </Band>
+
+  <Band title="Platform scope and legal disclaimer" note="View pricing" noteHref="/pricing">
+    <p>Common Parcel provides administrative, recordkeeping, and workflow software. Common Parcel is not a law firm and does not provide legal advice or legal representation.</p>
+    <p class="coda">Statutory citations and document references are provided for operational guidance. Formal statutory actions—such as notices, fines, and lien filings—require verified approval and signatures from authorized board officers.</p>
+  </Band>
+
+  <Band title="Questions about terms" field note="Contact Jesse" noteHref="/contact">
+    <p>For questions regarding service agreements or commercial terms, contact <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
+  </Band>
+
+</Base>
