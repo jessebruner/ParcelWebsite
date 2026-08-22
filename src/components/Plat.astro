@@ -1,16 +1,37 @@
 ---
 /**
- * A plat: lots as tiles, one marked. The tile motif is licensed for the plat by
+ * A plat: lots as tiles, some marked. The tile motif is licensed for the plat by
  * Tile.tsx, and each tile carries a bottom edge one eleventh of its size.
  *
  * Decorative here, so aria-hidden. It is not the band and it is not the margin.
+ *
+ * `marks` supersedes `mark`, which stays for the single-lot callers. When
+ * `settle` is set the marked lots come up one after another instead of all at
+ * once: the delay is a multiple of the lot's position in `marks`, so it is a
+ * pure function of the props and two builds paint the same picture. It stops on
+ * the last lot rather than looping, because a marketing page is not a screen
+ * saver, and prefers-reduced-motion turns it off entirely.
  */
-interface Props { cols?: number; rows?: number; mark?: number; }
-const { cols = 6, rows = 4, mark = 9 } = Astro.props;
+interface Props {
+  cols?: number;
+  rows?: number;
+  mark?: number;
+  marks?: number[];
+  /** Seconds between lots coming up. Omit for no animation. */
+  settle?: number;
+}
+const { cols = 6, rows = 4, mark = 9, marks, settle } = Astro.props;
+const lit = marks ?? [mark];
 const cells = Array.from({ length: cols * rows }, (_, i) => i);
+const order = new Map(lit.map((n, i) => [n, i]));
 ---
-<div class="plat" aria-hidden="true" style={`--cols:${cols}`}>
-  {cells.map(i => <span class:list={["lot", { on: i === mark }]}></span>)}
+<div class="plat" aria-hidden="true" style={`--cols:${cols}`} data-settle={settle ? "" : undefined}>
+  {cells.map(i => (
+    <span
+      class:list={["lot", { on: order.has(i) }]}
+      style={settle && order.has(i) ? `--delay:${(order.get(i)! * settle).toFixed(2)}s` : undefined}
+    ></span>
+  ))}
 </div>
 
 <style>
@@ -20,4 +41,18 @@ const cells = Array.from({ length: cols * rows }, (_, i) => i);
     background: linear-gradient(to bottom, var(--on-dark-tile) 0 90.909%, var(--on-dark-tile-edge) 90.909% 100%);
   }
   .lot.on { background: linear-gradient(to bottom, var(--amber) 0 90.909%, var(--amber-edge) 90.909% 100%); }
+
+  .plat[data-settle] .lot.on {
+    animation: settle 0.4s steps(1, end) backwards;
+    animation-delay: var(--delay, 0s);
+  }
+  /* steps(1) so the lot switches on the grid rather than fading through a
+     value that is not a token. */
+  @keyframes settle {
+    from { background: linear-gradient(to bottom, var(--on-dark-tile) 0 90.909%, var(--on-dark-tile-edge) 90.909% 100%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plat[data-settle] .lot.on { animation: none; }
+  }
 </style>
