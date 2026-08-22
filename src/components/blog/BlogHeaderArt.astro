@@ -28,8 +28,26 @@ function createPrng(s: number) {
 
 const prng = createPrng(seed);
 
-const duskPalette = ["#171326", "#634468", "#966073", "#DE9B7E", "#F4CB9F", "#8A4B2A", "#C96A3D", "#E8D5C2"];
-const dawnPalette = ["#20293B", "#546177", "#966073", "#DE9B7E", "#F4CB9F", "#DED6C6", "#C96A3D", "#FBF8F4"];
+const duskPalette = [
+  "var(--night)",
+  "var(--plum)",
+  "var(--rose)",
+  "var(--ember)",
+  "var(--sand)",
+  "var(--terracotta)",
+  "var(--clay)",
+  "var(--bisque)",
+];
+const dawnPalette = [
+  "var(--cold)",
+  "var(--slate)",
+  "var(--rose)",
+  "var(--ember)",
+  "var(--sand)",
+  "var(--mist)",
+  "var(--clay)",
+  "var(--paper)",
+];
 const palette = scene === "dawn" ? dawnPalette : duskPalette;
 
 const width = mode === "hero" ? 1200 : 600;
@@ -60,8 +78,8 @@ for (let r = 0; r < gridRows; r++) {
         y: 40 + r * cellH + 4,
         w: cellW - 8,
         h: cellH - 8,
-        fill: val > 0.85 ? "#E8A87C" : val > 0.7 ? "#8A4B2A" : "#3A342D",
-        stroke: val > 0.85 ? "#C4855C" : "#5C544A",
+        fill: val > 0.85 ? "var(--amber)" : val > 0.7 ? "var(--terracotta)" : "var(--on-dark-tile-edge)",
+        stroke: val > 0.85 ? "var(--amber-edge)" : "var(--on-dark-tile)",
         opacity: val > 0.85 ? 0.95 : 0.65,
       });
     }
@@ -84,7 +102,7 @@ for (let r = 0; r < gridRows; r++) {
     ))}
 
     <!-- Subdued grid matrix -->
-    <g stroke="rgba(251, 248, 244, 0.08)" stroke-width="1">
+    <g stroke="var(--night-hover)" stroke-width="1">
       {Array.from({ length: gridCols + 1 }).map((_, i) => (
         <line x1={40 + i * cellW} y1="30" x2={40 + i * cellW} y2={height - 30} />
       ))}
@@ -109,7 +127,7 @@ for (let r = 0; r < gridRows; r++) {
 
     <!-- Framing baseline and accents -->
     <line x1="0" y1={height - 1} x2={width} y2={height - 1} stroke="var(--terracotta)" stroke-width="2" />
-    <circle cx={mode === "hero" ? width - 80 : width - 50} cy={60} r={mode === "hero" ? 28 : 18} fill="#F4CB9F" fill-opacity="0.85" />
+    <circle cx={mode === "hero" ? width - 80 : width - 50} cy={60} r={mode === "hero" ? 28 : 18} fill="var(--sand)" fill-opacity="0.85" />
   </svg>
 </div>
 

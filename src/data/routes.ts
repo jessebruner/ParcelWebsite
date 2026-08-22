@@ -23,7 +23,7 @@ export const PRODUCT_NAV: Route[] = [
 export const COMPANY_NAV: Route[] = [
   { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations." },
   { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
-  { path: "/blog", label: "Blog", blurb: "Practical guides and statutory references for self-managed associations." },
+  { path: "/blog", label: "Field Guides", blurb: "Practical guides and statutory references for self-managed associations." },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
 ];
 
@@ -37,7 +37,7 @@ export const TOP_NAV: Route[] = [
 export const COMPANY: Route[] = [
   { path: "/about", label: "About" },
   { path: "/why-common-parcel", label: "Why Common Parcel" },
-  { path: "/blog", label: "Blog" },
+  { path: "/blog", label: "Field Guides" },
   { path: "/pricing", label: "Pricing" },
   { path: "/security", label: "Security" },
   { path: "/contact", label: "Contact" },

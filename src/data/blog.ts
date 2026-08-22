@@ -62,8 +62,8 @@ export const BLOG_POSTS: BlogPost[] = [
     description: "Operational principles for handing off association books, vendor contracts, architectural records, and meeting minutes between outgoing and incoming board officers.",
     publishedAt: "2026-08-22",
     author: {
-      name: "Common Parcel Editorial",
-      role: "Operations and Governance",
+      name: "Common Parcel",
+      role: "Detroit, Michigan",
     },
     category: "Board Governance",
     readTime: "4 min read",
