@@ -1,7 +1,7 @@
 ---
 /**
  * Product Hub Overview
- * The complete operating system for self-managed HOAs.
+ * Software built for self-managed HOAs.
  */
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
@@ -19,9 +19,9 @@ const description = "Explore Common Parcel: automated dues collection, resident 
   shareTitle="Common Parcel: Software for Self-Managed HOAs"
 >
   <Hero eyebrow="Platform Capabilities" scene="dusk" seed={42}>
-    <h1 class="t-display">The operating system for self-managed HOAs.</h1>
+    <h1 class="t-display">Software built for self-managed HOA boards.</h1>
     <p class="t-lede">
-      Common Parcel replaces fragmented spreadsheets and expensive management companies with clean software built specifically for board officers and homeowners.
+      Common Parcel replaces scattered spreadsheets and expensive management companies with clean software built specifically for volunteer officers and neighbors.
     </p>
     <div class="actions">
       <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
@@ -36,7 +36,7 @@ const description = "Explore Common Parcel: automated dues collection, resident 
         <span class="t-label">Designed for Your Community</span>
         <h2 class="t-sheet">Built for everyone in the neighborhood.</h2>
         <p class="t-lede">
-          Software that makes board volunteering sustainable while giving homeowners instant clarity.
+          Software that makes board volunteering sustainable while giving homeowners clear answers.
         </p>
       </div>
       <StakeholderGrid />
@@ -48,22 +48,22 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     <div class="page">
       <div class="section-intro">
         <span class="t-label">Core Capabilities</span>
-        <h2 class="t-sheet">Core capabilities built for community operations.</h2>
+        <h2 class="t-sheet">What Common Parcel does for your board.</h2>
       </div>
 
       <!-- Pillar 1: Dues & Accounting -->
       <FeatureCard
         eyebrow="Financial Operations"
-        title="Automated dues collection and direct bank deposits."
-        description="Homeowners pay online via ACH or debit card directly into your association bank account. Auto-reconciliation keeps your financial statements accurate in real time."
+        title="Track dues and receive deposits straight to your bank."
+        description="When online payments are enabled, homeowners pay by ACH or card directly into your association account. Auto-reconciliation keeps your books accurate."
         href="/product/dues-and-payments"
         linkText="Explore Financial Tools"
       >
         <div slot="details">
           <ul class="rows">
-            <li><b>Direct Settlement:</b> Payments deposit straight to the association account.</li>
-            <li><b>Automated Reminders:</b> Scheduled digital invoices and optional physical mail delivery.</li>
-            <li><b>Real-Time Ledgers:</b> Instant balance sheets and accounts receivable tracking.</li>
+            <li><b>Direct to Bank:</b> Common Parcel never holds HOA funds; payments deposit to your account.</li>
+            <li><b>Payment Tracking:</b> Scheduled digital invoices and clear delinquency tracking.</li>
+            <li><b>Clean Ledgers:</b> Balance sheets and accounts receivable tracking for your treasurer.</li>
           </ul>
         </div>
         <div slot="visual">
@@ -99,17 +99,17 @@ const description = "Explore Common Parcel: automated dues collection, resident 
       <!-- Pillar 2: Resident Portal -->
       <FeatureCard
         eyebrow="Homeowner Experience"
-        title="A modern portal your neighbors will actually enjoy."
-        description="No clunky passwords or forgotten logins. Homeowners can view payment history, submit maintenance requests, and access community documents from any phone or computer."
+        title="A straightforward portal for owners and residents."
+        description="Homeowners can check their dues balance, submit architectural requests, and access community documents from any browser."
         href="/product/resident-portal"
         linkText="See Homeowner Features"
         reverse={true}
       >
         <div slot="details">
           <ul class="rows">
-            <li><b>1-Click Online Dues:</b> Simple self-serve payment flows.</li>
-            <li><b>Community Directory:</b> Verified resident contact information.</li>
-            <li><b>Official Document Library:</b> By-laws, CC&Rs, and meeting minutes available 24/7.</li>
+            <li><b>Online Dues:</b> Simple self-serve dues payments when connected.</li>
+            <li><b>Community Directory:</b> Verified resident contact information for your neighborhood.</li>
+            <li><b>Governing Documents:</b> Bylaws, CC&Rs, and meeting minutes available in one spot.</li>
           </ul>
         </div>
         <div slot="visual">
@@ -142,8 +142,8 @@ const description = "Explore Common Parcel: automated dues collection, resident 
       <!-- Pillar 3: Architectural Reviews & Rules -->
       <FeatureCard
         eyebrow="Rules and Notices"
-        title="Structured architectural reviews without neighborhood friction."
-        description="Manage paint, roofing, solar, and landscaping submissions with structured workflows, committee voting, and automatic audit logs for every decision."
+        title="Structured architectural reviews without neighborhood disputes."
+        description="Handle paint, roofing, solar, and landscaping submissions with clear steps, committee voting, and recorded decisions."
         href="/product/rules-and-enforcement"
         linkText="View Architectural Workflows"
       >
@@ -151,7 +151,7 @@ const description = "Explore Common Parcel: automated dues collection, resident 
           <ul class="rows">
             <li><b>Digital Submissions:</b> Homeowners attach contractor plans and material photos.</li>
             <li><b>Committee Review:</b> Private board discussion and recorded votes.</li>
-            <li><b>Formal Notices:</b> Downloadable formal decision letters with statutory citations.</li>
+            <li><b>Written Decisions:</b> Downloadable decision letters based on your association rules.</li>
           </ul>
         </div>
         <div slot="visual">
@@ -171,17 +171,17 @@ const description = "Explore Common Parcel: automated dues collection, resident 
       <!-- Pillar 4: Elections & Meetings -->
       <FeatureCard
         eyebrow="Meetings and Voting"
-        title="Verifiable records and digital ballots for future board success."
-        description="Every vote, resolution, financial report, and vendor agreement is logged with clear history. When board officers transition, incoming leaders inherit clean records instantly."
+        title="Clear records and structured voting for clean board handoffs."
+        description="Every vote, resolution, and vendor agreement is kept in official records so incoming officers inherit clean history."
         href="/product/meetings-and-voting"
         linkText="Explore Governance Tools"
         reverse={true}
       >
         <div slot="details">
           <ul class="rows">
-            <li><b>Digital Voting:</b> Quorum tracking and verifiable ballot records.</li>
-            <li><b>Vendor Management:</b> Central contracts, insurance certificates, and renewal alerts.</li>
-            <li><b>Smooth Board Transitions:</b> Hand off community operations in minutes.</li>
+            <li><b>Digital Voting:</b> Quorum tracking and recorded ballot tallies.</li>
+            <li><b>Vendor Records:</b> Central contracts, insurance certificates, and renewal alerts.</li>
+            <li><b>Orderly Transitions:</b> Hand off community records to future board leaders with confidence.</li>
           </ul>
         </div>
         <div slot="visual">
