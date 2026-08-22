@@ -27,32 +27,35 @@ From then on it runs the association's recurring work automatically:
 
 - Invoices dues and collects them by autopay, ACH or card
 - Posts receipts to owner ledgers and reconciles the bank
-- Applies late fees and issues the delinquency ladder of reminder, demand and lien
-- Logs violations with photo and citation, and runs cure windows and re-inspections
-- Carries architectural review requests on their statutory response clock
-- Tracks vendor contracts and re-bids them before they renew
-- Runs elections with electronic ballots and proxies, and tracks quorum
-- Sends meeting notices and drafts minutes
-- Writes every action to a numbered audit trail
+- Applies late fees and issues delinquency notices and payment reminders
+- Logs violations with photo and citation, and tracks cure windows
+- Carries architectural review requests on statutory response clocks
+- Tracks vendor contracts and bid notices
+- Supports elections with electronic ballots and proxies, and tracks quorum
+- Sends meeting notices and records minutes
+- Writes supported administrative, dues, and governance actions to a numbered audit log
 
 ## What the board still does
 
-Anything with legal or financial weight stops for a person. A lien, a fine, or a
-statutory notice requires two officers to sign; there is no batch approval and no
-way for the software to sign on the board's behalf. A typical month leaves the
-board two decisions and about twenty-two minutes of work.
+Anything with legal or financial weight stops for a person. Consequential actions
+such as notices, fines, and liens require two distinct current officers where the
+workflow enforces the gate; there is no batch approval and no way for the
+software to sign on the board's behalf. A typical month leaves the board two
+decisions and about twenty-two minutes of work.
 
 ## Custody of funds
 
-Owners pay into the association's own bank account, in the association's own
-name. Common Parcel is not in that payment path and has no ability to move
-association money.
+Direct settlement with zero software custody. Owners pay through an
+association-connected Stripe account directly to the association's own
+depository bank account. Common Parcel does not hold association funds,
+maintain platform balances, or sit in custody of money.
 
 ## Citations
 
-Every notice quotes the provision, page and line it came from. If Common Parcel
-cannot locate the governing provision, it prints a dash and says so rather than
-inventing a citation.
+Citations on verified rules. When Common Parcel indexes a statute or attaches
+declaration rules, it cites the exact section. If a citation cannot be verified
+in the association's recorded documents or state code, Common Parcel marks it
+unverified rather than guessing.
 
 ## Pricing
 
@@ -65,27 +68,22 @@ with a $10 monthly minimum.
 - A 1,000-lot association pays about $513 a month
 
 Everything is included — collections, violations, elections, vendor management,
-documents and the audit trail — with no feature tiers and no per-notice charge.
-Owners pay no fee to pay their dues. Civic and neighbourhood associations pay a
-reduced rate. Billing is month to month with no contract, no setup fee, and a
-full export of ledgers, documents, minutes and audit trail available in any
-month, including the month an association leaves.
+documents, and timestamped activity logs with archive manifest reports — with
+no feature tiers and no per-notice charge. Owners pay no fee to pay their dues.
+Civic and neighbourhood associations pay a reduced rate. Billing is month to
+month with no contract, no setup fee, and a full export of ledgers, documents,
+minutes, and audit records with manifest reports available at any time.
 
 ## Comparison
 
-A local property management company typically charges $15 to $25 per door per
-month, which is roughly $1,800 a month for a 100-home association. Other HOA
-software platforms typically tier to $1.50 to $2.00 per door and still expect a
-volunteer to configure the rules, remember the deadlines and write the notices.
-Common Parcel configures itself from the association's own documents and runs the
-month unattended.
+Common Parcel extracts parameters from the association's recorded governing
+documents, assists volunteer boards through recurring workflows, and maintains
+an attributed record for every recorded action.
 
 ## Migration
 
-Common Parcel prepares the termination notice an existing management contract
-requires, the records request, and a thirty-day transition checklist, then loads
-the ledgers, documents and roster the association receives. There is no charge
-for migration.
+Common Parcel provides transition checklists and loads the ledgers, documents,
+and rosters the association receives during onboarding.
 
 ## Status
 

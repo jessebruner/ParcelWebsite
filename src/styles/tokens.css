@@ -224,7 +224,10 @@ section { padding-block: var(--pad-y); }
 .rows { list-style: none; margin: 0; padding: 0; }
 .rows > li { border-bottom: var(--stroke-hairline); padding-block: var(--s-3); }
 .rows > li:first-child { border-top: var(--stroke-hairline); }
+.rows a { display: inline-flex; align-items: center; min-height: 24px; }
 .rows b { color: var(--ink); font-weight: 600; }
+
+.body a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* ── CONSEQUENCE TIERS ─────────────────────────────────────────────────── */
 /* Statutory inverts. Nothing else does. Enforcement takes a 1.5px ink edge. */

@@ -70,7 +70,12 @@ function scanDir(dir) {
     const p = join(dir, entry);
     if (statSync(p).isDirectory()) {
       if (entry !== "node_modules" && entry !== "dist" && entry !== "scripts") scanDir(p);
-    } else if (p.endsWith(".astro") || (p.includes("tools") && p.endsWith(".mjs") && !p.endsWith("check-determinism.mjs"))) {
+    } else if (
+      p.endsWith(".astro") ||
+      p.endsWith(".ts") ||
+      p.endsWith(".js") ||
+      (p.endsWith(".mjs") && !p.endsWith("check-determinism.mjs"))
+    ) {
       checkFileForUnpinnedDate(p, readFileSync(p, "utf8"));
     }
   }
