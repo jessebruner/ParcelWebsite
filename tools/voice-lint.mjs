@@ -83,6 +83,30 @@ const LOT_COUNT = /\b\d{1,5}\s?(?:homes|lots|doors|units|owners|households)\b/i;
 const AI_WORD = /\bai\b|artificial intelligence|machine learning|\bllm\b/i;
 const USER_WORD = /\busers?\b/i;
 
+/**
+ * SECTION HEADINGS ARE HELD TO A HIGHER BAR THAN BODY COPY.
+ *
+ * A heading gets about two seconds. Body copy that reads badly still gets
+ * read; a heading that reads badly loses the reader, so the rules below apply
+ * to h1 and h2 only. Not h3: the FAQ questions are h3, and a question is
+ * allowed to be long and to contain a hinge ("What is HOA management
+ * software, and what does Common Parcel actually do?").
+ *
+ * These do not widen the hero surface. Linting /pricing at hero surface
+ * produces 43 problems and most are correct copy: the bracket table and the
+ * Detroit street address are supposed to contain digits. Body copy is left
+ * alone. See docs/VOICE.md.
+ */
+const HEAD_MARK = "<!-- voice-h -->";
+
+/** Two sentences in one heading: the mirrored-fragment aphorism. */
+const HEAD_TWO_SENTENCES = /[a-z0-9)"'][.][ ]+[A-Z]/;
+/** Two half-topics hinged together because neither carried the heading alone. */
+const HEAD_HINGE = /,[ ]+(and|or|but)[ ]/i;
+/** Coinages nobody said before they met us. */
+const HEAD_JARGON = /(custody|custodial|settlement|dispatch|provenance|matrix|surface|pass-through|consequential|scoped|ingest|artifact|artefact)/i;
+const HEAD_MAX_WORDS = 10;
+
 const BLOCK = "h1 h2 h3 h4 p li dt dd th td caption blockquote summary a button label".split(" ");
 
 /** Pull the human-visible copy, plus the head copy, out of a built page. */
@@ -115,7 +139,7 @@ export function extractCopy(html) {
       .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
       .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&mdash;/g, "—")
       .replace(/\s+/g, " ").trim();
-    if (text) out.push(text);
+    if (text) out.push(/^h[12]$/i.test(m[1]) ? HEAD_MARK + text : text);
   }
   const seen = new Set();
   return out.filter((x) => { const k = x.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).join("\n");
@@ -139,7 +163,12 @@ export function lint(text, surface = "general") {
 
   lines.forEach((line, i) => {
     const isTitle = line.startsWith("<!-- voice-title -->");
-    const rawLine = isTitle ? line.replace("<!-- voice-title -->", "") : line;
+    const isHeading = line.startsWith(HEAD_MARK);
+    const rawLine = isTitle
+      ? line.replace("<!-- voice-title -->", "")
+      : isHeading
+        ? line.slice(HEAD_MARK.length)
+        : line;
     const low = rawLine.toLowerCase();
     const push = (code, msg) => { if (!allow.has(code)) problems.push([i + 1, code, msg]); };
 
@@ -153,6 +182,22 @@ export function lint(text, surface = "general") {
     if (FROM_TO.test(line)) push("FROM_TO_SWEEP", line.trim().slice(0, 60));
     if (AI_WORD.test(low)) push("AI_WORD", line.trim().slice(0, 60));
     if (USER_WORD.test(low)) push("USER_WORD", line.trim().slice(0, 60));
+
+    // A privacy policy section heading is meant to be descriptive, not a
+    // selling point: "Data export, retention, and deletion" is exactly right
+    // there and exactly wrong on /security. Legal pages declare themselves
+    // with <!-- voice-surface: legal --> and skip this block only.
+    if (isHeading && surface !== "legal") {
+      const h = rawLine.trim();
+      const clip = h.slice(0, 60);
+      if (MECHANISM.test(h)) push("HEAD_MECHANISM", clip);
+      if (COUNT_WORD.test(h)) push("HEAD_COUNT", clip);
+      if (HEAD_TWO_SENTENCES.test(h)) push("HEAD_TWO_SENTENCES", clip);
+      if (HEAD_HINGE.test(h)) push("HEAD_HINGE", clip);
+      if (HEAD_JARGON.test(h)) push("HEAD_JARGON", clip);
+      if (h.split(" ").length > HEAD_MAX_WORDS) push("HEAD_LONG", clip);
+      for (const n of NOT_SELLING) if (h.toLowerCase().includes(n)) push("HEAD_NOT_SELLING", "'" + n + "'");
+    }
 
     if (!tof) return;
     if (PRICE_FIGURE.test(line)) push("PRICE_IN_TOF", line.trim().slice(0, 60));
