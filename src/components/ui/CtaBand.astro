@@ -1,79 +1,93 @@
 ---
 /**
- * Bottom CTA Band
- * High-converting closing band encouraging board officers to request early access or view pricing.
+ * THE CLOSER. Built to the homepage's closing section, because that is the one
+ * on this site that works.
+ *
+ * What it replaced, and the numbers are the argument: a 38px serif headline on
+ * beige, inside a bordered card, centred, under a "Get Started" badge, with a
+ * lede and two buttons. The homepage closes on 124px of Bricolage over a live
+ * dawn marsh, with four words, no label, no lede, and one button. It also gets
+ * `clamp(72px, 10vw, 170px)` of padding, more than its own hero.
+ *
+ * So this is that section, with a per-page seed so no two pages close on the
+ * same treeline, and the headline is written per page. The generated
+ * `See ${title} in Common Parcel.` named the product and the feature and
+ * promised nothing.
+ *
+ * One button. tokens.css states the rule as one filled terracotta button per
+ * view, and the hero above this already spends the page's primary action, so
+ * the closer uses the on-ink button the homepage uses in the same position.
  */
+import PixelSky from "../PixelSky.astro";
+
 interface Props {
-  headline?: string;
-  lede?: string;
+  headline: string;
+  /** dawn closes the page, the way the homepage opens at dusk and ends at dawn. */
+  scene?: "dusk" | "dawn";
+  /** Different per page, so the treeline is not the same picture twice. */
+  seed?: number;
+  /** The one action. Defaults to the early-access dialog. */
+  cta?: string;
 }
 
-const {
-  headline = "Modern software built for self-managed associations.",
-  lede = "Save time, keep full board oversight, and run your neighborhood on your schedule."
-} = Astro.props;
+const { headline, scene = "dawn", seed = 4, cta = "Get early access" } = Astro.props;
 ---
 
-<section class="cta-band">
-  <div class="page">
-    <div class="cta-card">
-      <div class="cta-content">
-        <span class="t-label cta-badge">Get Started</span>
-        <h2 class="cta-title">{headline}</h2>
-        <p class="cta-lede">{lede}</p>
-        <div class="cta-actions">
-          <button type="button" class="btn btn--primary" data-open-modal="early-access">Request Early Access</button>
-          <a href="/pricing" class="btn">Calculate Association Pricing</a>
-        </div>
-      </div>
-    </div>
+<section class="closer on-ink">
+  <div class="art" aria-hidden="true">
+    <PixelSky mode="scene" scene={scene} seed={seed} />
+  </div>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="inner">
+    <h2>{headline}</h2>
+    <button type="button" class="btn btn--on-ink" data-open-modal="early-access">{cta}</button>
   </div>
 </section>
 
 <style>
-  .cta-band {
-    padding-block: clamp(48px, 6vw, 84px);
-    background: var(--paper);
-    border-top: var(--stroke-rule);
+  .closer {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(72px, 10vw, 170px) var(--pad-x);
+    background: var(--night);
+    color: var(--paper);
+    /* The consequence stroke. The homepage's closer is the only section on it
+       that carries one, and it is what makes the band read as an ending. */
+    border-top: 1.5px solid var(--terracotta);
   }
-  .cta-card {
-    background: var(--card);
-    border: 1.5px solid var(--ink);
-    padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 48px);
-    text-align: center;
+
+  .art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .art :global(canvas) { width: 100%; height: 100%; }
+
+  /*
+   * The homepage's closer uses 0.44 to 0.38 and gets away with it because its
+   * scene is seeded so the horizon sits below the headline. Seeded per page
+   * these do not, and the dawn ramp ends at --paper, which is the headline's
+   * own colour: measured at 2.70:1 against a 3.0 requirement for large text.
+   * Heavier at the top, where the words are, and the marsh keeps the bottom.
+   */
+  .veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(10, 14, 22, 0.70) 0%, rgba(10, 14, 22, 0.58) 46%, rgba(10, 14, 22, 0.34) 100%);
   }
-  .cta-content {
-    max-width: 36em;
+
+  .inner {
+    position: relative; z-index: 2;
+    max-width: var(--page-max);
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--s-3);
   }
-  .cta-badge {
-    background: var(--held);
-    padding: 3px 8px;
-    border: 1px solid var(--bisque-edge);
-  }
-  .cta-title {
-    font-family: var(--font-serif);
-    font-size: clamp(26px, 3.2vw, 38px);
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1.15;
+
+  .closer h2 {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+    font-size: clamp(44px, 7.4vw, 124px);
     margin: 0;
+    max-width: 12ch;
+    text-wrap: balance;
+    color: var(--paper);
   }
-  .cta-lede {
-    font-size: var(--t-lede);
-    color: var(--ink-body);
-    line-height: 1.45;
-    margin: 0;
-  }
-  .cta-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-3);
-    justify-content: center;
-    margin-top: var(--s-4);
-  }
+
+  .closer .btn { margin-top: clamp(30px, 4vw, 52px); }
 </style>

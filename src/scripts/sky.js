@@ -147,9 +147,22 @@ export class Scene {
       if (edge >= 0 && edge < W && y >= 0 && y < H) put(edge, y, rim, 0.85);
     }
   }
+  /*
+   * start() has to be able to follow stop(), because a scene is now paused
+   * when it scrolls out of view and resumed when it comes back. The previous
+   * pair could not: stop() set a flag that start() never cleared, so the first
+   * time a closing band left the viewport it went still for good.
+   *
+   * `running` is separate from `dead` so that a second start() cannot leave two
+   * loops painting the same canvas, which halves the frame interval and makes
+   * the water shimmer at double speed.
+   */
   start() {
+    if (this.running) return;
+    this.dead = false;
+    this.running = true;
     const loop = () => {
-      if (this.dead) return;
+      if (this.dead) { this.running = false; return; }
       this.draw();
       this.raf = requestAnimationFrame(() => setTimeout(loop, 70));
     };

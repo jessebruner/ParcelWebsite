@@ -27,6 +27,8 @@ export type Content =
 export interface BandSpec {
   title: string;
   field?: boolean;
+  /** Breaks the run of equal-height sections. See tokens.css. */
+  air?: "tight" | "open";
   /** [label, href] for the onward link under the section name. */
   note?: [string, string];
   body: Content[];
@@ -36,9 +38,11 @@ export interface PageSpec {
   slug: string;
   title: string;
   description: string;
-  eyebrow: string;
+  /** The page's own name. Nothing renders a label above it. */
   h1: string;
   lede: string;
+  /** The line the closing band carries. Written per page, never generated. */
+  closer?: string;
   bands: BandSpec[];
 }
 
@@ -50,9 +54,9 @@ export const FEATURES: PageSpec[] = [
     title: "Dues and payments",
     description:
       "Invoice every lot from one board-approved schedule, collect online when connected, and keep payment records organized for the treasurer.",
-    eyebrow: "Dues and payments",
-    h1: "Dues go out on time, every period",
+    h1: "Dues and payments",
     lede: "Parcel bills the assessment your declaration sets, on the date it sets. It does not ask you to type the amount, and it does not need reminding when the quarter turns.",
+    closer: "Get paid without asking twice.",
     bands: [
       {
         title: "Send dues without rebuilding the schedule",
@@ -121,9 +125,9 @@ export const FEATURES: PageSpec[] = [
     title: "Collections",
     description:
       "A board-controlled delinquency plan that uses verified notice periods where available, pauses on command, and records every approval.",
-    eyebrow: "Collections",
-    h1: "What happens when someone stops paying",
+    h1: "Collections",
     lede: "Parcel prepares each collection step from your documents and any verified rules that apply. The board can review, send, pause, or stop the plan.",
+    closer: "The hard letter, already written.",
     bands: [
       {
         title: "Control every collection step",
@@ -197,9 +201,9 @@ export const FEATURES: PageSpec[] = [
     title: "Accounting and budgets",
     description:
       "Assisted bank reconciliation, budgets that carry the vote that adopted them, and a full export for your accountant any month.",
-    eyebrow: "Accounting and budgets",
-    h1: "Keep clean books without becoming an accountant",
+    h1: "Accounting and budgets",
     lede: "Every charge, payment, fee and credit lands in one ledger, keeping bank activity and association records organized.",
+    closer: "Books your treasurer can hand over.",
     bands: [
       {
         title: "Keep the ledger tied to the bank",
@@ -265,9 +269,9 @@ export const FEATURES: PageSpec[] = [
     title: "Rules and enforcement",
     description:
       "Keep the rule, evidence, response window, hearing, and board decision together so enforcement stays consistent.",
-    eyebrow: "Rules and enforcement",
-    h1: "Enforce community rules fairly and consistently",
+    h1: "Rules and enforcement",
     lede: "Parcel keeps each enforcement step tied to the rule behind it. Where an applicable deadline or hearing rule has been verified, the workflow will not skip it.",
+    closer: "The same rule for every neighbour.",
     bands: [
       {
         title: "Treat every case the same way",
@@ -345,9 +349,9 @@ export const FEATURES: PageSpec[] = [
     title: "Meetings and voting",
     description:
       "Plan notice dates, build the agenda, track attendance, certify quorum against the current roster, and draft minutes from the meeting record.",
-    eyebrow: "Meetings and voting",
-    h1: "Run meetings and elections owners can trust",
+    h1: "Meetings and voting",
     lede: "Meetings turn open questions into recorded board decisions. Parcel keeps the notice, agenda, attendance, vote, and minutes in one workflow.",
+    closer: "Every vote, already in the record.",
     bands: [
       {
         title: "Run the meeting from one record",
@@ -412,9 +416,9 @@ export const FEATURES: PageSpec[] = [
     title: "Documents and answers",
     description:
       "Upload the declaration, bylaws and rules. Parcel reads them, shows each provision with the page it sits on, and answers questions from your own documents.",
-    eyebrow: "Documents and answers",
-    h1: "Ask your declaration a question",
+    h1: "Documents and answers",
     lede: "Boards answer the same questions again and again: Can I put a shed there? When are dues late? What color can I paint the door?",
+    closer: "Ask your declaration.",
     bands: [
       {
         title: "See the facts inside your governing documents",
@@ -495,9 +499,9 @@ export const FEATURES: PageSpec[] = [
     title: "Vendors and insurance",
     description:
       "Surface contracts before they renew, prepare quote requests for board review, and keep invoices beside the agreements behind them.",
-    eyebrow: "Vendors and insurance",
-    h1: "Stay ahead of vendor renewals and compare quotes",
+    h1: "Vendors and insurance",
     lede: "Put each renewal date and notice period on one board calendar. Parcel counts back from both and helps prepare quote requests for board review.",
+    closer: "Know before the renewal does.",
     bands: [
       {
         title: "See renewals before the deadline",
@@ -562,9 +566,9 @@ export const FEATURES: PageSpec[] = [
     title: "Resident portal",
     description:
       "Owners look up a balance, pay, read the rules that apply to them, submit a request and vote. Every question they answer alone is one the board never gets.",
-    eyebrow: "Resident portal",
-    h1: "Built so owners stop calling you",
+    h1: "Resident portal",
     lede: "Owners should not need training to check a balance, find a document, or submit a request. The portal gives them one clear place to start and takes routine questions off the board.",
+    closer: "Your phone stops ringing.",
     bands: [
       {
         title: "Give owners one place to start",
@@ -634,9 +638,9 @@ export const FEATURES: PageSpec[] = [
     title: "Records and audit",
     description:
       "Keep meeting records, board resolutions, vendor contracts, and numbered change history together across board transitions.",
-    eyebrow: "Records and audit",
-    h1: "Association records that outlast any board",
+    h1: "Records and audit",
     lede: "When officers rotate, institutional memory disappears. Keep minutes, resolutions, notices, and financial ledgers together so the next board inherits a usable association record.",
+    closer: "The next board inherits everything.",
     bands: [
       {
         title: "Keep decisions with the records behind them",

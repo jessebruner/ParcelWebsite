@@ -54,6 +54,28 @@ const h = mode === "band" ? 54 : 216;
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const painted = new WeakSet<HTMLCanvasElement>();
 
+  /*
+   * A running scene redraws 82,944 pixels about fourteen times a second, for as
+   * long as the page is open. The homepage gets away with two of them because
+   * its hero is the first thing on screen; a closing band is not, and a phone
+   * should not be painting a marsh nobody is looking at. So a scene runs only
+   * while it is on screen, and stops when it leaves.
+   *
+   * A single frame is still painted immediately, so the section is never empty
+   * and never fades in.
+   */
+  const running = new WeakMap<HTMLCanvasElement, { start(): void; stop(): void }>();
+  const watcher = "IntersectionObserver" in window
+    ? new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const scene = running.get(entry.target as HTMLCanvasElement);
+          if (!scene) continue;
+          if (entry.isIntersecting) scene.start();
+          else scene.stop();
+        }
+      }, { rootMargin: "120px" })
+    : null;
+
   function paint() {
     for (const cv of document.querySelectorAll<HTMLCanvasElement>("canvas.sky")) {
       if (painted.has(cv)) continue;
@@ -64,9 +86,14 @@ const h = mode === "band" ? 54 : 216;
         seed: Number(cv.dataset.seed) || 7,
         band: mode !== "scene",
       });
-      // Only the full scene moves, and only where nothing is being read.
-      if (mode === "scene" && !reduce) s.start();
-      else s.draw();
+      s.draw();
+      if (mode !== "scene" || reduce) continue;
+      if (watcher) {
+        running.set(cv, s);
+        watcher.observe(cv);
+      } else {
+        s.start();
+      }
     }
   }
   paint();

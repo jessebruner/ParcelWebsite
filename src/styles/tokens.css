@@ -84,8 +84,8 @@
 
   /* Nothing is smaller than 11px. Board members are volunteers in their sixties
      and seventies, and the old 10px label was read with a phone torch. */
-  --t-display: clamp(42px, 6.4vw, 96px);
-  --t-sheet: 38px;
+  --t-display: clamp(46px, 6.8vw, 108px);
+  --t-sheet: 60px;
   --t-headline: 30px;
   --t-title: 22px;
   --t-lede: 19px;
@@ -141,7 +141,7 @@ img, svg, canvas { display: block; max-width: 100%; }
   text-wrap: balance;
   margin: 0;
 }
-.t-sheet { font-size: clamp(28px, 3.4vw, var(--t-sheet)); line-height: 1.12; }
+.t-sheet { font-size: clamp(30px, 4.2vw, var(--t-sheet)); line-height: 1.06; }
 .t-headline { font-size: clamp(23px, 2.6vw, var(--t-headline)); line-height: 1.18; }
 .t-title { font-size: var(--t-title); line-height: 1.25; letter-spacing: -0.025em; }
 
@@ -172,7 +172,22 @@ img, svg, canvas { display: block; max-width: 100%; }
 
 .page { max-width: var(--page-max); margin: 0 auto; padding-inline: var(--pad-x); }
 .read { max-width: var(--read); }
+
+/*
+ * Section rhythm.
+ *
+ * Every section on the site used one padding value, so every band was the same
+ * height as every other band and the page read as a metronome: beige, white,
+ * beige, white, all identical. The homepage never does that — its sections run
+ * from 56px to 170px and no two adjacent ones use the same device.
+ *
+ * So --pad-y is the middle of a range rather than the only value, and a section
+ * can take `data-air="tight"` or `"open"` to break step. Nothing changes for a
+ * section that asks for neither.
+ */
 section { padding-block: var(--pad-y); }
+section[data-air="tight"] { padding-block: clamp(32px, 3.4vw, 56px); }
+section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
 
 /* Two-track band: section name in a rail, argument on the right. Above 1000px
    only; below that it stacks, because a rail needs room to be a rail. */

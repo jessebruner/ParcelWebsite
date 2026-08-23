@@ -1,13 +1,31 @@
 ---
 /**
- * Dynamic Feature Route Template
- * Renders all feature pages defined in src/data/content.ts
+ * The feature route.
+ *
+ * Nine pages still render from one template, and that is not the problem worth
+ * solving — nine hand-written files would drift. What was wrong is that the
+ * template gave every page the identical shape and then refused to be loud
+ * anywhere in it:
+ *
+ *   - a small label above the h1 that was a byte-for-byte copy of the page's
+ *     own name, while the h1 said something else entirely
+ *   - a display size overridden DOWN to 78px, under a token already below the
+ *     homepage's 108px
+ *   - a still frame of a sky that the homepage animates
+ *   - no pixel strip, on the only page family without one
+ *   - alternating field/paper bands at one padding value, forever
+ *   - a closing band generated as `See ${title} in Common Parcel.`
+ *
+ * The shape now varies with the page: the marsh moves, a weather strip breaks
+ * the run of bands, the air opens and tightens, and every page writes its own
+ * closing line.
  */
 import Base from "../../layouts/Base.astro";
 import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
 import CtaBand from "../../components/ui/CtaBand.astro";
+import PixelSky from "../../components/PixelSky.astro";
 import FeatureScene from "../../components/product/FeatureScene.astro";
 import { FEATURES, type PageSpec } from "../../data/content";
 
@@ -24,18 +42,31 @@ interface Props {
 
 const { feature } = Astro.props;
 
-const FEATURE_ART: Record<string, { scene: "dusk" | "dawn"; seed: number }> = {
-  "dues-and-payments": { scene: "dusk", seed: 13 },
-  collections: { scene: "dusk", seed: 29 },
-  "accounting-and-budgets": { scene: "dawn", seed: 43 },
-  "rules-and-enforcement": { scene: "dusk", seed: 57 },
-  "meetings-and-voting": { scene: "dawn", seed: 71 },
-  "documents-and-answers": { scene: "dawn", seed: 89 },
-  "vendors-and-insurance": { scene: "dusk", seed: 103 },
-  "resident-portal": { scene: "dawn", seed: 127 },
-  "records-and-audit": { scene: "dusk", seed: 149 },
+/**
+ * Seeds are prime and far apart so the noise grid lands somewhere different on
+ * each page. The closing seed is deliberately not the hero's: the homepage
+ * opens at dusk on seed 7 and closes at dawn on seed 4, and the point of a
+ * different seed is that the treeline is visibly not the same picture reused.
+ */
+const FEATURE_ART: Record<string, { scene: "dusk" | "dawn"; seed: number; close: number; strip: "dusk" | "dawn" }> = {
+  "dues-and-payments": { scene: "dusk", seed: 13, close: 211, strip: "dawn" },
+  collections: { scene: "dusk", seed: 29, close: 223, strip: "dawn" },
+  "accounting-and-budgets": { scene: "dawn", seed: 43, close: 227, strip: "dusk" },
+  "rules-and-enforcement": { scene: "dusk", seed: 57, close: 229, strip: "dawn" },
+  "meetings-and-voting": { scene: "dawn", seed: 71, close: 233, strip: "dusk" },
+  "documents-and-answers": { scene: "dawn", seed: 89, close: 239, strip: "dusk" },
+  "vendors-and-insurance": { scene: "dusk", seed: 103, close: 241, strip: "dawn" },
+  "resident-portal": { scene: "dawn", seed: 127, close: 251, strip: "dusk" },
+  "records-and-audit": { scene: "dusk", seed: 149, close: 257, strip: "dawn" },
 };
-const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7 };
+const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7, close: 4, strip: "dawn" as const };
+
+/**
+ * Where the weather strip falls. After the first band on a short page, after
+ * the second on a long one, so it never lands as the last thing before the
+ * closer and never separates the hero from the page's opening argument.
+ */
+const stripAfter = feature.bands.length >= 4 ? 2 : 1;
 ---
 
 <Base
@@ -44,50 +75,63 @@ const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7 };
   path={`/product/${feature.slug}`}
   shareTitle={`Common Parcel: ${feature.title}`}
 >
-  <Hero eyebrow={feature.eyebrow} scene={art.scene} seed={art.seed}>
+  <Hero scene={art.scene} seed={art.seed} live>
     <div class="feature-hero">
       <div class="feature-copy">
         <h1 class="t-display">{feature.h1}</h1>
         <p class="t-lede">{feature.lede}</p>
         <div class="actions">
-          <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Request Early Access</button>
-          <a href="/pricing" class="btn btn--ghost-on-ink">View Transparent Pricing</a>
+          <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
         </div>
       </div>
       <FeatureScene slug={feature.slug} />
     </div>
   </Hero>
 
-  {feature.bands.map((band) => (
-    <Band
-      title={band.title}
-      field={band.field}
-      note={band.note ? band.note[0] : undefined}
-      noteHref={band.note ? band.note[1] : undefined}
-    >
-      <Blocks body={band.body} />
-    </Band>
+  {feature.bands.map((band, i) => (
+    <>
+      <Band
+        title={band.title}
+        field={band.field}
+        air={band.air}
+        note={band.note ? band.note[0] : undefined}
+        noteHref={band.note ? band.note[1] : undefined}
+      >
+        <Blocks body={band.body} />
+      </Band>
+      {i === stripAfter - 1 && (
+        <div class="strip">
+          <PixelSky mode="band" scene={art.strip} seed={art.seed + 1} />
+        </div>
+      )}
+    </>
   ))}
 
-  <CtaBand
-    headline={`See ${feature.title.toLowerCase()} in Common Parcel.`}
-    lede="Request early access for your association or review our pricing."
-  />
+  <CtaBand headline={feature.closer} scene={art.scene === "dusk" ? "dawn" : "dusk"} seed={art.close} />
 </Base>
 
 <style>
   .feature-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-    gap: clamp(36px, 6vw, 88px);
-    align-items: end;
+    grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+    gap: clamp(36px, 5vw, 72px);
+    align-items: center;
   }
   .feature-copy { min-width: 0; }
-  .feature-copy .t-display { font-size: clamp(40px, 5.2vw, 78px); }
+  /* The measure belongs to the headline, not to the column. Putting it on the
+     column broke the lede into a four-word-wide ribbon. */
+  .feature-copy :global(h1) { max-width: 13ch; }
+  /*
+   * No font-size here. The old rule set clamp(40px, 5.2vw, 78px), which is 28%
+   * smaller than the homepage's headline on the same fonts and the same tokens.
+   * .t-display is the scale; a page does not get to shrink it.
+   */
+
+  .strip { position: relative; }
 
   @media (max-width: 900px) {
     .feature-hero { grid-template-columns: 1fr; }
-    .feature-copy { max-width: 42em; }
+    .feature-copy { max-width: 18ch; }
     .feature-hero :global(.feature-scene) { justify-self: stretch; width: 100%; }
   }
 </style>

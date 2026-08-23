@@ -12,8 +12,18 @@
  *   cited   a label, a value, and where the value came from
  *   meter   a label, a value, and a filled bar
  *
- * Every figure here is demo data on a marketing page, which is why the panel
- * always carries its caption. A board should never mistake it for their numbers.
+ * Every figure here is demo data on a marketing page and a board should never
+ * mistake it for their numbers, so the panel still says so. It says so in its
+ * own header, beside the label, the way the homepage's panels caption
+ * themselves from the inside.
+ *
+ * It used to say so in a full-width uppercase `SAMPLE DATA` band pinned under
+ * the figure, on all nine feature pages, by default. That put the words "sample
+ * data" directly beneath the flagship visual of every page — the first thing
+ * under the picture told the reader the picture was fake. The homepage carries
+ * no figcaption anywhere and neither do the mocks on /product, so the
+ * disclosure was also only on two thirds of the fabricated panels on the site.
+ * Now it is on all of them, and it is two syllables in the chrome.
  */
 export interface Row {
   label: string;
@@ -34,16 +44,22 @@ interface Props {
   rows: Row[];
   /** Reconciles to the rows above it. Every list here ends in a footing. */
   footing?: { label: string; value: string };
+  /** A caption under the figure. For a figure that could be read as a promise. */
   caption?: string;
+  /** Set false only where the figures are the association's own. */
+  example?: boolean;
 }
 
-const { label, note, rows, footing, caption = "Sample data" } = Astro.props;
+const { label, note, rows, footing, caption, example = true } = Astro.props;
 ---
 
 <figure class="sheet">
   <div class="head">
     <span class="lab">{label}</span>
-    {note && <span class="note">{note}</span>}
+    <span class="head-right">
+      {note && <span class="note">{note}</span>}
+      {example && <span class="eg">Example</span>}
+    </span>
   </div>
 
   <div class="rows">
@@ -71,7 +87,7 @@ const { label, note, rows, footing, caption = "Sample data" } = Astro.props;
     </div>
   )}
 
-  <figcaption>{caption}</figcaption>
+  {caption && <figcaption>{caption}</figcaption>}
 </figure>
 
 <style>
@@ -133,6 +149,16 @@ const { label, note, rows, footing, caption = "Sample data" } = Astro.props;
   .fv {
     font-size: var(--t-title); letter-spacing: -0.02em; text-transform: none;
     color: var(--terracotta); font-variant-numeric: tabular-nums;
+  }
+
+  .head-right { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+  .eg {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--on-dark-label);
+    border: 1px solid var(--on-dark-tile-edge);
+    padding: 2px 6px;
+    white-space: nowrap;
   }
 
   figcaption {
