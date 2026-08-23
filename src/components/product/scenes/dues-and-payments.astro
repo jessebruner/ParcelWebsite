@@ -1,0 +1,21 @@
+---
+/**
+ * dues-and-payments — the hero diagram.
+ *
+ * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
+ * without touching the other eight. It is still the static version.
+ *
+ * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
+ * FeatureScene.astro and is inherited. Styles that belong only to this
+ * scene belong in this file.
+ */
+---
+
+<div class="payment-flow scene-body">
+      <div class="flow-node"><span class="pixel-person"></span><b>Owner</b></div>
+      <span class="flow-line"><i></i><i></i><i></i></span>
+      <div class="flow-node flow-node--warm"><span class="pixel-card"></span><b>Connected payment</b></div>
+      <span class="flow-line"><i></i><i></i><i></i></span>
+      <div class="flow-node"><span class="pixel-bank"></span><b>HOA bank</b></div>
+      <p class="scene-note">Common Parcel does not hold association funds.</p>
+    </div>

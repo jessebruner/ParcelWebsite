@@ -1,0 +1,24 @@
+---
+/**
+ * vendors-and-insurance — the hero diagram.
+ *
+ * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
+ * without touching the other eight. It is still the static version.
+ *
+ * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
+ * FeatureScene.astro and is inherited. Styles that belong only to this
+ * scene belong in this file.
+ */
+---
+
+<div class="vendors scene-body">
+      <div class="vendor-calendar">
+        <span>Renewal calendar</span>
+        <div class="calendar-grid">{Array.from({ length: 21 }).map((_, i) => <i class:list={{ marked: i === 11 }}></i>)}</div>
+      </div>
+      <div class="contract-stack">
+        <div><b>Landscaping</b><span>Contract</span></div>
+        <div><b>Insurance</b><span>Certificate</span></div>
+        <div><b>Roofing</b><span>Proposal</span></div>
+      </div>
+    </div>

@@ -1,16 +1,39 @@
 ---
 /**
- * A distinct, non-interactive product illustration for every feature route.
+ * The hero diagram for a feature page. One file per scene under ./scenes.
  *
- * These are diagrams, not screenshots. They use only claims already present
- * on the page, remain hidden from assistive technology, and never suggest a
- * control is live merely because it looks clickable.
+ * These are diagrams, not screenshots. They are hidden from assistive
+ * technology, so any text inside one reaches nobody — not a screen reader,
+ * not a crawler. A scene that needs a sentence to be understood is a scene
+ * that has not been drawn yet.
  */
+import duesAndPayments from "./scenes/dues-and-payments.astro";
+import collections from "./scenes/collections.astro";
+import accountingAndBudgets from "./scenes/accounting-and-budgets.astro";
+import rulesAndEnforcement from "./scenes/rules-and-enforcement.astro";
+import meetingsAndVoting from "./scenes/meetings-and-voting.astro";
+import documentsAndAnswers from "./scenes/documents-and-answers.astro";
+import vendorsAndInsurance from "./scenes/vendors-and-insurance.astro";
+import residentPortal from "./scenes/resident-portal.astro";
+import recordsAndAudit from "./scenes/records-and-audit.astro";
+
 interface Props { slug: string; }
 const { slug } = Astro.props;
 
+const SCENES: Record<string, any> = {
+  "dues-and-payments": duesAndPayments,
+  "collections": collections,
+  "accounting-and-budgets": accountingAndBudgets,
+  "rules-and-enforcement": rulesAndEnforcement,
+  "meetings-and-voting": meetingsAndVoting,
+  "documents-and-answers": documentsAndAnswers,
+  "vendors-and-insurance": vendorsAndInsurance,
+  "resident-portal": residentPortal,
+  "records-and-audit": recordsAndAudit,
+};
+
 const TITLES: Record<string, string> = {
-  "dues-and-payments": "Connected payments",
+  "dues-and-payments": "Owner to association",
   collections: "Collections plan",
   "accounting-and-budgets": "Board budget",
   "rules-and-enforcement": "Rule review",
@@ -20,6 +43,8 @@ const TITLES: Record<string, string> = {
   "resident-portal": "Resident view",
   "records-and-audit": "Decision record",
 };
+
+const Scene = SCENES[slug];
 ---
 
 <div class:list={["feature-scene", `feature-scene--${slug}`]} aria-hidden="true">
@@ -27,118 +52,7 @@ const TITLES: Record<string, string> = {
     <span class="scene-mark"><i></i><i></i><i></i></span>
     <span>{TITLES[slug] ?? "Common Parcel"}</span>
   </div>
-
-  {slug === "dues-and-payments" && (
-    <div class="payment-flow scene-body">
-      <div class="flow-node"><span class="pixel-person"></span><b>Owner</b></div>
-      <span class="flow-line"><i></i><i></i><i></i></span>
-      <div class="flow-node flow-node--warm"><span class="pixel-card"></span><b>Connected payment</b></div>
-      <span class="flow-line"><i></i><i></i><i></i></span>
-      <div class="flow-node"><span class="pixel-bank"></span><b>HOA bank</b></div>
-      <p class="scene-note">Common Parcel does not hold association funds.</p>
-    </div>
-  )}
-
-  {slug === "collections" && (
-    <div class="timeline scene-body">
-      <div class="timeline-rule"></div>
-      <div class="timeline-step"><b>Due date</b><i></i></div>
-      <div class="timeline-step"><b>Board review</b><i></i></div>
-      <div class="timeline-step"><b>Notice</b><i></i></div>
-      <div class="timeline-step"><b>Next action</b><i></i></div>
-    </div>
-  )}
-
-  {slug === "accounting-and-budgets" && (
-    <div class="budget scene-body">
-      <div class="budget-chart">
-        <span style="--bar: 54%"><i></i><b>Operating</b></span>
-        <span style="--bar: 76%"><i></i><b>Reserve</b></span>
-        <span style="--bar: 63%"><i></i><b>Actual</b></span>
-      </div>
-      <div class="ledger-lines"><i></i><i></i><i></i><i></i></div>
-      <div class="budget-total"><span>Budget view</span><b>Board review</b></div>
-      <p class="scene-note">Illustrative budget view.</p>
-    </div>
-  )}
-
-  {slug === "rules-and-enforcement" && (
-    <div class="rule-review scene-body">
-      <div class="rule-document">
-        <span class="document-tab">Declaration</span>
-        <i></i><i></i><i></i><i></i>
-        <b>Section reference</b>
-      </div>
-      <div class="review-column">
-        <div><span>Owner response</span><i class="status status--open"></i></div>
-        <div><span>Board review</span><i class="status"></i></div>
-        <div><span>Decision</span><i class="status status--held"></i></div>
-      </div>
-    </div>
-  )}
-
-  {slug === "meetings-and-voting" && (
-    <div class="meeting scene-body">
-      <div class="meeting-date"><span>Annual meeting</span><b>Vote</b><small>Agenda</small></div>
-      <div class="ballot-stack">
-        <div class="ballot"><i></i><span>Ballot received</span></div>
-        <div class="ballot"><i></i><span>Ballot reviewed</span></div>
-        <div class="quorum"><span>Quorum</span><i><b></b></i></div>
-      </div>
-    </div>
-  )}
-
-  {slug === "documents-and-answers" && (
-    <div class="documents scene-body">
-      <div class="search-box"><span class="search-pixel"></span><b>Search association documents</b></div>
-      <div class="document-grid">
-        <div><span>Declaration</span><i></i><i></i><i></i></div>
-        <div><span>Rules</span><i></i><i></i><i></i></div>
-        <div><span>Minutes</span><i></i><i></i><i></i></div>
-      </div>
-    </div>
-  )}
-
-  {slug === "vendors-and-insurance" && (
-    <div class="vendors scene-body">
-      <div class="vendor-calendar">
-        <span>Renewal calendar</span>
-        <div class="calendar-grid">{Array.from({ length: 21 }).map((_, i) => <i class:list={{ marked: i === 11 }}></i>)}</div>
-      </div>
-      <div class="contract-stack">
-        <div><b>Landscaping</b><span>Contract</span></div>
-        <div><b>Insurance</b><span>Certificate</span></div>
-        <div><b>Roofing</b><span>Proposal</span></div>
-      </div>
-    </div>
-  )}
-
-  {slug === "resident-portal" && (
-    <div class="portal scene-body">
-      <div class="portal-sidebar"><i></i><i></i><i></i><i></i></div>
-      <div class="portal-main">
-        <div class="portal-greeting"><span>Resident home</span><b>Your association at a glance</b></div>
-        <div class="portal-cards">
-          <div><span>Balance</span><i></i></div>
-          <div><span>Requests</span><i></i></div>
-          <div><span>Documents</span><i></i></div>
-        </div>
-      </div>
-    </div>
-  )}
-
-  {slug === "records-and-audit" && (
-    <div class="records scene-body">
-      <div class="record-list">
-        <div><span>Meeting decision</span><i></i></div>
-        <div><span>Board approval</span><i></i></div>
-        <div><span>Document update</span><i></i></div>
-        <div><span>Association export</span><i></i></div>
-      </div>
-      <div class="export-box"><span class="pixel-box"></span><b>Export package</b></div>
-      <p class="scene-note">Illustrative association records.</p>
-    </div>
-  )}
+  {Scene && <Scene />}
 </div>
 
 <style>
