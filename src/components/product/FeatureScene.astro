@@ -36,12 +36,12 @@ const TITLES: Record<string, string> = {
   "dues-and-payments": "Owner to association",
   collections: "Collections plan",
   "accounting-and-budgets": "Board budget",
-  "rules-and-enforcement": "Rule review",
-  "meetings-and-voting": "Meeting workspace",
+  "rules-and-enforcement": "Before the fine",
+  "meetings-and-voting": "Ballots in",
   "documents-and-answers": "Association library",
   "vendors-and-insurance": "Contract calendar",
   "resident-portal": "Resident view",
-  "records-and-audit": "Decision record",
+  "records-and-audit": "Board to board",
 };
 
 const Scene = SCENES[slug];
@@ -83,15 +83,22 @@ const Scene = SCENES[slug];
   .scene-mark { display: inline-flex; gap: 3px; }
   .scene-mark i { width: 5px; height: 5px; background: var(--on-dark-tile); }
   .scene-mark i:nth-child(2) { background: var(--amber); }
-  .scene-body { min-height: 278px; padding: clamp(20px, 3vw, 32px); }
-  .scene-note {
-    grid-column: 1 / -1;
-    margin: var(--s-3) 0 0;
-    padding-top: var(--s-3);
-    border-top: 1px solid var(--night-rule);
-    color: var(--mist);
-    font-size: var(--t-micro);
-  }
+
+  /*
+   * .scene-body belongs to the scene components, not to this one, so it has to
+   * be global. Astro scopes a style block by stamping a hash onto the elements
+   * in ITS OWN template and onto the selectors here; an element rendered by a
+   * child component never receives that hash, so a plain `.scene-body` rule
+   * written here silently matches nothing.
+   *
+   * That is exactly what happened when the nine scenes were pulled out of this
+   * file into their own components. The check that the split was a no-op
+   * compared the rendered TEXT of every page and found eight of nine identical
+   * — and text cannot see a stylesheet detaching. Measured afterwards:
+   * `.scene-body` had no `data-astro-cid-*` attribute at all and computed to
+   * `display: block` where it had been a padded 278px box.
+   */
+  :global(.scene-body) { min-height: 278px; padding: clamp(20px, 3vw, 32px); }
 
   /* Payments */
   .payment-flow { display: grid; grid-template-columns: 1fr 34px 1.25fr 34px 1fr; align-items: center; }
