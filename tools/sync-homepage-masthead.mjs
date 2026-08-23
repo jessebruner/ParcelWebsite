@@ -363,10 +363,12 @@ export function verifyBehaviorScript(scriptText) {
     throw new Error("Behavior script missing dContainers hover event listeners and aria-expanded sync");
   }
 
-  // A phone has no hover. Both hover listeners must use the same breakpoint as
-  // the mobile navigation CSS, or a synthetic hover event can fight the first
-  // tap. Inspect each listener region separately so one intact guard cannot
-  // hide a regression in the other.
+  // Hover sync is a desktop enhancement. Keep both listeners outside the
+  // mobile navigation range so tap/click remains the only mobile state owner.
+  // The separate latch makes the first tap resilient to emulated mouse events;
+  // these guards remain defense in depth against hover changing open/ARIA state.
+  // Inspect each listener region separately so one intact guard cannot hide a
+  // regression in the other.
   const hoverBlockStart = scriptText.indexOf("dContainers.forEach(function(container) {");
   const hoverBlockEnd = scriptText.indexOf("dBtns.forEach(function(btn) {", hoverBlockStart);
   const hoverBlock = hoverBlockStart < 0 || hoverBlockEnd < 0
