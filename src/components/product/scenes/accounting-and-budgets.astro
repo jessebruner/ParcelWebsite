@@ -2,22 +2,79 @@
 /**
  * accounting-and-budgets — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * What "budget against actual" looks like when you draw it instead of writing
+ * it: a dashed ceiling the board adopted, and spending underneath it.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * One authored moment, looping: the current month rises and settles below the
+ * line. Resting state, which is what `prefers-reduced-motion` holds, is the
+ * finished chart with that bar at full height.
+ *
+ * No words. The scene header already says what this is.
+ *
+ * Styles live in this file. FeatureScene.astro's <style> is scoped to
+ * FeatureScene.astro, so its rules never reached this markup.
  */
+const MONTHS = ["34%", "47%", "40%", "55%", "43%", "59%", "49%"];
 ---
 
-<div class="budget scene-body">
-      <div class="budget-chart">
-        <span style="--bar: 54%"><i></i><b>Operating</b></span>
-        <span style="--bar: 76%"><i></i><b>Reserve</b></span>
-        <span style="--bar: 63%"><i></i><b>Actual</b></span>
-      </div>
-      <div class="ledger-lines"><i></i><i></i><i></i><i></i></div>
-      <div class="budget-total"><span>Budget view</span><b>Board review</b></div>
-      <p class="scene-note">Illustrative budget view.</p>
+<div class="bud-scene">
+  <div class="bud-plot">
+    <div class="bud-bars">
+      <span class="bud-adopted"></span>
+      {MONTHS.map((h) => <i style={`--h:${h}`}></i>)}
+      <i class="bud-now"></i>
     </div>
+  </div>
+</div>
+
+<style>
+  .bud-scene {
+    min-height: 278px;
+    padding: clamp(18px, 2.6vw, 24px);
+    display: grid;
+    align-content: center;
+  }
+
+  /* The chart gets its own ground. The hero behind it is dawn on this page,
+     and slate bars on a bright sky do not carry. */
+  .bud-plot {
+    border: 1px solid var(--on-dark-tile-edge);
+    background: var(--night);
+    padding: var(--s-5);
+  }
+  .bud-bars {
+    position: relative;
+    height: 186px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    border-bottom: 2px solid var(--on-dark-tile);
+  }
+  .bud-bars > i { flex: 1; height: var(--h); background: var(--slate); }
+
+  /* The line the board adopted. Everything under it is under budget. */
+  .bud-adopted {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 74%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--sand) 0 5px, transparent 5px 10px);
+  }
+
+  .bud-bars > i.bud-now {
+    --h: 66%;
+    background: var(--amber);
+    animation: bud-rise 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  @keyframes bud-rise {
+    0% { height: 9%; }
+    52%, 100% { height: var(--h); }
+  }
+
+  @media (max-width: 620px) {
+    .bud-scene { min-height: 238px; padding: var(--s-3); }
+    .bud-plot { padding: var(--s-4); }
+    .bud-bars { height: 158px; gap: 7px; }
+  }
+</style>

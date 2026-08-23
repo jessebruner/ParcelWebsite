@@ -2,24 +2,169 @@
 /**
  * rules-and-enforcement — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * ONE IDEA: a fine is locked until the notice and the hearing are on the
+ * record. That is the page's only load-bearing promise, so it is the picture.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * It replaces a ten-item bullet ladder that ran down the first band as prose.
+ * A sequence is a picture. Three words carry it, and each one IS the thing it
+ * names rather than a caption for it.
+ *
+ * All of it is pure CSS on one 8s period, so there is nothing to gate on an
+ * IntersectionObserver and two builds paint the same frames. Every timing is a
+ * percentage of that one period rather than a per-element delay, because
+ * per-element delays on an infinite loop drift out of phase with each other by
+ * design and the sequence has to stay a sequence.
+ *
+ * At frame zero the whole diagram is drawn: three rows, their labels, the day
+ * track. What moves is which marks are lit. Under prefers-reduced-motion the
+ * rest state below flips to the finished state, so a reader who never sees the
+ * motion still sees the argument.
  */
+const DAYS = Array.from({ length: 20 }, (_, i) => i);
 ---
 
-<div class="rule-review scene-body">
-      <div class="rule-document">
-        <span class="document-tab">Declaration</span>
-        <i></i><i></i><i></i><i></i>
-        <b>Section reference</b>
-      </div>
-      <div class="review-column">
-        <div><span>Owner response</span><i class="status status--open"></i></div>
-        <div><span>Board review</span><i class="status"></i></div>
-        <div><span>Decision</span><i class="status status--held"></i></div>
-      </div>
-    </div>
+<div class="gate scene-body">
+  <div class="gate-step gate-step--notice">
+    <span class="gate-word">Notice</span>
+    <span class="gate-mark"></span>
+  </div>
+
+  <div class="gate-days">
+    <div class="gate-days-row">{DAYS.map(() => <i></i>)}</div>
+    <div class="gate-days-row gate-days-fill">{DAYS.map(() => <i></i>)}</div>
+  </div>
+
+  <div class="gate-step gate-step--hearing">
+    <span class="gate-word">Hearing</span>
+    <span class="gate-mark"></span>
+  </div>
+
+  <div class="gate-step gate-step--fine">
+    <span class="gate-word">Fine</span>
+    <span class="gate-mark gate-mark--locked"></span>
+  </div>
+</div>
+
+<style>
+  /* .scene-body's rule lives in the parent and no longer reaches a child
+     component, so the scene carries its own box. */
+  .gate {
+    min-height: 278px;
+    padding: clamp(20px, 3vw, 32px);
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    gap: var(--s-4);
+    align-content: center;
+  }
+
+  .gate-step {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 0 var(--s-4);
+    border: 1px solid var(--on-dark-tile-edge);
+    background: var(--night);
+  }
+  .gate-word {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+  }
+  .gate-mark {
+    width: 14px;
+    height: 14px;
+    background: var(--on-dark-tile);
+  }
+  /* The consequence, drawn as an outline that has not been filled in. */
+  .gate-mark--locked {
+    background: transparent;
+    border: 2px solid var(--on-dark-tile);
+  }
+
+  /* The days between the notice and the hearing. Two identical grids stacked,
+     the top one clipped, so twenty squares fill from one animation. */
+  .gate-days { position: relative; }
+  .gate-days-row {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    gap: 3px;
+  }
+  .gate-days-row i { height: 14px; background: var(--on-dark-tile-edge); }
+  .gate-days-fill {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  .gate-days-fill i { background: var(--sand); }
+
+  .gate-step--notice { animation: gate-notice 8s infinite; }
+  .gate-step--notice .gate-mark { animation: gate-lit 8s infinite; }
+  .gate-days-fill { animation: gate-run 8s infinite; }
+  .gate-step--hearing { animation: gate-hearing 8s infinite; }
+  .gate-step--hearing .gate-mark { animation: gate-heard 8s infinite; }
+  .gate-step--fine { animation: gate-fine 8s infinite; }
+  .gate-mark--locked { animation: gate-unlock 8s infinite; }
+
+  @keyframes gate-notice {
+    0%, 2.9% { border-color: var(--on-dark-tile-edge); }
+    3%, 93.9% { border-color: var(--amber-edge); }
+    94%, 100% { border-color: var(--on-dark-tile-edge); }
+  }
+  @keyframes gate-lit {
+    0%, 2.9% { background: var(--on-dark-tile); }
+    3%, 93.9% { background: var(--amber); }
+    94%, 100% { background: var(--on-dark-tile); }
+  }
+  @keyframes gate-run {
+    0% { clip-path: inset(0 100% 0 0); }
+    8% { clip-path: inset(0 100% 0 0); animation-timing-function: steps(20, end); }
+    40%, 93.9% { clip-path: inset(0 0 0 0); }
+    94%, 100% { clip-path: inset(0 100% 0 0); }
+  }
+  @keyframes gate-hearing {
+    0%, 44.9% { border-color: var(--on-dark-tile-edge); }
+    45%, 93.9% { border-color: var(--amber-edge); }
+    94%, 100% { border-color: var(--on-dark-tile-edge); }
+  }
+  @keyframes gate-heard {
+    0%, 44.9% { background: var(--on-dark-tile); }
+    45%, 93.9% { background: var(--amber); }
+    94%, 100% { background: var(--on-dark-tile); }
+  }
+  @keyframes gate-fine {
+    0%, 54.9% { border-color: var(--on-dark-tile-edge); background: var(--night); }
+    55%, 93.9% { border-color: var(--ember); background: var(--bank); }
+    94%, 100% { border-color: var(--on-dark-tile-edge); background: var(--night); }
+  }
+  @keyframes gate-unlock {
+    0%, 54.9% { background: transparent; border-color: var(--on-dark-tile); }
+    55%, 93.9% { background: var(--ember); border-color: var(--ember); }
+    94%, 100% { background: transparent; border-color: var(--on-dark-tile); }
+  }
+
+  @media (max-width: 620px) {
+    .gate { min-height: 238px; padding: var(--s-4); gap: var(--s-2); }
+    .gate-step { min-height: 40px; padding: 0 var(--s-3); }
+    .gate-days-row { grid-template-columns: repeat(20, 1fr); gap: 2px; }
+    .gate-days-row i { height: 10px; }
+  }
+
+  /* Reduced motion holds the finished state: notice given, days run, hearing
+     held, fine available. The still frame is the whole argument. */
+  @media (prefers-reduced-motion: reduce) {
+    .gate-step,
+    .gate-mark,
+    .gate-days-fill { animation: none; }
+    .gate-step--notice,
+    .gate-step--hearing { border-color: var(--amber-edge); }
+    .gate-step--notice .gate-mark,
+    .gate-step--hearing .gate-mark { background: var(--amber); }
+    .gate-days-fill { clip-path: inset(0 0 0 0); }
+    .gate-step--fine { border-color: var(--ember); background: var(--bank); }
+    .gate-mark--locked { background: var(--ember); border-color: var(--ember); }
+  }
+</style>

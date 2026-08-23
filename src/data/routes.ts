@@ -11,11 +11,11 @@ export interface Route {
 export const PRODUCT_NAV: Route[] = [
   { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Invoices on schedule, collects online when connected, and tracks balances." },
   { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "Logs violations against your rules with proper cure periods." },
-  { path: "/product/vendors-and-insurance", label: "Vendor contracts", blurb: "Tracks renewals, drafts quote requests for review, and checks invoices." },
-  { path: "/product/meetings-and-voting", label: "Elections and meetings", blurb: "Digital voting, meeting notices, live quorum, and draft minutes." },
-  { path: "/product/documents-and-answers", label: "Documents and setup", blurb: "Reads your governing documents and answers owner questions." },
+  { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Tracks renewals, drafts quote requests for review, and checks invoices." },
+  { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Digital voting, meeting notices, live quorum, and draft minutes." },
+  { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Reads your governing documents and answers owner questions." },
   { path: "/product/resident-portal", label: "Resident portal", blurb: "Self-serve balances, request submissions, and documents." },
-  { path: "/product/records-and-audit", label: "Proof for every decision", blurb: "Maintains official association records and traceable decisions." },
+  { path: "/product/records-and-audit", label: "Records and audit", blurb: "Maintains official association records and traceable decisions." },
   { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Assisted bank reconciliation and verifiable budget tracking." },
   { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following verified state notice periods." },
 ];

@@ -220,8 +220,23 @@ section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
   min-height: 24px;
 }
 
+/*
+ * Order and :where() both matter here, and the previous pair had neither.
+ *
+ * The reset exists to drop the browser's default paragraph margins. It was also
+ * cancelling the sibling rhythm above it: `.body p` is specificity (0,1,1) and
+ * `.body > * + *` is (0,1,0), so the reset won and any paragraph that followed
+ * something rendered flush against it. Measured on
+ * /product/documents-and-answers: a <p> after a <figure> computed
+ * margin-top: 0px, while a p.coda in the same list computed 24px, because
+ * .coda carries its own rule and was never affected.
+ *
+ * :where() contributes no specificity, so the reset is now (0,1,0) as well, and
+ * it goes first so the sibling rule wins on order for everything after the
+ * first child.
+ */
+.body :where(p) { margin: 0; text-wrap: pretty; }
 .body > * + * { margin-top: var(--s-4); }
-.body p { margin: 0; text-wrap: pretty; }
 
 /* A section's closing sentence, one step up, ruled off. Informational tier:
    a hairline row, no box, no colour. */
@@ -236,7 +251,11 @@ section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
 }
 
 /* Plain list of short statements. Not bullets: a ruled row each. */
-.rows { list-style: none; margin: 0; padding: 0; }
+/* :where() for the same reason as the paragraph reset above: a bare `.rows`
+   rule is (0,1,0) and sits after `.body > * + *`, so it won on order and a
+   bullet list rendered flush against the panel it followed. */
+.rows { list-style: none; padding: 0; }
+:where(.rows) { margin: 0; }
 .rows > li { border-bottom: var(--stroke-hairline); padding-block: var(--s-3); }
 .rows > li:first-child { border-top: var(--stroke-hairline); }
 .rows a { display: inline-flex; align-items: center; min-height: 24px; }

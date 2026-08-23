@@ -69,12 +69,21 @@ const { label, note, rows, footing, caption, example = true } = Astro.props;
           {r.label}
           {r.cite && <span class="cite">{r.cite}</span>}
         </span>
+        {/*
+          A chip and a value can both appear. They used to be branches of one
+          ternary, so a row carrying both rendered the chip and silently dropped
+          the number — which is how a vendor row showed LOWEST and hid the
+          $21,650 that made it the lowest, leaving the page's own comparison
+          unverifiable on screen. A figure that the data supplies and the page
+          does not draw is the worst of the three outcomes here.
+        */}
         {r.meter !== undefined ? (
           <span class="meter" aria-hidden="true"><span style={`width:${Math.round(r.meter * 100)}%`}></span></span>
-        ) : r.chip ? (
-          <span class="chip">{r.chip}</span>
         ) : (
-          <span class="rv">{r.value}</span>
+          <span class="rv-group">
+            {r.value && <span class="rv">{r.value}</span>}
+            {r.chip && <span class="chip">{r.chip}</span>}
+          </span>
         )}
       </div>
     ))}
@@ -165,6 +174,7 @@ const { label, note, rows, footing, caption, example = true } = Astro.props;
     color: var(--terracotta); font-variant-numeric: tabular-nums;
   }
 
+  .rv-group { display: inline-flex; align-items: center; gap: var(--s-3); min-width: 0; }
   .head-right { display: inline-flex; align-items: center; gap: 10px; min-width: 0; flex: 0 0 auto; }
   .eg {
     font-family: var(--font-mono); font-size: 10px; font-weight: 500;

@@ -3,6 +3,11 @@
  *
  * One page, one file. See src/data/content.ts for the shared shape and
  * src/data/features/index.ts for the order they appear in.
+ *
+ * Two limits on this page are true and are stated rather than dressed:
+ * certified mail is not connected, so service cannot be proved from here; and
+ * a state rule that has not been verified stops the plan rather than letting
+ * it guess. Both were shortened. Neither was softened.
  */
 import type { PageSpec } from "../content";
 
@@ -10,74 +15,46 @@ export const collections: PageSpec = {
   slug: "collections",
   title: "Collections",
   description:
-    "A board-controlled delinquency plan that uses verified notice periods where available, pauses on command, and records every approval.",
+    "A delinquency plan the board controls: every notice drafted from your documents, paused on command, and held until the right people sign.",
   h1: "Collections",
-  lede: "Parcel prepares each collection step from your documents and any verified rules that apply. The board can review, send, pause, or stop the plan.",
+  lede: "When an owner stops paying, Common Parcel drafts the next notice from your documents and holds it. Nothing goes out until the board sends it.",
   closer: "The hard letter, already written.",
   bands: [
     {
-      title: "Control every collection step",
+      title: "What happens when someone stops paying",
       body: [
-        { "panel": {
-                          "label": "Lot 63 · unpaid since 1 March",
-                          "note": "Held",
-                          "rows": [
-                                    {
-                                              "label": "Friendly reminder",
-                                              "value": "Day 1",
-                                              "cite": "Sent"
-                                    },
-                                    {
-                                              "label": "Formal late notice",
-                                              "value": "Day 30",
-                                              "cite": "Sent"
-                                    },
-                                    {
-                                              "label": "Demand and lien warning",
-                                              "value": "Day 60",
-                                              "cite": "Awaiting two signatures",
-                                              "pending": true
-                                    },
-                                    {
-                                              "label": "Accrual",
-                                              "value": "Frozen",
-                                              "cite": "Hardship recorded by the board"
-                                    }
-                          ],
-                          "footing": {
-                                    "label": "Balance",
-                                    "value": "$570"
-                          }
-                } },
-        { rows: [
-          "**Reminder.** A friendly note, on the day your grace period ends.",
-          "**Formal notice.** The late notice your documents and verified state rules require.",
-          "**Demand.** The letter before a lien, with the amount broken out.",
-          "**Lien warning.** Prepared, cited, and waiting for signature.",
-        ] },
-        { coda: "Where Common Parcel has verified an applicable rule, the timing points back to that source and to your own documents." },
+        { panel: {
+            label: "Lot 63 · unpaid since March 1",
+            rows: [
+              { label: "Reminder", value: "Day 1", cite: "Sent" },
+              { label: "Late notice", value: "Day 30", cite: "Sent" },
+              { label: "Demand before a lien", value: "Day 60", cite: "Waiting on two signatures", pending: true },
+              { label: "Late fees", value: "Stopped", cite: "Board hold, March 12" },
+            ],
+            footing: { label: "Balance", value: "$570" },
+        } },
+        { coda: "Dates come from your documents and, where Common Parcel has verified your state's rule, from that rule. Where a state rule is not verified yet, the plan stops and names what is missing." },
       ],
     },
     {
-      title: "Pause collection when life happens",
+      title: "No letter leaves without the board",
       field: true,
-      body: [{ p: "When a board places an account on hold for a hardship, a dispute, or a death in the family, scheduled collection actions stop until the board releases the hold." }],
-    },
-    {
-      title: "Your board controls every collection action",
       body: [
-        { p: "Nothing with legal consequences goes out on its own. Where the workflow enforces a two-officer gate, the action waits for both approvals and records who approved it, when, and on what basis." },
-        { p: "Where Common Parcel has a verified rule for your state, the ladder reflects that procedure. If your state's collection procedure has not been verified yet, the ladder does not advance and the interface says which provision is missing." },
+        { p: "Where the workflow requires two officers, a notice waits for both approvals, and the record keeps who approved it and when." },
+        /* A coda, not a second <p>: tokens.css line 224 zeroes the margin on
+           every <p> in a band body, so two paragraphs in a row render with no
+           gap between them. Reported, not fixed here. */
+        { coda: "The board can put an account on hold for a hardship, a dispute, or a death in the family. Everything scheduled stops until the board lifts it." },
       ],
     },
     {
       title: "Certified mail is not connected yet",
-      field: true,
-      note: ["See rules and enforcement", "/product/rules-and-enforcement"],
+      air: "tight",
+      note: ["See violations and notices", "/product/rules-and-enforcement"],
       body: [{ statutory: {
         label: "Proof of mailing",
-        lede: "Certified mail is not connected. Parcel can show that a notice was drafted and approved. It cannot yet show that it was served.",
-        note: "Until that connection ships, the board remains responsible for service and for recording proof outside Common Parcel.",
+        lede: "Common Parcel can show that a notice was drafted and approved. It cannot yet show that it was served.",
+        note: "Until certified mail is connected, serving the notice and keeping the proof stay with the board.",
       } }],
     },
   ],

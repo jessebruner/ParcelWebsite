@@ -78,7 +78,7 @@ export const COMPARISONS: PageSpec[] = [
           head: ["", "Common Parcel", "PayHOA"],
           body: [
             ["Reads your CC&Rs and bylaws", "Provisions come out with the page they sit on", "You configure the rules"],
-            ["State statute", "Modelled rule by rule, with citations and stated gaps", "Not modelled"],
+            ["State statute", "Modeled rule by rule, with citations and stated gaps", "Not modeled"],
             ["Legislative change", "Watched, and you are told what moved", "No"],
             ["Collections", "Graduated ladder on your state's periods", "Reminders you schedule"],
             ["Hearings", "Cure windows, hearing periods, enforcement history", "Violation tracking"],
@@ -147,7 +147,7 @@ export const COMPARISONS: PageSpec[] = [
             ["Built for", "Self-managed community associations", "Property managers, HOA is one module"],
             ["Also does rentals", "No", "Yes"],
             ["Reads your CC&Rs and bylaws", "Yes, with the page", "Document storage"],
-            ["State HOA statute", "Modelled rule by rule", "No"],
+            ["State HOA statute", "Modeled rule by rule", "No"],
             ["Legislative change", "Watched", "No"],
             ["Accounting depth", "Ledgers, reconciliation, budgets, exports", "More mature, full ledger"],
             ["Collections on statutory periods", "Yes", "Configurable reminders"],
@@ -187,7 +187,7 @@ export const COMPARISONS: PageSpec[] = [
       "TownSq is built for participation. Parcel is built for governance and money. Which one fits depends on what goes wrong in your association.",
     eyebrow: "Compare",
     h1: "Common Parcel vs TownSq",
-    lede: "TownSq is an engagement product. Its centre is a community feed, resident communication, participation. Reviews consistently note it is strong on engagement and weaker on financial management.",
+    lede: "TownSq is an engagement product. Its center is a community feed, resident communication, participation. Reviews consistently note it is strong on engagement and weaker on financial management.",
     bands: [
       {
         title: "The question that decides it",
@@ -206,7 +206,7 @@ export const COMPARISONS: PageSpec[] = [
           body: [
             ["Community feed", "No", "Yes, the core of the product"],
             ["Reads your governing documents", "Yes, with the page", "Document storage"],
-            ["State statute modelled", "Rule by rule", "No"],
+            ["State statute modeled", "Rule by rule", "No"],
             ["Legislative change", "Watched", "No"],
             ["Financial depth", "Ledgers, reconciliation, budgets, assessments", "Frequently cited as the weak area"],
             ["Collections on statutory periods", "Yes", "Basic"],

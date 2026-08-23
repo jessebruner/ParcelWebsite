@@ -2,22 +2,123 @@
 /**
  * records-and-audit — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * ONE IDEA: the officers change and the record does not stop. Three figures in
+ * the rail hand off to each other while the page on the right keeps filling.
+ * That is the whole page in one loop, and it needs no words at all, which is
+ * the right number for a block that is aria-hidden.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * It replaces a four-item list of nouns plus a caption reading "Illustrative
+ * association records." The caption is gone; .scene-note is not used here.
+ *
+ * Pure CSS on one 9s period. Timings are percentages of that period rather
+ * than per-element delays, so the handoff stays in step with the filling.
  */
+const LINES = Array.from({ length: 8 }, (_, i) => i);
+const TERMS = [1, 2, 3];
 ---
 
-<div class="records scene-body">
-      <div class="record-list">
-        <div><span>Meeting decision</span><i></i></div>
-        <div><span>Board approval</span><i></i></div>
-        <div><span>Document update</span><i></i></div>
-        <div><span>Association export</span><i></i></div>
-      </div>
-      <div class="export-box"><span class="pixel-box"></span><b>Export package</b></div>
-      <p class="scene-note">Illustrative association records.</p>
+<div class="ledger scene-body">
+  <div class="terms">
+    {TERMS.map((n) => (
+      <span class:list={["term", `term--${n}`]}>
+        <i></i>
+        <b></b>
+      </span>
+    ))}
+  </div>
+
+  <div class="book">
+    <div class="book-rows">
+      {LINES.map(() => <span class="line"><i></i><b></b></span>)}
     </div>
+    <div class="book-rows book-rows--kept">
+      {LINES.map(() => <span class="line"><i></i><b></b></span>)}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* .scene-body's rule lives in the parent and no longer reaches a child
+     component, so the scene carries its own box. */
+  .ledger {
+    min-height: 278px;
+    padding: clamp(20px, 3vw, 32px);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(16px, 2.4vw, 28px);
+    align-items: center;
+  }
+
+  /* The rail: three terms of the board, one at a time. */
+  .terms {
+    display: grid;
+    gap: clamp(16px, 2.6vw, 30px);
+    justify-items: center;
+    padding-right: clamp(16px, 2.4vw, 28px);
+    border-right: 1px solid var(--night-rule);
+  }
+  .term { display: grid; justify-items: center; gap: 4px; }
+  .term i { width: 15px; height: 15px; background: var(--on-dark-tile); }
+  .term b { width: 31px; height: 19px; background: var(--on-dark-tile); }
+
+  /* The record: a page that keeps taking lines. */
+  .book { position: relative; background: var(--card); padding: var(--s-4); }
+  .book-rows { display: grid; gap: 7px; }
+  .line { display: grid; grid-template-columns: 1fr 10px; align-items: center; gap: var(--s-3); }
+  .line i { height: 9px; background: var(--c-hairline); }
+  .line b { width: 10px; height: 10px; background: var(--c-hairline); }
+  .line:nth-child(2) i, .line:nth-child(5) i { width: 74%; }
+  .line:nth-child(4) i, .line:nth-child(7) i { width: 88%; }
+
+  .book-rows--kept {
+    position: absolute;
+    inset: var(--s-4);
+    clip-path: inset(0 0 100% 0);
+  }
+  .book-rows--kept .line i { background: var(--bisque-edge); }
+  .book-rows--kept .line b { background: var(--terracotta); }
+
+  .book-rows--kept { animation: ledger-keep 9s infinite; }
+  .term--1 i, .term--1 b { animation: ledger-term-1 9s infinite; }
+  .term--2 i, .term--2 b { animation: ledger-term-2 9s infinite; }
+  .term--3 i, .term--3 b { animation: ledger-term-3 9s infinite; }
+
+  @keyframes ledger-keep {
+    0% { clip-path: inset(0 0 100% 0); }
+    5% { clip-path: inset(0 0 100% 0); animation-timing-function: steps(8, end); }
+    74%, 92.9% { clip-path: inset(0 0 0 0); }
+    93%, 100% { clip-path: inset(0 0 100% 0); }
+  }
+  @keyframes ledger-term-1 {
+    0%, 25.9% { background: var(--sand); }
+    26%, 100% { background: var(--on-dark-tile); }
+  }
+  @keyframes ledger-term-2 {
+    0%, 25.9% { background: var(--on-dark-tile); }
+    26%, 49.9% { background: var(--sand); }
+    50%, 100% { background: var(--on-dark-tile); }
+  }
+  @keyframes ledger-term-3 {
+    0%, 49.9% { background: var(--on-dark-tile); }
+    50%, 92.9% { background: var(--sand); }
+    93%, 100% { background: var(--on-dark-tile); }
+  }
+
+  @media (max-width: 620px) {
+    .ledger { min-height: 238px; padding: var(--s-4); gap: var(--s-4); }
+    .terms { gap: var(--s-5); padding-right: var(--s-4); }
+    .book { padding: var(--s-3); }
+    .book-rows--kept { inset: var(--s-3); }
+    .book-rows { gap: 6px; }
+  }
+
+  /* Reduced motion holds the finished state: three terms in, the record full
+     and still going. */
+  @media (prefers-reduced-motion: reduce) {
+    .book-rows--kept,
+    .term i,
+    .term b { animation: none; }
+    .book-rows--kept { clip-path: inset(0 0 0 0); }
+    .term--3 i, .term--3 b { background: var(--sand); }
+  }
+</style>

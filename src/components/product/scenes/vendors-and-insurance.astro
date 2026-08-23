@@ -2,23 +2,207 @@
 /**
  * vendors-and-insurance — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * "Animate a gorgeous looking calendar. Here is a calendar, here's a date that
+ * opens up and we can see vendor renewals." That is the whole brief for this
+ * scene and it is taken literally: a month, one date lit, and the calendar
+ * splitting open on that row to show what renews.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * The card is a grid item spanning all seven columns, sitting between the week
+ * that holds the date and the week after it, so opening it pushes the rest of
+ * the month down. The stem is positioned by the same arithmetic the grid uses,
+ * so it lands under the lit cell at any width rather than at a guessed percent.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame. So 100% is the open, readable state, 0% is the same, and the
+ * close-and-reopen happens in the middle. The scene is never blank at frame
+ * zero and never blank for a reader who asked for no motion. There is also an
+ * explicit reduced-motion rule below, because `animation: none` is the honest
+ * way to say it and it does not depend on that global staying put.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * .scene-body is redefined here because Astro scopes that file's styles to
+ * that file's own markup, and this markup is not in it.
  */
+
+/** April 2026 starts on a Wednesday. Three blanks, then thirty days. */
+const LEAD = 3;
+const DAYS = 30;
+/** The renewal. Row three, column five. The card opens after row three. */
+const MARK = 16;
+const cells = Array.from({ length: LEAD + DAYS }, (_, i) => (i < LEAD ? 0 : i - LEAD + 1));
+const beforeCard = cells.slice(0, LEAD + 18);
+const afterCard = cells.slice(LEAD + 18);
+const DOTTED = new Set([9, 24]);
 ---
 
-<div class="vendors scene-body">
-      <div class="vendor-calendar">
-        <span>Renewal calendar</span>
-        <div class="calendar-grid">{Array.from({ length: 21 }).map((_, i) => <i class:list={{ marked: i === 11 }}></i>)}</div>
-      </div>
-      <div class="contract-stack">
-        <div><b>Landscaping</b><span>Contract</span></div>
-        <div><b>Insurance</b><span>Certificate</span></div>
-        <div><b>Roofing</b><span>Proposal</span></div>
+<div class="cal scene-body">
+  <div class="cal-head">
+    <b>April</b>
+    <span class="cal-mark-key"></span>
+  </div>
+
+  <div class="cal-days">
+    <i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i>
+  </div>
+
+  <div class="cal-grid">
+    {beforeCard.map((d) => (
+      d === 0
+        ? <span class="cell cell--out"></span>
+        : <span class:list={["cell", { "cell--mark": d === MARK, "cell--dot": DOTTED.has(d) }]}>{d}</span>
+    ))}
+
+    <div class="cal-open">
+      <span class="stem"></span>
+      <div class="cal-card">
+        <span class="swatch"></span>
+        <b>Landscaping</b>
+        <span class="quote"><i></i><i></i><i></i></span>
       </div>
     </div>
+
+    {afterCard.map((d) => (
+      <span class:list={["cell", { "cell--dot": DOTTED.has(d) }]}>{d}</span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .cal {
+    --g: 3px;
+    --cell: clamp(22px, 3.6vw, 28px);
+    --open-h: 54px;
+    min-height: 278px;
+    padding: clamp(16px, 2.4vw, 22px);
+    background: var(--night);
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--s-3);
+    align-content: start;
+  }
+
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--night-rule);
+  }
+  .cal-head b {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+  .cal-mark-key { width: 8px; height: 8px; background: var(--amber); }
+
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--g); }
+  .cal-days i {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    font-style: normal;
+    text-align: center;
+    color: var(--on-dark-label);
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--g);
+    align-content: start;
+  }
+
+  .cell {
+    height: var(--cell);
+    border: 1px solid var(--on-dark-tile-edge);
+    display: grid;
+    place-items: center;
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--slate);
+  }
+  .cell--out { border-color: transparent; }
+  /* Another date already on the calendar. Texture, not a second story. */
+  .cell--dot { position: relative; }
+  .cell--dot::after {
+    content: "";
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 4px; height: 4px;
+    background: var(--plum);
+  }
+
+  /* The renewal. Resting state is lit, because rest is what a still frame shows. */
+  .cell--mark {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--night);
+    outline: 1px solid var(--paper);
+    outline-offset: 2px;
+    animation: cal-mark 7.5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  /* The row the calendar splits open on. */
+  .cal-open {
+    grid-column: 1 / -1;
+    position: relative;
+    height: var(--open-h);
+    overflow: hidden;
+    animation: cal-split 7.5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+  /*
+   * Column five of seven, centered. Track width is (100% - 6 gaps) / 7, so the
+   * center of column i is i tracks + i gaps + half a track.
+   */
+  .stem {
+    position: absolute;
+    top: 0;
+    left: calc(4 * ((100% - 6 * var(--g)) / 7) + 4 * var(--g) + ((100% - 6 * var(--g)) / 7) / 2);
+    width: 1px;
+    height: 10px;
+    background: var(--amber-edge);
+  }
+  .cal-card {
+    position: absolute;
+    inset: 10px 0 0;
+    border: 1px solid var(--amber-edge);
+    background: var(--plum);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 0 var(--s-4);
+  }
+  .swatch { width: 10px; height: 10px; background: var(--amber); flex: none; }
+  .cal-card b {
+    font: 600 var(--t-micro)/1 var(--font-sans);
+    color: var(--paper);
+    white-space: nowrap;
+  }
+  /* Three quotes in, drawn rather than written. The short one is the winner. */
+  .quote { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .quote i { display: block; width: 30px; height: 7px; background: var(--rose); }
+  .quote i:nth-child(2) { width: 24px; }
+  .quote i:nth-child(3) { width: 17px; background: var(--sand); }
+
+  @keyframes cal-split {
+    0%, 55% { height: var(--open-h); opacity: 1; }
+    64%, 71% { height: 0; opacity: 0; }
+    88%, 100% { height: var(--open-h); opacity: 1; }
+  }
+  @keyframes cal-mark {
+    0%, 55% { background: var(--amber); border-color: var(--amber); color: var(--night); outline-color: var(--paper); }
+    64%, 71% { background: transparent; border-color: var(--on-dark-tile-edge); color: var(--slate); outline-color: transparent; }
+    88%, 100% { background: var(--amber); border-color: var(--amber); color: var(--night); outline-color: var(--paper); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cal-open, .cell--mark { animation: none; }
+  }
+
+  @media (max-width: 620px) {
+    .cal { min-height: 238px; padding: var(--s-4); --cell: 26px; }
+  }
+</style>

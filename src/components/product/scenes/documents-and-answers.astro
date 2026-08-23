@@ -2,20 +2,163 @@
 /**
  * documents-and-answers — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * The page's argument in one picture: a line in the declaration lights up, and
+ * the same instant a figure lands in the board's list with the page it came
+ * from. Left is the document, right is what the board gets. Nothing between
+ * them but the moment.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * The old version was a search box captioned "Search association documents"
+ * over three cards captioned "Declaration", "Rules" and "Minutes" — six words
+ * of label inside a block that is aria-hidden, so nobody ever read them. What
+ * is left is three: the page number on the sheet, the figure, and its cite.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame, so 100% and 0% are both the landed state and the sweep happens
+ * in between. The scene is never blank, at frame zero or for a reader who
+ * asked for stillness. The explicit reduced-motion rule below says the same
+ * thing without depending on that global.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * .scene-body is redefined here because Astro scopes that file's styles to
+ * that file's own markup, and this markup is not in it.
  */
 ---
 
-<div class="documents scene-body">
-      <div class="search-box"><span class="search-pixel"></span><b>Search association documents</b></div>
-      <div class="document-grid">
-        <div><span>Declaration</span><i></i><i></i><i></i></div>
-        <div><span>Rules</span><i></i><i></i><i></i></div>
-        <div><span>Minutes</span><i></i><i></i><i></i></div>
-      </div>
+<div class="lib scene-body">
+  <div class="sheet">
+    <span class="tab"></span>
+    <i class="ln"></i>
+    <i class="ln ln--short"></i>
+    <span class="hit">
+      <span class="hl"></span>
+      <i class="ln"></i>
+    </span>
+    <i class="ln ln--mid"></i>
+    <i class="ln"></i>
+    <i class="ln ln--short"></i>
+    <b class="folio">6</b>
+  </div>
+
+  <div class="facts">
+    <div class="fact">
+      <i></i>
+      <span class="bar"></span>
     </div>
+    <div class="fact fact--live">
+      <i></i>
+      <span class="landed">
+        <b>$285</b>
+        <em>P. 6</em>
+      </span>
+    </div>
+    <div class="fact">
+      <i></i>
+      <span class="bar bar--short"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .lib {
+    min-height: 278px;
+    padding: clamp(18px, 2.8vw, 28px);
+    background: var(--night);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 3vw, 28px);
+    align-items: stretch;
+  }
+
+  /* The document. Paper, because that is what it is. */
+  .sheet {
+    position: relative;
+    background: var(--paper);
+    padding: var(--s-4) var(--s-4) var(--s-8);
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+  }
+  .tab { display: block; width: 38px; height: 9px; background: var(--terracotta); margin-bottom: var(--s-2); }
+  .ln { display: block; height: 7px; background: var(--c-edge); }
+  .ln--short { width: 62%; }
+  .ln--mid { width: 84%; }
+
+  .hit { position: relative; display: block; }
+  .hit .ln { position: relative; background: var(--ink-2); }
+  /* The highlight, drawn behind the line and four pixels proud of it. */
+  .hl {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: -4px;
+    width: calc(100% + 8px);
+    background: var(--amber);
+    animation: doc-sweep 7s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+  .folio {
+    position: absolute;
+    right: var(--s-4);
+    bottom: var(--s-3);
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    color: var(--ink-3);
+  }
+
+  /* What the board ends up with. */
+  .facts { display: grid; align-content: center; }
+  .fact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    min-height: 46px;
+    border-bottom: 1px solid var(--night-rule);
+  }
+  .fact:first-child { border-top: 1px solid var(--night-rule); }
+  .fact > i { display: block; width: 42%; height: 7px; background: var(--on-dark-tile); }
+  .fact--live > i { background: var(--mist); }
+  .bar { display: block; width: 46px; height: 7px; background: var(--slate); }
+  .bar--short { width: 30px; }
+
+  .landed {
+    display: grid;
+    justify-items: end;
+    gap: 3px;
+    animation: doc-land 7s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+  .landed b {
+    font: 500 var(--t-mono-data)/1 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--paper);
+  }
+  .landed em {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    font-style: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ember);
+  }
+
+  @keyframes doc-sweep {
+    0%, 54% { width: calc(100% + 8px); }
+    62%, 68% { width: 0; }
+    84%, 100% { width: calc(100% + 8px); }
+  }
+  @keyframes doc-land {
+    0%, 54% { opacity: 1; transform: translateY(0); }
+    62%, 72% { opacity: 0; transform: translateY(6px); }
+    90%, 100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hl, .landed { animation: none; }
+  }
+
+  @media (max-width: 620px) {
+    .lib { min-height: 238px; padding: var(--s-4); gap: var(--s-4); }
+    .sheet { padding: var(--s-3) var(--s-3) var(--s-6); gap: var(--s-2); }
+    .fact { min-height: 40px; }
+  }
+</style>

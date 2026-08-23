@@ -77,3 +77,34 @@ test("monotonic properties (1 to 1200 lots)", () => {
     prevPerLot = res.perLot;
   }
 });
+
+/*
+ * A panel row can carry both a figure and a chip, and both have to render.
+ *
+ * They used to be two branches of one ternary, so a row with both drew the chip
+ * and dropped the number in silence. On /product/vendors-and-insurance that
+ * meant the row said LOWEST and hid the $21,650 that made it the lowest, while
+ * the panel's footing claimed a $4,750 saving the reader could not check.
+ *
+ * This is written against the built page rather than the component, and the
+ * data carries a row with both so the test has something to fail on. Delete the
+ * chip from that row and this goes red rather than quietly passing.
+ */
+test("a panel row with a figure and a chip renders both", async () => {
+  const { readFileSync, existsSync } = await import("node:fs");
+  const page = "dist/product/vendors-and-insurance.html";
+  if (!existsSync(page)) return assert.fail("build dist before running: " + page + " is missing");
+  const html = readFileSync(page, "utf8");
+
+  const { vendorsAndInsurance } = await import("../src/data/features/vendors-and-insurance.ts");
+  const rows = vendorsAndInsurance.bands
+    .flatMap((b) => b.body)
+    .flatMap((block) => (block.panel ? block.panel.rows : []));
+  const both = rows.filter((r) => r.value && r.chip);
+
+  assert.ok(both.length > 0, "no row carries both a value and a chip, so this test proves nothing");
+  for (const r of both) {
+    assert.ok(html.includes(r.value), `row "${r.label}" lost its value ${r.value}`);
+    assert.ok(html.includes(r.chip), `row "${r.label}" lost its chip ${r.chip}`);
+  }
+});

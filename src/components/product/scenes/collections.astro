@@ -2,19 +2,112 @@
 /**
  * collections — the hero diagram.
  *
- * Lifted verbatim from the nine-in-one FeatureScene so it can be rebuilt
- * without touching the other eight. It is still the static version.
+ * The page's argument, drawn: a plan of notices that advances on its own dates
+ * and then stops, because the next one is waiting on the board. Two letters
+ * behind it, one lit and held, one not started.
  *
- * The shared chrome (.feature-scene, .scene-top, .scene-body) lives in
- * FeatureScene.astro and is inherited. Styles that belong only to this
- * scene belong in this file.
+ * One authored moment, looping: the marker steps down two rows and stays there
+ * for the rest of the cycle. The stop is the point, so the loop spends most of
+ * its time stopped. Resting state, which is what `prefers-reduced-motion`
+ * holds, is the marker on the first row with every row legible.
+ *
+ * No words. The scene header already says what this is.
+ *
+ * Styles live in this file. FeatureScene.astro's <style> is scoped to
+ * FeatureScene.astro, so its rules never reached this markup.
  */
 ---
 
-<div class="timeline scene-body">
-      <div class="timeline-rule"></div>
-      <div class="timeline-step"><b>Due date</b><i></i></div>
-      <div class="timeline-step"><b>Board review</b><i></i></div>
-      <div class="timeline-step"><b>Notice</b><i></i></div>
-      <div class="timeline-step"><b>Next action</b><i></i></div>
+<div class="coll-plan">
+  <div class="coll-rows">
+    <span class="coll-marker"></span>
+
+    <div class="coll-step coll-step--sent">
+      <i class="coll-tick"></i>
+      <span class="coll-letter"><i></i><i></i><i></i></span>
     </div>
+    <div class="coll-step coll-step--sent">
+      <i class="coll-tick"></i>
+      <span class="coll-letter"><i></i><i></i><i></i></span>
+    </div>
+    <div class="coll-step coll-step--held">
+      <i class="coll-tick"></i>
+      <span class="coll-letter"><i></i><i></i><i></i></span>
+    </div>
+    <div class="coll-step coll-step--next">
+      <i class="coll-tick"></i>
+      <span class="coll-letter"><i></i><i></i><i></i></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .coll-plan {
+    --coll-row: 46px;
+    --coll-gap: 10px;
+    min-height: 278px;
+    padding: clamp(20px, 3vw, 30px);
+    display: grid;
+    align-content: center;
+  }
+  .coll-rows { position: relative; display: grid; gap: var(--coll-gap); }
+
+  .coll-step {
+    height: var(--coll-row);
+    padding-left: 17px;
+    display: grid;
+    grid-template-columns: 12px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-4);
+  }
+
+  .coll-tick { width: 12px; height: 12px; background: var(--on-dark-tile); }
+
+  /* A notice, drawn as a notice: a bordered sheet with three ruled lines. */
+  .coll-letter {
+    height: 100%;
+    border: 1px solid var(--on-dark-tile-edge);
+    background: var(--night);
+    padding: 0 12px;
+    display: grid;
+    align-content: center;
+    gap: 6px;
+  }
+  .coll-letter i { height: 3px; background: var(--on-dark-tile); }
+  .coll-letter i:nth-child(2) { width: 66%; }
+  .coll-letter i:nth-child(3) { width: 42%; }
+
+  /* Sent. */
+  .coll-step--sent .coll-tick { background: var(--sand); }
+  .coll-step--sent .coll-letter { border-color: var(--on-dark-tile); }
+  .coll-step--sent .coll-letter i { background: var(--slate); }
+
+  /* Drafted, and waiting on the board. The hollow tick is the wait. */
+  .coll-step--held .coll-tick { background: transparent; border: 2px solid var(--amber); }
+  .coll-step--held .coll-letter { border-color: var(--amber-edge); }
+  .coll-step--held .coll-letter i { background: var(--mist); }
+
+  /* Not started. */
+  .coll-step--next .coll-letter i { background: var(--on-dark-tile-edge); }
+
+  .coll-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: var(--coll-row);
+    background: var(--amber);
+    animation: coll-advance 5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  @keyframes coll-advance {
+    0%, 12% { transform: translateY(0); }
+    24%, 36% { transform: translateY(calc(var(--coll-row) + var(--coll-gap))); }
+    48%, 100% { transform: translateY(calc((var(--coll-row) + var(--coll-gap)) * 2)); }
+  }
+
+  @media (max-width: 620px) {
+    .coll-plan { --coll-row: 40px; --coll-gap: 8px; min-height: 238px; padding: var(--s-4); }
+    .coll-step { padding-left: 13px; gap: var(--s-3); }
+    .coll-letter { padding: 0 10px; }
+  }
+</style>

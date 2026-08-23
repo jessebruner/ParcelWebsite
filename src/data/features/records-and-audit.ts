@@ -3,6 +3,11 @@
  *
  * One page, one file. See src/data/content.ts for the shared shape and
  * src/data/features/index.ts for the order they appear in.
+ *
+ * This was the thinnest page on the site: two bands, no onward link, and a
+ * band whose paragraph repeated its own heading word for word. It now argues
+ * the two things that actually make an association keep records: an owner can
+ * demand them, and the board that has them will not be here next year.
  */
 import type { PageSpec } from "../content";
 
@@ -10,47 +15,48 @@ export const recordsAndAudit: PageSpec = {
   slug: "records-and-audit",
   title: "Records and audit",
   description:
-    "Keep meeting records, board resolutions, vendor contracts, and numbered change history together across board transitions.",
+    "Minutes, resolutions, notices, and ledgers kept in one place, with a name and a time on every change.",
   h1: "Records and audit",
-  lede: "When officers rotate, institutional memory disappears. Keep minutes, resolutions, notices, and financial ledgers together so the next board inherits a usable association record.",
+  lede: "Officers change every year or two and what they knew leaves with them. Common Parcel keeps minutes, resolutions, notices, and ledgers where the next board will find them.",
   closer: "The next board inherits everything.",
   bands: [
     {
-      title: "Keep decisions with the records behind them",
+      title: "The file the next board opens",
+      air: "open",
       body: [
-        {
-          panel: {
-            label: "Record · March",
-            note: "Numbered",
-            rows: [
-              { label: "Resolution 2026-04 · Roofing", chip: "Passed" },
-              { label: "Notice · Lot 77 Fence", chip: "Delivered" },
-              { label: "Invoice · Apex Landscaping", chip: "Reconciled" },
-              { label: "Annual Meeting Minutes", chip: "Signed" },
-            ],
-            footing: {
-              label: "Export",
-              value: "Included",
-            },
-          },
-        },
-        {
+        { panel: {
+          label: "Association record",
+          note: "2026",
           rows: [
-            "Meeting notices, verified attendance, and signed minutes.",
-            "Board resolutions with documented voting tallies.",
-            "Vendor contracts, renewals, and reconciled invoices.",
-            "Notices, violation timelines, and hearing decisions.",
-            "Monthly financial statements and bank reconciliation records.",
+            { label: "Annual meeting minutes", chip: "Signed" },
+            { label: "Board resolution", chip: "Passed" },
+            { label: "Violation notice", chip: "Delivered" },
+            { label: "Landscaping invoice", chip: "Paid" },
           ],
-        },
+          footing: { label: "Export", value: "Included" },
+        } },
       ],
     },
     {
-      title: "Show who changed what",
+      title: "Changes carry a name",
       field: true,
       body: [
-        { p: "Changes to supported accounts, rules, and records note who made them and when." },
-        { coda: "The next board inherits structured association history instead of scattered email threads." },
+        { p: "An edit to a rule or a record carries the name of whoever made it and the time." },
+      ],
+    },
+    {
+      title: "An owner asks for the books",
+      air: "tight",
+      note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
+      body: [
+        { p: "A Michigan owner with a proper purpose can demand the books, and five business days later can ask a court to compel it. The records are already in one place." },
+      ],
+    },
+    {
+      title: "When the treasurer resigns",
+      field: true,
+      body: [
+        { p: "The officer who knew where everything was is gone. The next one opens association records that outlast any board." },
       ],
     },
   ],
