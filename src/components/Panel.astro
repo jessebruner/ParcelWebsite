@@ -97,10 +97,24 @@ const { label, note, rows, footing, caption, example = true } = Astro.props;
     margin: 0;
   }
 
+  /*
+   * Wraps, and the label truncates rather than pushing the row wider.
+   *
+   * The Example marker added 66px to a row that used to be a label and a short
+   * note, and on a 390px screen that put three pages over the viewport by 4 to
+   * 15px — /product/vendors-and-insurance, /product/resident-portal and
+   * /security, all of which had been at zero. The panel is inside .page, which
+   * has no horizontal overflow of its own, so the whole document scrolled.
+   */
   .head {
     display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+    flex-wrap: wrap;
     padding: 11px 18px;
     background: var(--night);
+  }
+  .lab {
+    min-width: 0; flex: 1 1 auto;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .lab, .note {
     font-family: var(--font-mono); font-size: var(--t-mono-label);
@@ -151,7 +165,7 @@ const { label, note, rows, footing, caption, example = true } = Astro.props;
     color: var(--terracotta); font-variant-numeric: tabular-nums;
   }
 
-  .head-right { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+  .head-right { display: inline-flex; align-items: center; gap: 10px; min-width: 0; flex: 0 0 auto; }
   .eg {
     font-family: var(--font-mono); font-size: 10px; font-weight: 500;
     letter-spacing: 0.14em; text-transform: uppercase;
