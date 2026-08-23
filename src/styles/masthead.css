@@ -27,7 +27,13 @@ nav { display: flex; align-items: stretch; gap: 0; }
   padding: 12px clamp(14px, 1.8vw, 28px) 12px 0;
 }
 
-.nav-item { position: relative; display: flex; align-items: center; }
+/*
+ * Deliberately not `position: relative`. The dropdown panels resolve against
+ * `.mast`, which is sticky and therefore a containing block, so that they can
+ * be clamped to the viewport rather than to this button. The underline on
+ * `.navlink` positions against `.navlink` itself and does not need this.
+ */
+.nav-item { display: flex; align-items: center; }
 
 .navlink {
   position: relative;
@@ -57,86 +63,105 @@ nav { display: flex; align-items: stretch; gap: 0; }
   transform: rotate(180deg);
 }
 
-/* Dropdown Menus */
+/* ── DROPDOWN MENUS ───────────────────────────────────
+ *
+ * Geometry rule, and it is the whole rule: a panel is anchored to the
+ * masthead's right gutter and grows leftward, and its width is clamped to the
+ * viewport. It is never anchored to the button it hangs from.
+ *
+ * The previous version positioned the mega panel against the Product button
+ * with `left: 0; transform: translateX(-15%)` — an offset measured as a
+ * percentage of the panel, not of the space available to it. Nothing in that
+ * expression referenced the viewport, so the panel ran off the right edge at
+ * every width that was measured: 170px at 1920, 179px at 1440, 225px at 980.
+ * It never fitted. `right: var(--pad-x)` against the masthead cannot do that,
+ * because the masthead is the viewport's width by construction.
+ *
+ * That is why `.has-dropdown` goes static at desktop. `position: absolute`
+ * resolves against the nearest positioned ancestor, and while the nav item is
+ * relative that is the button's own box.
+ */
 .dropdown-menu {
-  position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+  position: absolute; top: calc(100% + 12px); right: var(--pad-x); left: auto;
   background: var(--card);
   border: 1.5px solid var(--c-edge);
   opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(-4px);
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
   z-index: 100;
+}
+
+/*
+ * The 12px between the nav item and the panel belongs to neither, so crossing
+ * it used to fire `mouseleave` and close the panel before the pointer arrived.
+ * Walking the pointer down from the button, it closed at y=46 and the panel did
+ * not begin until y=56. This bridge makes that band part of the panel, and the
+ * panel is a descendant of the container, so the pointer never leaves.
+ */
+.dropdown-menu::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -26px; height: 26px;
 }
 
 .has-dropdown.open .dropdown-menu,
 .has-dropdown:focus-within .dropdown-menu {
   opacity: 1; visibility: visible; pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .standard-menu {
-  width: 280px;
-  padding: var(--s-3);
+  width: min(240px, calc(100vw - var(--pad-x) * 2));
+  padding: var(--s-2);
 }
 
 .mega-menu {
-  width: min(840px, 90vw);
-  left: 0; transform: translateX(-15%);
-  padding: var(--s-5);
-}
-.has-dropdown.open .mega-menu,
-.has-dropdown:focus-within .mega-menu {
-  transform: translateX(-15%) translateY(0);
+  width: min(560px, calc(100vw - var(--pad-x) * 2));
+  padding: var(--s-2);
 }
 
 .mega-menu-inner {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: var(--s-6);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-1) var(--s-4);
 }
 
-.mega-col.side-col {
-  border-left: var(--stroke-hairline);
-  padding-left: var(--s-5);
-}
+.menu-grid { display: flex; flex-direction: column; gap: 1px; }
 
-.menu-heading {
-  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--terracotta);
-  margin-bottom: var(--s-3);
-  padding-bottom: var(--s-1);
-  border-bottom: var(--stroke-hairline);
-}
-
-.menu-grid { display: flex; flex-direction: column; gap: var(--s-2); }
-.menu-grid.compact { gap: var(--s-2); }
-
+/*
+ * The panel is a list of destinations, nothing else. It carried a one-line
+ * description under every item and a "Platform Features" heading over the
+ * column; both are gone. A person opening a nav menu is choosing where to go,
+ * and has not asked to be sold to on the way.
+ */
 .menu-item {
   display: block;
   text-decoration: none;
-  padding: var(--s-2) var(--s-3);
-  border: 1px solid transparent;
-  transition: background 0.14s ease, border-color 0.14s ease;
+  padding: 9px var(--s-3);
+  font-family: var(--font-sans); font-size: var(--t-micro); font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.3;
+  border-left: 2px solid transparent;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
 .menu-item:hover {
   background: var(--field);
-  border-color: var(--c-edge);
+  color: var(--ink);
 }
 .menu-item.active {
   background: var(--field);
-  border-left: 2px solid var(--terracotta);
+  color: var(--ink);
+  border-left-color: var(--terracotta);
 }
 
-.menu-item-title {
-  font-family: var(--font-sans); font-size: var(--t-micro); font-weight: 600;
-  color: var(--ink);
-  line-height: 1.3;
+/* The two platform-wide destinations are not features. One rule separates the
+   group; the second item in it does not draw its own. */
+.menu-item--wide {
+  grid-column: 1 / -1;
+  border-top: var(--stroke-hairline);
+  border-left: 2px solid transparent;
+  margin-top: var(--s-2); padding-top: var(--s-3);
 }
-.menu-item-blurb {
-  font-family: var(--font-sans); font-size: 12px; font-weight: 400;
-  color: var(--ink-3);
-  line-height: 1.35;
-  margin-top: 2px;
+.menu-item--wide + .menu-item--wide {
+  border-top: none; margin-top: 0; padding-top: 9px;
 }
 
 /* Nav CTA */
@@ -183,15 +208,20 @@ nav { display: flex; align-items: stretch; gap: 0; }
   
   .dropdown-menu {
     position: static; transform: none; box-shadow: none;
+    right: auto; left: auto;
     border: none; border-top: var(--stroke-hairline);
     background: var(--field);
-    display: none; width: 100%; padding: var(--s-3) var(--s-4);
+    display: none; width: 100%; padding: var(--s-2) var(--s-3);
   }
+  /* There is no pointer to bridge for on a phone, and a 13px invisible band
+     over the panel would eat the first tap on its first item. */
+  .dropdown-menu::before { display: none; }
   .has-dropdown.open .dropdown-menu {
     display: block; opacity: 1; visibility: visible; pointer-events: auto;
   }
-  .mega-menu-inner { grid-template-columns: 1fr; gap: var(--s-4); }
-  .mega-col.side-col { border-left: none; padding-left: 0; border-top: var(--stroke-hairline); padding-top: var(--s-3); }
+  .mega-menu-inner { grid-template-columns: 1fr; gap: 0; }
+  .menu-item { min-height: 48px; display: flex; align-items: center; }
+  .menu-item--wide { margin-top: var(--s-1); padding-top: var(--s-1); }
 
   .nav-cta {
     margin: var(--s-4); min-height: 48px; width: calc(100% - var(--s-8));

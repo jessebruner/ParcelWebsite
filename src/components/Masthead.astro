@@ -38,30 +38,11 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
         </button>
         <div class="dropdown-menu mega-menu">
           <div class="mega-menu-inner">
-            <div class="mega-col main-col">
-              <div class="menu-heading">Platform Features</div>
-              <div class="menu-grid">
-                {PRODUCT_NAV.map((p) => (
-                  <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]}>
-                    <div class="menu-item-title">{p.label}</div>
-                    {p.blurb && <div class="menu-item-blurb">{p.blurb}</div>}
-                  </a>
-                ))}
-              </div>
-            </div>
-            <div class="mega-col side-col">
-              <div class="menu-heading">Platform & Security</div>
-              <div class="menu-grid compact">
-                <a href="/product" class:list={["menu-item", { active: isCurrent("/product") }]}>
-                  <div class="menu-item-title">Product Overview</div>
-                  <div class="menu-item-blurb">Explore how Common Parcel supports self-managed associations.</div>
-                </a>
-                <a href="/security" class:list={["menu-item", { active: isCurrent("/security") }]}>
-                  <div class="menu-item-title">Security & Audit</div>
-                  <div class="menu-item-blurb">Common Parcel never holds HOA funds, and key actions leave clear records.</div>
-                </a>
-              </div>
-            </div>
+            {PRODUCT_NAV.map((p) => (
+              <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]}>{p.label}</a>
+            ))}
+            <a href="/product" class:list={["menu-item", "menu-item--wide", { active: isCurrent("/product") }]}>Everything Common Parcel does</a>
+            <a href="/security" class:list={["menu-item", "menu-item--wide", { active: isCurrent("/security") }]}>Security</a>
           </div>
         </div>
       </div>
@@ -84,10 +65,7 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
         <div class="dropdown-menu standard-menu">
           <div class="menu-grid">
             {COMPANY_NAV.map((c) => (
-              <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]}>
-                <div class="menu-item-title">{c.label}</div>
-                {c.blurb && <div class="menu-item-blurb">{c.blurb}</div>}
-              </a>
+              <a href={c.path} class:list={["menu-item", { active: isCurrent(c.path) }]}>{c.label}</a>
             ))}
           </div>
         </div>
@@ -124,11 +102,37 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
 
     const dropdownContainers = mast.querySelectorAll<HTMLElement>(".has-dropdown");
 
+    /**
+     * A panel is open for one of two reasons, and they close differently.
+     *
+     * Hovering opens it and moving away closes it. Clicking LATCHES it, and a
+     * latched panel ignores the pointer entirely: it closes on a second click,
+     * on Escape, or on a click outside the masthead. Before this, `mouseleave`
+     * tore the panel down however it had been opened, so a clicked panel died
+     * the moment the pointer left it.
+     *
+     * Clicking also could not open a panel at all on a desktop pointer. The
+     * old handler asked whether the panel was already open, but `mouseenter`
+     * fires as the pointer arrives on the button and opens it first, so by the
+     * time the click landed the answer was always yes and the click closed
+     * what the hover had just opened. Latching is tracked separately from
+     * `.open` for exactly that reason.
+     */
+    const closeTimers = new WeakMap<HTMLElement, number>();
+
+    const shut = (el: Element) => {
+      el.removeAttribute("data-latched");
+      el.classList.remove("open");
+      el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
+    };
+
     dropdownContainers.forEach((container) => {
       const btn = container.querySelector<HTMLButtonElement>(".nav-btn");
 
       container.addEventListener("mouseenter", () => {
         if (window.innerWidth > 860) {
+          const pending = closeTimers.get(container);
+          if (pending) { window.clearTimeout(pending); closeTimers.delete(container); }
           container.classList.add("open");
           btn?.setAttribute("aria-expanded", "true");
         }
@@ -136,31 +140,38 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
 
       container.addEventListener("mouseleave", () => {
         if (window.innerWidth > 860) {
-          container.classList.remove("open");
-          btn?.setAttribute("aria-expanded", "false");
+          if (container.hasAttribute("data-latched")) return;
+          const pending = closeTimers.get(container);
+          if (pending) window.clearTimeout(pending);
+          // A short grace period. Leaving a menu by a diagonal path clips the
+          // corner of a neighbouring element on the way, and an instant close
+          // makes the menu feel like it is running away from the pointer.
+          closeTimers.set(container, window.setTimeout(() => {
+            closeTimers.delete(container);
+            container.classList.remove("open");
+            btn?.setAttribute("aria-expanded", "false");
+          }, 220));
         }
       });
     });
 
     dropdownBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        const parent = btn.closest(".has-dropdown");
-        const isOpen = parent?.classList.contains("open");
-        
-        // Close siblings
-        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
-          if (el !== parent) {
-            el.classList.remove("open");
-            el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
-          }
+        const parent = btn.closest<HTMLElement>(".has-dropdown");
+        if (!parent) return;
+        const wasLatched = parent.hasAttribute("data-latched");
+
+        mast.querySelectorAll(".has-dropdown").forEach((el) => {
+          if (el !== parent) shut(el);
         });
 
-        if (isOpen) {
-          parent?.classList.remove("open");
-          btn.setAttribute("aria-expanded", "false");
+        if (wasLatched) {
+          shut(parent);
         } else {
-          parent?.classList.add("open");
+          parent.setAttribute("data-latched", "");
+          parent.classList.add("open");
           btn.setAttribute("aria-expanded", "true");
         }
       });
@@ -169,10 +180,7 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
     // Close on escape or outside click
     document.addEventListener("click", (e) => {
       if (!mast.contains(e.target as Node)) {
-        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
-          el.classList.remove("open");
-          el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
-        });
+        mast.querySelectorAll(".has-dropdown").forEach(shut);
       }
     });
 
@@ -180,10 +188,7 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
       if (e.key === "Escape") {
         mast.removeAttribute("data-open");
         burger?.setAttribute("aria-expanded", "false");
-        mast.querySelectorAll(".has-dropdown.open").forEach((el) => {
-          el.classList.remove("open");
-          el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
-        });
+        mast.querySelectorAll(".has-dropdown").forEach(shut);
       }
     });
   }

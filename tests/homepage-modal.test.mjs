@@ -7,8 +7,17 @@ import {
   rewriteHomepageAccessSurface,
   verifyBehaviorScript,
   verifyHomepageTemplate,
-  syncHomepageContent
+  syncHomepageContent,
+  extractRootTokens,
+  assertTokensResolve,
+  referencedTokens,
+  definedTokens
 } from "../tools/sync-homepage-masthead.mjs";
+
+/** The real token block, read fresh, so a token deleted from tokens.css fails here. */
+function tokens() {
+  return extractRootTokens(readFileSync("src/styles/tokens.css", "utf8"));
+}
 
 function sourceTemplateAfterMastheadReplacement() {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
@@ -136,7 +145,7 @@ test("syncHomepageContent executes deterministically on clean source fixtures", 
   const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><div class="has-dropdown"><button class="nav-btn">Product</button></div><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
   const mockCss = ".mast { display: block; }";
 
-  const { resultHtml, template } = syncHomepageContent(sourceHomepage, mockBuilt, mockCss);
+  const { resultHtml, template } = syncHomepageContent(sourceHomepage, mockBuilt, mockCss, tokens());
   assert.ok(resultHtml.includes("/* injected: masthead and modal behaviour */"));
   assert.doesNotThrow(() => verifyBehaviorScript(template));
   assert.doesNotThrow(() => verifyHomepageTemplate(template));
@@ -163,7 +172,7 @@ test("homepage rewrite fails if the structural modal tail boundary moves", () =>
 test("homepage template verifier rejects a restored old binding", () => {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }");
+  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }", tokens());
   const mutated = template.replace('data-open-modal="early-access"', BUNDLE_OPEN_ACCESS_BINDING);
   assert.throws(
     () => verifyHomepageTemplate(mutated),
@@ -174,7 +183,7 @@ test("homepage template verifier rejects a restored old binding", () => {
 test("homepage template verifier rejects a second dialog", () => {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }");
+  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }", tokens());
   const mutated = template.replace("</body>", '<dialog id="early-access-modal"></dialog></body>');
   assert.throws(
     () => verifyHomepageTemplate(mutated),
@@ -186,9 +195,140 @@ test("homepage content sync against source assets satisfies all template and beh
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
   const mockBuiltMasthead = '<header class=\"mast\"><nav><button class=\"burger\">Menu</button><button data-open-modal=\"early-access\">Early Access</button></nav></header><dialog id=\"early-access-modal\"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuiltMasthead, mastheadCss);
+  const { template } = syncHomepageContent(sourceHomepage, mockBuiltMasthead, mastheadCss, tokens());
 
   assert.ok(template.includes('<header class=\"mast\">'), "Homepage template missing unified masthead");
   assert.doesNotThrow(() => verifyBehaviorScript(template));
   assert.doesNotThrow(() => verifyHomepageTemplate(template));
+});
+
+/*
+ * ── TOKEN RESOLUTION ──────────────────────────────────────────────
+ *
+ * masthead.css is written in design tokens. The Astro pages load tokens.css;
+ * the homepage bundle loads no stylesheet of ours, so for as long as only
+ * masthead.css was injected, every var() in it was undefined on the homepage.
+ * An undefined custom property throws nothing and logs nothing: the
+ * declaration becomes invalid at computed-value time, so an inherited property
+ * takes its parent's value and a non-inherited one takes its initial value.
+ * The markup stayed byte-identical to the component's output, which was the
+ * only thing the sync tool compared, and the whole suite stayed green while the
+ * homepage masthead had no background, no border, no inset and no button fill.
+ *
+ * Every test below is written so that deleting the thing it guards makes it
+ * fail. That is the only property that matters here, and the reason it is
+ * asserted one token at a time rather than on a count.
+ */
+
+test("every token masthead.css reads is defined by tokens.css", () => {
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  const stats = assertTokensResolve(mastheadCss, tokens());
+  assert.ok(stats.needed > 10, `expected masthead.css to read more than 10 tokens, read ${stats.needed}`);
+});
+
+test("mutation test: a token masthead.css reads, removed from the block, fails", () => {
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  assert.ok(mastheadCss.includes("var(--pad-x)"), "probe is stale: masthead.css no longer reads --pad-x");
+  const mutated = tokens().replace("--pad-x:", "--pad-x-renamed:");
+  assert.throws(() => assertTokensResolve(mastheadCss, mutated), /--pad-x/);
+});
+
+test("mutation test: the font token whose loss made the nav serif fails", () => {
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  assert.ok(mastheadCss.includes("var(--font-mono)"), "probe is stale: masthead.css no longer reads --font-mono");
+  const mutated = tokens().replace("--font-mono:", "--font-mono-renamed:");
+  assert.throws(() => assertTokensResolve(mastheadCss, mutated), /--font-mono/);
+});
+
+test("mutation test: a token read only by another token is still required", () => {
+  // --stroke-hairline is `1px solid var(--c-hairline)`. masthead.css never
+  // names --c-hairline itself, so a check that only walked masthead.css would
+  // pass while the border silently vanished.
+  const block = tokens();
+  assert.ok(block.includes("var(--c-hairline)"), "probe is stale: --stroke-hairline no longer reads --c-hairline");
+  const mutated = block.replace("--c-hairline:", "--c-hairline-renamed:");
+  assert.throws(() => assertTokensResolve(".x { border: var(--stroke-hairline); }", mutated), /--c-hairline/);
+});
+
+test("mutation test: injecting no tokens at all fails", () => {
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  assert.throws(() => assertTokensResolve(mastheadCss, ":root { }"), /token\(s\) the homepage does not define/);
+});
+
+test("definedTokens does not count a var() reference as a definition", () => {
+  assert.deepEqual([...definedTokens(":root { --a: var(--b); }")], ["--a"]);
+  assert.deepEqual([...referencedTokens(":root { --a: var(--b); }")], ["--b"]);
+});
+
+test("the token definitions actually reach the homepage template", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
+  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, mastheadCss, tokens());
+
+  // Not "a :root block is present" — the specific declarations whose absence
+  // was measured on the built page.
+  for (const decl of ["--pad-x:", "--font-mono:", "--font-serif:", "--paper:", "--terracotta:", "--c-edge:", "--t-mono-label:"]) {
+    assert.ok(template.includes(decl), `homepage template is missing ${decl}`);
+  }
+  // And they must sit inside the injected block, not somewhere incidental.
+  const start = template.indexOf("/* injected: masthead.css */");
+  const end = template.indexOf("/* end masthead */", start);
+  assert.ok(start !== -1 && end > start, "injected masthead block missing or unclosed");
+  assert.ok(template.slice(start, end).includes("--pad-x:"), "tokens landed outside the injected block");
+});
+
+test("mutation test: syncing with an empty token block fails instead of shipping", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
+  const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
+  assert.throws(
+    () => syncHomepageContent(sourceHomepage, mockBuilt, mastheadCss, ":root { }"),
+    /token\(s\) the homepage does not define/
+  );
+});
+
+test("extractRootTokens lifts the whole block and nothing after it", () => {
+  const block = tokens();
+  assert.ok(block.startsWith(":root {"), "block does not start at :root");
+  assert.ok(block.trimEnd().endsWith("}"), "block is not closed");
+  assert.ok(!block.includes("box-sizing"), "block ran past :root into the reset rules");
+});
+
+/*
+ * ── DROPDOWN LATCHING ─────────────────────────────────────────────
+ *
+ * Rendered at 1440 before this change: hovering opened the panel, then walking
+ * the pointer straight down from the button closed it at y=46 while the panel
+ * did not begin until y=56, so the pointer could not reach it. Clicking the
+ * button did not open the panel at all, because mouseenter had already set
+ * `.open` by the time the click landed and the handler read `.open` to decide
+ * what to do. Latch state is tracked separately from `.open` for that reason.
+ */
+
+test("clicking latches on the attribute, not on the open class", () => {
+  const script = generateBehaviorScript();
+  assert.ok(script.includes('var wasLatched = parent.hasAttribute("data-latched");'),
+    "click handler no longer decides from latch state");
+  assert.ok(!script.includes('var isOpen = parent && parent.classList.contains("open");'),
+    "click handler is deciding from the hover-set open class again");
+});
+
+test("mouseleave leaves a latched panel alone", () => {
+  const script = generateBehaviorScript();
+  const leaveAt = script.indexOf('addEventListener("mouseleave"');
+  const leaveEnd = script.indexOf("dBtns.forEach(function(btn) {", leaveAt);
+  assert.ok(leaveAt !== -1 && leaveEnd > leaveAt, "mouseleave region not found");
+  assert.ok(script.slice(leaveAt, leaveEnd).includes('if (container.hasAttribute("data-latched")) return;'),
+    "mouseleave will tear down a clicked-open panel");
+});
+
+test("Escape and outside click clear the latch, not just the open class", () => {
+  const script = generateBehaviorScript();
+  assert.ok(script.includes('el.removeAttribute("data-latched");'),
+    "nothing clears data-latched, so a latched panel can never be dismissed");
+  // Selecting `.has-dropdown.open` would skip a latched panel whose open class
+  // had already been removed, stranding the attribute set.
+  assert.ok(!script.includes('m.querySelectorAll(".has-dropdown.open").forEach(shut)'),
+    "dismissal is still filtering on the open class");
 });

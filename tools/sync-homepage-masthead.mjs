@@ -34,6 +34,100 @@ function occurrences(text, needle) {
 }
 
 /**
+ * Lift the `:root` custom-property block out of tokens.css.
+ *
+ * masthead.css is written entirely in tokens. The Astro pages load tokens.css
+ * and resolve them; the homepage bundle is not an Astro page and loads no
+ * stylesheet of ours, so for as long as only masthead.css was injected every
+ * `var()` in it was undefined on the homepage and every declaration holding one
+ * fell back silently. Measured on the built page, against /pricing as control:
+ * the lockup lost its 56px inset and sat against the viewport edge, the nav
+ * links rendered in Literata at 17px instead of IBM Plex Mono at 11px, the
+ * sticky bar lost its background and its border, and the Early Access button
+ * lost its terracotta fill and stopped looking like a button.
+ *
+ * Nothing failed. The markup was byte-identical to the component's output,
+ * which is the only thing this file used to compare, and the suite was green
+ * throughout. Hence assertTokensResolve below.
+ */
+export function extractRootTokens(tokensCss) {
+  const start = tokensCss.indexOf(":root {");
+  if (start === -1) throw new Error("tokens.css has no :root block");
+  const end = tokensCss.indexOf("\n}", start);
+  if (end === -1) throw new Error("tokens.css :root block is not closed");
+  return tokensCss.slice(start, end + 2);
+}
+
+/**
+ * Collect every `--name` a stylesheet reads through var(). Written with
+ * indexOf rather than a pattern because this file is edited through a shell
+ * that collapses backslashes, and a broken character class here would report
+ * every page clean while matching nothing.
+ */
+export function referencedTokens(css) {
+  const names = new Set();
+  let at = css.indexOf("var(--");
+  while (at !== -1) {
+    let i = at + 4;
+    let name = "";
+    while (i < css.length) {
+      const c = css[i];
+      const ok = (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9") || c === "-";
+      if (!ok) break;
+      name += c;
+      i += 1;
+    }
+    if (name.length > 2) names.add(name);
+    at = css.indexOf("var(--", at + 1);
+  }
+  return names;
+}
+
+export function definedTokens(cssBlock) {
+  const names = new Set();
+  let at = cssBlock.indexOf("--");
+  while (at !== -1) {
+    let i = at + 2;
+    let name = "--";
+    while (i < cssBlock.length) {
+      const c = cssBlock[i];
+      const ok = (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9") || c === "-";
+      if (!ok) break;
+      name += c;
+      i += 1;
+    }
+    // A definition, not a reference: the next non-space character is a colon,
+    // and it is not sitting inside `var(`.
+    let j = i;
+    while (j < cssBlock.length && cssBlock[j] === " ") j += 1;
+    const isVarRef = at >= 4 && cssBlock.slice(at - 4, at) === "var(";
+    if (name.length > 2 && cssBlock[j] === ":" && !isVarRef) names.add(name);
+    at = cssBlock.indexOf("--", at + 1);
+  }
+  return names;
+}
+
+/**
+ * Every token the injected CSS reads must be defined by the injected tokens,
+ * including tokens the token block itself reads. An undefined custom property
+ * does not raise anything: the declaration becomes invalid at computed-value
+ * time, so an inherited property silently takes its parent's value and a
+ * non-inherited one silently takes its initial value. There is no way to see
+ * that from the markup, which is why it has to be checked here.
+ */
+export function assertTokensResolve(mastheadCss, tokenBlock) {
+  const defined = definedTokens(tokenBlock);
+  const needed = new Set([...referencedTokens(mastheadCss), ...referencedTokens(tokenBlock)]);
+  const missing = [...needed].filter((n) => !defined.has(n)).sort();
+  if (missing.length) {
+    throw new Error(
+      `masthead CSS reads ${missing.length} token(s) the homepage does not define: ${missing.join(", ")}`
+    );
+  }
+  return { defined: defined.size, needed: needed.size };
+}
+
+/**
  * Remove the bundle-owned dialog at stable template boundaries and point the
  * two homepage CTAs at the Astro dialog. This deliberately does not parse
  * nested HTML with a non-greedy regex: the old modal contains many nested
@@ -82,47 +176,59 @@ export function generateBehaviorScript() {
     `      if (o) { m.removeAttribute("data-open"); } else { m.setAttribute("data-open", ""); }\n` +
     `      b.setAttribute("aria-expanded", String(!o));\n` +
     `    });\n` +
+    `    var closeTimers = new WeakMap();\n` +
+    `    function shut(el) {\n` +
+    `      el.removeAttribute("data-latched");\n` +
+    `      el.classList.remove("open");\n` +
+    `      var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
+    `    }\n` +
     `    dContainers.forEach(function(container) {\n` +
     `      var btn = container.querySelector(".nav-btn");\n` +
     `      container.addEventListener("mouseenter", function() {\n` +
     `        if (window.innerWidth > 860) {\n` +
+    `          var pending = closeTimers.get(container);\n` +
+    `          if (pending) { window.clearTimeout(pending); closeTimers.delete(container); }\n` +
     `          container.classList.add("open");\n` +
     `          if (btn) btn.setAttribute("aria-expanded", "true");\n` +
     `        }\n` +
     `      });\n` +
     `      container.addEventListener("mouseleave", function() {\n` +
     `        if (window.innerWidth > 860) {\n` +
-    `          container.classList.remove("open");\n` +
-    `          if (btn) btn.setAttribute("aria-expanded", "false");\n` +
+    `          if (container.hasAttribute("data-latched")) return;\n` +
+    `          var pending = closeTimers.get(container);\n` +
+    `          if (pending) window.clearTimeout(pending);\n` +
+    `          closeTimers.set(container, window.setTimeout(function() {\n` +
+    `            closeTimers.delete(container);\n` +
+    `            container.classList.remove("open");\n` +
+    `            if (btn) btn.setAttribute("aria-expanded", "false");\n` +
+    `          }, 220));\n` +
     `        }\n` +
     `      });\n` +
     `    });\n` +
     `    dBtns.forEach(function(btn) {\n` +
     `      btn.addEventListener("click", function(e) {\n` +
+    `        e.preventDefault();\n` +
     `        e.stopPropagation();\n` +
     `        var parent = btn.closest(".has-dropdown");\n` +
-    `        var isOpen = parent && parent.classList.contains("open");\n` +
-    `        m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `          if (el !== parent) { el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false"); }\n` +
+    `        if (!parent) return;\n` +
+    `        var wasLatched = parent.hasAttribute("data-latched");\n` +
+    `        m.querySelectorAll(".has-dropdown").forEach(function(el) {\n` +
+    `          if (el !== parent) shut(el);\n` +
     `        });\n` +
-    `        if (isOpen) { if (parent) parent.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }\n` +
-    `        else if (parent) { parent.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }\n` +
+    `        if (wasLatched) { shut(parent); }\n` +
+    `        else { parent.setAttribute("data-latched", ""); parent.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }\n` +
     `      });\n` +
     `    });\n` +
     `    document.addEventListener("click", function(e) {\n` +
     `      if (!m.contains(e.target)) {\n` +
-    `        m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `          el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
-    `        });\n` +
+    `        m.querySelectorAll(".has-dropdown").forEach(shut);\n` +
     `      }\n` +
     `    });\n` +
     `    document.addEventListener("keydown", function(e) {\n` +
     `      if (e.key !== "Escape") return;\n` +
     `      m.removeAttribute("data-open");\n` +
     `      if (b) b.setAttribute("aria-expanded", "false");\n` +
-    `      m.querySelectorAll(".has-dropdown.open").forEach(function(el) {\n` +
-    `        el.classList.remove("open"); var nb = el.querySelector(".nav-btn"); if (nb) nb.setAttribute("aria-expanded", "false");\n` +
-    `      });\n` +
+    `      m.querySelectorAll(".has-dropdown").forEach(shut);\n` +
     `    });\n` +
     `  }\n` +
     `  var dialog = document.getElementById("early-access-modal");\n` +
@@ -308,7 +414,8 @@ export function verifyHomepageTemplate(template) {
   }
 }
 
-export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss) {
+export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss, tokenBlock) {
+  assertTokensResolve(mastheadCss, tokenBlock);
   const hm = /<header class="mast">[\s\S]*?<\/header>/.exec(builtPageRaw);
   if (!hm) throw new Error("no <header class=\"mast\"> in built page markup");
   let header = hm[0];
@@ -357,9 +464,12 @@ export function syncHomepageContent(sourceHomepageRaw, builtPageRaw, mastheadCss
   template = template.replace(new RegExp(MARK.replace(/[*]/g, "\\*") + "[\\s\\S]*?/\\* end masthead \\*/"), "");
   const lastStyleClose = template.lastIndexOf("</style>");
   if (lastStyleClose === -1) throw new Error("no </style> in the bundle template");
+  // The tokens go first, and in the same block, so that removing one removes
+  // the other. The bundle defines no custom properties of its own and reads
+  // none, so this collides with nothing it already does.
   template =
     template.slice(0, lastStyleClose) +
-    `\n${MARK}\n${mastheadCss}\n/* end masthead */\n` +
+    `\n${MARK}\n${tokenBlock}\n${mastheadCss}\n/* end masthead */\n` +
     template.slice(lastStyleClose);
 
   const modalMatch = /<dialog id="early-access-modal"[\s\S]*?<\/dialog>/.exec(builtPageRaw);
@@ -396,12 +506,15 @@ if (isMain) {
   const TARGET_PAGE = "dist/index.html";
   const SOURCE_PAGE = "dist/pricing.html";
   const CSS = "src/styles/masthead.css";
+  const TOKENS = "src/styles/tokens.css";
 
   const built = readFileSync(SOURCE_PAGE, "utf8");
   const mastheadCss = readFileSync(CSS, "utf8");
+  const tokenBlock = extractRootTokens(readFileSync(TOKENS, "utf8"));
   const sourceHomepage = readFileSync(SOURCE_HOMEPAGE, "utf8");
 
-  const { resultHtml, header, removed, template } = syncHomepageContent(sourceHomepage, built, mastheadCss);
+  const tokenStats = assertTokensResolve(mastheadCss, tokenBlock);
+  const { resultHtml, header, removed, template } = syncHomepageContent(sourceHomepage, built, mastheadCss, tokenBlock);
   writeFileSync(TARGET_PAGE, resultHtml);
 
   const out = readFileSync(TARGET_PAGE, "utf8").split("\n");
@@ -418,6 +531,15 @@ if (isMain) {
   if (injected[0] !== header) throw new Error("injected masthead differs from the component output");
   if (!parsed.template.includes("/* injected: masthead.css */")) throw new Error("masthead.css not injected");
 
+  // Re-check against what was actually written, not against what was intended.
+  // The injected CSS is the whole style block, so its own token references have
+  // to resolve inside the page that shipped.
+  const injectedStart = parsed.template.indexOf("/* injected: masthead.css */");
+  const injectedEnd = parsed.template.indexOf("/* end masthead */", injectedStart);
+  if (injectedEnd === -1) throw new Error("injected masthead block is not closed in the written page");
+  const injectedBlock = parsed.template.slice(injectedStart, injectedEnd);
+  assertTokensResolve(injectedBlock, injectedBlock);
+
   verifyBehaviorScript(parsed.template);
   verifyHomepageTemplate(parsed.template);
 
@@ -426,6 +548,7 @@ if (isMain) {
   console.log("masthead synced from Masthead.astro");
   console.log(`  markup identical to the component output: yes (${injected[0].length} chars)`);
   console.log(`  masthead.css injected: ${mastheadCss.split("\n").length} lines`);
+  console.log(`  design tokens injected: ${tokenStats.defined} defined, ${tokenStats.needed} read, 0 unresolved`);
   console.log(`  bundle's competing rules removed: ${removed}`);
   console.log(`  behavior verified: 3 unified triggers, 1 dialog, hover sync, mailto fallback, validation`);
   console.log(`  links: ${navLabels.join(" · ")}`);
