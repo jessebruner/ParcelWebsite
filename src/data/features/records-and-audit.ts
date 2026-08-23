@@ -18,7 +18,7 @@ export const recordsAndAudit: PageSpec = {
     "Minutes, resolutions, notices, and ledgers kept in one place, with a name and a time on every change.",
   h1: "Records and audit",
   lede: "Officers change every year or two and what they knew leaves with them. Common Parcel keeps minutes, resolutions, notices, and ledgers where the next board will find them.",
-  closer: "The next board inherits everything.",
+  closer: "Nothing leaves with the treasurer.",
   bands: [
     {
       title: "The file the next board opens",

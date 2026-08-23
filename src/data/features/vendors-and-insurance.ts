@@ -28,7 +28,7 @@ export const vendorsAndInsurance: PageSpec = {
     "Watch the date every vendor contract and insurance policy renews on, put fresh quotes beside what you pay now, and check invoices against the agreement behind them.",
   h1: "Vendors and insurance",
   lede: "Stay ahead of vendor renewals and compare quotes. A contract that renews on its own gives the board one window to shop the price, and it closes quietly.",
-  closer: "Know before the renewal does.",
+  closer: "See the renewal coming.",
   bands: [
     {
       title: "What the renewal is costing you",

@@ -91,9 +91,17 @@ test("monotonic properties (1 to 1200 lots)", () => {
  * chip from that row and this goes red rather than quietly passing.
  */
 test("a panel row with a figure and a chip renders both", async () => {
-  const { readFileSync, existsSync } = await import("node:fs");
+  const { readFileSync } = await import("node:fs");
+  const { checkFreshDist } = await import("../tools/dist-freshness.mjs");
+
+  // Absence used to be the only thing checked here, and `npm run verify` ran
+  // the tests before anything was built. So this either failed for a missing
+  // file or graded whatever dist the previous run left behind. `verify` now
+  // builds first, and this refuses a build older than src either way.
+  const fresh = checkFreshDist();
+  if (!fresh.ok) return assert.fail(fresh.reason);
+
   const page = "dist/product/vendors-and-insurance.html";
-  if (!existsSync(page)) return assert.fail("build dist before running: " + page + " is missing");
   const html = readFileSync(page, "utf8");
 
   const { vendorsAndInsurance } = await import("../src/data/features/vendors-and-insurance.ts");

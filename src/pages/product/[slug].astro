@@ -131,7 +131,14 @@ const stripAfter = feature.bands.length >= 4 ? 2 : 1;
 
   @media (max-width: 900px) {
     .feature-hero { grid-template-columns: 1fr; }
-    .feature-copy { max-width: 18ch; }
+    /*
+     * The measure stays on the headline here too. It was on .feature-copy, and
+     * the same mistake the desktop rule above documents was live on every
+     * phone: 18ch resolved to a 199px column inside a 390px viewport, so the
+     * lede wrapped to nine lines and the button sat 18px from its own edge.
+     * Measured on all nine pages before and after.
+     */
+    .feature-copy :global(h1) { max-width: 15ch; }
     .feature-hero :global(.feature-scene) { justify-self: stretch; width: 100%; }
   }
 </style>

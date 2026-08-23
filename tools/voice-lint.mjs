@@ -246,14 +246,14 @@ function walk(dir, out = []) {
 }
 
 import { fileURLToPath } from "node:url";
+import { requireFreshDist } from "./dist-freshness.mjs";
 
 const isMain = process.argv[1] && (process.argv[1].endsWith("voice-lint.mjs") || fileURLToPath(import.meta.url) === process.argv[1]);
 
 if (isMain) {
-  if (!existsSync("dist")) {
-    console.error("No dist/. Run `npm run build` first.");
-    process.exit(2);
-  }
+  // This lints dist, so a stale build would be graded as if it were this tree.
+  // The guard covers absence and staleness both.
+  requireFreshDist();
 
   let total = 0;
   const files = walk("dist");

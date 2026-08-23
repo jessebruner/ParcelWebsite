@@ -18,7 +18,7 @@ export const meetingsAndVoting: PageSpec = {
     "Notice dates counted back from the meeting, ballots checked against the list of owners on record, and minutes drafted from the meeting itself.",
   h1: "Meetings and voting",
   lede: "A vote taken without proper notice can be challenged. Common Parcel works the notice date back from the meeting date, on the period your bylaws set.",
-  closer: "Every vote, already in the record.",
+  closer: "A meeting that holds up.",
   bands: [
     {
       title: "Quorum you can prove",

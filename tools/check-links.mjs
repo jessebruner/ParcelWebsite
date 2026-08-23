@@ -15,12 +15,12 @@
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import { requireFreshDist } from "./dist-freshness.mjs";
 
 const DIST = "dist";
-if (!existsSync(DIST)) {
-  console.error("No dist/. Run `npm run build` first.");
-  process.exit(2);
-}
+// This resolves hrefs against dist, so a stale build would be graded as if it
+// were this tree. The guard covers absence and staleness both.
+requireFreshDist();
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir)) {
