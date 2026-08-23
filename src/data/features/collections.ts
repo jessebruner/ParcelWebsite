@@ -22,6 +22,7 @@ export const collections: PageSpec = {
   bands: [
     {
       title: "What happens when someone stops paying",
+      layout: "stack",
       body: [
         { panel: {
             label: "Lot 63 · unpaid since March 1",
@@ -38,6 +39,7 @@ export const collections: PageSpec = {
     },
     {
       title: "No letter leaves without the board",
+      layout: "rail",
       field: true,
       body: [
         { p: "Where the workflow requires two officers, a notice waits for both approvals, and the record keeps who approved it and when." },
@@ -45,10 +47,13 @@ export const collections: PageSpec = {
            every <p> in a band body, so two paragraphs in a row render with no
            gap between them. Reported, not fixed here. */
         { coda: "The board can put an account on hold for a hardship, a dispute, or a death in the family. Everything scheduled stops until the board lifts it." },
+      
+        { pull: "The hard letter is written before you need it, and it does not leave until you send it." },
       ],
     },
     {
       title: "Certified mail is not connected yet",
+      layout: "quiet",
       air: "tight",
       note: ["See violations and notices", "/product/rules-and-enforcement"],
       body: [{ statutory: {

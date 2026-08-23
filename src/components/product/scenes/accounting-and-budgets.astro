@@ -2,79 +2,248 @@
 /**
  * accounting-and-budgets — the hero diagram.
  *
- * What "budget against actual" looks like when you draw it instead of writing
- * it: a dashed ceiling the board adopted, and spending underneath it.
+ * What it replaced was an unlabelled bar chart with a dashed line across it.
+ * Nothing in that picture said HOA, said budget, or said what the dashed line
+ * was, and the only way to find out was to read the comment above it. A
+ * reviewer put it plainly: the source explained the metaphor better than the
+ * drawing did.
  *
- * One authored moment, looping: the current month rises and settles below the
- * line. Resting state, which is what `prefers-reduced-motion` holds, is the
- * finished chart with that bar at full height.
+ * THE OBJECT IS A RECONCILIATION. Two columns of the same figures, the book on
+ * the left and the bank on the right, an equals rule between every pair, and a
+ * footing that reads Difference $0 under an accountant's double rule. That is
+ * the page's own promise — "one ledger that matches the bank" — drawn as the
+ * thing a treasurer already knows the shape of. A volunteer treasurer is not
+ * afraid of being over budget; she is afraid the books will not tie out.
  *
- * No words. The scene header already says what this is.
+ * ONE AUTHORED MOMENT, LOOPING: the ledger column is always there, because the
+ * book is always there. The bank month arrives — the equals rule draws, the
+ * bank figure lands, row after row, top to bottom, one row every 180ms, which
+ * is "matched line by line" — and the difference resolves to zero last. Then
+ * the bank side clears and the month imports again.
+ *
+ * REST IS THE BASE STYLE, not a keyframe. Every rule outside @keyframes paints
+ * the reconciled sheet, so the resting frame is the finished one: at frame
+ * zero, in the reduced-motion block below, and if the animations were deleted
+ * tomorrow. tokens.css also collapses animation-duration under
+ * prefers-reduced-motion, and that global lands on the base style rather than
+ * on the 100% frame, so basing rest on the markup is the only version that is
+ * true both ways.
+ *
+ * TRANSFORMS AND CLIPS RIDE INNER SPANS. Every row rule is a border-top on the
+ * grid cells, and a cell that is itself translated or clipped takes its rule
+ * with it — the hairline would break and slide 12px sideways for a second of
+ * every loop. So the cells hold still and the ink inside them moves.
+ *
+ * Ten words and eight figures, all of them the picture: two column names, the
+ * footing, the zero. The block is aria-hidden, so nothing written here is read
+ * to anyone; a name is only here when the name IS the drawing.
+ *
+ * Dark ground, like documents-and-answers. The hero on this page is dawn, and
+ * mono figures at 13px do not carry on a bright sky.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
  *
  * Styles live in this file. FeatureScene.astro's <style> is scoped to
  * FeatureScene.astro, so its rules never reached this markup.
  */
-const MONTHS = ["34%", "47%", "40%", "55%", "43%", "59%", "49%"];
+
+/** Four lines of a month. Same string on both sides, because they matched. */
+const LINES = ["$2,850", "$4,275", "$1,180", "$9,404"];
 ---
 
-<div class="bud-scene">
-  <div class="bud-plot">
-    <div class="bud-bars">
-      <span class="bud-adopted"></span>
-      {MONTHS.map((h) => <i style={`--h:${h}`}></i>)}
-      <i class="bud-now"></i>
-    </div>
+<div class="acct">
+  <div class="acct-sheet">
+    <span class="hd hd--book">Ledger</span>
+    <span class="hd"></span>
+    <span class="hd hd--bank">
+      <span class="acct-vault"><i></i><i></i><i></i><i></i></span>
+      Bank
+    </span>
+
+    {LINES.map((amount, i) => (
+      <>
+        <b class="cell book">{amount}</b>
+        <span class="cell link"><span class="eq" style={`--i:${i}`}><i></i><i></i></span></span>
+        <b class="cell bank"><span style={`--i:${i}`}>{amount}</span></b>
+      </>
+    ))}
+
+    <span class="foot foot--label">Difference</span>
+    <b class="foot foot--zero"><span>$0</span></b>
   </div>
 </div>
 
 <style>
-  .bud-scene {
+  .acct {
+    --gap: clamp(10px, 2vw, 18px);
+    --row: 38px;
+    --beat: 7s;
     min-height: 278px;
-    padding: clamp(18px, 2.6vw, 24px);
+    padding: clamp(18px, 2.6vw, 26px);
+    background: var(--night);
     display: grid;
     align-content: center;
   }
 
-  /* The chart gets its own ground. The hero behind it is dawn on this page,
-     and slate bars on a bright sky do not carry. */
-  .bud-plot {
-    border: 1px solid var(--on-dark-tile-edge);
-    background: var(--night);
-    padding: var(--s-5);
+  /*
+   * One grid for the whole sheet, not a grid per row: the column names, the
+   * eight figures and the footing all size off the same three tracks, so
+   * "Ledger" sits over the book column and "Bank" over the bank column at any
+   * width. Column gap is zero and the air is padding inside the cells, because
+   * a gap would cut a hole in every row rule.
+   */
+  .acct-sheet {
+    display: grid;
+    grid-template-columns: auto minmax(40px, 1fr) auto;
+    align-items: center;
   }
-  .bud-bars {
-    position: relative;
-    height: 186px;
+
+  .hd {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+    padding-bottom: var(--s-3);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--s-2);
+  }
+  .hd--book { padding-right: var(--gap); }
+  .hd--bank { padding-left: var(--gap); }
+
+  /* The bank, drawn: pediment, cornice, four columns, plinth. Same building as
+     dues-and-payments, at label height, so the word has an object on it. */
+  .acct-vault {
+    display: grid;
+    justify-items: center;
+    gap: 1px;
+    color: var(--sand);
+  }
+  .acct-vault i { display: block; background: currentColor; }
+  .acct-vault i:nth-child(1) { width: 8px; height: 2px; }
+  .acct-vault i:nth-child(2) { width: 18px; height: 2px; }
+  .acct-vault i:nth-child(3) {
+    width: 18px;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 6px);
+  }
+  .acct-vault i:nth-child(4) { width: 18px; height: 2px; }
+
+  /* A row of the reconciliation. */
+  .cell {
+    min-height: var(--row);
+    border-top: 1px solid var(--night-rule);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .book, .bank {
+    font: 500 var(--t-mono-data)/1 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--paper);
+  }
+  .book { padding-right: var(--gap); }
+  .bank { padding-left: var(--gap); }
+
+  /* The equals sign, stretched into the gap: two rules of the same length, so
+     it is simultaneously the mark that says equal and the line that ties the
+     two figures together. */
+  .link { padding: 0; }
+  .eq {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    animation: acct-tie var(--beat) cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+    animation-delay: calc(var(--i) * 0.18s);
+  }
+  .eq i { display: block; height: 2px; background: var(--amber); }
+
+  /* The bank figure lands as the rule reaches it. */
+  .bank > span {
+    display: block;
+    animation: acct-land var(--beat) cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+    animation-delay: calc(var(--i) * 0.18s);
+  }
+
+  /*
+   * The footing. A double rule over a total is what a ledger does.
+   *
+   * align-self: stretch is load-bearing. The sheet centres its items, and these
+   * two cells are 11px and 34px tall, so centred they sat at different heights
+   * and the double rule came out as two stubs at two different y positions with
+   * a step between them. Stretched, both cells start at the row's top edge and
+   * the rule is one line across; flex-end then drops the ink back to the bottom
+   * so the label sits on the total's baseline instead of floating above it.
+   */
+  .foot {
+    border-top: 3px double var(--night-rule);
+    padding-top: var(--s-4);
+    align-self: stretch;
     display: flex;
     align-items: flex-end;
-    gap: 10px;
-    border-bottom: 2px solid var(--on-dark-tile);
   }
-  .bud-bars > i { flex: 1; height: var(--h); background: var(--slate); }
-
-  /* The line the board adopted. Everything under it is under budget. */
-  .bud-adopted {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 74%;
-    height: 2px;
-    background: repeating-linear-gradient(90deg, var(--sand) 0 5px, transparent 5px 10px);
+  .foot--label {
+    grid-column: 1 / 3;
+    padding-bottom: 5px;
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
   }
-
-  .bud-bars > i.bud-now {
-    --h: 66%;
-    background: var(--amber);
-    animation: bud-rise 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  .foot--zero {
+    grid-column: 3;
+    justify-content: flex-end;
+    padding-left: var(--gap);
   }
-  @keyframes bud-rise {
-    0% { height: 9%; }
-    52%, 100% { height: var(--h); }
+  .foot--zero > span {
+    display: block;
+    font: 600 clamp(26px, 2.9vw, 34px)/1 var(--font-serif);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--sand);
+    animation: acct-tie-out var(--beat) cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
   }
 
+  /*
+   * 0% and 100% are the reconciled frame, so the loop never opens on an empty
+   * sheet. The clear is brief; the month is imported for most of the beat.
+   */
+  @keyframes acct-tie {
+    0%, 54% { clip-path: inset(0 0 0 0); }
+    61%, 67% { clip-path: inset(0 100% 0 0); }
+    82%, 100% { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes acct-land {
+    0%, 54% { opacity: 1; transform: translateX(0); }
+    61%, 71% { opacity: 0; transform: translateX(12px); }
+    86%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* Last in, after the fourth row has tied off. */
+  @keyframes acct-tie-out {
+    0%, 54% { opacity: 1; transform: translateY(0); }
+    61%, 79% { opacity: 0; transform: translateY(6px); }
+    96%, 100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Nothing to restore: the base style is the reconciled sheet. */
+  @media (prefers-reduced-motion: reduce) {
+    .eq,
+    .bank > span,
+    .foot--zero > span { animation: none; }
+  }
+
+  /*
+   * The rows tighten on a phone; the ground keeps its 278.
+   *
+   * The reason was originally the wrapper: .feature-scene held a 320px floor at
+   * every width, so a 238px body left 38px of translucent wrapper showing under
+   * this opaque sheet. That floor is now off below 620px, so this is a choice
+   * rather than a workaround — eight tabular figures and a footing need the
+   * height to stay readable, and the air comes off the padding instead.
+   */
   @media (max-width: 620px) {
-    .bud-scene { min-height: 238px; padding: var(--s-3); }
-    .bud-plot { padding: var(--s-4); }
-    .bud-bars { height: 158px; gap: 7px; }
+    .acct { padding: var(--s-4); --row: 34px; }
+    .hd { letter-spacing: 0.08em; }
   }
 </style>

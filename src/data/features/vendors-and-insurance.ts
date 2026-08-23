@@ -32,6 +32,7 @@ export const vendorsAndInsurance: PageSpec = {
   bands: [
     {
       title: "What the renewal is costing you",
+      layout: "wide",
       body: [
         { panel: {
           label: "Landscaping · renews April 16",
@@ -49,15 +50,19 @@ export const vendorsAndInsurance: PageSpec = {
     },
     {
       title: "Pay the rate you agreed to",
+      layout: "rail",
       field: true,
       air: "tight",
       note: ["See accounting and budgets", "/product/accounting-and-budgets"],
       body: [
         { p: "Common Parcel checks the invoice against the rate in the agreement. A rate that moved, or a bill sent twice, comes back to the board before the check goes out." },
+      
+        { pull: "A contract that renews on its own is a price nobody shopped." },
       ],
     },
     {
       title: "Your policy has a renewal date too",
+      layout: "stack",
       body: [
         { p: "Upload the policy and the coverage limit, the deductible and the renewal date come out of it and onto a calendar the whole board can see." },
         { coda: "If the only person who knows the renewal date leaves the board, the date leaves with them." },

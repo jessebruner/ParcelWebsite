@@ -31,6 +31,7 @@ export const residentPortal: PageSpec = {
   bands: [
     {
       title: "What an owner can do without you",
+      layout: "stack",
       body: [
         { panel: {
           label: "Portal · what an owner sees",
@@ -54,15 +55,19 @@ export const residentPortal: PageSpec = {
     },
     {
       title: "Answers out of your own documents",
+      layout: "wide",
       field: true,
       air: "tight",
       note: ["See documents and answers", "/product/documents-and-answers"],
       body: [
         { p: "The portal reads from the documents you uploaded, so an owner is never told something the board then has to walk back." },
+      
+        { pull: "The best question is the one an owner answers without asking you." },
       ],
     },
     {
       title: "Nobody signs themselves up",
+      layout: "quiet",
       body: [
         { p: "An owner finds their address and asks for access. It stays shut until someone on the board approves it." },
         { statutory: {

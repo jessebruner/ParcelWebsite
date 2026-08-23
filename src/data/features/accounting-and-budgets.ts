@@ -22,6 +22,7 @@ export const accountingAndBudgets: PageSpec = {
   bands: [
     {
       title: "Books that match the bank",
+      layout: "wide",
       body: [
         { panel: {
             label: "Reconciliation",
@@ -42,6 +43,7 @@ export const accountingAndBudgets: PageSpec = {
     },
     {
       title: "Show owners how the budget was approved",
+      layout: "rail",
       field: true,
       body: [
         { p: "Every draft of a budget is kept. The adopted one carries the meeting that adopted it and the notice that went out beforehand." },
@@ -50,11 +52,13 @@ export const accountingAndBudgets: PageSpec = {
     },
     {
       title: "Special assessments wait for the vote",
+      layout: "quiet",
       air: "tight",
       body: [{ p: "A special assessment needs the share of votes your documents require. Common Parcel counts them against it and prepares the billing after the board confirms the result." }],
     },
     {
       title: "Hand it all to the next treasurer",
+      layout: "stack",
       field: true,
       note: ["See dues and payments", "/product/dues-and-payments"],
       body: [
@@ -65,6 +69,8 @@ export const accountingAndBudgets: PageSpec = {
           "Every owner's ledger, charge by charge.",
         ] },
         { coda: "A full export any month, with the records attached, in a form an accountant or an auditor can open." },
+      
+        { pull: "A treasurer should be able to close the books without learning accounting." },
       ],
     },
   ],

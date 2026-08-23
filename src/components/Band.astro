@@ -1,7 +1,25 @@
 ---
 /**
- * A section: name in the rail, argument on the right, optional onward link
- * under the name. Above 1000px the rail is a real column; below it stacks.
+ * A section.
+ *
+ * Four compositions, because nine pages running the identical two-track band
+ * five times each is the thing the owner objected to by name: "do not just use
+ * the exact same template for every single page." A layout is a page's own
+ * choice, and no two pages run the same sequence.
+ *
+ *   rail   name in a 20em rail, argument beside it. The default and the
+ *          workhorse. Above 1000px only; below that every layout stacks.
+ *   stack  name at full section size over a reading measure. The homepage's
+ *          device for a statement.
+ *   wide   name at headline size, argument across the whole page. For a figure
+ *          that wants the room.
+ *   quiet  a narrow column under a hairline, name as a mono label. For a
+ *          caveat, a limit, or the sentence a careful reader came for.
+ *
+ * The onward link goes under the name in `rail`, because the rail is a column
+ * with room under it. In the other three there is no rail, so it follows the
+ * argument -- a link between a heading and its own first sentence reads as part
+ * of the heading.
  */
 interface Props {
   title: string;
@@ -11,13 +29,25 @@ interface Props {
   id?: string;
   /** Breaks the metronome. See the section rhythm note in tokens.css. */
   air?: "tight" | "open";
+  /** The composition. See the note above. */
+  layout?: "rail" | "stack" | "wide" | "quiet";
 }
-const { title, field = false, note, noteHref, id, air } = Astro.props;
+const { title, field = false, note, noteHref, id, air, layout } = Astro.props;
+
+const headingClass = layout === "quiet" ? "t-label" : layout === "wide" ? "t-headline" : "t-sheet";
+const inRail = layout === undefined || layout === "rail";
+const showNote = Boolean(note && noteHref);
 ---
-<section class:list={["band", { "band--field": field }]} id={id} data-air={air}>
+<section
+  class:list={["band", { "band--field": field }]}
+  id={id}
+  data-air={air}
+  data-layout={layout}
+>
   <div class="page">
-    <h2 class="rail t-sheet">{title}</h2>
-    {note && noteHref && <p class="rail-note"><a href={noteHref}>{note}</a></p>}
+    <h2 class:list={["rail", headingClass]}>{title}</h2>
+    {showNote && inRail && <p class="rail-note"><a href={noteHref}>{note}</a></p>}
     <div class="body"><slot /></div>
+    {showNote && !inRail && <p class="rail-note rail-note--after"><a href={noteHref}>{note}</a></p>}
   </div>
 </section>

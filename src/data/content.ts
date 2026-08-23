@@ -11,6 +11,13 @@
 
 export type Content =
   | { p: string }
+  /**
+   * The page's one loud sentence. Every page carries exactly one, in a
+   * different band, and it is the page's own argument rather than a quote from
+   * a document nobody has -- an invented excerpt attributed to "Declaration,
+   * Article IX" would be a fabricated citation on a marketing site.
+   */
+  | { pull: string }
   | { lede: string }
   | { coda: string }
   | { rows: string[] }
@@ -27,6 +34,12 @@ export type Content =
 export interface BandSpec {
   title: string;
   field?: boolean;
+  /**
+   * The composition. See Band.astro. Nine pages running the identical
+   * two-track band five times each was the objection; a page picks its own
+   * sequence. Omitted means "rail", which is what every band used to be.
+   */
+  layout?: "rail" | "stack" | "wide" | "quiet";
   /** Breaks the run of equal-height sections. See tokens.css. */
   air?: "tight" | "open";
   /** [label, href] for the onward link under the section name. */

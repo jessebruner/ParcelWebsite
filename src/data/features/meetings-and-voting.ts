@@ -22,6 +22,7 @@ export const meetingsAndVoting: PageSpec = {
   bands: [
     {
       title: "Quorum you can prove",
+      layout: "wide",
       air: "open",
       body: [
         { panel: {
@@ -39,13 +40,17 @@ export const meetingsAndVoting: PageSpec = {
     },
     {
       title: "Ballots that hold up",
+      layout: "stack",
       field: true,
       body: [
         { p: "Where your documents allow electronic ballots or proxies, Common Parcel counts them beside the paper ones and checks every voter against the list of owners on record." },
+      
+        { pull: "Proving quorum should not depend on who remembered to count." },
       ],
     },
     {
       title: "Committees see their own work",
+      layout: "quiet",
       air: "tight",
       body: [
         { p: "Architectural review, landscaping, whatever your bylaws create. Each committee opens to its own requests and sees nothing else." },
@@ -53,6 +58,7 @@ export const meetingsAndVoting: PageSpec = {
     },
     {
       title: "Nobody acts alone",
+      layout: "rail",
       field: true,
       note: ["Records and audit", "/product/records-and-audit"],
       body: [

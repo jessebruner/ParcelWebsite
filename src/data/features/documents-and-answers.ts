@@ -27,6 +27,7 @@ export const documentsAndAnswers: PageSpec = {
   bands: [
     {
       title: "Stop hunting for the rule",
+      layout: "stack",
       body: [
         { panel: {
           label: "Read from your declaration",
@@ -46,6 +47,7 @@ export const documentsAndAnswers: PageSpec = {
     },
     {
       title: "End the argument before it starts",
+      layout: "wide",
       field: true,
       body: [
         { p: "Every answer arrives with the page it was read from. You can read it yourself, and you can forward it." },
@@ -54,12 +56,16 @@ export const documentsAndAnswers: PageSpec = {
     },
     {
       title: "A records request starts a clock",
+      layout: "rail",
       body: [
         { p: "A records request is dated the day it arrives. Where your state sets a deadline, Common Parcel counts it down and gathers what it already holds for the board to review." },
+      
+        { pull: "Every answer comes back with the page it came from." },
       ],
     },
     {
       title: "Do not hold up a closing",
+      layout: "stack",
       field: true,
       body: [
         { p: "When a home sells, the closing needs figures from the association. Common Parcel gathers the ones the board has confirmed and leaves the rest blank rather than guess at them." },
@@ -67,6 +73,7 @@ export const documentsAndAnswers: PageSpec = {
     },
     {
       title: "What it will not do",
+      layout: "quiet",
       air: "tight",
       note: ["See security", "/security"],
       body: [

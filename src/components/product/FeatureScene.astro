@@ -35,7 +35,7 @@ const SCENES: Record<string, any> = {
 const TITLES: Record<string, string> = {
   "dues-and-payments": "Owner to association",
   collections: "Collections plan",
-  "accounting-and-budgets": "Board budget",
+  "accounting-and-budgets": "Ledger and bank",
   "rules-and-enforcement": "Before the fine",
   "meetings-and-voting": "Ballots in",
   "documents-and-answers": "Association library",
@@ -83,6 +83,18 @@ const Scene = SCENES[slug];
   .scene-mark { display: inline-flex; gap: 3px; }
   .scene-mark i { width: 5px; height: 5px; background: var(--on-dark-tile); }
   .scene-mark i:nth-child(2) { background: var(--amber); }
+
+  /*
+   * The floor keeps an empty box from collapsing. It is a desktop concern only:
+   * every scene body sets its own minimum, and holding 320px on a phone while
+   * six scenes tighten their body to 238 left a 38px band of this element's
+   * translucent background showing under an opaque scene. Seen at 390 on
+   * /product/vendors-and-insurance, and found independently inside two scenes
+   * before it was fixed here.
+   */
+  @media (max-width: 620px) {
+    .feature-scene { min-height: 0; }
+  }
 
   /*
    * .scene-body belongs to the scene components, not to this one, so it has to

@@ -196,7 +196,7 @@ section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
 .band > .page { display: grid; gap: var(--s-6); }
 
 @media (min-width: 1000px) {
-  .band > .page {
+  .band:where(:not([data-layout]), [data-layout="rail"]) > .page {
     grid-template-columns: minmax(14em, 20em) minmax(0, 1fr);
     grid-template-rows: auto 1fr;
     column-gap: clamp(40px, 5vw, 88px);
@@ -214,10 +214,107 @@ section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
    * Below 1000px the rail is not a column and the full size is right, so this
    * lives inside the breakpoint.
    */
-  .band > .page > .rail { grid-column: 1; grid-row: 1; font-size: clamp(26px, 2.5vw, 38px); }
-  .band > .page > .rail-note { grid-column: 1; grid-row: 2; align-self: start; }
-  .band > .page > .body { grid-column: 2; grid-row: 1 / span 2; }
+  .band:where(:not([data-layout]), [data-layout="rail"]) > .page > .rail { grid-column: 1; grid-row: 1; font-size: clamp(26px, 2.5vw, 38px); }
+  .band:where(:not([data-layout]), [data-layout="rail"]) > .page > .rail-note { grid-column: 1; grid-row: 2; align-self: start; }
+  .band:where(:not([data-layout]), [data-layout="rail"]) > .page > .body { grid-column: 2; grid-row: 1 / span 2; }
 }
+
+/*
+ * The other three compositions. Nine pages running the two-track band five
+ * times each was the objection: "do not just use the exact same template for
+ * every single page." These need no breakpoint of their own -- the rail is the
+ * only layout that becomes a grid, so the rest read the same at every width
+ * and only their measure and their heading treatment change.
+ */
+
+/* stack: the name at full section size over a reading measure. */
+.band[data-layout="stack"] > .page { gap: var(--s-5); }
+.band[data-layout="stack"] > .page > .rail { max-width: 22ch; }
+.band[data-layout="stack"] > .page > .body { max-width: var(--read); }
+
+/*
+ * wide: the argument across the whole page, under a headline-size name.
+ *
+ * The name was a mono label in the first pass. Looked at whole, the section
+ * holding the page's flagship figure then had the quietest heading on the
+ * page -- a caption above a panel rather than a section. Headline size, which
+ * is a step under the rail's own, because the figure is the loud thing here.
+ */
+.band[data-layout="wide"] > .page { gap: var(--s-4); }
+.band[data-layout="wide"] > .page > .rail { max-width: 30ch; }
+
+/*
+ * quiet: a narrow column under a hairline, for a caveat or a limit.
+ *
+ * Left to the page edge, not centred. The first pass centred the column and
+ * left the text ragged inside it, which read as a section that had come loose
+ * rather than an aside. Everything else on this site hangs off one left edge.
+ */
+.band[data-layout="quiet"] > .page { gap: var(--s-4); }
+.band[data-layout="quiet"] > .page > .rail {
+  padding-top: var(--s-4);
+  border-top: 1.5px solid var(--terracotta);
+  max-width: var(--read);
+}
+.band[data-layout="quiet"] > .page > .body { max-width: var(--read); }
+
+/*
+ * WEIGHT.
+ *
+ * A 60px heading over twenty words of 17px body copy reads as a section that
+ * ran out. Measured against the homepage first, because the obvious reading
+ * was wrong: the homepage runs 60px headings over 17-18px body too, so the
+ * type scale was never the problem. What is under its headings is a feature
+ * grid, a price table, an FAQ -- substance. Four feature bands carry one
+ * short sentence each, and one of them is the page's closing argument.
+ *
+ * So a section whose whole argument is one paragraph gets that paragraph at
+ * lede size, and a `stack` section gets its opening paragraph there too. Only
+ * on bands that chose a layout, which is the nine feature pages -- the seven
+ * hand-written pages using this component pass no layout and are untouched.
+ */
+.band[data-layout] > .page > .body > p:only-child,
+.band[data-layout="stack"] > .page > .body > p:first-child {
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.45;
+  max-width: 34ch;
+}
+
+/*
+ * THE PULL.
+ *
+ * One per page, in a different band on each, and the loudest sentence below
+ * the fold. It breaks out of the reading measure to the left, which is the
+ * only element on the site that does -- that is what makes it read as an
+ * editorial beat rather than another paragraph at another size.
+ *
+ * No source line under it. It is the page arguing, not a document being
+ * quoted, and a quote from a declaration nobody has would be an invented
+ * citation dressed as evidence.
+ */
+.pull {
+  font-family: var(--font-serif);
+  text-wrap: balance;
+  max-width: 26ch;
+  margin-block: var(--s-6);
+  padding-left: var(--s-5);
+  border-left: 1.5px solid var(--terracotta);
+}
+.on-ink .pull, .band--ink .pull { color: var(--paper); }
+
+@media (min-width: 1000px) {
+  /* Out of the measure and into the gutter. Only in the rail layout, where
+     there is a gutter to move into. */
+  .band:where(:not([data-layout]), [data-layout="rail"]) > .page > .body > .pull { margin-left: calc(var(--s-6) * -1); }
+}
+
+@media (max-width: 620px) {
+  .pull { max-width: none; padding-left: var(--s-4); }
+}
+
+/* An onward link that follows the argument instead of sitting in a rail. */
+.rail-note--after { border-top: 0; padding-top: 0; margin-top: var(--s-5); }
 
 .rail-note {
   border-top: var(--stroke-rule);

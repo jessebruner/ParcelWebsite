@@ -2,123 +2,255 @@
 /**
  * records-and-audit — the hero diagram.
  *
- * ONE IDEA: the officers change and the record does not stop. Three figures in
- * the rail hand off to each other while the page on the right keeps filling.
- * That is the whole page in one loop, and it needs no words at all, which is
- * the right number for a block that is aria-hidden.
+ * ONE OBJECT: a file drawer, standing open, with the association's records in
+ * it and a label card on the drawer front. ONE MOMENT: the nameplate below it
+ * is swapped — a new treasurer takes the seat — and the drawer does not move.
+ * That is the closer, drawn: "Nothing leaves with the treasurer."
  *
- * It replaces a four-item list of nouns plus a caption reading "Illustrative
- * association records." The caption is gone; .scene-note is not used here.
+ * It replaces three anonymous figures in a rail beside eight grey lines that
+ * filled in. Nobody could name what that was a picture of. A drawer of manila
+ * folders and a nameplate are both things a board member has stood in front
+ * of, so there is nothing to decode: the person changes, the files stay.
  *
- * Pure CSS on one 9s period. Timings are percentages of that period rather
- * than per-element delays, so the handoff stays in step with the filling.
+ * Four real words carry the meaning and the rest is geometry — the drawer's
+ * label card, the role, and the two names on the plate. The five scenes that
+ * work do the same ("April", "Owner", "Stripe", "HOA bank", "Quorum"); a name
+ * IS the picture when the picture is about whose name is on something.
+ *
+ * Deliberately NOT the panel from the first band. That is a dark navy list of
+ * four record types with status chips, and the reader meets it two screens
+ * down. This is a physical drawer and a nameplate; no rows, no chips.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame. So the base styles and 100% are the same settled state — the new
+ * treasurer's plate in place, the drawer full — and the handover happens in
+ * the middle. The scene is never blank at frame zero and never blank for a
+ * reader who asked for no motion. The explicit reduced-motion rule at the
+ * bottom says the same thing without leaning on that global staying put.
+ *
+ * Only two things animate: the two name plates. The drawer is completely
+ * static except for one tab brightening as the new name lands, which is the
+ * next board finding the file. A picture whose argument is "this does not
+ * move" should not move.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * This file carries its own box, because Astro scopes that file's styles to
+ * that file's own markup and this markup is not in it.
  */
-const LINES = Array.from({ length: 8 }, (_, i) => i);
-const TERMS = [1, 2, 3];
+
+/** Five hanging folders. The third one stands proud: it is the one in use. */
+const FOLDERS = [1, 2, 3, 4, 5];
+const LIVE = 3;
 ---
 
-<div class="ledger scene-body">
-  <div class="terms">
-    {TERMS.map((n) => (
-      <span class:list={["term", `term--${n}`]}>
-        <i></i>
-        <b></b>
-      </span>
-    ))}
+<div class="rec">
+  <div class="cab">
+    <div class="folders">
+      {FOLDERS.map((n) => <i class:list={["fol", { "fol--live": n === LIVE }]}></i>)}
+    </div>
+
+    <div class="front">
+      <span class="card">Association records <em>2026</em></span>
+      <span class="pull"></span>
+    </div>
   </div>
 
-  <div class="book">
-    <div class="book-rows">
-      {LINES.map(() => <span class="line"><i></i><b></b></span>)}
-    </div>
-    <div class="book-rows book-rows--kept">
-      {LINES.map(() => <span class="line"><i></i><b></b></span>)}
-    </div>
+  <div class="chair">
+    <span class="role">Treasurer</span>
+    <span class="plate">
+      <b class="name name--out"><i></i>R. Alvarez</b>
+      <b class="name name--in"><i></i>T. Novak</b>
+    </span>
   </div>
 </div>
 
 <style>
-  /* .scene-body's rule lives in the parent and no longer reaches a child
-     component, so the scene carries its own box. */
-  .ledger {
+  .rec {
     min-height: 278px;
-    padding: clamp(20px, 3vw, 32px);
+    padding: clamp(18px, 2.6vw, 24px);
+    background: var(--night);
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: clamp(18px, 2.6vw, 24px);
+    align-content: center;
+  }
+
+  /* ── THE DRAWER ─────────────────────────────────────────────────────── */
+
+  /* The cabinet: a dark opening with a frame, which is what an open drawer
+     looks like from the front. --bank is a stop darker than --night, so the
+     inside of the cabinet reads as inside. */
+  .cab {
+    border: 1px solid var(--on-dark-tile);
+    background: var(--bank);
+    padding: var(--s-3);
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  /* Hanging folders, seen standing in the drawer. --sand is manila. */
+  .folders {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    height: 84px;
+    padding-inline: var(--s-2);
+  }
+  .fol {
+    position: relative;
+    flex: 1;
+    height: 60px;
+    background: var(--sand);
+  }
+  /* The tab, alternating side to side the way a real drawer staggers them. */
+  .fol::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 0;
+    width: 58%;
+    height: 9px;
+    background: var(--bisque-edge);
+  }
+  .fol:nth-child(even)::before { left: auto; right: 0; }
+  /* The record in use: pulled up, brighter, amber tab. */
+  .fol--live { height: 74px; background: var(--paper); }
+  .fol--live::before { background: var(--amber); }
+
+  /* The drawer face: a label card in its holder, and a pull. Pulled out to the
+     cabinet's inner edges with negative margin, because a drawer front fills
+     the opening rather than floating inside it. */
+  .front {
+    height: 54px;
+    margin: 0 calc(-1 * var(--s-3)) calc(-1 * var(--s-3));
+    border-top: 1px solid var(--slate);
+    background: var(--cold);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--s-4);
+    overflow: hidden;
+  }
+  .card {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 5px var(--s-3);
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .card em { font-style: normal; color: var(--ink-3); }
+  .pull {
+    margin-left: auto;
+    flex: none;
+    width: 54px;
+    height: 7px;
+    background: var(--on-dark-label);
+  }
+
+  /* ── THE SEAT ───────────────────────────────────────────────────────── */
+
+  .chair {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: clamp(16px, 2.4vw, 28px);
     align-items: center;
+    gap: var(--s-4);
   }
-
-  /* The rail: three terms of the board, one at a time. */
-  .terms {
-    display: grid;
-    gap: clamp(16px, 2.6vw, 30px);
-    justify-items: center;
-    padding-right: clamp(16px, 2.4vw, 28px);
-    border-right: 1px solid var(--night-rule);
+  .role {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+    white-space: nowrap;
   }
-  .term { display: grid; justify-items: center; gap: 4px; }
-  .term i { width: 15px; height: 15px; background: var(--on-dark-tile); }
-  .term b { width: 31px; height: 19px; background: var(--on-dark-tile); }
-
-  /* The record: a page that keeps taking lines. */
-  .book { position: relative; background: var(--card); padding: var(--s-4); }
-  .book-rows { display: grid; gap: 7px; }
-  .line { display: grid; grid-template-columns: 1fr 10px; align-items: center; gap: var(--s-3); }
-  .line i { height: 9px; background: var(--c-hairline); }
-  .line b { width: 10px; height: 10px; background: var(--c-hairline); }
-  .line:nth-child(2) i, .line:nth-child(5) i { width: 74%; }
-  .line:nth-child(4) i, .line:nth-child(7) i { width: 88%; }
-
-  .book-rows--kept {
+  /* A desk nameplate: one slot, and the card in it gets changed. */
+  .plate {
+    position: relative;
+    overflow: hidden;
+    height: 38px;
+    background: var(--plum);
+    border-bottom: 3px solid var(--rose);
+  }
+  .name {
     position: absolute;
-    inset: var(--s-4);
-    clip-path: inset(0 0 100% 0);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--s-4);
+    font: 600 var(--t-micro)/1 var(--font-sans);
+    color: var(--paper);
+    white-space: nowrap;
   }
-  .book-rows--kept .line i { background: var(--bisque-edge); }
-  .book-rows--kept .line b { background: var(--terracotta); }
+  /* A head and a pair of shoulders, off the same 2px grid as the other scenes,
+     so the plate is unmistakably a person and not a caption. */
+  .name i { position: relative; flex: none; width: 16px; height: 18px; }
+  .name i::before,
+  .name i::after { content: ""; position: absolute; left: 50%; background: currentColor; }
+  .name i::before { top: 0; width: 8px; height: 8px; margin-left: -4px; }
+  .name i::after { top: 10px; width: 16px; height: 8px; margin-left: -8px; }
 
-  .book-rows--kept { animation: ledger-keep 9s infinite; }
-  .term--1 i, .term--1 b { animation: ledger-term-1 9s infinite; }
-  .term--2 i, .term--2 b { animation: ledger-term-2 9s infinite; }
-  .term--3 i, .term--3 b { animation: ledger-term-3 9s infinite; }
+  /* Base state IS the rest state: the new plate is in, the old one is gone. */
+  .name--out { opacity: 0; transform: translateX(112%); }
+  .name--in { opacity: 1; transform: translateX(0); }
 
-  @keyframes ledger-keep {
-    0% { clip-path: inset(0 0 100% 0); }
-    5% { clip-path: inset(0 0 100% 0); animation-timing-function: steps(8, end); }
-    74%, 92.9% { clip-path: inset(0 0 0 0); }
-    93%, 100% { clip-path: inset(0 0 100% 0); }
+  .name--out { animation: rec-leave 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite; }
+  .name--in { animation: rec-arrive 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite; }
+  .fol--live::before { animation: rec-found 8s infinite; }
+
+  @keyframes rec-leave {
+    0%, 40% { opacity: 1; transform: translateX(0); }
+    54%, 100% { opacity: 0; transform: translateX(112%); }
   }
-  @keyframes ledger-term-1 {
-    0%, 25.9% { background: var(--sand); }
-    26%, 100% { background: var(--on-dark-tile); }
+  @keyframes rec-arrive {
+    0%, 46% { opacity: 0; transform: translateX(-112%); }
+    64%, 100% { opacity: 1; transform: translateX(0); }
   }
-  @keyframes ledger-term-2 {
-    0%, 25.9% { background: var(--on-dark-tile); }
-    26%, 49.9% { background: var(--sand); }
-    50%, 100% { background: var(--on-dark-tile); }
-  }
-  @keyframes ledger-term-3 {
-    0%, 49.9% { background: var(--on-dark-tile); }
-    50%, 92.9% { background: var(--sand); }
-    93%, 100% { background: var(--on-dark-tile); }
+  /* The next board opens the same file. */
+  @keyframes rec-found {
+    0%, 64% { background: var(--amber); }
+    72%, 82% { background: var(--paper); }
+    92%, 100% { background: var(--amber); }
   }
 
   @media (max-width: 620px) {
-    .ledger { min-height: 238px; padding: var(--s-4); gap: var(--s-4); }
-    .terms { gap: var(--s-5); padding-right: var(--s-4); }
-    .book { padding: var(--s-3); }
-    .book-rows--kept { inset: var(--s-3); }
-    .book-rows { gap: 6px; }
+    /* min-height stays at 278px, but no longer because it has to. The wrapper
+       used to hold a 320px floor at every width, so a 238px body left a 40px
+       band of translucent --night-active showing under this opaque scene -- a
+       seam on a dusk hero, plainly visible under the nameplate at 390x844. The
+       floor is now off below 620px. 278 stays because a drawer, five folders
+       and a nameplate need the room. */
+    .rec { padding: var(--s-4); gap: var(--s-4); }
+    .cab { padding: var(--s-2); gap: var(--s-2); }
+    .folders { height: 70px; gap: 5px; padding-inline: var(--s-1); }
+    .fol { height: 50px; }
+    .fol--live { height: 62px; }
+    .front {
+      height: 46px;
+      margin: 0 calc(-1 * var(--s-2)) calc(-1 * var(--s-2));
+      padding-inline: var(--s-3);
+      gap: var(--s-2);
+    }
+    .card { padding: 4px var(--s-2); letter-spacing: 0.04em; gap: var(--s-2); }
+    .pull { width: 32px; height: 6px; }
+    .chair { gap: var(--s-3); }
+    .role { letter-spacing: 0.08em; }
+    .plate { height: 34px; }
+    .name { padding-inline: var(--s-3); gap: var(--s-2); }
   }
 
-  /* Reduced motion holds the finished state: three terms in, the record full
-     and still going. */
+  /* Stillness holds the settled frame: the drawer full, the new treasurer's
+     plate in the slot, the file in use lit. Nothing is mid-slide. */
   @media (prefers-reduced-motion: reduce) {
-    .book-rows--kept,
-    .term i,
-    .term b { animation: none; }
-    .book-rows--kept { clip-path: inset(0 0 0 0); }
-    .term--3 i, .term--3 b { background: var(--sand); }
+    .name--out,
+    .name--in,
+    .fol--live::before { animation: none; }
   }
 </style>

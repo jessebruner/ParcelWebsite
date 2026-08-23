@@ -2,112 +2,272 @@
 /**
  * collections — the hero diagram.
  *
- * The page's argument, drawn: a plan of notices that advances on its own dates
- * and then stops, because the next one is waiting on the board. Two letters
- * behind it, one lit and held, one not started.
+ * THE OBJECT IS A LETTER, AND THE POINT IS THAT IT CANNOT LEAVE.
  *
- * One authored moment, looping: the marker steps down two rows and stays there
- * for the rest of the cycle. The stop is the point, so the loop spends most of
- * its time stopped. Resting state, which is what `prefers-reduced-motion`
- * holds, is the marker on the first row with every row legible.
+ * What this replaced was four rows of nondescript rectangles with a marker
+ * stepping down them. Nothing in it was an HOA, a letter, a board or an overdue
+ * account; it had to be decoded, and the source comment decoded it better than
+ * the drawing did.
  *
- * No words. The scene header already says what this is.
+ * So: two notices already gone, small and spent, along the top. Under them the
+ * next one, full size, on paper, with the lot it is addressed to and the mark
+ * that says it is finished. Under that the slot it would go out through, with
+ * the shutter across it. Under that the board: one signature in, one still
+ * open, and the letter HELD.
  *
- * Styles live in this file. FeatureScene.astro's <style> is scoped to
- * FeatureScene.astro, so its rules never reached this markup.
+ * NOTHING IS EVER DRAWN LEAVING. The page's claim is that Common Parcel drafts
+ * the notice and holds it, and that nothing goes out until the board sends it,
+ * so no element in this loop travels through the slot. The only thing that
+ * would move it is the empty signature box, and that box stays empty.
+ *
+ * One authored moment, looping: the sheet blanks, the notice writes itself onto
+ * it left to right, and the moment the writing lands the shutter slides shut
+ * under it and HELD lights. Then it stops, and it stays stopped for most of the
+ * cycle, because the stop is the argument.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame. 100% and 0% are both the held state, and the whole reset happens
+ * in the middle, so the scene is never blank at frame zero and never blank for
+ * a reader who asked for stillness. Every base rule below is written as the
+ * held state, so the explicit reduced-motion rule at the bottom says the same
+ * thing without leaning on that global.
+ *
+ * Four words, because a flow diagram's labels ARE the picture: the two that
+ * went, the lot, the board, and the status. The block is aria-hidden, so none
+ * of them reach a screen reader or a crawler — they are there for the eye.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * This scene carries its own box rather than borrowing .scene-body, because
+ * Astro scopes that file's styles to that file's own markup and a rule written
+ * there never reaches this markup. That is what bit the previous pass.
  */
 ---
 
-<div class="coll-plan">
-  <div class="coll-rows">
-    <span class="coll-marker"></span>
+<div class="coll">
+  <!-- Already gone. Two notices, spent. -->
+  <div class="coll-past">
+    <span class="coll-label">Sent</span>
+    <span class="coll-stub"><i></i><i></i></span>
+    <span class="coll-stub"><i></i><i></i></span>
+  </div>
 
-    <div class="coll-step coll-step--sent">
-      <i class="coll-tick"></i>
-      <span class="coll-letter"><i></i><i></i><i></i></span>
+  <!-- The next one: written, finished, resting on a shut slot. -->
+  <div class="coll-stage">
+    <div class="coll-note">
+      <span class="coll-head">
+        <i class="coll-tab"></i>
+        <b class="coll-lot">Lot 63</b>
+      </span>
+      <i class="coll-ln"></i>
+      <i class="coll-ln coll-ln--b"></i>
+      <i class="coll-ln coll-ln--c"></i>
+      <span class="coll-mark"></span>
+      <span class="coll-wipe"></span>
     </div>
-    <div class="coll-step coll-step--sent">
-      <i class="coll-tick"></i>
-      <span class="coll-letter"><i></i><i></i><i></i></span>
-    </div>
-    <div class="coll-step coll-step--held">
-      <i class="coll-tick"></i>
-      <span class="coll-letter"><i></i><i></i><i></i></span>
-    </div>
-    <div class="coll-step coll-step--next">
-      <i class="coll-tick"></i>
-      <span class="coll-letter"><i></i><i></i><i></i></span>
-    </div>
+  </div>
+
+  <!-- The way out, and the shutter across it. -->
+  <span class="coll-slot"><i class="coll-gate"></i></span>
+
+  <!-- Who it is waiting on. One signature in, one open. -->
+  <div class="coll-board">
+    <span class="coll-label">Board</span>
+    <span class="coll-sig coll-sig--in"></span>
+    <span class="coll-sig coll-sig--out"></span>
+    <b class="coll-tag">Held</b>
   </div>
 </div>
 
 <style>
-  .coll-plan {
-    --coll-row: 46px;
-    --coll-gap: 10px;
+  .coll {
+    --note-h: 104px;
+    --lift: 8px;
     min-height: 278px;
     padding: clamp(20px, 3vw, 30px);
-    display: grid;
-    align-content: center;
-  }
-  .coll-rows { position: relative; display: grid; gap: var(--coll-gap); }
-
-  .coll-step {
-    height: var(--coll-row);
-    padding-left: 17px;
-    display: grid;
-    grid-template-columns: 12px minmax(0, 1fr);
-    align-items: center;
-    gap: var(--s-4);
-  }
-
-  .coll-tick { width: 12px; height: 12px; background: var(--on-dark-tile); }
-
-  /* A notice, drawn as a notice: a bordered sheet with three ruled lines. */
-  .coll-letter {
-    height: 100%;
-    border: 1px solid var(--on-dark-tile-edge);
     background: var(--night);
-    padding: 0 12px;
     display: grid;
     align-content: center;
-    gap: 6px;
   }
-  .coll-letter i { height: 3px; background: var(--on-dark-tile); }
-  .coll-letter i:nth-child(2) { width: 66%; }
-  .coll-letter i:nth-child(3) { width: 42%; }
 
-  /* Sent. */
-  .coll-step--sent .coll-tick { background: var(--sand); }
-  .coll-step--sent .coll-letter { border-color: var(--on-dark-tile); }
-  .coll-step--sent .coll-letter i { background: var(--slate); }
+  /* Mono labels, on the scene-top's own setting so the whole card speaks once. */
+  .coll-label,
+  .coll-lot,
+  .coll-tag {
+    font: 500 var(--t-mono-label) / 1 var(--font-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .coll-label { color: var(--on-dark-label); }
 
-  /* Drafted, and waiting on the board. The hollow tick is the wait. */
-  .coll-step--held .coll-tick { background: transparent; border: 2px solid var(--amber); }
-  .coll-step--held .coll-letter { border-color: var(--amber-edge); }
-  .coll-step--held .coll-letter i { background: var(--mist); }
+  /* ── What already went ─────────────────────────────────────────────────── */
 
-  /* Not started. */
-  .coll-step--next .coll-letter i { background: var(--on-dark-tile-edge); }
+  .coll-past {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+  /* The same object as the sheet below, smaller and greyed: a written notice
+     that has gone. No tick needed; the word beside it is the tick. */
+  .coll-stub {
+    width: 34px;
+    height: 22px;
+    flex: none;
+    background: var(--on-dark-label);
+    padding: 0 5px;
+    display: grid;
+    align-content: center;
+    gap: 4px;
+  }
+  .coll-stub i { height: 2px; background: var(--night); }
+  .coll-stub i:nth-child(2) { width: 62%; }
 
-  .coll-marker {
+  /* ── The notice ────────────────────────────────────────────────────────── */
+
+  /* The stage reserves the lift, so the sheet has somewhere to be while it is
+     still being written and lands flush on the slot when it is done. */
+  .coll-stage {
+    display: grid;
+    align-content: end;
+    min-height: calc(var(--note-h) + var(--lift));
+  }
+
+  .coll-note {
+    position: relative;
+    min-height: var(--note-h);
+    background: var(--paper);
+    padding: var(--s-4);
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    animation: coll-settle 7.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+  .coll-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  /* The association's letterhead. */
+  .coll-tab { width: 44px; height: 9px; background: var(--terracotta); flex: none; }
+  .coll-lot { color: var(--ink-3); }
+
+  .coll-ln { height: 7px; background: var(--c-edge); }
+  .coll-ln--b { width: 76%; }
+  .coll-ln--c { width: 48%; }
+
+  /* Finished. Amber, because amber is also the shutter: the mark and the thing
+     holding it are the same colour on purpose. */
+  .coll-mark {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 4px;
-    height: var(--coll-row);
+    right: var(--s-4);
+    bottom: var(--s-3);
+    width: 14px;
+    height: 14px;
     background: var(--amber);
-    animation: coll-advance 5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   }
-  @keyframes coll-advance {
-    0%, 12% { transform: translateY(0); }
-    24%, 36% { transform: translateY(calc(var(--coll-row) + var(--coll-gap))); }
-    48%, 100% { transform: translateY(calc((var(--coll-row) + var(--coll-gap)) * 2)); }
+
+  /* The writing, drawn as paper still covering it. Anchored right, so shrinking
+     it reveals the sheet left to right and the finished mark lands last. */
+  .coll-wipe {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    background: var(--paper);
+    animation: coll-write 7.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  /* ── The way out ───────────────────────────────────────────────────────── */
+
+  /* An opening, not a rule. It needs its own dark edge or a full-width amber
+     bar sitting flush under paper just reads as the sheet's underline, which is
+     what the first draft of this scene looked like at 1440 and at 390. */
+  .coll-slot {
+    position: relative;
+    display: block;
+    height: 16px;
+    background: var(--bank);
+    border: 1px solid var(--on-dark-tile);
+  }
+  /* The shutter across it. Inset, so the dark opening stays visible around the
+     bar and the bar reads as a thing drawn across a gap. */
+  .coll-gate {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(100% - 6px);
+    background: var(--amber);
+    animation: coll-shut 7.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  /* ── The board ─────────────────────────────────────────────────────────── */
+
+  .coll-board {
+    margin-top: var(--s-4);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  /* Two officers, because the page says a notice waits for both approvals.
+     One in, one open, and the open one is the reason for everything above. */
+  .coll-sig { width: 18px; height: 18px; flex: none; }
+  .coll-sig--in { background: var(--sand); }
+  .coll-sig--out { border: 1px solid var(--amber); background: var(--bank); }
+  /* The status, in the boxed mono stamp Panel.astro already uses on this page. */
+  .coll-tag {
+    margin-left: auto;
+    color: var(--amber);
+    border: 1px solid var(--amber-edge);
+    padding: 4px 8px;
+    animation: coll-tag 7.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  /* ── The moment ────────────────────────────────────────────────────────── */
+
+  @keyframes coll-write {
+    0%, 46% { width: 0; }
+    49%, 54% { width: 100%; }
+    74%, 100% { width: 0; }
+  }
+  @keyframes coll-shut {
+    0%, 46% { width: calc(100% - 6px); }
+    49%, 74% { width: 0; }
+    84%, 100% { width: calc(100% - 6px); }
+  }
+  @keyframes coll-settle {
+    0%, 46% { transform: translateY(0); }
+    49%, 74% { transform: translateY(calc(-1 * var(--lift))); }
+    84%, 100% { transform: translateY(0); }
+  }
+  @keyframes coll-tag {
+    0%, 46% { opacity: 1; }
+    49%, 80% { opacity: 0; }
+    88%, 100% { opacity: 1; }
+  }
+
+  /* Every base rule above is the held state, so stillness is the whole picture:
+     the notice written, the slot shut, one signature still owed. */
+  @media (prefers-reduced-motion: reduce) {
+    .coll-note,
+    .coll-wipe,
+    .coll-gate,
+    .coll-tag { animation: none; }
   }
 
   @media (max-width: 620px) {
-    .coll-plan { --coll-row: 40px; --coll-gap: 8px; min-height: 238px; padding: var(--s-4); }
-    .coll-step { padding-left: 13px; gap: var(--s-3); }
-    .coll-letter { padding: 0 10px; }
+    .coll { --note-h: 94px; min-height: 238px; padding: var(--s-4); }
+    .coll-past { margin-bottom: var(--s-4); gap: var(--s-2); }
+    .coll-stub { width: 32px; height: 22px; }
+    .coll-note { padding: var(--s-3); gap: var(--s-2); }
+    .coll-mark { right: var(--s-3); bottom: var(--s-3); width: 12px; height: 12px; }
+    .coll-board { margin-top: var(--s-3); gap: var(--s-2); }
+    .coll-label, .coll-lot, .coll-tag { letter-spacing: 0.1em; }
   }
 </style>

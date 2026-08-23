@@ -26,6 +26,7 @@ export const rulesAndEnforcement: PageSpec = {
   bands: [
     {
       title: "How one case runs",
+      layout: "stack",
       air: "open",
       body: [
         { panel: {
@@ -43,6 +44,7 @@ export const rulesAndEnforcement: PageSpec = {
     },
     {
       title: "Where fines get overturned",
+      layout: "rail",
       field: true,
       body: [
         { p: "The fine that gets challenged is the one for something the board let slide last year. Common Parcel shows every earlier case on that rule before the vote, so the board can enforce community rules fairly and consistently." },
@@ -50,13 +52,17 @@ export const rulesAndEnforcement: PageSpec = {
     },
     {
       title: "When an owner asks to build",
+      layout: "wide",
       air: "tight",
       body: [
         { p: "A request to paint the house or put up a fence arrives with the rule that governs it and any deadline your documents set. The committee decides." },
+      
+        { pull: "Every earlier case on that rule, in front of the board before the vote." },
       ],
     },
     {
       title: "The fine stays locked",
+      layout: "quiet",
       field: true,
       note: ["Elections and meetings", "/product/meetings-and-voting"],
       body: [

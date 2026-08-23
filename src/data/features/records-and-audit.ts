@@ -22,6 +22,7 @@ export const recordsAndAudit: PageSpec = {
   bands: [
     {
       title: "The file the next board opens",
+      layout: "wide",
       air: "open",
       body: [
         { panel: {
@@ -39,6 +40,7 @@ export const recordsAndAudit: PageSpec = {
     },
     {
       title: "Changes carry a name",
+      layout: "quiet",
       field: true,
       body: [
         { p: "An edit to a rule or a record carries the name of whoever made it and the time." },
@@ -46,14 +48,18 @@ export const recordsAndAudit: PageSpec = {
     },
     {
       title: "An owner asks for the books",
+      layout: "rail",
       air: "tight",
       note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
       body: [
         { p: "A Michigan owner with a proper purpose can demand the books, and five business days later can ask a court to compel it. The records are already in one place." },
+      
+        { pull: "The next treasurer should not have to ask where anything is." },
       ],
     },
     {
       title: "When the treasurer resigns",
+      layout: "stack",
       field: true,
       body: [
         { p: "The officer who knew where everything was is gone. The next one opens association records that outlast any board." },

@@ -24,6 +24,7 @@ export const duesAndPayments: PageSpec = {
   bands: [
     {
       title: "Dues go out on time",
+      layout: "wide",
       body: [
         { panel: {
             label: "Assessments",
@@ -48,6 +49,7 @@ export const duesAndPayments: PageSpec = {
     },
     {
       title: "Common Parcel never holds your dues money",
+      layout: "quiet",
       field: true,
       air: "open",
       note: ["See collections", "/product/collections"],
@@ -59,9 +61,12 @@ export const duesAndPayments: PageSpec = {
     },
     {
       title: "Owners see the same balance you do",
+      layout: "stack",
       air: "tight",
       note: ["See the resident portal", "/product/resident-portal"],
-      body: [{ p: "Every owner can open their own statement, from the ledger the treasurer reads. It shows what they owe today and every payment they have made." }],
+      body: [{ p: "Every owner can open their own statement, from the ledger the treasurer reads. It shows what they owe today and every payment they have made." },
+        { pull: "Your declaration already says what each lot owes. Nobody should have to type it in again." },
+      ],
     },
   ],
 };

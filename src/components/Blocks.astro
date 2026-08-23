@@ -21,6 +21,7 @@ function bold(s: string): string {
 {body.map((block) => {
   if ("lede" in block) return <p class="t-lede" set:html={bold(block.lede)} />;
   if ("coda" in block) return <p class="coda" set:html={bold(block.coda)} />;
+  if ("pull" in block) return <p class="pull t-headline">{block.pull}</p>;
   if ("p" in block) return <p set:html={bold(block.p)} />;
   if ("rows" in block) return (
     <ul class="rows">{block.rows.map((r) => <li set:html={bold(r)} />)}</ul>
