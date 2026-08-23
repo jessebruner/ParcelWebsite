@@ -201,7 +201,20 @@ section[data-air="open"] { padding-block: clamp(64px, 7.5vw, 128px); }
     grid-template-rows: auto 1fr;
     column-gap: clamp(40px, 5vw, 88px);
   }
-  .band > .page > .rail { grid-column: 1; grid-row: 1; }
+  /*
+   * A section heading in the rail is not a full-width section heading.
+   *
+   * --t-sheet was raised to 60px to match the homepage, where headings run the
+   * width of the page under a 12-16ch measure. Dropped into a 20em rail the
+   * same size wraps to three, four and in one case six lines, so the column
+   * became a wall of display type beside two lines of body copy. Measured
+   * across six pages before this: every rail heading was 60px and none was
+   * under three lines.
+   *
+   * Below 1000px the rail is not a column and the full size is right, so this
+   * lives inside the breakpoint.
+   */
+  .band > .page > .rail { grid-column: 1; grid-row: 1; font-size: clamp(26px, 2.5vw, 38px); }
   .band > .page > .rail-note { grid-column: 1; grid-row: 2; align-self: start; }
   .band > .page > .body { grid-column: 2; grid-row: 1 / span 2; }
 }
