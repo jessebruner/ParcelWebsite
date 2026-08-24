@@ -1,15 +1,38 @@
 ---
 /**
- * Product Hub Overview
- * Software built for self-managed HOAs.
+ * THE PRODUCT HUB.
+ *
+ * What this replaced: four hand-built FeatureCard "pillars", each with a bullet
+ * list and a hand-drawn mock -- a fake dues table, a fake portal, a fake
+ * architectural request, a fake governance list -- about 160 lines of markup
+ * covering four of the nine pages and leaving five reachable only from the nav.
+ * Codex's word for the result was that the hub presents its destinations
+ * flatly, and the deeper problem was that it did not present most of them at
+ * all.
+ *
+ * It is now an index, in the shape Jesse's prototype uses: a numbered rule per
+ * group, then the pages in that group as cards with the one line that says
+ * what each does. Same five groups as the nav panel, from the same array in
+ * routes.ts, so the hub and the dropdown cannot disagree about where a page
+ * lives.
+ *
+ * The blurbs render HERE and not in the nav panel. masthead.css states the
+ * reason: a person opening a nav menu is choosing where to go and has not
+ * asked to be sold to on the way. A person who has arrived at the hub has.
+ *
+ * The hero is still `texture` rather than `live`. Its lede is one of the seven
+ * measured below 4.5:1 by tools/measure-contrast.mjs, and that defect is
+ * Codex's to fix across all seven at once; switching this one page to a live
+ * scene would take it out of their set mid-repair and leave six.
  */
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import StakeholderGrid from "../components/ui/StakeholderGrid.astro";
-import FeatureCard from "../components/ui/FeatureCard.astro";
 import CtaBand from "../components/ui/CtaBand.astro";
+import { PRODUCT_GROUPS } from "../data/routes";
 
-const description = "Explore Common Parcel: automated dues collection, resident portals, architectural review workflows, and official record keeping built for self-managed HOAs.";
+const description =
+  "Every job a management company does for a self-managed association: billing the dues, following up on late accounts, keeping the books, drafting the notices the board sends, watching vendor renewals, and running the vote.";
 ---
 
 <Base
@@ -19,16 +42,46 @@ const description = "Explore Common Parcel: automated dues collection, resident 
   shareTitle="Common Parcel: Software for Self-Managed HOAs"
 >
   <Hero scene="dusk" seed={42}>
-    <h1 class="t-display">Software built for self-managed HOA boards.</h1>
+    <h1 class="t-display">Everything a management company does for an HOA.</h1>
     <p class="t-lede">
-      Common Parcel replaces scattered spreadsheets and reduces the clerical work volunteers handle by hand.
+      Common Parcel bills the dues, follows up on late accounts, keeps the books, drafts
+      the notices the board sends, watches the vendor renewals, and runs the vote. Here is
+      each part of it.
     </p>
     <div class="actions">
       <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
     </div>
   </Hero>
 
-  <!-- STAKEHOLDER VALUE -->
+  {/*
+    NOT class="band". tokens.css turns `.band > .page` into the two-track rail
+    grid above 1000px, and the five groups are direct children of .page, so
+    they auto-placed into two columns of different widths -- five chapter
+    rules at two different lengths down one page. `section` alone already
+    carries the page's vertical rhythm from tokens.css; only the hairline had
+    to be borrowed.
+  */}
+  <section class="index">
+    <div class="page">
+      {PRODUCT_GROUPS.map((group, i) => (
+        <div class="group">
+          <div class="group-head">
+            <span class="group-no">{String(i + 1).padStart(2, "0")}</span>
+            <span class="group-name">{group.name}</span>
+          </div>
+          <div class="group-grid">
+            {group.items.map((item) => (
+              <a class="hub-card" href={item.path}>
+                <h2 class="hub-name">{item.label}</h2>
+                <p class="hub-blurb">{item.blurb}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
   <section class="band band--field">
     <div class="page">
       <div class="section-intro">
@@ -41,174 +94,14 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     </div>
   </section>
 
-  <!-- FEATURE PILLARS -->
   <section class="band">
-    <div class="page">
-      <div class="section-intro">
-        <h2 class="t-sheet">Everything a management company charges you for.</h2>
-      </div>
-
-      <!-- Pillar 1: Dues & Accounting -->
-      <FeatureCard
-        panelName="Assessments"
-        title="Track dues and receive deposits straight to your bank."
-        description="When online payments are enabled, homeowners pay by ACH or card directly into your association account. Payment records and imported bank activity stay together for the treasurer to reconcile."
-        href="/product/dues-and-payments"
-        linkText="Explore Financial Tools"
-      >
-        <div slot="details">
-          <ul class="rows">
-            <li><b>Direct to Bank:</b> Common Parcel never holds HOA funds; payments deposit to your account.</li>
-            <li><b>Payment Tracking:</b> Scheduled digital invoices and clear delinquency tracking.</li>
-            <li><b>Clean Ledgers:</b> Balance sheets and accounts receivable tracking for your treasurer.</li>
-          </ul>
-        </div>
-        <div slot="visual">
-          <div class="mock-table">
-            <div class="mock-row head">
-              <span>Lot / Unit</span>
-              <span>Owner</span>
-              <span>Dues Status</span>
-              <span>Balance</span>
-            </div>
-            <div class="mock-row">
-              <span class="num">Lot 14</span>
-              <span>Miller, R.</span>
-              <span class="status-badge paid">Paid (ACH)</span>
-              <span class="num">$0.00</span>
-            </div>
-            <div class="mock-row">
-              <span class="num">Lot 15</span>
-              <span>Chang, E.</span>
-              <span class="status-badge paid">Paid (Card)</span>
-              <span class="num">$0.00</span>
-            </div>
-            <div class="mock-row">
-              <span class="num">Lot 16</span>
-              <span>Patel, S.</span>
-              <span class="status-badge pending">Invoice Sent</span>
-              <span class="num">$185.00</span>
-            </div>
-          </div>
-        </div>
-      </FeatureCard>
-
-      <!-- Pillar 2: Resident Portal -->
-      <FeatureCard
-        panelName="Resident home"
-        title="A straightforward portal for owners and residents."
-        description="Homeowners can check their dues balance, submit architectural requests, and access community documents from any browser."
-        href="/product/resident-portal"
-        linkText="See Homeowner Features"
-        reverse={true}
-      >
-        <div slot="details">
-          <ul class="rows">
-            <li><b>Online Dues:</b> Simple self-serve dues payments when connected.</li>
-            <li><b>Community Directory:</b> Verified resident contact information for your neighborhood.</li>
-            <li><b>Governing Documents:</b> Bylaws, CC&Rs, and meeting minutes available in one spot.</li>
-          </ul>
-        </div>
-        <div slot="visual">
-          <div class="mock-portal-card">
-            <div class="portal-header">
-              <div class="portal-greeting">Welcome back, Sarah</div>
-              <div class="portal-lot">Unit 402 - Annual Dues: Current</div>
-            </div>
-            <div class="portal-tiles">
-              <div class="portal-tile">
-                <span class="tile-icon">Payment</span>
-                <span class="tile-title">Pay Annual Dues</span>
-                <span class="tile-sub">Next due Oct 1</span>
-              </div>
-              <div class="portal-tile">
-                <span class="tile-icon">Docs</span>
-                <span class="tile-title">Governing Docs</span>
-                <span class="tile-sub">12 files posted</span>
-              </div>
-              <div class="portal-tile">
-                <span class="tile-icon">Requests</span>
-                <span class="tile-title">Submit ARC Form</span>
-                <span class="tile-sub">1 active ticket</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </FeatureCard>
-
-      <!-- Pillar 3: Architectural Reviews & Rules -->
-      <FeatureCard
-        panelName="Architectural review"
-        title="Structured architectural reviews without neighborhood disputes."
-        description="Handle paint, roofing, solar, and landscaping submissions with clear steps, committee voting, and recorded decisions."
-        href="/product/rules-and-enforcement"
-        linkText="View Architectural Workflows"
-      >
-        <div slot="details">
-          <ul class="rows">
-            <li><b>Digital Submissions:</b> Homeowners attach contractor plans and material photos.</li>
-            <li><b>Committee Review:</b> Private board discussion and recorded votes.</li>
-            <li><b>Written Decisions:</b> Downloadable decision letters based on your association rules.</li>
-          </ul>
-        </div>
-        <div slot="visual">
-          <div class="mock-arc">
-            <div class="arc-badge">ARC Request #1048</div>
-            <div class="arc-title">Solar Panel Installation</div>
-            <div class="arc-meta">Submitted by Lot 28 on August 14</div>
-            <div class="arc-votes">
-              <div class="vote-tag approved">President: Approved</div>
-              <div class="vote-tag approved">ARC Chair: Approved</div>
-              <div class="vote-tag pending">Secretary: Reviewing</div>
-            </div>
-          </div>
-        </div>
-      </FeatureCard>
-
-      <!-- Pillar 4: Elections & Meetings -->
-      <FeatureCard
-        panelName="Annual meeting"
-        title="Clear records and structured voting for clean board handoffs."
-        description="Every vote, resolution, and vendor agreement is kept in official records so incoming officers inherit clean history."
-        href="/product/meetings-and-voting"
-        linkText="Explore Governance Tools"
-        reverse={true}
-      >
-        <div slot="details">
-          <ul class="rows">
-            <li><b>Digital Voting:</b> Quorum tracking and recorded ballot tallies.</li>
-            <li><b>Vendor Records:</b> Central contracts, insurance certificates, and renewal alerts.</li>
-            <li><b>Orderly Transitions:</b> Hand off community records to future board leaders with confidence.</li>
-          </ul>
-        </div>
-        <div slot="visual">
-          <div class="mock-gov-list">
-            <div class="gov-item">
-              <div class="gov-name">2026 Annual General Meeting Minutes</div>
-              <span class="status-badge paid">Official Record</span>
-            </div>
-            <div class="gov-item">
-              <div class="gov-name">Landscaping Maintenance Agreement (2026-2027)</div>
-              <span class="status-badge active">Active Contract</span>
-            </div>
-            <div class="gov-item">
-              <div class="gov-name">Master Association Insurance Policy Certificate</div>
-              <span class="status-badge active">Current</span>
-            </div>
-          </div>
-        </div>
-      </FeatureCard>
-    </div>
-  </section>
-
-  <!-- COMPARISON CALLOUT -->
-  <section class="band band--field">
     <div class="page">
       <div class="compare-teaser">
         <div class="teaser-text">
-            <h2 class="t-headline">Built specifically for volunteer boards</h2>
+          <h2 class="t-headline">Built specifically for volunteer boards</h2>
           <p class="t-lede">
-            Explore why software designed for volunteers works differently, and read our field guides for self-managed associations.
+            Why software written for a volunteer works differently, and the guides we
+            keep for self-managed associations.
           </p>
         </div>
         <div class="teaser-links">
@@ -219,7 +112,7 @@ const description = "Explore Common Parcel: automated dues collection, resident 
           </a>
           <a href="/blog" class="compare-link-card">
             <span class="card-label">Blog</span>
-            <div class="card-name">HOA Governance & Statutory Guides</div>
+            <div class="card-name">Guides for self-managed boards</div>
             <div class="card-desc">Practical guides with primary statutory citations for self-managed boards.</div>
           </a>
         </div>
@@ -227,15 +120,12 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     </div>
   </section>
 
-  <!-- CTA -->
-  <CtaBand
-    headline="Run it yourselves."
-    scene="dawn"
-    seed={191}
-  />
+  <CtaBand headline="Run it yourselves." scene="dawn" seed={191} />
 </Base>
 
 <style>
+  .index { border-bottom: var(--stroke-rule); }
+
   .section-intro {
     max-width: 36em;
     margin-bottom: var(--s-6);
@@ -244,154 +134,93 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     gap: var(--s-2);
   }
 
-  /* Mockup styles */
-  .mock-table {
+  /* ── The index ──────────────────────────────────────────────────────── */
+
+  .group { margin-bottom: clamp(32px, 4vw, 60px); }
+  .group:last-child { margin-bottom: 0; }
+
+  /*
+   * The heavy rule under the group name is the whole device: it is what makes
+   * five groups read as five chapters rather than as one long grid with
+   * subheadings. 1.5px against the hairlines everywhere else on the page.
+   */
+  .group-head {
     display: flex;
-    flex-direction: column;
-    font-size: var(--t-micro);
-    border: 1px solid var(--c-edge);
-  }
-  .mock-row {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr 1.2fr 1fr;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--c-hairline);
-    align-items: center;
-  }
-  .mock-row.head {
-    background: var(--field);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--c-edge);
-  }
-  .mock-row:last-child { border-bottom: none; }
-
-  .status-badge {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 2px 6px;
-    font-weight: 500;
-  }
-  .status-badge.paid { background: var(--held); color: var(--terracotta-deep); border: 1px solid var(--bisque-edge); }
-  .status-badge.pending { background: var(--field); color: var(--ink-2); border: 1px solid var(--c-edge); }
-  .status-badge.active { background: var(--held); color: var(--terracotta); border: 1px solid var(--bisque-edge); }
-
-  .mock-portal-card {
-    background: var(--paper);
-    border: 1px solid var(--c-edge);
-    padding: var(--s-4);
-  }
-  .portal-header {
-    border-bottom: var(--stroke-hairline);
+    align-items: baseline;
+    gap: var(--s-4);
     padding-bottom: var(--s-3);
-    margin-bottom: var(--s-3);
+    border-bottom: var(--stroke-consequence);
   }
-  .portal-greeting {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    color: var(--ink);
-    font-size: 16px;
-  }
-  .portal-lot {
+  .group-no,
+  .group-name {
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--ink-3);
-  }
-  .portal-tiles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--s-2);
-  }
-  .portal-tile {
-    background: var(--card);
-    border: 1px solid var(--c-edge);
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .tile-icon {
-    font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--terracotta);
-    font-weight: 600;
   }
-  .tile-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink);
+  .group-no { color: var(--terracotta); }
+  .group-name { color: var(--ink-3); }
+
+  /*
+   * A FIXED three-track grid, not auto-fit and not auto-fill.
+   *
+   * auto-fit collapses the empty tracks, so the three groups that hold one
+   * page each stretched that card the full 1240 -- one card three times the
+   * width of its neighbours in the group above it. auto-fill keeps the tracks
+   * but chooses how many from the available width, which came out at four, so
+   * every three-card row then left one empty column and nothing lined up with
+   * anything. Three named tracks means a row of three fills the width and a
+   * lone card is a third of it.
+   */
+  .group-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+    margin-top: clamp(16px, 2vw, 26px);
   }
-  .tile-sub {
-    font-size: 10px;
-    color: var(--ink-3);
+  @media (min-width: 700px) {
+    .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1000px) {
+    .group-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 
-  .mock-arc {
-    background: var(--paper);
-    border: 1px solid var(--c-edge);
-    padding: var(--s-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-2);
-  }
-  .arc-badge {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--terracotta);
-    font-weight: 600;
-  }
-  .arc-title {
-    font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .arc-meta {
-    font-size: 12px;
-    color: var(--ink-3);
-  }
-  .arc-votes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: var(--s-2);
-  }
-  .vote-tag {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 3px 8px;
-    border: 1px solid var(--c-edge);
+  .hub-card {
+    display: block;
+    padding: var(--s-4) var(--s-5) var(--s-5);
     background: var(--card);
+    border: var(--stroke-edge);
+    text-decoration: none;
+    transition: border-color 0.16s ease, background 0.16s ease;
   }
-  .vote-tag.approved { border-color: var(--c-edge); color: var(--ink); background: var(--held); }
-  .vote-tag.pending { border-color: var(--bisque-edge); color: var(--terracotta); }
-
-  .mock-gov-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .hub-card:hover {
+    border-color: var(--terracotta);
+    background: var(--held);
   }
-  .gov-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background: var(--paper);
-    border: 1px solid var(--c-edge);
-    font-size: 13px;
-  }
-  .gov-name {
-    font-weight: 500;
+  /*
+   * The card names are h2, which puts them under voice-lint's heading rules --
+   * ten words, one sentence, no hinge, no counted quantity, no back-office
+   * noun. They are page names, so they pass, and holding them to it is right:
+   * this is the page where a board first reads the nine.
+   */
+  .hub-name {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
     color: var(--ink);
   }
+  .hub-blurb {
+    margin: var(--s-2) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
 
-  /* Compare teaser */
+  /* ── Compare teaser ─────────────────────────────────────────────────── */
+
   .compare-teaser {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
@@ -437,5 +266,10 @@ const description = "Explore Common Parcel: automated dues collection, resident 
     font-size: 13px;
     color: var(--ink-3);
     line-height: 1.4;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hub-card, .compare-link-card { transition: none; }
+    .compare-link-card:hover { transform: none; }
   }
 </style>
