@@ -32,7 +32,7 @@ import CtaBand from "../components/ui/CtaBand.astro";
 import { PRODUCT_GROUPS } from "../data/routes";
 
 const description =
-  "Every job a management company does for a self-managed association: billing the dues, following up on late accounts, keeping the books, drafting the notices the board sends, watching vendor renewals, and running the vote.";
+  "Dues, collections, books, notices, vendor renewals and voting for a self-managed association, in one place. Here is each part of it.";
 ---
 
 <Base
@@ -42,7 +42,21 @@ const description =
   shareTitle="Common Parcel: Software for Self-Managed HOAs"
 >
   <Hero scene="dusk" seed={42}>
-    <h1 class="t-display">Everything a management company does for an HOA.</h1>
+    {/*
+      NOT "Everything a management company does for an HOA." That is Jesse's
+      prototype h1 verbatim and it was here until Codex read it against the
+      page under it: a universal claim the page then disproves by listing six
+      jobs, on a site that elsewhere discloses physical mail and lead capture
+      as not connected. A management company also walks the property, takes the
+      owner's phone call and coordinates a repair.
+
+      Codex's replacement, "The recurring work behind a self-managed HOA",
+      fails the voice lint -- "recurring work" is on the VAGUE_WORK list in
+      tools/voice-lint.mjs, next to "busywork" and "the heavy lifting". This
+      says the outcome instead, in the words the approved homepage already
+      uses: "Ditch your HOA management company."
+    */}
+    <h1 class="t-display">Run the association without a management company.</h1>
     <p class="t-lede">
       Common Parcel bills the dues, follows up on late accounts, keeps the books, drafts
       the notices the board sends, watches the vendor renewals, and runs the vote. Here is

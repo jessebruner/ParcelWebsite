@@ -19,9 +19,13 @@ export interface Route {
  * Voting split from Meetings -- drop into an existing column rather than
  * forcing the grouping to be redrawn.
  *
- * The columns are uneven, three down to one, and that is how the prototype
- * has them too. Evening them out would mean grouping by column length instead
- * of by the question, which is the thing the grouping is for.
+ * The columns are uneven, three down to one, and the ORDER is the prototype's
+ * too: Money in, Compliance, Property and spend, Governance, People. It was
+ * briefly not. I led with the two three-item columns, which is the
+ * length-driven ordering the sentence above rejects, and Codex caught that the
+ * note and the array disagreed. Evening the columns out, or sorting them by
+ * how full they are, would both mean grouping by column length instead of by
+ * the question -- which is the thing the grouping is for.
  *
  * Records and audit sits under Governance rather than Compliance. The
  * prototype files records REQUESTS under Legal Compliance because they are a
@@ -43,14 +47,6 @@ export const PRODUCT_GROUPS: RouteGroup[] = [
     ],
   },
   {
-    name: "Governance",
-    items: [
-      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove." },
-      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot." },
-      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find." },
-    ],
-  },
-  {
     name: "Compliance",
     items: [
       { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from." },
@@ -60,6 +56,14 @@ export const PRODUCT_GROUPS: RouteGroup[] = [
     name: "Property and spend",
     items: [
       { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own." },
+    ],
+  },
+  {
+    name: "Governance",
+    items: [
+      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove." },
+      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot." },
+      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find." },
     ],
   },
   {
