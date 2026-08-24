@@ -87,9 +87,10 @@ const decode = (s) =>
  */
 const LIMITS = {
   collections: "certified mail is not connected",
-  "rules-and-enforcement": "designed and not built",
+  "rules-and-enforcement": "qualified legal review",
   "dues-and-payments": "connected its own Stripe account",
   "documents-and-answers": "prints as unknown",
+  "records-and-audit": "only where the rule for that association has been verified",
 };
 
 for (const [slug, keep] of Object.entries(LIMITS)) {

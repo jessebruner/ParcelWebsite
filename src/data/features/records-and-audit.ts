@@ -52,7 +52,7 @@ export const recordsAndAudit: PageSpec = {
       air: "tight",
       note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
       body: [
-        { p: "A Michigan owner with a proper purpose can demand the books, and five business days later can ask a court to compel it. The records are already in one place." },
+        { p: "Record the day the request arrives and what the owner asked for. Common Parcel gathers the records it already holds and shows a response clock only where the rule for that association has been verified." },
       
         { pull: "The next treasurer should not have to ask where anything is." },
       ],
@@ -68,7 +68,7 @@ export const recordsAndAudit: PageSpec = {
   ],
   faqs: [
     ["An owner has demanded the books. What now?",
-      "A Michigan owner with a proper purpose can demand them, and five business days later can ask a court to compel it. The minutes, resolutions, notices and ledgers are already in one place."],
+      "Record the request and what the owner asked for. Common Parcel gathers the records it already holds and shows a statutory deadline only where the rule for that association has been verified."],
     ["Who can change a record?",
       "Whoever the board has given that role. An edit to a rule or a record carries the name of whoever made it and the time."],
     ["What happens when the treasurer resigns?",
