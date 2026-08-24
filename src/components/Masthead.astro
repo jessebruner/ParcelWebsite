@@ -57,9 +57,18 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
         */}
         <div class="dropdown-menu mega-menu">
           <div class="mega-menu-inner">
-            {PRODUCT_GROUPS.map((group) => (
-              <div class="mega-group">
-                <span class="mega-head">{group.name}</span>
+            {PRODUCT_GROUPS.map((group, i) => (
+              /*
+                role + aria-labelledby, because the grouping is the point of
+                this panel and without them it is decoration. The heading is a
+                visual span inside a generic div, so a screen reader received
+                nine links in a row and none of the five columns Jesse chose --
+                the same shape of defect as the unnamed home link: the markup
+                reads fine and the accessibility tree does not carry it.
+                Codex found it. tests/masthead-a11y.test.mjs pins it.
+              */
+              <div class="mega-group" role="group" aria-labelledby={`mega-g${i}`}>
+                <span class="mega-head" id={`mega-g${i}`}>{group.name}</span>
                 {group.items.map((p) => (
                   <a href={p.path} class:list={["mega-item", { active: isCurrent(p.path) }]}>
                     <span class="mega-ico" aria-hidden="true"></span>

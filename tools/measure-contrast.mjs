@@ -24,11 +24,14 @@
  *
  *   npm run build && npx astro preview --port 4321 &
  *   chrome --headless=new --remote-debugging-port=9333 --user-data-dir=/tmp/p about:blank &
- *   node tools/measure-contrast.mjs 9333 1440 900
+ *   node tools/measure-contrast.mjs 9333 1440 900 [http://127.0.0.1:4321]
  */
 const port = process.argv[2];
 const width = Number(process.argv[3] || 1440);
 const height = Number(process.argv[4] || 900);
+/* A base URL, so a reviewer can measure their own branch on their own port
+   without stopping the preview someone else is looking at. */
+const base = (process.argv[5] || "http://127.0.0.1:4321").replace(/[/]$/, "");
 
 const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then((r) => r.json());
 const page = targets.find((t) => t.type === "page");
@@ -229,7 +232,7 @@ let canaryFlat = 0;
 let dithered = 0;
 
 for (const route of ROUTES) {
-  await send("Page.navigate", { url: `http://127.0.0.1:4321${route}` });
+  await send("Page.navigate", { url: base + route });
   await new Promise((r) => setTimeout(r, 2200));
   await ev(SAMPLER);
 

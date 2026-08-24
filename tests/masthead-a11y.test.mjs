@@ -109,3 +109,91 @@ test("nothing inside the home link can supply its name", () => {
   assert.notEqual(query, -1, ".wordmark is hidden outside any media query");
   assert.ok(css.slice(query, at).includes("max-width: 420px"), "the .wordmark hide moved off the 420px breakpoint");
 });
+
+/**
+ * The five nav columns have to exist for a screen reader, not only for an eye.
+ *
+ * Codex found this and the shape is the same as the unnamed home link above:
+ * the markup reads perfectly and the accessibility tree does not carry it. A
+ * heading rendered as a visual <span> inside a generic <div> groups nothing,
+ * so the panel arrived as nine links in a row and none of the five columns
+ * Jesse chose. Verified in Chrome's accessibility tree on this build --
+ * five group nodes, named MONEY IN, COMPLIANCE, PROPERTY AND SPEND,
+ * GOVERNANCE, PEOPLE -- and pinned here so it stays.
+ *
+ * Both forms again, because the homepage's masthead is written into the
+ * bundle with every quote escaped, and a check that only understood the plain
+ * form would pass on twenty-two pages and never look at the one built by a
+ * script.
+ */
+/**
+ * The ids labelled by `role=group` tags written with `quote`.
+ *
+ * indexOf and not a RegExp, and the reason is a bug this had for one run.
+ * ESCAPED_QUOTE is the two characters backslash and quote; inside a RegExp
+ * that is an escaped quote, so a pattern built from it matches PLAIN markup
+ * too. Every page then counted as an escaped page, and the id lookup that
+ * followed -- correctly written with the literal backslash -- found nothing.
+ * The helper above this file already avoids RegExp for exactly this reason.
+ */
+function labelledGroups(html, quote) {
+  const needle = "role=" + quote + "group" + quote + " aria-labelledby=" + quote;
+  const ids = [];
+  let from = 0;
+  for (;;) {
+    const at = html.indexOf(needle, from);
+    if (at === -1) return ids;
+    const start = at + needle.length;
+    const end = html.indexOf(quote, start);
+    assert.notEqual(end, -1, "unterminated aria-labelledby");
+    ids.push(html.slice(start, end));
+    from = end;
+  }
+}
+
+test("every nav column is a labelled group on every built page", () => {
+  requireFreshDist();
+  const PRODUCT_GROUPS = readGroupNames();
+  assert.ok(PRODUCT_GROUPS.length >= 4, "expected at least four nav columns");
+
+  let plainPages = 0;
+  let escapedPages = 0;
+
+  for (const page of htmlFiles("dist")) {
+    const html = readFileSync(page, "utf8");
+    for (const [quote, count] of [['"', () => plainPages++], [ESCAPED_QUOTE, () => escapedPages++]]) {
+      const q = quote;
+      const groups = labelledGroups(html, q);
+      if (!groups.length) continue;
+      count();
+      assert.equal(
+        groups.length,
+        PRODUCT_GROUPS.length,
+        `${page} labels ${groups.length} nav columns for ${PRODUCT_GROUPS.length} groups`,
+      );
+      for (let i = 0; i < PRODUCT_GROUPS.length; i++) {
+        const id = `mega-g${i}`;
+        assert.ok(groups.includes(id), `${page} has no group labelled by ${id}`);
+        const anchor = html.indexOf(`id=${q}${id}${q}`);
+        assert.notEqual(anchor, -1, `${page} has ${id} as a label with no element carrying that id`);
+        const after = html.slice(anchor, anchor + 200);
+        assert.ok(
+          after.includes(PRODUCT_GROUPS[i]),
+          `${page}: ${id} does not name "${PRODUCT_GROUPS[i]}"`,
+        );
+      }
+    }
+  }
+
+  assert.ok(plainPages >= 20, `only ${plainPages} pages carried the plain grouping`);
+  assert.equal(escapedPages, 1, `expected one escaped masthead in the bundle, saw ${escapedPages}`);
+});
+
+/** The group names, read from the source of truth rather than restated here. */
+function readGroupNames() {
+  const src = readFileSync("src/data/routes.ts", "utf8");
+  const start = src.indexOf("export const PRODUCT_GROUPS");
+  const end = src.indexOf("\n];", start);
+  assert.notEqual(start, -1, "PRODUCT_GROUPS is gone from routes.ts");
+  return [...src.slice(start, end).matchAll(/name: "([^"]+)"/g)].map((m) => m[1]);
+}
