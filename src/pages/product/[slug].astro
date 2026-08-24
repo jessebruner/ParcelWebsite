@@ -29,6 +29,7 @@ import Faq from "../../components/Faq.astro";
 import PixelSky from "../../components/PixelSky.astro";
 import FeatureScene from "../../components/product/FeatureScene.astro";
 import { FEATURES, type PageSpec } from "../../data/content";
+import { FEATURE_ART, DEFAULT_ART } from "../../data/scenes.ts";
 
 export function getStaticPaths() {
   return FEATURES.map((feat) => ({
@@ -44,23 +45,11 @@ interface Props {
 const { feature } = Astro.props;
 
 /**
- * Seeds are prime and far apart so the noise grid lands somewhere different on
- * each page. The closing seed is deliberately not the hero's: the homepage
- * opens at dusk on seed 7 and closes at dawn on seed 4, and the point of a
- * different seed is that the treeline is visibly not the same picture reused.
+ * Which landscape this page stands in, and the seed that makes it its own
+ * picture. See src/data/scenes.ts -- the table is there rather than here
+ * because a test reads it.
  */
-const FEATURE_ART: Record<string, { scene: "dusk" | "dawn"; seed: number; close: number; strip: "dusk" | "dawn" }> = {
-  "dues-and-payments": { scene: "dusk", seed: 13, close: 211, strip: "dawn" },
-  collections: { scene: "dusk", seed: 29, close: 223, strip: "dawn" },
-  "accounting-and-budgets": { scene: "dawn", seed: 43, close: 227, strip: "dusk" },
-  "rules-and-enforcement": { scene: "dusk", seed: 57, close: 229, strip: "dawn" },
-  "meetings-and-voting": { scene: "dawn", seed: 71, close: 233, strip: "dusk" },
-  "documents-and-answers": { scene: "dawn", seed: 89, close: 239, strip: "dusk" },
-  "vendors-and-insurance": { scene: "dusk", seed: 103, close: 241, strip: "dawn" },
-  "resident-portal": { scene: "dawn", seed: 127, close: 251, strip: "dusk" },
-  "records-and-audit": { scene: "dusk", seed: 149, close: 257, strip: "dawn" },
-};
-const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7, close: 4, strip: "dawn" as const };
+const art = FEATURE_ART[feature.slug] ?? DEFAULT_ART;
 
 /**
  * Where the weather strip falls. After the first band on a short page, after
@@ -136,7 +125,7 @@ const schema = faqs.length
 
   {faqs.length > 0 && <Faq items={faqs} />}
 
-  <CtaBand headline={feature.closer} scene={art.scene === "dusk" ? "dawn" : "dusk"} seed={art.close} />
+  <CtaBand headline={feature.closer} scene={art.closeScene} seed={art.seedClose} />
 </Base>
 
 <style>

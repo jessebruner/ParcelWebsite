@@ -18,12 +18,13 @@
  * view, and the hero above this already spends the page's primary action, so
  * the closer uses the on-ink button the homepage uses in the same position.
  */
+import type { SceneKey } from "../../data/scenes.ts";
 import PixelSky from "../PixelSky.astro";
 
 interface Props {
   headline: string;
   /** dawn closes the page, the way the homepage opens at dusk and ends at dawn. */
-  scene?: "dusk" | "dawn";
+  scene?: SceneKey;
   /** Different per page, so the treeline is not the same picture twice. */
   seed?: number;
   /** The one action. Defaults to the early-access dialog. */
@@ -33,7 +34,7 @@ interface Props {
 const { headline, scene = "dawn", seed = 4, cta = "Get early access" } = Astro.props;
 ---
 
-<section class="closer on-ink">
+<section class="closer on-ink" data-scene={scene}>
   <div class="art" aria-hidden="true">
     <PixelSky mode="scene" scene={scene} seed={seed} />
   </div>

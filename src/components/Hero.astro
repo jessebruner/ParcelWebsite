@@ -10,11 +10,12 @@
  * Linted at the hero surface where the page declares it, so nothing in the
  * slot may carry a digit, a counted quantity, or back-office vocabulary.
  */
+import type { SceneKey } from "../data/scenes.ts";
 import PixelSky from "./PixelSky.astro";
 
 interface Props {
   /** dusk is the default. dawn for the lighter, colder scene. */
-  scene?: "dusk" | "dawn";
+  scene?: SceneKey;
   /** Change it per page so no two heroes paint the same treeline. */
   seed?: number;
   /** Shorter hero for pages that are mostly body copy. */
@@ -39,7 +40,7 @@ const { scene = "dusk", seed = 7, compact = false, live = false } = Astro.props;
   feature page that label was a byte-for-byte copy of the page's own name while
   the h1 said something else. The page's name belongs in the heading.
 */}
-<section class:list={["hero on-ink", { compact, live }]}>
+<section class:list={["hero on-ink", { compact, live }]} data-scene={scene}>
   <div class="art" aria-hidden="true">
     <PixelSky mode={live ? "scene" : "texture"} scene={scene} seed={seed} />
   </div>
