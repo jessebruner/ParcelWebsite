@@ -76,18 +76,11 @@ export const PRODUCT_WIDE: Route[] = [
   { path: "/security", label: "Security" },
 ];
 
-export const PRODUCT_NAV: Route[] = [
-  { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Invoices on schedule, collects online when connected, and tracks balances." },
-  { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "Logs violations against your rules with proper cure periods." },
-  { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Tracks renewals, drafts quote requests for review, and checks invoices." },
-  { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Digital voting, meeting notices, live quorum, and draft minutes." },
-  { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Reads your governing documents and answers owner questions." },
-  { path: "/product/resident-portal", label: "Resident portal", blurb: "Self-serve balances, request submissions, and documents." },
-  { path: "/product/records-and-audit", label: "Records and audit", blurb: "Maintains official association records and traceable decisions." },
-  { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Assisted bank reconciliation and verifiable budget tracking." },
-  { path: "/product/collections", label: "Collections", blurb: "Graduated delinquency ladders following verified state notice periods." },
-];
 
+/* PRODUCT_NAV was a second, differently-worded copy of the same nine pages.
+   PRODUCT_GROUPS above replaced its last caller when the panel was grouped,
+   and two lists of one set of pages is how a blurb ends up saying two things.
+*/
 export const COMPANY_NAV: Route[] = [
   { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations." },
   { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
