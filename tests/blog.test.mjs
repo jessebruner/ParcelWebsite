@@ -3,6 +3,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { BLOG_POSTS, getAllPosts, getPostBySlug, readingMinutes } from "../src/data/blog.ts";
 import { ALL_ROUTES } from "../src/data/routes.ts";
 
@@ -28,7 +29,10 @@ test("blog posts have valid structure and metadata", () => {
     const minutes = readingMinutes(post);
     assert.ok(Number.isInteger(minutes) && minutes > 0, `readingMinutes must be a positive integer, got ${minutes}`);
     assert.ok(minutes < 120, `readingMinutes of ${minutes} is implausible; the counter is probably reading the wrong field`);
-    assert.ok(Number.isInteger(post.artSeed), "artSeed must be an integer");
+    assert.ok(
+      ["meeting", "handoff", "records", "budget", "renewal", "payments"].includes(post.artSubject),
+      `unknown artSubject ${post.artSubject}`
+    );
     assert.ok(post.lede && typeof post.lede === "string", "lede is required");
     assert.ok(Array.isArray(post.sections) && post.sections.length > 0, "sections must not be empty");
     assert.ok(Array.isArray(post.citations), "citations must be an array");
@@ -55,21 +59,17 @@ test("every blog post route is declared in ALL_ROUTES and resolves via getPostBy
   }
 });
 
-test("blog art PRNG algorithm produces deterministic numbers for a given seed", () => {
-  function createPrng(s) {
-    let current = Math.abs(s) % 2147483647;
-    if (current === 0) current = 1;
-    return () => {
-      current = (current * 48271) % 2147483647;
-      return (current - 1) / 2147483646;
-    };
+test("every shipped post has its own editorial art direction", () => {
+  const subjects = BLOG_POSTS.map((post) => post.artSubject);
+  assert.equal(new Set(subjects).size, subjects.length, "blog artwork subjects must not repeat");
+});
+
+test("every blog post is discoverable in the built sitemap", () => {
+  const sitemap = readFileSync("dist/sitemap.xml", "utf8");
+  for (const post of BLOG_POSTS) {
+    assert.ok(
+      sitemap.includes(`<loc>https://commonparcel.com/blog/${post.slug}</loc>`),
+      `${post.slug} is missing from dist/sitemap.xml`
+    );
   }
-
-  const prng1 = createPrng(101);
-  const seq1 = [prng1(), prng1(), prng1(), prng1()];
-
-  const prng2 = createPrng(101);
-  const seq2 = [prng2(), prng2(), prng2(), prng2()];
-
-  assert.deepEqual(seq1, seq2, "PRNG sequence must be identical for identical seeds");
 });

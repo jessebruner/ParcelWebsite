@@ -56,8 +56,7 @@ export interface BlogPost {
     role: string;
   };
   category: "Statutory Guidance" | "Operations" | "Board Governance" | "Financial Controls";
-  artSeed: number;
-  artScene?: "dusk" | "dawn";
+  artSubject: "meeting" | "handoff" | "records" | "budget" | "renewal" | "payments";
   lede: string;
   sections: BlogSection[];
   citations: Citation[];
@@ -65,18 +64,205 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "review-hoa-budget-before-board-vote",
+    title: "How to review an HOA budget before the vote",
+    description: "A plain-language review of income, recurring bills, reserves, and assumptions before the board votes.",
+    publishedAt: "2026-08-24",
+    author: {
+      name: "Common Parcel",
+      role: "Detroit, Michigan",
+    },
+    category: "Financial Controls",
+    artSubject: "budget",
+    lede: "A budget can balance on paper and still leave the board short in July. Before the vote, trace each major line to a contract, an actual expense, or a decision the board can explain.",
+    sections: [
+      {
+        heading: "Start with what the association actually spent",
+        paragraphs: [
+          "Put the current budget beside year-to-date actuals and the prior full year. The differences tell you where the old plan was wrong, where a one-time event distorted the total, and which bills changed without anyone noticing.",
+          "Do not copy every actual expense into the new budget. First ask why it moved. A snow season, insurance claim, emergency repair, or vacant contract can make one year a poor forecast for the next.",
+        ],
+      },
+      {
+        heading: "Check the income assumption",
+        paragraphs: [
+          "Calculate assessment income: multiply the number of lots or units by the rate the association plans to charge. Keep unpaid balances from prior years separate from current-year income so the same dollar is not counted twice.",
+          "If the plan assumes every owner pays on time, say so. If recent collections have been lower, show what happens when that pattern continues. An assumption the board can see is easier to change than a shortfall hidden inside one total.",
+        ],
+      },
+      {
+        heading: "Put each recurring bill on the calendar",
+        list: {
+          title: "For every contract and recurring bill",
+          items: [
+            "Record the current price and how often it is billed",
+            "Mark the renewal date and the last day to cancel or renegotiate",
+            "Check for a scheduled increase, minimum charge, or fuel adjustment",
+            "Separate planned projects from ordinary service",
+            "Name the document or quote behind the number",
+          ],
+        },
+      },
+      {
+        heading: "Decide what the reserve contribution is for",
+        paragraphs: [
+          "A reserve contribution should not be whatever remains after operating expenses. Tie it to the association's known long-term work, its current reserve information, and the board's plan for updating that information.",
+          "If the board cannot explain the number, pause before the vote. A reserve professional, accountant, or local adviser can help where the association's records leave a real gap.",
+        ],
+      },
+      {
+        heading: "Make the vote easy to explain",
+        paragraphs: [
+          "Give directors the proposed budget, the important assumptions, and the largest year-over-year changes before the meeting. During the vote, record the version adopted and any amendment made in the room.",
+          "Afterward, keep the adopted budget with the minutes and the supporting contracts or worksheets. The next board should be able to see not only the number, but why this board chose it.",
+        ],
+        callout: {
+          type: "note",
+          title: "Your documents set the process",
+          text: "The declaration, bylaws, adopted policies, and applicable law may set approval, notice, or owner-ratification steps. This checklist helps review the numbers; it does not decide which procedure applies to your association.",
+        },
+      },
+    ],
+    citations: [],
+  },
+  {
+    slug: "hoa-vendor-contract-renewal-checklist",
+    title: "Before an HOA vendor contract renews: a board checklist",
+    description: "What to read, compare, decide, and save before a landscaping, snow, insurance, or maintenance contract rolls over.",
+    publishedAt: "2026-08-24",
+    author: {
+      name: "Common Parcel",
+      role: "Detroit, Michigan",
+    },
+    category: "Operations",
+    artSubject: "renewal",
+    lede: "Auto-renewal is quiet. By the time someone remembers the contract, the cancellation window may already be closed. Put the dates, performance notes, and board decision in one place before that happens.",
+    sections: [
+      {
+        heading: "Read the renewal paragraph first",
+        paragraphs: [
+          "Find the current term, what happens at the end of it, and the exact deadline for giving notice. Then read how notice must be delivered and where it must go. A date in a spreadsheet is useful only if it matches the signed contract.",
+          "Look for price increases, minimum terms, service-level changes, and language that makes a new term different from the old one. Put those details beside the deadline instead of leaving them buried in the PDF.",
+        ],
+      },
+      {
+        heading: "Review the work before you review the price",
+        list: {
+          title: "Questions for the board and site contact",
+          items: [
+            "Was the promised work completed on schedule?",
+            "Which complaints repeated, and how were they resolved?",
+            "Did the scope change informally during the year?",
+            "Are current insurance records and licenses on file where required?",
+            "Would the board buy the same scope again at today's price?",
+          ],
+        },
+      },
+      {
+        heading: "Compare the same scope",
+        paragraphs: [
+          "If the board seeks another proposal, give each vendor the same property facts, service schedule, exclusions, and response expectations. A lower total can hide fewer visits, a smaller area, or work billed separately.",
+          "Write the differences down before choosing. The useful comparison is not three prices. It is three scopes the board can place side by side.",
+        ],
+      },
+      {
+        heading: "Decide early enough to act",
+        paragraphs: [
+          "Put the renewal on a board agenda before the notice deadline. Record whether the board is renewing, renegotiating, rebidding, or ending the agreement, and who is responsible for the next step.",
+          "If the board sends notice, keep the signed notice and proof of delivery with the contract. If it renews, store the new term, price, and next deadline in the same record. The job is not finished when the vote ends.",
+        ],
+        callout: {
+          type: "warning",
+          title: "Use the signed contract",
+          text: "This checklist does not interpret your agreement. If the renewal or cancellation language is unclear, get advice before relying on a date or delivery method.",
+        },
+      },
+    ],
+    citations: [],
+  },
+  {
+    slug: "hoa-invoice-approval-checklist",
+    title: "What to check before your HOA pays an invoice",
+    description: "A short approval check for the vendor, work, contract, budget, and payment instructions behind an HOA bill.",
+    publishedAt: "2026-08-24",
+    author: {
+      name: "Common Parcel",
+      role: "Detroit, Michigan",
+    },
+    category: "Financial Controls",
+    artSubject: "payments",
+    lede: "The invoice may look familiar. That is not enough. Match it to the vendor, the work, the contract, the budget, and the payment instructions before anyone approves it.",
+    sections: [
+      {
+        heading: "Confirm that the bill belongs to the association",
+        paragraphs: [
+          "Check the legal or trade name against the vendor record. Read the invoice number, service address, service dates, and description of work. A familiar logo does not prove the association ordered or received what appears on the page.",
+          "For a new vendor or an unusual bill, ask the board member or site contact who requested the work to confirm it. Keep that confirmation with the invoice rather than in a private text thread nobody else can find.",
+        ],
+      },
+      {
+        heading: "Match the charge to the contract and the work",
+        list: {
+          title: "Before approval",
+          items: [
+            "Compare the rate, quantity, and extra charges with the signed agreement or approved quote",
+            "Confirm the work was completed or the milestone was reached",
+            "Check the correct budget line and the amount still available",
+            "Resolve a duplicate invoice number or unexplained balance before paying",
+            "Attach the contract, quote, receipt, or completion note that supports the charge",
+          ],
+        },
+      },
+      {
+        heading: "Keep preparation and approval separate",
+        paragraphs: [
+          "One person can assemble the invoice and its supporting record. Another authorized officer should review what will be paid before the bank instruction is released. The association's own policy and bank permissions decide the exact approval path.",
+          "That second look should be visible in the record: who reviewed it, what they approved, and when. An approval that exists only in someone's memory will not help the next treasurer reconstruct the payment.",
+        ],
+      },
+      {
+        heading: "Treat changed payment instructions as a new request",
+        paragraphs: [
+          "A message that changes a vendor's bank account or payment procedure deserves an independent check. Call a known contact using a number already on file or found separately, not the phone number inside the message asking for the change.",
+          "The FBI gives the same advice for business email compromise: verify payment requests and any change in account number or payment procedure with the person making the request. Urgency is a reason to slow down, not skip the check.",
+        ],
+        callout: {
+          type: "warning",
+          title: "If money went to the wrong account",
+          text: "Contact the association's financial institution immediately. The FBI also directs victims of business email compromise to report it through the Internet Crime Complaint Center at ic3.gov.",
+        },
+      },
+      {
+        heading: "Leave a record the next treasurer can follow",
+        paragraphs: [
+          "Store the invoice, supporting document, approval, payment confirmation, and any corrected instructions together. The ledger entry should point back to that packet.",
+          "A clean payment record answers five questions without a phone call: who was paid, for what, under which agreement, who approved it, and when the money left the association's account.",
+        ],
+      },
+    ],
+    citations: [
+      {
+        source: "Federal Bureau of Investigation",
+        section: "Protect yourself",
+        title: "Business Email Compromise",
+        retrievedAt: "2026-08-24",
+        url: "https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise",
+        note: "Guidance on independently verifying payment requests and changes to account numbers or payment procedures.",
+      },
+    ],
+  },
+  {
     slug: "how-to-run-a-smooth-hoa-annual-meeting",
     title: "How to run a smooth HOA annual meeting",
-    description: "What to send, what to have in the room, and what to do when the count comes up short.",
+    description: "A practical run sheet for the notice, agenda, quorum count, election, and minutes.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",
       role: "Detroit, Michigan",
     },
     category: "Board Governance",
-    artSeed: 207,
-    artScene: "dusk",
-    lede: "A missed notice or a short count turns the annual meeting into a do-over. This is the run sheet: what to send, what to have in the room, and what to do when the count comes up short.",
+    artSubject: "meeting",
+    lede: "A missed notice or one short quorum count can force a do-over. Use this run sheet to prepare the notice, room, ballot count, and minutes.",
     sections: [
       {
         heading: "The annual meeting run sheet",
@@ -133,15 +319,14 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: "board-transition-records-retention-checklist",
     title: "HOA board transition checklist: records every new board needs",
-    description: "A practical handover checklist for accounts, finances, contracts, owner requests, and meeting records when HOA officers change.",
+    description: "The accounts, contracts, owner requests, and meeting records an incoming HOA board needs on day one.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",
       role: "Detroit, Michigan",
     },
     category: "Board Governance",
-    artSeed: 101,
-    artScene: "dusk",
+    artSubject: "handoff",
     lede: "Board turnover goes badly when the incoming officers inherit passwords they cannot reset, contracts they cannot find, and bank records no one can explain. Use this checklist before outgoing officers lose access.",
     sections: [
       {
@@ -248,17 +433,16 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: "michigan-hoa-records-request",
     title: "How to get your association's records in Michigan",
     description:
-      "A Michigan condominium co-owner and a subdivision association member have different records rights under different acts. The sections, quoted, and what to ask for before you leave a management company.",
+      "Michigan condominium co-owners and subdivision association members may use different records laws. Read the quoted sections and build the handover list before leaving a management company.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",
       role: "Detroit, Michigan",
     },
     category: "Statutory Guidance",
-    artSeed: 61,
-    artScene: "dawn",
+    artSubject: "records",
     lede:
-      "Most of the risk in leaving a management company is not the notice letter. It comes afterward, when a board finds out which records it never actually held. Michigan gives some owners, members and directors ways to ask first, and the right path depends on how the community and association were created.",
+      "Leaving a management company gets risky when the board discovers it never held its own records. Michigan gives some co-owners, members, and directors ways to ask first, but the right route depends on how the community and association were created.",
     sections: [
       {
         heading: "Start with which law covers you",
@@ -460,7 +644,9 @@ export const BLOG_POSTS: BlogPost[] = [
 ];
 
 export function getAllPosts(): BlogPost[] {
-  return [...BLOG_POSTS].sort((a, b) => (b.publishedAt > a.publishedAt ? 1 : -1));
+  return [...BLOG_POSTS].sort(
+    (a, b) => b.publishedAt.localeCompare(a.publishedAt) || a.title.localeCompare(b.title)
+  );
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {

@@ -28,7 +28,7 @@ const CHECKLIST_FIRST = {
   publishedAt: "2026-08-22",
   author: { name: "Fixture", role: "Fixture" },
   category: "Operations",
-  artSeed: 1,
+  artSubject: "renewal",
   lede: "One two three four five six seven eight nine ten.",
   sections: [
     {

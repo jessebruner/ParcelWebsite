@@ -16,7 +16,7 @@ const { post } = Astro.props;
 
 <article class="blog-card">
   <a href={`/blog/${post.slug}`} class="blog-card-media-link" tabindex="-1" aria-hidden="true">
-    <BlogHeaderArt seed={post.artSeed} scene={post.artScene} mode="card" />
+    <BlogHeaderArt subject={post.artSubject} mode="card" />
   </a>
   <div class="blog-card-content">
     <div class="blog-card-meta">

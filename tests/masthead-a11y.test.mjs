@@ -189,6 +189,20 @@ test("every nav column is a labelled group on every built page", () => {
   assert.equal(escapedPages, 1, `expected one escaped masthead in the bundle, saw ${escapedPages}`);
 });
 
+test("every declared navigation icon has a matching SVG symbol", () => {
+  const routes = readFileSync("src/data/routes.ts", "utf8");
+  const masthead = readFileSync("src/components/Masthead.astro", "utf8");
+  const icons = [...routes.matchAll(/icon:\s*"([^"]+)"/g)].map((match) => match[1]);
+
+  assert.ok(icons.length >= 13, `expected the product and company menus to declare icons, saw ${icons.length}`);
+  for (const icon of new Set(icons)) {
+    assert.ok(
+      masthead.includes(`id="nav-${icon}"`),
+      `navigation route uses icon "${icon}" but Masthead.astro has no matching symbol`,
+    );
+  }
+});
+
 /** The group names, read from the source of truth rather than restated here. */
 function readGroupNames() {
   const src = readFileSync("src/data/routes.ts", "utf8");

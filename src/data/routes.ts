@@ -6,6 +6,20 @@ export interface Route {
   path: string;
   label: string;
   blurb?: string;
+  icon?:
+    | "dues"
+    | "collections"
+    | "books"
+    | "documents"
+    | "vendors"
+    | "meetings"
+    | "rules"
+    | "records"
+    | "resident"
+    | "about"
+    | "difference"
+    | "blog"
+    | "contact";
 }
 
 /**
@@ -41,35 +55,35 @@ export const PRODUCT_GROUPS: RouteGroup[] = [
   {
     name: "Money in",
     items: [
-      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Bills every lot what your declaration says it owes." },
-      { path: "/product/collections", label: "Collections", blurb: "Late accounts move on a plan the board controls." },
-      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Books that match the bank, month by month." },
+      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Bills every lot what your declaration says it owes.", icon: "dues" },
+      { path: "/product/collections", label: "Collections", blurb: "Late accounts move on a plan the board controls.", icon: "collections" },
+      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Books that match the bank, month by month.", icon: "books" },
     ],
   },
   {
     name: "Compliance",
     items: [
-      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from." },
+      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from.", icon: "documents" },
     ],
   },
   {
     name: "Property and spend",
     items: [
-      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own." },
+      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own.", icon: "vendors" },
     ],
   },
   {
     name: "Governance",
     items: [
-      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove." },
-      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot." },
-      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find." },
+      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove.", icon: "meetings" },
+      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot.", icon: "rules" },
+      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find.", icon: "records" },
     ],
   },
   {
     name: "People",
     items: [
-      { path: "/product/resident-portal", label: "Resident portal", blurb: "Owners pay and look up their own rules." },
+      { path: "/product/resident-portal", label: "Resident portal", blurb: "Owners pay and look up their own rules.", icon: "resident" },
     ],
   },
 ];
@@ -86,10 +100,10 @@ export const PRODUCT_WIDE: Route[] = [
    and two lists of one set of pages is how a blurb ends up saying two things.
 */
 export const COMPANY_NAV: Route[] = [
-  { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations." },
-  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently." },
-  { path: "/blog", label: "Blog", blurb: "Practical guides and statutory references for self-managed associations." },
-  { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly." },
+  { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations.", icon: "about" },
+  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently.", icon: "difference" },
+  { path: "/blog", label: "Blog", blurb: "Practical guides and statutory references for self-managed associations.", icon: "blog" },
+  { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly.", icon: "contact" },
 ];
 
 export const TOP_NAV: Route[] = [
@@ -130,6 +144,9 @@ export const ALL_ROUTES: string[] = [
   "/about",
   "/why-common-parcel",
   "/blog",
+  "/blog/review-hoa-budget-before-board-vote",
+  "/blog/hoa-vendor-contract-renewal-checklist",
+  "/blog/hoa-invoice-approval-checklist",
   "/blog/board-transition-records-retention-checklist",
   "/blog/michigan-hoa-records-request",
   "/blog/how-to-run-a-smooth-hoa-annual-meeting",
