@@ -8,6 +8,74 @@ export interface Route {
   blurb?: string;
 }
 
+/**
+ * THE NINE PAGES, GROUPED BY THE QUESTION A BOARD IS ASKING.
+ *
+ * Nine labels in one flat column is a list you have to read all of before you
+ * can choose from it, and it was the same list in the dropdown and on
+ * /product. The group names are Jesse's own, from the prototype
+ * ("Product Pages.dc.html"), and they are kept verbatim so the three pages
+ * that prototype has and this site does not -- Legal Compliance, Procurement,
+ * Voting split from Meetings -- drop into an existing column rather than
+ * forcing the grouping to be redrawn.
+ *
+ * The columns are uneven, three down to one, and that is how the prototype
+ * has them too. Evening them out would mean grouping by column length instead
+ * of by the question, which is the thing the grouping is for.
+ *
+ * Records and audit sits under Governance rather than Compliance. The
+ * prototype files records REQUESTS under Legal Compliance because they are a
+ * statutory clock; our page is about keeping the file so the next board can
+ * open it, which is a governance job.
+ */
+export interface RouteGroup {
+  name: string;
+  items: Route[];
+}
+
+export const PRODUCT_GROUPS: RouteGroup[] = [
+  {
+    name: "Money in",
+    items: [
+      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Bills every lot what your declaration says it owes." },
+      { path: "/product/collections", label: "Collections", blurb: "Late accounts move on a plan the board controls." },
+      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Books that match the bank, month by month." },
+    ],
+  },
+  {
+    name: "Governance",
+    items: [
+      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove." },
+      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot." },
+      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find." },
+    ],
+  },
+  {
+    name: "Compliance",
+    items: [
+      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from." },
+    ],
+  },
+  {
+    name: "Property and spend",
+    items: [
+      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own." },
+    ],
+  },
+  {
+    name: "People",
+    items: [
+      { path: "/product/resident-portal", label: "Resident portal", blurb: "Owners pay and look up their own rules." },
+    ],
+  },
+];
+
+/** The two destinations that are not one of the nine features. */
+export const PRODUCT_WIDE: Route[] = [
+  { path: "/product", label: "Everything Common Parcel does" },
+  { path: "/security", label: "Security" },
+];
+
 export const PRODUCT_NAV: Route[] = [
   { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Invoices on schedule, collects online when connected, and tracks balances." },
   { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "Logs violations against your rules with proper cure periods." },

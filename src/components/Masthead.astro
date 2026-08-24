@@ -6,7 +6,7 @@
  * mega menus for Product and Company.
  */
 import Mark from "./Mark.astro";
-import { PRODUCT_NAV, COMPANY_NAV } from "../data/routes";
+import { PRODUCT_GROUPS, PRODUCT_WIDE, COMPANY_NAV } from "../data/routes";
 
 const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => here === href;
@@ -43,13 +43,38 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
             <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
           </svg>
         </button>
+        {/*
+          FULL-WIDTH AND GROUPED, which is the one Jesse picked out of the
+          prototype by name. It replaced a 560px box holding nine labels in one
+          flat column -- a list you have to read all of before you can choose
+          from it, and the same list again on /product.
+
+          The column headings are wayfinding, not selling. masthead.css used to
+          carry a note saying a person opening a nav menu has not asked to be
+          sold to on the way, and that note was written against a version with
+          a one-line description under every item. That is still the rule: the
+          blurbs in routes.ts render on the hub, not here.
+        */}
         <div class="dropdown-menu mega-menu">
           <div class="mega-menu-inner">
-            {PRODUCT_NAV.map((p) => (
-              <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]}>{p.label}</a>
+            {PRODUCT_GROUPS.map((group) => (
+              <div class="mega-group">
+                <span class="mega-head">{group.name}</span>
+                {group.items.map((p) => (
+                  <a href={p.path} class:list={["mega-item", { active: isCurrent(p.path) }]}>
+                    <span class="mega-ico" aria-hidden="true"></span>
+                    <span class="mega-name">{p.label}</span>
+                  </a>
+                ))}
+              </div>
             ))}
-            <a href="/product" class:list={["menu-item", "menu-item--wide", { active: isCurrent("/product") }]}>Everything Common Parcel does</a>
-            <a href="/security" class:list={["menu-item", "menu-item--wide", { active: isCurrent("/security") }]}>Security</a>
+          </div>
+          <div class="mega-foot">
+            <div class="mega-foot-in">
+              {PRODUCT_WIDE.map((p) => (
+                <a href={p.path} class:list={["menu-item", { active: isCurrent(p.path) }]}>{p.label}</a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

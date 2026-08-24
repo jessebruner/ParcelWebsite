@@ -113,16 +113,113 @@ nav { display: flex; align-items: stretch; gap: 0; }
   padding: var(--s-2);
 }
 
+/*
+ * THE PRODUCT PANEL IS THE FULL WIDTH OF THE PAGE.
+ *
+ * The geometry rule above -- anchored to the right gutter, clamped to the
+ * viewport -- exists because the old panel was positioned against its button
+ * and ran off the right edge at every width measured. A full-bleed panel is
+ * the same rule taken to its end: left and right both zero against the
+ * masthead, which is the viewport's width by construction, so there is no
+ * width to overflow and nothing to clamp.
+ *
+ * It is not a wider box. It is a different object: five headed columns of
+ * destinations, the shape Jesse picked out of the prototype. A 560px box
+ * cannot hold five columns, so the width is a consequence of the grouping
+ * rather than a decision of its own.
+ */
 .mega-menu {
-  width: min(560px, calc(100vw - var(--pad-x) * 2));
-  padding: var(--s-2);
+  left: 0; right: 0;
+  top: 100%;
+  width: auto;
+  padding: 0;
+  border-left: none; border-right: none;
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--paper);
 }
+
+/*
+ * No pointer bridge on this one, and it is not a tidy-up. The bridge is an
+ * invisible 26px band across the panel's own width, which on a 560px box sat
+ * under the Product button and nowhere else. Full-bleed, that band spans the
+ * masthead and covers Pricing, Company and Contact -- the panel would eat the
+ * click on every other nav item while it was open. There is no gap to bridge
+ * anyway: top is 100%, so the panel starts where the masthead ends.
+ */
+.mega-menu::before { display: none; }
 
 .mega-menu-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--s-1) var(--s-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: clamp(18px, 2.4vw, 40px);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(22px, 2.8vw, 36px) var(--pad-x) clamp(18px, 2.4vw, 30px);
 }
+
+.mega-group { min-width: 0; }
+
+.mega-head {
+  display: block;
+  padding-bottom: 9px;
+  margin-bottom: var(--s-1);
+  border-bottom: var(--stroke-edge);
+  font-family: var(--font-mono); font-size: var(--t-mono-label);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/*
+ * min-height, not more padding. 9px of padding on a 19px line is a 37px
+ * target, under the 44px this site holds itself to; raising the padding to
+ * reach it would open the gap between a group's heading and its first item
+ * and make five short columns read as five loose ones.
+ */
+.mega-item {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px;
+  padding: 9px 0;
+  text-decoration: none;
+  border-bottom: var(--stroke-rule);
+}
+.mega-item:last-child { border-bottom: none; }
+.mega-ico {
+  flex: 0 0 auto; width: 9px; height: 9px; margin-top: 5px;
+  background: var(--bisque-edge);
+  transition: background 0.14s ease;
+}
+.mega-name {
+  display: block;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+  letter-spacing: -0.015em; line-height: 1.25;
+  color: var(--ink);
+  transition: color 0.14s ease;
+}
+.mega-item:hover .mega-name { color: var(--terracotta); }
+.mega-item:hover .mega-ico { background: var(--terracotta); }
+.mega-item.active .mega-ico { background: var(--terracotta); }
+.mega-item.active .mega-name { color: var(--terracotta); }
+
+/* The two destinations that are not one of the nine, on their own rule. */
+/*
+ * Two elements, because the rule has to start where the columns start. With
+ * the border on the padded box it ran the full 1240 while the first column
+ * head began 55px inside it, and two rules at two different left edges in one
+ * panel reads as a mistake -- which it was.
+ */
+.mega-foot {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding-inline: var(--pad-x);
+}
+.mega-foot-in {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--s-2) clamp(16px, 2vw, 32px);
+  padding: var(--s-3) 0 clamp(16px, 2vw, 24px);
+  border-top: var(--stroke-edge);
+}
+.mega-foot .menu-item { padding-inline: 0; border-left: none; }
+.mega-foot .menu-item.active { background: none; color: var(--terracotta); }
 
 .menu-grid { display: flex; flex-direction: column; gap: 1px; }
 
@@ -219,7 +316,26 @@ nav { display: flex; align-items: stretch; gap: 0; }
   .has-dropdown.open .dropdown-menu {
     display: block; opacity: 1; visibility: visible; pointer-events: auto;
   }
-  .mega-menu-inner { grid-template-columns: 1fr; gap: 0; }
+  /*
+   * On a phone the five columns become five sections down one column, and the
+   * headings earn more than they do on a desktop: the panel is now nine links
+   * in a drawer you scroll, and the headings are the only thing that says
+   * where you are in it.
+   */
+  .mega-menu {
+    left: auto; right: auto; border-bottom: none;
+    background: var(--field);
+  }
+  .mega-menu-inner {
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+    padding: var(--s-3) var(--s-3) var(--s-2);
+  }
+  .mega-foot { padding-inline: var(--s-3); }
+  .mega-foot-in {
+    flex-direction: column; align-items: stretch; gap: 0;
+    padding: var(--s-2) 0;
+  }
   .menu-item { min-height: 48px; display: flex; align-items: center; }
   .menu-item--wide { margin-top: var(--s-1); padding-top: var(--s-1); }
 
