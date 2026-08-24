@@ -71,13 +71,13 @@ const { scene = "dusk", seed = 7, compact = false, live = false } = Astro.props;
    * Texture heroes still contain nineteen colour stops, even though the
    * canvas itself is painted once. The old vertical veil left seven non-live
    * ledes between 2.08:1 and 2.60:1 at 1440px. Keep the copy side dark and
-   * give the picture back after the reading measure, the same geometry the
-   * live treatment below uses without flattening the whole sky.
+   * give the picture back after the longest reading measure, the same geometry
+   * the live treatment below uses without flattening the whole sky.
    */
   .veil {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background:
-      linear-gradient(90deg, rgba(14, 12, 20, 0.78) 0%, rgba(14, 12, 20, 0.70) 46%, rgba(14, 12, 20, 0.26) 68%, rgba(14, 12, 20, 0) 84%),
+      linear-gradient(90deg, rgba(14, 12, 20, 0.78) 0%, rgba(14, 12, 20, 0.70) 46%, rgba(14, 12, 20, 0.34) 70%, rgba(14, 12, 20, 0) 84%),
       linear-gradient(180deg, rgba(20, 18, 15, 0.42) 0%, rgba(20, 18, 15, 0.30) 100%);
   }
   /*

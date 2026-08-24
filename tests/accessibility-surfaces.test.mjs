@@ -12,6 +12,10 @@ function assertTextureHeroScrim(source) {
     rule.includes("linear-gradient(90deg"),
     "texture heroes have no copy-side scrim; their ledes fall below 4.5:1",
   );
+  assert.ok(
+    rule.includes("rgba(14, 12, 20, 0.34) 70%"),
+    "the texture scrim fades before the longest desktop lede ends",
+  );
   assert.match(
     source,
     /@media \(max-width: 900px\)[\s\S]*?\.veil, \.hero\.live \.veil\s*\{/,
@@ -38,6 +42,14 @@ test("mutation: removing the texture copy-side scrim fails", () => {
     () => assertTextureHeroScrim(source.replace("linear-gradient(90deg", "linear-gradient(180deg")),
     /copy-side scrim/,
   );
+});
+
+test("mutation: restoring the measured short fade fails", () => {
+  const source = readFileSync("src/components/Hero.astro", "utf8").replace(
+    "rgba(14, 12, 20, 0.34) 70%",
+    "rgba(14, 12, 20, 0.26) 68%",
+  );
+  assert.throws(() => assertTextureHeroScrim(source), /fades before/);
 });
 
 test("the early-access close button is a 44px touch target", () => {
