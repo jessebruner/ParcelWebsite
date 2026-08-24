@@ -1,0 +1,141 @@
+---
+/**
+ * QUESTIONS BOARDS ASK.
+ *
+ * Two sources, and they agree. Jesse's prototype put an FAQ on every product
+ * page and the shipped site had one on none. The homepage -- the page named as
+ * the standard -- already carries this exact device: a heading held in its own
+ * column beside a hairline-ruled list of <details>, serif question, a plus that
+ * rotates into a cross, and a line under the heading offering the inbox for
+ * anything the list does not cover.
+ *
+ * So the measurements here are the homepage's, read out of the shipped bundle
+ * rather than guessed at: 18px gap, clamp(15px, 2vw, 20px) of padding, a
+ * clamp(18px, 1.6vw, 21px) serif question, a 16px marker with its bar at 7px,
+ * and a 0.24s rotate. A second FAQ in a different rhythm would read as a
+ * different site.
+ *
+ * <details> rather than script, so it works before JavaScript, so find-on-page
+ * opens a closed answer in a modern browser, and so the disclosure semantics
+ * are the browser's rather than ours.
+ *
+ * The answers restate what the bands above them already claim. An FAQ is where
+ * a marketing site quietly promises the thing the page was careful about, so
+ * every answer here was written against the page's own copy.
+ */
+interface Props {
+  /** [question, answer]. Three or four; more is a page that needed writing. */
+  items: [string, string][];
+  title?: string;
+}
+const { items, title = "Questions boards ask" } = Astro.props;
+---
+
+<section class="faq-band">
+  <div class="page">
+    <div class="head">
+      <h2>{title}</h2>
+      <p>Anything else: <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
+    </div>
+    <div class="faq">
+      {items.map(([q, a]) => (
+        <details>
+          <summary>
+            <h3 class="q">{q}</h3>
+            <span class="plus" aria-hidden="true"><i></i><i></i></span>
+          </summary>
+          <p class="a">{a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-band {
+    padding: clamp(48px, 6vw, 104px) 0;
+    border-top: var(--stroke-edge);
+  }
+  .page {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+    gap: clamp(24px, 3.4vw, 72px);
+    align-items: start;
+  }
+
+  /*
+   * Serif, and NOT --t-sheet. The homepage's questions heading is serif at
+   * clamp(32px, 4.2vw, 60px) over four characters. "Questions boards ask" is
+   * twenty, and 60px over a 12ch measure wrapped it to three lines, so the
+   * top of the ramp comes down while the bottom stays where the homepage put
+   * it.
+   */
+  .head h2 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    font-size: clamp(30px, 3.4vw, 46px);
+    line-height: 1.04;
+    margin: 0;
+    max-width: 13ch;
+    text-wrap: balance;
+  }
+  .head p {
+    margin: 22px 0 0;
+    max-width: 32ch;
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .faq { border-top: var(--stroke-edge); }
+  .faq details { border-bottom: var(--stroke-edge); }
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: clamp(15px, 2vw, 20px) 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; }
+
+  .q {
+    flex: 1;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(18px, 1.6vw, 21px);
+    line-height: 1.35;
+    color: var(--ink);
+    transition: color 0.15s ease;
+  }
+  summary:hover .q { color: var(--terracotta); }
+
+  .plus {
+    position: relative;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  details[open] .plus { transform: rotate(45deg); }
+  .plus i { position: absolute; background: var(--terracotta); }
+  .plus i:first-child { left: 0; right: 0; top: 7px; height: 1.5px; }
+  .plus i:last-child { top: 0; bottom: 0; left: 7px; width: 1.5px; }
+
+  .a {
+    margin: 0;
+    padding: 0 34px 20px 0;
+    max-width: var(--read);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-body);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plus, .q { transition: none; }
+  }
+</style>

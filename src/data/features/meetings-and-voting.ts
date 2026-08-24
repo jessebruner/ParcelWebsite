@@ -66,4 +66,14 @@ export const meetingsAndVoting: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["How much notice does our meeting need?",
+      "Whatever period your bylaws set. Common Parcel works the notice date back from the meeting date so the mailing lands inside it."],
+    ["Can owners vote electronically?",
+      "Where your documents allow electronic ballots or proxies, Common Parcel counts them beside the paper ones."],
+    ["How is quorum counted?",
+      "Every voter is checked against the list of owners on record, so the number that goes into the minutes is one you can show later."],
+    ["Who writes the minutes?",
+      "Common Parcel drafts them from the meeting and the board adopts the draft. A volunteer is editing rather than starting from nothing."],
+  ],
 };

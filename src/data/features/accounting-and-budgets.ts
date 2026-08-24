@@ -74,4 +74,14 @@ export const accountingAndBudgets: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["Does this replace our accountant?",
+      "No. It hands them books that already match the bank, with every figure traceable to the transaction behind it."],
+    ["How does the bank get matched?",
+      "Import a month of bank activity and Common Parcel matches it against the ledger line by line, then flags whatever is left over instead of forcing it."],
+    ["Can we still export everything?",
+      "Any month, with the records attached, in a form an accountant or an auditor can open."],
+    ["What about a special assessment?",
+      "It needs the share of votes your documents require. Common Parcel counts against that share and prepares the billing after the board confirms the result."],
+  ],
 };

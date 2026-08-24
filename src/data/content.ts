@@ -57,6 +57,16 @@ export interface PageSpec {
   /** The line the closing band carries. Written per page, never generated. */
   closer?: string;
   bands: BandSpec[];
+  /**
+   * [question, answer], three or four per page. See Faq.astro.
+   *
+   * The constraint that matters is not length. An answer here may not claim
+   * more than the bands above it already claim -- an FAQ is the one place on a
+   * marketing site where a careful page quietly widens itself, because nobody
+   * reads it as body copy. Every answer below was written against its own
+   * page's bands and carries the same conditions they carry.
+   */
+  faqs?: [string, string][];
 }
 
 /* ── FEATURES ─────────────────────────────────────────────────────────── */

@@ -69,4 +69,14 @@ export const vendorsAndInsurance: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["Does Common Parcel go out for the quotes?",
+      "It drafts the requests and you send them. The replies come back beside what you pay now, and you pick the vendor."],
+    ["How does it check an invoice?",
+      "Against the rate in the agreement you uploaded. A rate that moved, or a bill sent twice, comes back to the board before the check goes out."],
+    ["What does it do with our insurance policy?",
+      "Upload it and the coverage limit, the deductible and the renewal date come out of it onto a calendar the whole board can see."],
+    ["Does it pay the vendor?",
+      "No. The check is still yours to write. Common Parcel checks the bill against the agreement before you write it."],
+  ],
 };

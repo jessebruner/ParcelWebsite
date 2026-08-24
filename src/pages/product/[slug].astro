@@ -25,6 +25,7 @@ import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
 import CtaBand from "../../components/ui/CtaBand.astro";
+import Faq from "../../components/Faq.astro";
 import PixelSky from "../../components/PixelSky.astro";
 import FeatureScene from "../../components/product/FeatureScene.astro";
 import { FEATURES, type PageSpec } from "../../data/content";
@@ -67,6 +68,30 @@ const art = FEATURE_ART[feature.slug] ?? { scene: "dusk" as const, seed: 7, clos
  * closer and never separates the hero from the page's opening argument.
  */
 const stripAfter = feature.bands.length >= 4 ? 2 : 1;
+
+/**
+ * FAQPage, and it is not free SEO decoration: Google's own guidance is that
+ * the markup must match question-and-answer content the reader can see on the
+ * page. It is generated from the same array the section renders, so the two
+ * cannot drift apart -- a hand-written block would be one more place for a
+ * claim to live after the page stopped making it.
+ *
+ * `<` is escaped because this goes into a <script> via set:html, and a literal
+ * `</script>` inside a JSON string would end the block early. Nothing in the
+ * copy contains one today; the escape is so nothing has to remember that.
+ */
+const faqs = feature.faqs ?? [];
+const schema = faqs.length
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map(([question, answer]) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: { "@type": "Answer", text: answer },
+      })),
+    }).replaceAll("<", "\\u003c")
+  : undefined;
 ---
 
 <Base
@@ -74,6 +99,7 @@ const stripAfter = feature.bands.length >= 4 ? 2 : 1;
   description={feature.description}
   path={`/product/${feature.slug}`}
   shareTitle={`Common Parcel: ${feature.title}`}
+  schema={schema}
 >
   <Hero scene={art.scene} seed={art.seed} live>
     <div class="feature-hero">
@@ -107,6 +133,8 @@ const stripAfter = feature.bands.length >= 4 ? 2 : 1;
       )}
     </>
   ))}
+
+  {faqs.length > 0 && <Faq items={faqs} />}
 
   <CtaBand headline={feature.closer} scene={art.scene === "dusk" ? "dawn" : "dusk"} seed={art.close} />
 </Base>

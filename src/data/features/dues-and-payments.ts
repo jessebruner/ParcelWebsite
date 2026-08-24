@@ -69,4 +69,14 @@ export const duesAndPayments: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["How do owners actually pay?",
+      "By card or bank transfer, once the association has connected its own Stripe account. A check that arrives in the mail is booked against the right lot by hand, so the ledger reconciles either way."],
+    ["Does Common Parcel hold our money?",
+      "No. Owners pay into the association's own bank account, in the association's own name. Common Parcel never holds association funds and has no authority to move them."],
+    ["Where do the amounts and the due dates come from?",
+      "Your declaration. What each lot owes, the day it falls due and the grace period are read out of the document and shown with the page they sit on. A board member confirms each figure before anything bills."],
+    ["What if Common Parcel read a figure wrong?",
+      "Correct it during that review and the corrected figure is what bills. What your documents do not answer prints as unknown, never as a number borrowed from another association."],
+  ],
 };

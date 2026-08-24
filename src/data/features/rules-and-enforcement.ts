@@ -74,4 +74,14 @@ export const rulesAndEnforcement: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["Can Common Parcel issue a fine?",
+      "No. Where it has confirmed that your documents or your state require notice and a hearing, the fine stays unavailable until both are recorded. The vote is the board's."],
+    ["How does it know which rule was broken?",
+      "From the rules you uploaded. The case carries the rule it breaks and the page that rule sits on, so an owner reading the notice can check it."],
+    ["What stops one neighbor being treated differently?",
+      "Every earlier case on the same rule is in front of the board before the vote. The fine that gets challenged is the one for something the board let slide last year."],
+    ["What about a request tied to a disability?",
+      "That needs a separate process and qualified legal review. It is designed and not built, and this page says so rather than letting you assume otherwise."],
+  ],
 };

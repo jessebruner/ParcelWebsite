@@ -66,4 +66,14 @@ export const recordsAndAudit: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["An owner has demanded the books. What now?",
+      "A Michigan owner with a proper purpose can demand them, and five business days later can ask a court to compel it. The minutes, resolutions, notices and ledgers are already in one place."],
+    ["Who can change a record?",
+      "Whoever the board has given that role. An edit to a rule or a record carries the name of whoever made it and the time."],
+    ["What happens when the treasurer resigns?",
+      "Nothing leaves with them. The next officer opens the same records."],
+    ["Can we get everything out?",
+      "An export any month, with the records attached."],
+  ],
 };

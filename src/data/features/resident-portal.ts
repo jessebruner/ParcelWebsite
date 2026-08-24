@@ -77,4 +77,14 @@ export const residentPortal: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["Do owners sign themselves up?",
+      "An owner finds their address and asks for access. It stays shut until a board member approves it."],
+    ["What can an owner see?",
+      "Their own balance and what it is made of, their payments, the documents that govern the association, and the answer to a rule question with the section it came from. Nothing about a neighbor's account."],
+    ["Can they pay from the portal?",
+      "Once the association has connected a bank account, yes. The money goes to the association's own account, and Common Parcel never holds it."],
+    ["What do owners send in?",
+      "A maintenance request or an architectural application, with photos, attached to their own lot."],
+  ],
 };

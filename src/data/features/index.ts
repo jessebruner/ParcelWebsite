@@ -6,15 +6,15 @@
  * shape" should not mean "edit the file every other page shares".
  */
 import type { PageSpec } from "../content";
-import { duesAndPayments } from "./dues-and-payments";
-import { collections } from "./collections";
-import { accountingAndBudgets } from "./accounting-and-budgets";
-import { rulesAndEnforcement } from "./rules-and-enforcement";
-import { meetingsAndVoting } from "./meetings-and-voting";
-import { documentsAndAnswers } from "./documents-and-answers";
-import { vendorsAndInsurance } from "./vendors-and-insurance";
-import { residentPortal } from "./resident-portal";
-import { recordsAndAudit } from "./records-and-audit";
+import { duesAndPayments } from "./dues-and-payments.ts";
+import { collections } from "./collections.ts";
+import { accountingAndBudgets } from "./accounting-and-budgets.ts";
+import { rulesAndEnforcement } from "./rules-and-enforcement.ts";
+import { meetingsAndVoting } from "./meetings-and-voting.ts";
+import { documentsAndAnswers } from "./documents-and-answers.ts";
+import { vendorsAndInsurance } from "./vendors-and-insurance.ts";
+import { residentPortal } from "./resident-portal.ts";
+import { recordsAndAudit } from "./records-and-audit.ts";
 
 export const FEATURES: PageSpec[] = [
   duesAndPayments,

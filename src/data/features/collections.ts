@@ -63,4 +63,14 @@ export const collections: PageSpec = {
       } }],
     },
   ],
+  faqs: [
+    ["Can Common Parcel send a demand letter on its own?",
+      "No. It drafts the next notice from your documents and holds it. Where the workflow requires a second officer, the notice waits for both approvals, and the record keeps who approved it and when."],
+    ["What if an owner is on a payment plan?",
+      "Put the account on hold and everything scheduled stops until the board lifts it. A hardship, a dispute and a death in the family are the same switch."],
+    ["Where do the dates come from?",
+      "Your own documents, and your state's rule where Common Parcel has verified it. Where a state rule is not verified yet, the plan stops and names what is missing rather than picking a number."],
+    ["Can you prove we served the notice?",
+      "Not yet. Common Parcel can show that a notice was drafted and approved, but certified mail is not connected, so serving it and keeping the proof stay with the board."],
+  ],
 };

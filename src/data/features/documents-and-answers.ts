@@ -81,4 +81,14 @@ export const documentsAndAnswers: PageSpec = {
       ],
     },
   ],
+  faqs: [
+    ["What do we need to upload?",
+      "The declaration, the bylaws and the rules. Scans are fine."],
+    ["What if it reads something wrong?",
+      "You correct it during the board review, and the correction is what everything else reads. Each figure comes back with the page it was read from precisely so it can be checked."],
+    ["What if our documents do not say?",
+      "It prints unknown and names what it could not find. It will not fill the gap with a figure from another association."],
+    ["Can it tell us what a rule means?",
+      "It shows you what your documents say and where the words are. What they mean in a dispute is a question for your attorney."],
+  ],
 };
