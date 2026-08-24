@@ -7,10 +7,10 @@
  * `transparent` or the section's --night and calls it clean.
  *
  * So: hide the text, screenshot what is left, and sample the actual pixels
- * inside the box the text occupied. The worst case is the LIGHTEST pixel under
- * white text, so the number reported is the minimum contrast across the box,
- * not the average -- an average passes comfortably on a picture that has a sun
- * in it.
+ * under the text's own line boxes. The figure reported is the worst 12px
+ * BLOCK, with the worst single pixel printed beside it -- see the note on the
+ * sampler for why a single pixel is the wrong unit over dithered art, and why
+ * dropping it entirely would be the wrong correction.
  *
  * The canary is the part that makes the zero mean something. An element is
  * measured a second time with every veil removed. If the veil-off reading is
@@ -92,7 +92,27 @@ window.__minContrast = async (dataUrl, lines, colour) => {
   const lum = (r, gg, b) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b);
   const m = colour.match(/[\\d.]+/g).map(Number);
   const L1 = lum(m[0], m[1], m[2]);
-  let worst = 99;
+  const ratio = (L2) => (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+
+  /*
+   * TWO FIGURES, AND THE BLOCK ONE IS THE ANSWER.
+   *
+   * The art is ordered-dithered across a nineteen-stop ramp and upscaled with
+   * image-rendering: pixelated. The top stop of the dawn ramp is #FBF8F4,
+   * which is --paper, which is the headline's own colour, so a
+   * worst-single-pixel metric can find one speckle of the text colour and
+   * report 1.00:1 on a heading anyone can read. A reader does not see one
+   * pixel; they see a patch. BLOCK is 12px, about three source pixels at the
+   * scale these canvases upscale to.
+   *
+   * The single-pixel figure is returned beside it rather than dropped. A large
+   * gap between the two is the tell that the sample sits on dither rather than
+   * on flat ground, and losing that signal is how the block average stops
+   * being a correction and starts being a way to pass.
+   */
+  const BLOCK = 12;
+  let worstPixel = 99;
+  let worstBlock = 99;
   for (const box of lines) {
     const x = Math.max(0, Math.round(box.x * dpr));
     const y = Math.max(0, Math.round(box.y * dpr));
@@ -100,13 +120,27 @@ window.__minContrast = async (dataUrl, lines, colour) => {
     const h = Math.max(1, Math.min(cv.height - y, Math.round(box.h * dpr)));
     if (x >= cv.width || y >= cv.height) continue;
     const d = g.getImageData(x, y, w, h).data;
-    for (let i = 0; i < d.length; i += 4) {
-      const L2 = lum(d[i], d[i + 1], d[i + 2]);
-      const c = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
-      if (c < worst) worst = c;
+    for (let by = 0; by < h; by += BLOCK) {
+      for (let bx = 0; bx < w; bx += BLOCK) {
+        let sum = 0;
+        let n = 0;
+        for (let yy = by; yy < Math.min(h, by + BLOCK); yy++) {
+          for (let xx = bx; xx < Math.min(w, bx + BLOCK); xx++) {
+            const i = (yy * w + xx) * 4;
+            const L2 = lum(d[i], d[i + 1], d[i + 2]);
+            sum += L2;
+            n += 1;
+            const c = ratio(L2);
+            if (c < worstPixel) worstPixel = c;
+          }
+        }
+        if (!n) continue;
+        const c = ratio(sum / n);
+        if (c < worstBlock) worstBlock = c;
+      }
     }
   }
-  return worst;
+  return { block: worstBlock, pixel: worstPixel };
 };
 "ok"`;
 
@@ -192,6 +226,7 @@ let readings = 0;
 let failures = 0;
 let canaryProved = 0;
 let canaryFlat = 0;
+let dithered = 0;
 
 for (const route of ROUTES) {
   await send("Page.navigate", { url: `http://127.0.0.1:4321${route}` });
@@ -213,19 +248,22 @@ for (const route of ROUTES) {
       if (!box) continue;
 
       let withVeil;
+      let pixel = null;
       let noVeil = null;
       if (box.own) {
         /* Paints its own ground: a colour pair, and the picture is irrelevant. */
         withVeil = await pairContrast(box.colour, box.own);
       } else {
         await hideText(sel);
-        withVeil = await ev(
+        const on = await ev(
           `window.__minContrast(${JSON.stringify(await shot())}, ${JSON.stringify(box.lines)}, ${JSON.stringify(box.colour)})`,
         );
+        withVeil = on.block;
+        pixel = on.pixel;
         await setVeil(false);
-        noVeil = await ev(
+        noVeil = (await ev(
           `window.__minContrast(${JSON.stringify(await shot())}, ${JSON.stringify(box.lines)}, ${JSON.stringify(box.colour)})`,
-        );
+        )).block;
         await setVeil(true);
         await showText(sel);
       }
@@ -237,11 +275,16 @@ for (const route of ROUTES) {
         if (noVeil < withVeil - 0.02) canaryProved += 1;
         else canaryFlat += 1;
       }
+      /* A block figure far above its own worst pixel means the sample sits on
+         dither. Worth seeing even when both pass. */
+      if (pixel !== null && withVeil - pixel > 1.5) dithered += 1;
       const flag = ok ? "  " : "!!";
       console.log(
         `${flag} ${route.padEnd(34)} ${box.scene.padEnd(8)} ${what.padEnd(16)}` +
           `${withVeil.toFixed(2).padStart(6)} (need ${need})   ` +
-          (noVeil === null ? "own ground" : `veil off ${noVeil.toFixed(2)}`),
+          (noVeil === null
+            ? "own ground"
+            : `worst px ${pixel.toFixed(2).padStart(5)}   veil off ${noVeil.toFixed(2)}`),
       );
     }
   }
@@ -249,6 +292,7 @@ for (const route of ROUTES) {
 
 console.log(`\n${readings} readings, ${failures} below threshold.`);
 console.log(`canary: ${canaryProved} readings got worse with the veil removed, ${canaryFlat} did not.`);
+console.log(`${dithered} readings sit on dither: the 12px block figure is more than 1.5 above the worst single pixel.`);
 if (canaryProved === 0) {
   console.error("PROBE IS BLIND: removing every veil changed nothing. The clean sweep means nothing.");
   process.exit(3);
