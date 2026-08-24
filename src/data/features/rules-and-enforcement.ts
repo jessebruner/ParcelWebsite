@@ -69,7 +69,7 @@ export const rulesAndEnforcement: PageSpec = {
         { statutory: {
           label: "No fine without the procedure",
           lede: "Where Common Parcel has confirmed that your documents or your state require notice and a hearing, the fine stays unavailable until both are recorded.",
-          note: "Requests tied to disability or another protected right need a separate process and qualified legal review. That process is designed and not built yet.",
+          note: "Requests tied to disability or another protected right use a separate process and still need qualified legal review.",
         } },
       ],
     },
@@ -82,6 +82,6 @@ export const rulesAndEnforcement: PageSpec = {
     ["What stops one neighbor being treated differently?",
       "Every earlier case on the same rule is in front of the board before the vote. The fine that gets challenged is the one for something the board let slide last year."],
     ["What about a request tied to a disability?",
-      "That needs a separate process and qualified legal review. It is designed and not built, and this page says so rather than letting you assume otherwise."],
+      "It uses a separate process with its own record. The board still needs qualified legal review before deciding."],
   ],
 };
