@@ -16,7 +16,14 @@ const isCompanyActive = here === "/about" || here === "/why-common-parcel" || he
 
 <header class="mast">
   <div class="lockup-pad">
-    <a class="lockup" href="/">
+    {/*
+      aria-label, not the wordmark, is this link's accessible name.
+      The heron Mark is aria-hidden (decorative) and masthead.css hides
+      .wordmark at 420px and below, so without the label the home link is an
+      unnamed link on every phone. Guarded by tests/masthead-a11y.test.mjs.
+      An HTML comment here would ship on all 23 pages; this form is compiled away.
+    */}
+    <a class="lockup" href="/" aria-label="Common Parcel home">
       <Mark size={34} />
       <span class="wordmark">Common Parcel</span>
     </a>
