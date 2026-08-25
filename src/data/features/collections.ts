@@ -42,14 +42,13 @@ export const collections: PageSpec = {
       layout: "rail",
       field: true,
       body: [
-        { p: "Where the workflow requires two officers, a notice waits for both approvals, and the record keeps who approved it and when." },
+        { p: "Delinquency notices are drafted beforehand so they are ready when needed, but nothing leaves until the board reviews and sends it." },
         { rows: [
           "Every notice drafted directly from your recorded bylaws.",
           "Two-officer approval required on pre-lien and legal demands.",
           "One-click account holds pause all automated communications.",
         ] },
-        { coda: "The board can put an account on hold for a hardship, a dispute, or a death in the family. Everything scheduled stops until the board lifts it." },
-        { pull: "The hard letter is written before you need it, and it does not leave until you send it." },
+        { coda: "The board can pause an account immediately for a hardship, dispute, or bereavement. Everything scheduled stops until the board lifts the hold." },
       ],
     },
     {

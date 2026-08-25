@@ -70,14 +70,14 @@ export const accountingAndBudgets: PageSpec = {
       field: true,
       note: ["See dues and payments", "/product/dues-and-payments"],
       body: [
+        { p: "A treasurer should be able to close the books and share reports without learning complex accounting software." },
         { rows: [
           "Monthly income and expense statements.",
           "What you budgeted next to what you spent.",
           "Who is behind and by how much.",
           "Every owner's ledger, charge by charge.",
         ] },
-        { coda: "A full export any month, with the records attached, in a form an accountant or an auditor can open." },
-        { pull: "A treasurer should be able to close the books without learning accounting." },
+        { coda: "Generate a full export any month, with supporting records attached, in a form an accountant or auditor can open immediately." },
       ],
     },
   ],

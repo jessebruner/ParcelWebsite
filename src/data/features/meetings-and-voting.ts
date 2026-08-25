@@ -55,13 +55,13 @@ export const meetingsAndVoting: PageSpec = {
           ],
           footing: { label: "Verified Ballots", value: "73 of 118" },
         } },
-        { p: "Where your documents allow electronic ballots or proxies, Common Parcel counts them beside the paper ones and checks every voter against the list of owners on record." },
+        { p: "Where your documents allow electronic ballots or proxies, Common Parcel counts them beside paper ballots and verifies every voter against deeded ownership records." },
         { rows: [
           "Cross-checks every ballot against deeded owner records.",
           "Combines electronic votes, assigned proxies, and mailed paper tallies.",
           "Prevents duplicate voting and logs submission timestamps.",
         ] },
-        { pull: "Proving quorum should not depend on who remembered to count." },
+        { coda: "Proving quorum is backed by a verifiable tally rather than relying on memory." },
       ],
     },
     {

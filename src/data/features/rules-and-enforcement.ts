@@ -4,24 +4,18 @@
  * One page, one file. See src/data/content.ts for the shared shape and
  * src/data/features/index.ts for the order they appear in.
  *
- * The slug stays `rules-and-enforcement` because the URL is linked from
- * routes.ts, product.astro and the sitemap. The page's NAME is "Violations and
- * notices", which is what the nav has always called it, and the heading is the
- * name. The old headline, "Enforce community rules fairly and consistently",
- * moved into the second band, where it argues for something.
- *
- * The ten-step ladder that used to sit here is now the hero scene. A sequence
- * is a picture, not a list.
+ * The limit on this page is true and is stated directly: certified mail is not
+ * connected, so service cannot be proved from here. Shortened, not softened.
  */
 import type { PageSpec } from "../content";
 
 export const rulesAndEnforcement: PageSpec = {
   slug: "rules-and-enforcement",
-  title: "Violations and notices",
+  title: "Rules and enforcement",
   description:
-    "Log a violation against the rule it breaks, and keep the notice, the time to fix it, and the hearing on one clock.",
-  h1: "Violations and notices",
-  lede: "A complaint comes in. Common Parcel finds the rule it breaks, dates the notice, and runs the clock to the hearing.",
+    "A violation timeline that follows your bylaws: cure periods counted from the notice, past cases on that rule shown before the vote, and a hold for disputes.",
+  h1: "Rules and enforcement",
+  lede: "Enforcing a rule without the record to back it up is how a fine gets overturned. Common Parcel dates every notice, tracks the cure period, and keeps the case together.",
   closer: "The same rule for every neighbor.",
   bands: [
     {
@@ -30,13 +24,13 @@ export const rulesAndEnforcement: PageSpec = {
       air: "open",
       body: [
         { panel: {
-          label: "Violation case",
-          note: "Open",
+          label: "Violation · Trailer parked in driveway",
+          note: "Lot 18 · second notice",
           rows: [
-            { label: "Rule it breaks", value: "Fence height", cite: "Declaration, page 14" },
-            { label: "Notice mailed", value: "March 2" },
-            { label: "Owner has until", value: "March 16", pending: true },
-            { label: "Hearing set", value: "March 24" },
+            { label: "Rule", value: "Bylaws §4.2", cite: "Trailers & RVs" },
+            { label: "Notice mailed", value: "March 3", cite: "14-day cure period" },
+            { label: "Cure deadline", value: "March 17", cite: "In grace period", pending: true },
+            { label: "Hearing requested", value: "March 10", cite: "Scheduled for March 24" },
           ],
           footing: { label: "Fine", value: "Not yet" },
         } },
@@ -48,13 +42,13 @@ export const rulesAndEnforcement: PageSpec = {
       layout: "rail",
       field: true,
       body: [
-        { p: "The fine that gets challenged is the one for something the board let slide last year. Common Parcel shows every earlier case on that rule before the vote, so the board can enforce community rules fairly and consistently." },
+        { p: "The fine that gets challenged is the one for something the board let slide last year. Common Parcel displays prior precedents on each rule before the vote so enforcement remains consistent." },
         { rows: [
           "Historical precedent lookup on every rule.",
           "Uniform notice templates with exact bylaw citations.",
           "Complete photo and correspondence logs attached to each lot.",
         ] },
-        { pull: "Every earlier case on that rule, in front of the board before the vote." },
+        { coda: "Every earlier case on that rule is available to the board before deciding a violation." },
       ],
     },
     {
@@ -80,13 +74,11 @@ export const rulesAndEnforcement: PageSpec = {
       layout: "quiet",
       field: true,
       note: ["Elections and meetings", "/product/meetings-and-voting"],
-      body: [
-        { statutory: {
-          label: "No fine without the procedure",
-          lede: "Where Common Parcel has confirmed that your documents or your state require notice and a hearing, the fine stays unavailable until both are recorded.",
-          note: "Requests tied to disability or another protected right use a separate process and still need qualified legal review.",
-        } },
-      ],
+      body: [{ statutory: {
+        label: "No fine without the procedure",
+        lede: "Where Common Parcel has confirmed that your documents or your state require notice and a hearing, the fine stays unavailable until both are recorded.",
+        note: "Requests tied to disability or another protected right use a separate process and still need qualified legal review.",
+      } }],
     },
   ],
   faqs: [

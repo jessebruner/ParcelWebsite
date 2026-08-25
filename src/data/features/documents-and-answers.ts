@@ -61,9 +61,8 @@ export const documentsAndAnswers: PageSpec = {
           ],
           footing: { label: "Verification Source", value: "Direct Quote" },
         } },
-        { p: "Every answer arrives with the page it was read from. You can read it yourself, and you can forward it." },
-        { coda: "Notices quote your own rules, word for word." },
-        { pull: "Every answer comes back with the page it came from." },
+        { p: "Every answer comes back with the exact page and section from your recorded documents. You can review the citation yourself and forward it directly to the resident." },
+        { coda: "Notices quote your own rules word for word, eliminating misunderstandings." },
       ],
     },
     {

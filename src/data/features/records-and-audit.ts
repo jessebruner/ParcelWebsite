@@ -69,7 +69,7 @@ export const recordsAndAudit: PageSpec = {
       note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
       body: [
         { p: "Record the day the request arrives and what the owner asked for. Common Parcel gathers the records it already holds and shows a response clock only where the rule for that association has been verified." },
-        { pull: "The next treasurer should not have to ask where anything is." },
+        { coda: "The next treasurer opens a complete historical record rather than searching through lost emails." },
       ],
     },
     {
