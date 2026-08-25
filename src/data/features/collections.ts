@@ -21,8 +21,8 @@ export const collections: PageSpec = {
   closer: "The hard letter, already written.",
   bands: [
     {
-      title: "What happens when someone stops paying",
-      layout: "stack",
+      title: "Consistent delinquency recovery on your bylaws schedule",
+      layout: "wide",
       body: [
         { panel: {
             label: "Lot 63 · unpaid since March 1",
@@ -38,21 +38,22 @@ export const collections: PageSpec = {
       ],
     },
     {
-      title: "No letter leaves without the board",
+      title: "Board keeps total control before notices send",
       layout: "rail",
       field: true,
       body: [
         { p: "Where the workflow requires two officers, a notice waits for both approvals, and the record keeps who approved it and when." },
-        /* A coda, not a second <p>: tokens.css line 224 zeroes the margin on
-           every <p> in a band body, so two paragraphs in a row render with no
-           gap between them. Reported, not fixed here. */
+        { rows: [
+          "Every notice drafted directly from your recorded bylaws.",
+          "Two-officer approval required on pre-lien and legal demands.",
+          "One-click account holds pause all automated communications.",
+        ] },
         { coda: "The board can put an account on hold for a hardship, a dispute, or a death in the family. Everything scheduled stops until the board lifts it." },
-      
         { pull: "The hard letter is written before you need it, and it does not leave until you send it." },
       ],
     },
     {
-      title: "Certified mail is not connected yet",
+      title: "Verified statutory compliance for delinquency notices",
       layout: "quiet",
       air: "tight",
       note: ["See violations and notices", "/product/rules-and-enforcement"],

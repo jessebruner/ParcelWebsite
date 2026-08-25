@@ -21,7 +21,7 @@ export const meetingsAndVoting: PageSpec = {
   closer: "A meeting that holds up.",
   bands: [
     {
-      title: "Quorum you can prove",
+      title: "Track quorum in real time with verifiable tallies",
       layout: "wide",
       air: "open",
       body: [
@@ -36,20 +36,36 @@ export const meetingsAndVoting: PageSpec = {
           ],
           footing: { label: "Quorum", value: "Met" },
         } },
+        { p: "Common Parcel works notice dates back from the scheduled meeting so required owner mailings land strictly within bylaw requirements." },
       ],
     },
     {
-      title: "Ballots that hold up",
-      layout: "stack",
+      title: "Count every ballot with verified eligibility",
+      layout: "rail",
       field: true,
       body: [
+        { panel: {
+          label: "Ballot & Proxy Roster",
+          note: "March 12 Annual Meeting",
+          rows: [
+            { label: "Digital ballot · Lot 14", value: "Verified", cite: "Owner of record" },
+            { label: "Proxy assignment · Lot 22", value: "Assigned", cite: "Board chair" },
+            { label: "Mailed ballot · Lot 35", value: "Logged", cite: "Received March 10" },
+            { label: "Duplicate submission · Lot 41", value: "Flagged", cite: "First ballot held", pending: true },
+          ],
+          footing: { label: "Verified Ballots", value: "73 of 118" },
+        } },
         { p: "Where your documents allow electronic ballots or proxies, Common Parcel counts them beside the paper ones and checks every voter against the list of owners on record." },
-      
+        { rows: [
+          "Cross-checks every ballot against deeded owner records.",
+          "Combines electronic votes, assigned proxies, and mailed paper tallies.",
+          "Prevents duplicate voting and logs submission timestamps.",
+        ] },
         { pull: "Proving quorum should not depend on who remembered to count." },
       ],
     },
     {
-      title: "Committees see their own work",
+      title: "Keep committee workflows focused and confidential",
       layout: "quiet",
       air: "tight",
       body: [
@@ -57,12 +73,13 @@ export const meetingsAndVoting: PageSpec = {
       ],
     },
     {
-      title: "Nobody acts alone",
+      title: "Safeguard board decisions with multi-officer approval",
       layout: "rail",
       field: true,
       note: ["Records and audit", "/product/records-and-audit"],
       body: [
         { p: "Where Common Parcel requires a second officer to approve, both approvals go into the record with the time and the reason." },
+        { coda: "A single officer can pause an action, but pushing a consequential notice or fine through requires verified sign-off." },
       ],
     },
   ],

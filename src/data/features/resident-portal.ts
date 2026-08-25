@@ -30,8 +30,8 @@ export const residentPortal: PageSpec = {
   closer: "Your phone stops ringing.",
   bands: [
     {
-      title: "What an owner can do without you",
-      layout: "stack",
+      title: "Self-service resident portal cuts board inquiries",
+      layout: "wide",
       body: [
         { panel: {
           label: "Portal · what an owner sees",
@@ -54,19 +54,19 @@ export const residentPortal: PageSpec = {
       ],
     },
     {
-      title: "Answers out of your own documents",
-      layout: "wide",
+      title: "Accurate answers sourced directly from your bylaws",
+      layout: "rail",
       field: true,
       air: "tight",
       note: ["See documents and answers", "/product/documents-and-answers"],
       body: [
         { p: "The portal reads from the documents you uploaded, so an owner is never told something the board then has to walk back." },
-      
+        { coda: "Answers quote declaration sections directly so residents get clear, undisputed information." },
         { pull: "The best question is the one an owner answers without asking you." },
       ],
     },
     {
-      title: "Nobody signs themselves up",
+      title: "Secure address verification protects community privacy",
       layout: "quiet",
       body: [
         { p: "An owner finds their address and asks for access. It stays shut until someone on the board approves it." },

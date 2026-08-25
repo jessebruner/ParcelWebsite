@@ -21,48 +21,64 @@ export const recordsAndAudit: PageSpec = {
   closer: "Nothing leaves with the treasurer.",
   bands: [
     {
-      title: "The file the next board opens",
+      title: "Permanent association records that outlast board turnover",
       layout: "wide",
       air: "open",
       body: [
         { panel: {
-          label: "Association record",
-          note: "2026",
+          label: "Association Archive Vault",
+          note: "Fiscal Year 2026",
           rows: [
-            { label: "Annual meeting minutes", chip: "Signed" },
-            { label: "Board resolution", chip: "Passed" },
-            { label: "Violation notice", chip: "Delivered" },
-            { label: "Landscaping invoice", chip: "Paid" },
+            { label: "Annual meeting minutes", chip: "Signed", cite: "March 12, 2026" },
+            { label: "Board resolution · Landscaping RFP", chip: "Passed", cite: "2 of 2 officers signed" },
+            { label: "Delinquency notice · Lot 63", chip: "Delivered", cite: "Certified dispatch" },
+            { label: "Operating ledger & bank match", chip: "Reconciled", cite: "$0 difference" },
           ],
-          footing: { label: "Export", value: "Included" },
+          footing: { label: "Complete Archive Export", value: "Available anytime" },
         } },
+        { p: "Every decision, notice, and reconciled financial ledger is preserved in one centralized archive that transitions automatically to incoming board members." },
       ],
     },
     {
-      title: "Changes carry a name",
-      layout: "quiet",
+      title: "Track every modification with immutable timestamps",
+      layout: "rail",
       field: true,
       body: [
-        { p: "An edit to a rule or a record carries the name of whoever made it and the time." },
+        { panel: {
+          label: "Dual-Approval & Modification Log",
+          note: "Live Audit Log",
+          rows: [
+            { label: "Rule update · Architectural guidelines", value: "Recorded", cite: "Sarah M. (President)" },
+            { label: "Second officer sign-off", value: "Confirmed", cite: "John D. (Treasurer)" },
+            { label: "Assessment schedule revision", value: "Verified", cite: "Matched to Bylaws p. 6" },
+          ],
+          footing: { label: "Audit Integrity", value: "Immutable" },
+        } },
+        { p: "An edit to a rule or a record carries the name of whoever made it and the time. Every action has clear accountability." },
+        { rows: [
+          "Every edit logs officer identity, date, and exact changes.",
+          "Dual sign-off records both officers before legal actions proceed.",
+          "Exportable records for CPA reviews and legal inquiries.",
+        ] },
       ],
     },
     {
-      title: "An owner asks for the books",
+      title: "Fulfill owner records requests without digging",
       layout: "rail",
       air: "tight",
       note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
       body: [
         { p: "Record the day the request arrives and what the owner asked for. Common Parcel gathers the records it already holds and shows a response clock only where the rule for that association has been verified." },
-      
         { pull: "The next treasurer should not have to ask where anything is." },
       ],
     },
     {
-      title: "When the treasurer resigns",
+      title: "Zero knowledge lost when volunteers step down",
       layout: "stack",
       field: true,
       body: [
         { p: "The officer who knew where everything was is gone. The next one opens association records that outlast any board." },
+        { coda: "Handing over the association takes five minutes instead of three boxes of loose paper." },
       ],
     },
   ],

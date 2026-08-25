@@ -26,8 +26,8 @@ export const documentsAndAnswers: PageSpec = {
   closer: "Ask your declaration.",
   bands: [
     {
-      title: "Stop hunting for the rule",
-      layout: "stack",
+      title: "Find exact rule citations in seconds",
+      layout: "wide",
       body: [
         { panel: {
           label: "Read from your declaration",
@@ -46,33 +46,45 @@ export const documentsAndAnswers: PageSpec = {
       ],
     },
     {
-      title: "End the argument before it starts",
-      layout: "wide",
+      title: "Back every notice with direct declaration quotes",
+      layout: "rail",
       field: true,
       body: [
+        { panel: {
+          label: "Document Citation Engine",
+          note: "Declaration & Bylaws",
+          rows: [
+            { label: "Resident inquiry", value: "Fence replacement", cite: "Lot 14" },
+            { label: "Bylaw citation", value: "Art. VII §3", cite: "Declaration, p. 18" },
+            { label: "Standard clause", value: "6 ft maximum height", cite: "Matched" },
+            { label: "Application required", value: "ARC Form B", cite: "Attached" },
+          ],
+          footing: { label: "Verification Source", value: "Direct Quote" },
+        } },
         { p: "Every answer arrives with the page it was read from. You can read it yourself, and you can forward it." },
         { coda: "Notices quote your own rules, word for word." },
-      ],
-    },
-    {
-      title: "A records request starts a clock",
-      layout: "rail",
-      body: [
-        { p: "A records request is dated the day it arrives. Where your state sets a deadline, Common Parcel counts it down and gathers what it already holds for the board to review." },
-      
         { pull: "Every answer comes back with the page it came from." },
       ],
     },
     {
-      title: "Do not hold up a closing",
+      title: "Track statutory deadlines automatically",
+      layout: "rail",
+      body: [
+        { p: "A records request is dated the day it arrives. Where your state sets a deadline, Common Parcel counts it down and gathers what it already holds for the board to review." },
+        { coda: "The response clock gives volunteers clear milestones before statutory windows close." },
+      ],
+    },
+    {
+      title: "Speed up real estate closings with instant disclosures",
       layout: "stack",
       field: true,
       body: [
         { p: "When a home sells, the closing needs figures from the association. Common Parcel gathers the ones the board has confirmed and leaves the rest blank rather than guess at them." },
+        { coda: "Title companies receive verified ledgers and document packets without last-minute panic." },
       ],
     },
     {
-      title: "What it will not do",
+      title: "Clear boundaries between software and legal counsel",
       layout: "quiet",
       air: "tight",
       note: ["See security", "/security"],

@@ -23,7 +23,7 @@ export const duesAndPayments: PageSpec = {
   closer: "Get paid without asking twice.",
   bands: [
     {
-      title: "Dues go out on time",
+      title: "Collect dues automatically without manual invoicing",
       layout: "wide",
       body: [
         { panel: {
@@ -48,7 +48,7 @@ export const duesAndPayments: PageSpec = {
       ],
     },
     {
-      title: "Common Parcel never holds your dues money",
+      title: "Funds deposit straight into your association bank account",
       layout: "quiet",
       field: true,
       air: "open",
@@ -60,11 +60,23 @@ export const duesAndPayments: PageSpec = {
       } }],
     },
     {
-      title: "Owners see the same balance you do",
-      layout: "stack",
+      title: "Clear account statements eliminate payment disputes",
+      layout: "rail",
       air: "tight",
       note: ["See the resident portal", "/product/resident-portal"],
-      body: [{ p: "Every owner can open their own statement, from the ledger the treasurer reads. It shows what they owe today and every payment they have made." },
+      body: [
+        { panel: {
+          label: "Owner Account Statement",
+          note: "Lot 41 · Chen",
+          rows: [
+            { label: "Current balance", value: "$0.00" },
+            { label: "Last payment", value: "$285.00", cite: "ACH · March 1" },
+            { label: "Next assessment", value: "$285.00", cite: "Due June 1" },
+            { label: "Statement history", value: "Available", cite: "PDF format" },
+          ],
+          footing: { label: "Account Standing", value: "Current" },
+        } },
+        { p: "Every owner can open their own statement, from the ledger the treasurer reads. It shows what they owe today and every payment they have made." },
         { pull: "Your declaration already says what each lot owes. Nobody should have to type it in again." },
       ],
     },

@@ -25,8 +25,8 @@ export const rulesAndEnforcement: PageSpec = {
   closer: "The same rule for every neighbor.",
   bands: [
     {
-      title: "How one case runs",
-      layout: "stack",
+      title: "Documented violation timeline from notice to hearing",
+      layout: "wide",
       air: "open",
       body: [
         { panel: {
@@ -40,28 +40,43 @@ export const rulesAndEnforcement: PageSpec = {
           ],
           footing: { label: "Fine", value: "Not yet" },
         } },
+        { p: "Common Parcel dates every notice, tracks cure periods, and schedules hearings automatically according to bylaw provisions." },
       ],
     },
     {
-      title: "Where fines get overturned",
+      title: "Eliminate selective enforcement with complete case history",
       layout: "rail",
       field: true,
       body: [
         { p: "The fine that gets challenged is the one for something the board let slide last year. Common Parcel shows every earlier case on that rule before the vote, so the board can enforce community rules fairly and consistently." },
-      ],
-    },
-    {
-      title: "When an owner asks to build",
-      layout: "wide",
-      air: "tight",
-      body: [
-        { p: "A request to paint the house or put up a fence arrives with the rule that governs it and any deadline your documents set. The committee decides." },
-      
+        { rows: [
+          "Historical precedent lookup on every rule.",
+          "Uniform notice templates with exact bylaw citations.",
+          "Complete photo and correspondence logs attached to each lot.",
+        ] },
         { pull: "Every earlier case on that rule, in front of the board before the vote." },
       ],
     },
     {
-      title: "The fine stays locked",
+      title: "Manage architectural reviews and committee approvals",
+      layout: "rail",
+      air: "tight",
+      body: [
+        { panel: {
+          label: "Architectural Review (ARC)",
+          note: "Lot 41 · Chen",
+          rows: [
+            { label: "Project type", value: "Roof & Solar installation" },
+            { label: "Bylaw standard", value: "Guidelines §4.2", cite: "Compliant" },
+            { label: "Committee sign-off", value: "Approved", cite: "ARC Chair & Member" },
+          ],
+          footing: { label: "Application Decision", value: "Permit Issued" },
+        } },
+        { p: "A request to paint the house or put up a fence arrives with the rule that governs it and any deadline your documents set. The committee decides." },
+      ],
+    },
+    {
+      title: "Strict procedural safeguards protect against disputed fines",
       layout: "quiet",
       field: true,
       note: ["Elections and meetings", "/product/meetings-and-voting"],

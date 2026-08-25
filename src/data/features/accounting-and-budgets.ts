@@ -21,55 +21,62 @@ export const accountingAndBudgets: PageSpec = {
   closer: "Books your treasurer can hand over.",
   bands: [
     {
-      title: "Books that match the bank",
+      title: "Clean books that reconcile directly to your bank",
       layout: "wide",
       body: [
         { panel: {
-            label: "Reconciliation",
-            note: "March 31",
+            label: "Monthly Bank Reconciliation",
+            note: "March 31 Close",
             rows: [
               { label: "Transactions matched", meter: 1 },
-              { label: "Deposits", value: "$14,820" },
-              { label: "Vendor payments", value: "$9,404" },
-              { label: "Unmatched", value: "0" },
+              { label: "Dues & assessments collected", value: "$14,820" },
+              { label: "Vendor invoices disbursed", value: "$9,404" },
+              { label: "Unmatched entries", value: "0" },
             ],
-            footing: { label: "Difference", value: "$0" },
+            footing: { label: "Ledger Variance", value: "$0.00" },
         } },
-        /* A coda, not a <p>: tokens.css line 224 zeroes the margin on every
-           <p> in a band body, so a paragraph under a panel sits flush against
-           it. Reported, not fixed here. */
         { coda: "Import a month of bank activity and Common Parcel matches it against the ledger line by line, then flags whatever is left over." },
       ],
     },
     {
-      title: "Show owners how the budget was approved",
+      title: "Defend every budget with recorded board approvals",
       layout: "rail",
       field: true,
       body: [
+        { panel: {
+          label: "Adopted Operating Budget",
+          note: "FY 2026",
+          rows: [
+            { label: "Grounds & lawn care", value: "$18,500", cite: "Contracted rate" },
+            { label: "Property insurance", value: "$6,400", cite: "Policy renewal" },
+            { label: "Reserve fund contribution", value: "$12,000", cite: "Reserve study" },
+            { label: "General repairs & maintenance", value: "$8,200", cite: "Historical average" },
+          ],
+          footing: { label: "Budget Adoption", value: "Approved 5-0" },
+        } },
         { p: "Every draft of a budget is kept. The adopted one carries the meeting that adopted it and the notice that went out beforehand." },
         { coda: "That is the answer when an owner argues about an assessment." },
       ],
     },
     {
-      title: "Special assessments wait for the vote",
+      title: "Automate special assessment billing after member votes",
       layout: "quiet",
       air: "tight",
       body: [{ p: "A special assessment needs the share of votes your documents require. Common Parcel counts them against it and prepares the billing after the board confirms the result." }],
     },
     {
-      title: "Hand it all to the next treasurer",
-      layout: "stack",
+      title: "Export audit-ready financials in seconds",
+      layout: "rail",
       field: true,
       note: ["See dues and payments", "/product/dues-and-payments"],
       body: [
         { rows: [
-          "Monthly financial statements.",
+          "Monthly income and expense statements.",
           "What you budgeted next to what you spent.",
           "Who is behind and by how much.",
           "Every owner's ledger, charge by charge.",
         ] },
         { coda: "A full export any month, with the records attached, in a form an accountant or an auditor can open." },
-      
         { pull: "A treasurer should be able to close the books without learning accounting." },
       ],
     },

@@ -31,7 +31,7 @@ export const vendorsAndInsurance: PageSpec = {
   closer: "See the renewal coming.",
   bands: [
     {
-      title: "What the renewal is costing you",
+      title: "Compare competitive quotes before contracts auto-renew",
       layout: "wide",
       body: [
         { panel: {
@@ -49,23 +49,38 @@ export const vendorsAndInsurance: PageSpec = {
       ],
     },
     {
-      title: "Pay the rate you agreed to",
+      title: "Verify invoice amounts against contracted rates",
       layout: "rail",
       field: true,
       air: "tight",
       note: ["See accounting and budgets", "/product/accounting-and-budgets"],
       body: [
+        { panel: {
+          label: "Contract Rate Audit",
+          note: "Invoice #1042",
+          rows: [
+            { label: "Vendor", value: "GreenThumb Lawn", cite: "Active contract" },
+            { label: "Billed amount", value: "$2,200.00", cite: "Monthly billing" },
+            { label: "Contracted rate", value: "$2,200.00", cite: "Agreement §3" },
+            { label: "Duplicate check", value: "Passed", cite: "First billing for period" },
+          ],
+          footing: { label: "Verification Status", value: "Cleared for payment" },
+        } },
         { p: "Common Parcel checks the invoice against the rate in the agreement. A rate that moved, or a bill sent twice, comes back to the board before the check goes out." },
-      
         { pull: "A contract that renews on its own is a price nobody shopped." },
       ],
     },
     {
-      title: "Your policy has a renewal date too",
-      layout: "stack",
+      title: "Never miss an insurance policy expiration or renewal",
+      layout: "rail",
       body: [
         { p: "Upload the policy and the coverage limit, the deductible and the renewal date come out of it and onto a calendar the whole board can see." },
         { coda: "If the only person who knows the renewal date leaves the board, the date leaves with them." },
+        { rows: [
+          "Tracks policy renewal dates with 90-day and 30-day advance reminders.",
+          "Stores deductible, liability limits, and broker contact info.",
+          "Ensures board transitions retain complete insurance coverage history.",
+        ] },
       ],
     },
   ],
