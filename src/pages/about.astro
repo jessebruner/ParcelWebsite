@@ -1,47 +1,270 @@
 ---
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
-import Band from "../components/Band.astro";
+import PixelSky from "../components/PixelSky.astro";
+import Plat from "../components/Plat.astro";
+
+const BELIEFS = [
+  {
+    n: "01",
+    claim: "A volunteer is not an employee",
+    body: "Most HOA software assumes a full-time property manager sits in it all day. Common Parcel is built for board members fitting association work around a job, a family, and everything else. If a screen requires training or a walkthrough, we need to make it simpler.",
+  },
+  {
+    n: "02",
+    claim: "The money stays yours",
+    body: "Dues go directly into the association’s bank account, in the association’s name. Common Parcel does not hold association funds and has no custody over your balance.",
+  },
+  {
+    n: "03",
+    claim: "Every rule points at where it came from",
+    body: "When the software references a rule, deadline, or late fee, it links directly to the recorded declaration, bylaws, or verified statute. If a rule cannot be confirmed in your documents or jurisdiction, the software marks it unverified instead of guessing.",
+  },
+  {
+    n: "04",
+    claim: "Consequential actions require two officers",
+    body: "A fine or a lien changes what a neighbor owes. Actions that carry legal or financial weight require a second officer to approve before they go out, and any officer can pause a notice for review.",
+  },
+  {
+    n: "05",
+    claim: "Board turnover should not break the association",
+    body: "Board members change with every election. Next year’s treasurer should be able to log in, understand the books, and keep things moving without needing hours of handoff or special training.",
+  },
+  {
+    n: "06",
+    claim: "You can export your records at any time",
+    body: "The meeting minutes, ledgers, and association history belong to the community, not the software. You can export complete records at any time, month to month, with no long-term contract lock-in.",
+  },
+];
+
+const HOMES = [3, 9, 10, 16, 21, 22, 28, 33, 34, 40, 41, 45];
 ---
+
 <Base
-  title="About"
-  description="Common Parcel is built in Detroit for volunteer boards that run the association themselves. Written by one person who read the statutes by hand."
+  title="About Common Parcel"
+  description="Common Parcel is an independent software company in Detroit building tools for self-managed HOAs and condominium associations."
   path="/about"
 >
-  <Hero eyebrow="About">
-    <h1 class="t-display">Built for the board, not the manager</h1>
-    <p class="t-lede">Most software in this category is sold to management companies. It assumes a trained administrator exists. For a self-managed board, that person does not.</p>
+  <Hero seed={401}>
+    <h1 class="t-display">We build software for the people who volunteered to run the association</h1>
+    <p class="t-lede">
+      Common Parcel is an independent software company in Detroit. We build tools for self-managed HOAs and condominium associations to handle dues, records, meetings, notices, and vendor work without hiring a property management company.
+    </p>
   </Hero>
-  <Band title="The difference that produces">
-    <p>There are a few neighbors with day jobs and a legal obligation, and the software has to do the work instead of handing it to somebody.</p>
-    <p class="coda">That is the whole difference, and it shows up in every screen.</p>
-  </Band>
 
-  <Band title="Why the documents matter so much" field>
-    <p>An association is governed by its own declaration and bylaws, which interact with state law differently in every state. No two associations are the same.</p>
-    <p class="coda">That is why generic property software fits this so badly, and why Parcel starts by reading your documents instead of asking you to describe them.</p>
-  </Band>
+  <section class="ab-mission">
+    <div class="page ab-mission-inner">
+      <div class="ab-mission-text">
+        <h2 class="t-sheet">Our mission</h2>
+        <p class="ab-statement">
+          To save HOAs time and money to focus on what matters: building community.
+        </p>
+        <p class="ab-mission-body">
+          Every evening a volunteer spends tracking down a late payment or retyping a violation notice is time that does not go back into the neighborhood. Every dollar that goes to management overhead is a dollar that does not go to maintenance, repairs, or the reserve fund.
+        </p>
+        <p class="ab-mission-body">
+          We built Common Parcel to handle the repeat work and recordkeeping, so running an association takes less time and your budget stays in the community.
+        </p>
+      </div>
+      <div class="ab-mission-art">
+        <Plat cols={6} rows={8} marks={HOMES} settle={0.09} />
+        <p class="ab-art-caption">One association, coming online.</p>
+      </div>
+    </div>
+  </section>
 
-  <Band title="Why it admits what it does not know">
-    <p>A board of volunteers can be sued for what it does. Anything Parcel produces might be read aloud by a lawyer.</p>
-    <p>So a citation that cannot be traced to a page in your own documents is not printed. A statutory clock resting on a provision nobody has read does not run. Where the answer is unknown, the interface says unknown.</p>
-    <p class="coda">That is a slower product than one that guesses. It is the only kind worth having here.</p>
-  </Band>
+  <PixelSky mode="band" scene="dawn" seed={409} />
 
-  <Band title="Who is building it" field note="Email me" noteHref="/contact">
-    <p>Jesse Bruner. Detroit, Michigan.</p>
-    <p>I read the statutes for this by hand, one provision at a time, and recorded where each one came from. There are a few hundred still to read and the product says which.</p>
-  </Band>
+  <section class="ab-beliefs">
+    <div class="page">
+      <h2 class="t-sheet">What we believe</h2>
+      <p class="ab-beliefs-lede">
+        We decided these before writing any code, and we still check new work against them.
+      </p>
+
+      <ol class="ab-belief-grid">
+        {BELIEFS.map((b) => (
+          <li class="ab-belief">
+            <span class="ab-belief-n t-mono-label">{b.n}</span>
+            <h3 class="t-title">{b.claim}</h3>
+            <p>{b.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ab-founder">
+    <div class="page ab-founder-inner">
+      <div class="ab-founder-card">
+        <p class="ab-founder-name">Jesse Bruner</p>
+        <p class="ab-founder-role t-mono-label">Founder</p>
+        <p class="ab-founder-where">Detroit, Michigan</p>
+      </div>
+      <div class="ab-founder-text">
+        <h2 class="t-sheet">Who is building Common Parcel</h2>
+        <p class="ab-founder-body">
+          Common Parcel is designed and built in Detroit by Jesse Bruner.
+        </p>
+        <p class="ab-founder-contact">
+          Have questions about how Common Parcel fits your association? Reach out directly to Jesse at <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <section class="close on-ink">
     <div class="page">
-      <h2 class="t-sheet">Tell me about your association.</h2>
-      <div class="actions"><a class="btn btn--on-ink" href="/demo">Get early access</a></div>
+      <h2 class="t-sheet">Tell us about your association</h2>
+      <p class="close-lede">A person replies, and it is the founder.</p>
+      <div class="actions">
+        <a class="btn btn--on-ink" href="/contact">Get early access</a>
+      </div>
     </div>
   </section>
 </Base>
+
 <style>
+  /* ── Mission ──────────────────────────────────────────────────────────── */
+
+  .ab-mission { border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-mission-inner { display: grid; gap: var(--s-12); align-items: start; }
+  @media (min-width: 900px) {
+    .ab-mission-inner { grid-template-columns: 1.35fr 1fr; gap: clamp(40px, 5vw, 88px); }
+  }
+
+  .ab-statement {
+    margin: var(--s-6) 0 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-headline);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.28;
+    color: var(--ink);
+    max-width: 20em;
+    border-left: 4px solid var(--terracotta);
+    padding-left: var(--s-6);
+  }
+  .ab-mission-body {
+    margin: var(--s-6) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--ink-body);
+    max-width: 40em;
+  }
+
+  .ab-mission-art {
+    background: var(--night);
+    padding: clamp(24px, 3vw, 40px);
+    border: var(--stroke-consequence);
+  }
+  .ab-art-caption {
+    margin: var(--s-6) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+  }
+
+  /* ── Beliefs ──────────────────────────────────────────────────────────── */
+
+  .ab-beliefs { background: var(--field); border-bottom: var(--stroke-rule); padding-block: var(--pad-y); }
+  .ab-beliefs-lede {
+    margin: var(--s-4) 0 0;
+    font-size: var(--t-lede);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 34em;
+  }
+
+  .ab-belief-grid {
+    list-style: none;
+    margin: clamp(32px, 4vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 700px) { .ab-belief-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1080px) { .ab-belief-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .ab-belief {
+    background: var(--card);
+    border: var(--stroke-edge);
+    border-top: 4px solid var(--terracotta);
+    padding: clamp(20px, 2.2vw, 30px);
+    transition: border-color 120ms linear, background-color 120ms linear;
+  }
+  .ab-belief:hover {
+    background: var(--held);
+    border-color: var(--bisque-edge);
+    border-top-color: var(--terracotta);
+  }
+  @media (prefers-reduced-motion: reduce) { .ab-belief { transition: none; } }
+
+  .ab-belief-n { display: block; color: var(--terracotta); letter-spacing: 0.18em; }
+  .ab-belief h3 { margin: var(--s-3) 0 0; color: var(--ink); max-width: 18ch; }
+  .ab-belief p { margin: var(--s-4) 0 0; font-size: var(--t-body); line-height: 1.55; color: var(--ink-body); }
+
+  /* ── Founder ──────────────────────────────────────────────────────────── */
+
+  .ab-founder { padding-block: var(--pad-y); border-bottom: var(--stroke-rule); }
+  .ab-founder-inner { display: grid; gap: var(--s-8); align-items: start; }
+  @media (min-width: 760px) {
+    .ab-founder-inner { grid-template-columns: auto 1fr; gap: clamp(32px, 4vw, 72px); }
+  }
+
+  .ab-founder-card {
+    background: var(--card);
+    border: var(--stroke-consequence);
+    border-top: 4px solid var(--terracotta);
+    padding: clamp(24px, 2.6vw, 34px);
+    min-width: 15em;
+  }
+
+  .ab-founder-name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .ab-founder-role {
+    margin: var(--s-2) 0 0;
+    color: var(--terracotta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .ab-founder-where {
+    margin: var(--s-5) 0 0;
+    padding-top: var(--s-4);
+    border-top: var(--stroke-rule);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-data);
+    color: var(--ink-3);
+  }
+
+  .ab-founder-body {
+    margin: var(--s-6) 0 0;
+    font-size: var(--t-lede);
+    line-height: 1.55;
+    color: var(--ink-body);
+    max-width: 40em;
+  }
+
+  .ab-founder-contact {
+    margin: var(--s-6) 0 0;
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-body);
+    max-width: 40em;
+  }
+
+  /* ── The close ────────────────────────────────────────────────────────── */
+
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
   .close h2 { color: var(--paper); max-width: 26ch; }
+  .close-lede { margin: var(--s-4) 0 0; color: var(--mist); font-size: var(--t-lede); }
   .close .actions { margin-top: var(--s-6); }
 </style>
