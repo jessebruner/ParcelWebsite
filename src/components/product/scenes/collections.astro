@@ -33,9 +33,11 @@
  * held state, so the explicit reduced-motion rule at the bottom says the same
  * thing without leaning on that global.
  *
- * Four words, because a flow diagram's labels ARE the picture: the two that
- * went, the lot, the board, and the status. The block is aria-hidden, so none
- * of them reach a screen reader or a crawler — they are there for the eye.
+ * The letter says what a letter says — a balance and a cure date — because
+ * the owner flagged grey placeholder bars as wireframe-grade across the site.
+ * The labels around it ARE the picture: the two that went, the lot, the
+ * board, and the status. The block is aria-hidden, so none of it reaches a
+ * screen reader or a crawler — it is there for the eye.
  *
  * No <script>: pure CSS needs no IntersectionObserver.
  *
@@ -47,11 +49,11 @@
 ---
 
 <div class="coll">
-  <!-- Already gone. Two notices, spent. -->
+  <!-- Already gone. Two notices, spent: the same letter, smaller. -->
   <div class="coll-past">
     <span class="coll-label">Sent</span>
-    <span class="coll-stub"><i></i><i></i></span>
-    <span class="coll-stub"><i></i><i></i></span>
+    <span class="coll-stub"><i class="coll-stub-tab"></i><i class="coll-stub-ln"></i></span>
+    <span class="coll-stub"><i class="coll-stub-tab"></i><i class="coll-stub-ln"></i></span>
   </div>
 
   <!-- The next one: written, finished, resting on a shut slot. -->
@@ -61,9 +63,8 @@
         <i class="coll-tab"></i>
         <b class="coll-lot">Lot 63</b>
       </span>
-      <i class="coll-ln"></i>
-      <i class="coll-ln coll-ln--b"></i>
-      <i class="coll-ln coll-ln--c"></i>
+      <b class="coll-line">Past-due assessment · $190.00</b>
+      <span class="coll-line coll-line--sub">Cure period ends April 14</span>
       <span class="coll-mark"></span>
       <span class="coll-wipe"></span>
     </div>
@@ -75,7 +76,16 @@
   <!-- Who it is waiting on. One signature in, one open. -->
   <div class="coll-board">
     <span class="coll-label">Board</span>
-    <span class="coll-sig coll-sig--in"></span>
+    <span class="coll-sig coll-sig--in">
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="1" y="4" width="1" height="1" fill="var(--night)" />
+        <rect x="2" y="5" width="1" height="1" fill="var(--night)" />
+        <rect x="3" y="4" width="1" height="1" fill="var(--night)" />
+        <rect x="4" y="3" width="1" height="1" fill="var(--night)" />
+        <rect x="5" y="2" width="1" height="1" fill="var(--night)" />
+        <rect x="6" y="1" width="1" height="1" fill="var(--night)" />
+      </svg>
+    </span>
     <span class="coll-sig coll-sig--out"></span>
     <b class="coll-tag">Held</b>
   </div>
@@ -111,20 +121,21 @@
     gap: var(--s-3);
     margin-bottom: var(--s-5);
   }
-  /* The same object as the sheet below, smaller and greyed: a written notice
-     that has gone. No tick needed; the word beside it is the tick. */
+  /* The same object as the sheet below, smaller: paper, letterhead, one line.
+     A written notice that has gone. No tick needed; the word beside it is
+     the tick. */
   .coll-stub {
     width: 34px;
     height: 22px;
     flex: none;
-    background: var(--on-dark-label);
+    background: var(--paper);
     padding: 0 5px;
     display: grid;
     align-content: center;
     gap: 4px;
   }
-  .coll-stub i { height: 2px; background: var(--night); }
-  .coll-stub i:nth-child(2) { width: 62%; }
+  .coll-stub-tab { width: 14px; height: 3px; background: var(--terracotta); }
+  .coll-stub-ln { height: 2px; width: 82%; background: var(--bisque-edge); }
 
   /* ── The notice ────────────────────────────────────────────────────────── */
 
@@ -156,9 +167,13 @@
   .coll-tab { width: 44px; height: 9px; background: var(--terracotta); flex: none; }
   .coll-lot { color: var(--ink-3); }
 
-  .coll-ln { height: 7px; background: var(--c-edge); }
-  .coll-ln--b { width: 76%; }
-  .coll-ln--c { width: 48%; }
+  /* The notice says what a notice says. Real words, because grey placeholder
+     bars were the exact thing the owner flagged as wireframe-grade. */
+  .coll-line {
+    font: 600 var(--t-micro)/1.3 var(--font-sans);
+    color: var(--ink);
+  }
+  .coll-line--sub { font-weight: 500; color: var(--ink-2); }
 
   /* Finished. Amber, because amber is also the shutter: the mark and the thing
      holding it are the same colour on purpose. */
@@ -216,9 +231,11 @@
     gap: var(--s-3);
   }
   /* Two officers, because the page says a notice waits for both approvals.
-     One in, one open, and the open one is the reason for everything above. */
-  .coll-sig { width: 18px; height: 18px; flex: none; }
+     One in — with a pixel check, so "in" is drawn rather than implied — one
+     open, and the open one is the reason for everything above. */
+  .coll-sig { width: 18px; height: 18px; flex: none; display: grid; place-items: center; }
   .coll-sig--in { background: var(--sand); }
+  .coll-sig--in svg { display: block; width: 12px; height: 12px; shape-rendering: crispEdges; }
   .coll-sig--out { border: 1px solid var(--amber); background: var(--bank); }
   /* The status, in the boxed mono stamp Panel.astro already uses on this page. */
   .coll-tag {
