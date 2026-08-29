@@ -1,0 +1,90 @@
+# Common Parcel
+
+> HOA management software for self-managed homeowners associations. It reads an
+> association's own governing documents and then runs the dues, notices,
+> violations, elections and vendor contracts on the schedule those documents and
+> the relevant state statute already set. From $10 a month. Built in Detroit,
+> Michigan; available anywhere in the United States.
+
+Common Parcel is built for volunteer boards that run the association themselves,
+without a property management company, a bookkeeper, or a designated software
+person. It serves homeowners associations, condominium associations, planned
+communities, and civic or neighbourhood associations of five to a thousand-plus
+doors.
+
+Contact: jesse@commonparcel.com — the founder answers.
+Site: https://commonparcel.com/
+
+## What it does
+
+A board uploads its declaration, bylaws, rules and owner roster. Common Parcel
+reads those documents and extracts the numbers that govern everything else — the
+assessment amount, the due date, the grace period, the late fee, the meeting and
+voting rules — and shows each one with the page and line it came from. Setup
+usually takes about thirty minutes.
+
+From then on it runs the association's recurring work automatically:
+
+- Invoices dues and collects them by autopay, ACH or card
+- Posts receipts to owner ledgers and reconciles the bank
+- Applies late fees and issues delinquency notices and payment reminders
+- Logs violations with photo and citation, and tracks cure windows
+- Carries architectural review requests on statutory response clocks
+- Tracks vendor contracts and bid notices
+- Supports elections with electronic ballots and proxies, and tracks quorum
+- Sends meeting notices and records minutes
+- Writes supported administrative, dues, and governance actions to a numbered audit log
+
+## What the board still does
+
+Anything with legal or financial weight stops for a person. Consequential actions
+such as notices, fines, and liens require two distinct current officers where the
+workflow enforces the gate; there is no batch approval and no way for the
+software to sign on the board's behalf. A typical month leaves the board two
+decisions and about twenty-two minutes of work.
+
+## Custody of funds
+
+Direct settlement with zero software custody. Owners pay through an
+association-connected Stripe account directly to the association's own
+depository bank account. Common Parcel does not hold association funds,
+maintain platform balances, or sit in custody of money.
+
+## Citations
+
+Citations on verified rules. When Common Parcel indexes a statute or attaches
+declaration rules, it cites the exact section. If a citation cannot be verified
+in the association's recorded documents or state code, Common Parcel marks it
+unverified rather than guessing.
+
+## Pricing
+
+Graduated per lot, per month, like a tax bracket: $2.50 each for the first 10
+lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, and $0.50 above 500,
+with a $10 monthly minimum.
+
+- A four-lot association pays $10 a month
+- A 100-lot association pays about $110 a month
+- A 1,000-lot association pays about $513 a month
+
+Everything is included — collections, violations, elections, vendor management,
+documents, and timestamped activity logs with archive manifest reports — with
+no feature tiers and no per-notice charge. Owners pay no fee to pay their dues.
+Civic and neighbourhood associations pay a reduced rate. Billing is month to
+month with no contract, no setup fee, and a full export of ledgers, documents,
+minutes, and audit records with manifest reports available at any time.
+
+## Comparison
+
+Common Parcel extracts parameters from the association's recorded governing
+documents, assists volunteer boards through recurring workflows, and maintains
+an attributed record for every recorded action.
+
+## Migration
+
+Common Parcel provides transition checklists and loads the ledgers, documents,
+and rosters the association receives during onboarding.
+
+## Status
+
+Common Parcel is onboarding founding associations now.
