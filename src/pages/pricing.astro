@@ -70,14 +70,26 @@ const schema = JSON.stringify({
       <div class="pr-heading">
         <p class="t-label">Your price</p>
         <h2 class="t-sheet">See your monthly software price</h2>
-        <p>Move the slider or enter the exact number of lots in your association.</p>
+        <p>Drag to your association's size, or type the exact lot count.</p>
       </div>
-      <RateCalculator brackets={DEFAULT_BRACKETS} minimum={DEFAULT_MINIMUM} lots={60} />
-      <div class="pr-terms" aria-label="Subscription terms">
-        <span>Monthly billing</span>
-        <span>No setup fee</span>
-        <span>Same software features</span>
-      </div>
+      <RateCalculator
+        brackets={DEFAULT_BRACKETS}
+        minimum={DEFAULT_MINIMUM}
+        lots={4}
+        includes={[
+          "Dues invoices",
+          "Online payments when connected",
+          "Collections",
+          "Ledgers and budgets",
+          "Meetings and elections",
+          "Violations and notices",
+          "Architectural requests",
+          "Vendor and insurance records",
+          "Resident portal",
+          "Governing documents",
+          "Association export",
+        ]}
+      />
     </div>
   </section>
 
@@ -172,13 +184,6 @@ const schema = JSON.stringify({
   .pr-heading .t-label { color: var(--amber); }
   .pr-heading h2 { max-width: 18ch; color: var(--paper); }
   .pr-heading > p:last-child { max-width: 48ch; margin: var(--s-4) 0 0; color: var(--mist); }
-  .pr-terms {
-    display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-8); padding-top: var(--s-5);
-    color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label);
-    letter-spacing: 0.12em; text-transform: uppercase;
-  }
-  .pr-terms span::before { content: "✓"; margin-right: var(--s-2); color: var(--amber); }
-
   .pr-included { background: var(--paper); border-bottom: var(--stroke-rule); }
   .pr-section-head { max-width: 46em; }
   .pr-section-head h2 { max-width: 22ch; }
