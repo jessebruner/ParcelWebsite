@@ -7,11 +7,19 @@
  * and a diagram that drew us anywhere on this line would contradict the band
  * underneath it.
  *
+ * The figures are pixel art on a 4px grid, drawn as SVG rects with crispEdges:
+ * the owner is a house with a lit window (the same motif the hero landscapes
+ * are built from), Stripe is a payment card with a chip, and the bank is a
+ * vault door. The first cut of this scene drew the owner as a blob person,
+ * Stripe as three literal stripes, and the bank as a clip-art temple; the
+ * owner of the site called that out by name, so the pun and the temple do not
+ * come back. Every rect sits on the integer grid — no half pixels.
+ *
  * One authored moment, looping: a payment leaves the owner, crosses to Stripe,
- * crosses again, and the bank brightens as it lands. Resting state is the
- * frame the scene holds under `prefers-reduced-motion: reduce` — both payment
- * squares parked at the left of their wire, everything legible, nothing
- * invisible.
+ * crosses again, and the vault brightens as it lands. The figures inherit
+ * currentColor so the landing animation only has to move `color`. Resting
+ * state is the frame the scene holds under `prefers-reduced-motion: reduce` —
+ * both payment squares parked at the left of their wire, everything legible.
  *
  * Three words carry meaning here and the rest is geometry. The block is
  * aria-hidden, so text inside it reaches nobody; the names are on the tiles
@@ -24,14 +32,34 @@
 
 <div class="dues-flow">
   <div class="dues-node">
-    <span class="dues-figure dues-owner"></span>
+    <span class="dues-figure">
+      <!-- House: stepped roof, chimney, lit window, door. 13 x 11 grid. -->
+      <svg class="px px--house" viewBox="0 0 13 11" aria-hidden="true">
+        <rect x="10" y="0" width="1" height="2" fill="currentColor" />
+        <rect x="5" y="0" width="3" height="1" fill="currentColor" />
+        <rect x="4" y="1" width="5" height="1" fill="currentColor" />
+        <rect x="3" y="2" width="7" height="1" fill="currentColor" />
+        <rect x="2" y="3" width="9" height="1" fill="currentColor" />
+        <rect x="3" y="4" width="7" height="7" fill="currentColor" />
+        <rect x="4" y="5" width="2" height="2" class="px-amber" />
+        <rect x="7" y="7" width="2" height="4" class="px-night" />
+      </svg>
+    </span>
     <b>Owner</b>
   </div>
 
   <span class="dues-wire"><i class="dues-pay dues-pay--a"></i></span>
 
   <div class="dues-node">
-    <span class="dues-figure dues-stripe"></span>
+    <span class="dues-figure">
+      <!-- Payment card: chip and two embossed number blocks. 12 x 8 grid. -->
+      <svg class="px px--card" viewBox="0 0 12 8" aria-hidden="true">
+        <rect x="0" y="0" width="12" height="8" fill="currentColor" />
+        <rect x="2" y="2" width="2" height="2" class="px-amber" />
+        <rect x="2" y="5" width="3" height="1" class="px-night" />
+        <rect x="6" y="5" width="4" height="1" class="px-night" />
+      </svg>
+    </span>
     <b>Stripe</b>
   </div>
 
@@ -39,9 +67,18 @@
 
   <div class="dues-node">
     <span class="dues-figure dues-bank">
-      <i class="cap-a"></i><i class="cap-b"></i><i class="cap-c"></i>
-      <span class="dues-cols"><i></i><i></i><i></i><i></i></span>
-      <i class="dues-plinth"></i>
+      <!-- A safe: body, inset door, dial with an amber pixel, handle, feet.
+           12 x 11 grid. -->
+      <svg class="px px--vault" viewBox="0 0 12 11" aria-hidden="true">
+        <rect x="0" y="0" width="12" height="9" fill="currentColor" />
+        <rect x="1" y="1" width="10" height="7" class="px-night" />
+        <rect x="2" y="2" width="8" height="5" fill="currentColor" />
+        <rect x="3" y="3" width="2" height="2" class="px-night" />
+        <rect x="3" y="3" width="1" height="1" class="px-amber" />
+        <rect x="7" y="3" width="1" height="3" class="px-night" />
+        <rect x="1" y="9" width="2" height="2" fill="currentColor" />
+        <rect x="9" y="9" width="2" height="2" fill="currentColor" />
+      </svg>
     </span>
     <b>HOA bank</b>
   </div>
@@ -74,43 +111,23 @@
     white-space: nowrap;
   }
 
-  /* Every figure is drawn from squares off the same 2px grid. */
   .dues-figure {
-    height: 48px;
+    height: 52px;
     display: grid;
     align-content: center;
     justify-items: center;
     color: var(--sand);
   }
+  .px { display: block; shape-rendering: crispEdges; }
+  .px-amber { fill: var(--amber); }
+  .px-night { fill: var(--night); }
 
-  /* Owner: a head and a pair of shoulders. */
-  .dues-owner { position: relative; width: 32px; height: 42px; }
-  .dues-owner::before,
-  .dues-owner::after { content: ""; position: absolute; left: 50%; background: currentColor; }
-  .dues-owner::before { top: 2px; width: 12px; height: 12px; margin-left: -6px; }
-  .dues-owner::after { top: 22px; width: 28px; height: 20px; margin-left: -14px; }
+  /* Whole pixels only: every SVG is its grid times a 4px unit. */
+  .px--house { width: 52px; height: 44px; }
+  .px--card { width: 48px; height: 32px; }
+  .px--vault { width: 48px; height: 44px; }
 
-  /* Stripe: three bars, which is what the name says. */
-  .dues-stripe {
-    width: 34px;
-    height: 31px;
-    background: repeating-linear-gradient(180deg, currentColor 0 7px, transparent 7px 12px);
-  }
-
-  /* The bank: a stepped cornice, four columns, a plinth. Whole-pixel steps,
-     because a smooth pediment is not what this brand draws. */
-  .dues-bank {
-    width: 52px;
-    gap: 2px;
-    animation: dues-land 3.4s linear infinite;
-  }
-  .dues-bank i { background: currentColor; }
-  .dues-bank .cap-a { width: 16px; height: 4px; }
-  .dues-bank .cap-b { width: 34px; height: 4px; }
-  .dues-bank .cap-c { width: 52px; height: 4px; }
-  .dues-cols { display: flex; gap: 8px; height: 18px; }
-  .dues-cols i { width: 7px; height: 100%; }
-  .dues-bank .dues-plinth { width: 52px; height: 6px; }
+  .dues-bank { animation: dues-land 3.4s linear infinite; }
 
   /* The wire between two stations, and the payment on it. */
   .dues-wire { position: relative; display: grid; align-content: center; }
@@ -160,16 +177,10 @@
     }
     .dues-node { min-height: 150px; gap: var(--s-3); padding: var(--s-2); }
     .dues-node b { letter-spacing: 0.04em; }
-    .dues-figure { height: 42px; }
-    .dues-owner { width: 28px; height: 38px; }
-    .dues-owner::before { top: 2px; width: 10px; height: 10px; margin-left: -5px; }
-    .dues-owner::after { top: 20px; width: 24px; height: 18px; margin-left: -12px; }
-    .dues-stripe { width: 28px; height: 26px; background: repeating-linear-gradient(180deg, currentColor 0 6px, transparent 6px 10px); }
-    .dues-bank { width: 42px; }
-    .dues-bank .cap-a { width: 14px; }
-    .dues-bank .cap-b { width: 28px; }
-    .dues-bank .cap-c, .dues-bank .dues-plinth { width: 42px; }
-    .dues-cols { gap: 6px; height: 15px; }
-    .dues-cols i { width: 6px; }
+    .dues-figure { height: 46px; }
+    /* Smaller unit, same grids: 3px per pixel. */
+    .px--house { width: 39px; height: 33px; }
+    .px--card { width: 36px; height: 24px; }
+    .px--vault { width: 36px; height: 33px; }
   }
 </style>
