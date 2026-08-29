@@ -5,23 +5,42 @@ interface Props {
   brackets: Bracket[];
   minimum: number;
   lots?: number;
-  presets?: number[];
 }
 
-const { brackets, minimum, lots = 60, presets = [12, 60, 240, 900] } = Astro.props;
+/**
+ * The slider is logarithmic. Associations cluster between ten and three
+ * hundred lots, and on a linear track to 5,000 that whole population sits in
+ * the first few percent, where one pixel of drag moves the count by dozens.
+ * The range input runs 0 to STEPS and the script maps position to lots with
+ * an exponential curve, so the left half of the track covers 1 to about 70
+ * lots and the right half covers the rest. The same constants live in the
+ * client script below; change one and change the other.
+ */
+const MIN = 1;
+const MAX = 5000;
+const STEPS = 500;
+const toPos = (n: number) => Math.round((STEPS * Math.log(n / MIN)) / Math.log(MAX / MIN));
+const tickAt = (n: number) => (100 * Math.log(n / MIN)) / Math.log(MAX / MIN);
+const ticks = [1, 10, 100, 1000, 5000];
+
+const { brackets, minimum, lots = 60 } = Astro.props;
 const p = price(brackets, lots, minimum);
 const cfg = JSON.stringify({ brackets, minimum });
 const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "lots"}`;
+const startPos = toPos(lots);
 ---
 
 <div class="pc" data-calc data-cfg={cfg}>
   <div class="pc-summary">
-    <div class="pc-total" aria-live="polite" aria-atomic="true">
+    <div class="pc-total">
       <span class="pc-total-label">Monthly software price</span>
       <p class="pc-out">
-        <span class="pc-figure" data-total>{money(p.total)}</span>
-        <span class="pc-per">per month</span>
+        <span class="pc-figure" data-total aria-hidden="true">{money(p.total)}</span>
+        <span class="pc-per" aria-hidden="true">per month</span>
       </p>
+      <span class="pc-sr" data-total-sr aria-live="polite" aria-atomic="true">
+        {money(p.total)} per month
+      </span>
       <p class="pc-perlot" data-perlot>{money(p.perLot)} per lot</p>
       <p class="pc-floor" data-floor hidden={!p.floored}>
         The rate card adds to <span data-raw>{money(p.raw)}</span>. The {money(minimum, 0)} monthly minimum applies.
@@ -30,7 +49,7 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
 
     <div class="pc-control">
       <div class="pc-control-head">
-        <label class="pc-label" for="lots">How many lots are in your association?</label>
+        <label class="pc-label" for="lots">Lots in your association</label>
         <span class="pc-count">
           <input
             id="lots"
@@ -49,41 +68,38 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
         </span>
       </div>
 
-      <input
-        class="pc-range"
-        type="range"
-        min="1"
-        max="5000"
-        step="1"
-        value={lots}
-        aria-label="Association lot count"
-        aria-valuetext={count(lots)}
-        data-range
-      />
-      <div class="pc-range-labels" aria-hidden="true">
-        <span>1 lot</span>
-        <span>5,000 lots</span>
+      <div class="pc-slider">
+        <input
+          class="pc-range"
+          type="range"
+          min="0"
+          max={STEPS}
+          step="1"
+          value={startPos}
+          style={`--fill: ${(100 * startPos) / STEPS}%`}
+          aria-label="Association lot count"
+          aria-valuemin="1"
+          aria-valuemax="5000"
+          aria-valuenow={lots}
+          aria-valuetext={count(lots)}
+          data-range
+        />
+        <div class="pc-ticks" aria-hidden="true">
+          {ticks.map((n) => (
+            <span style={`left: ${tickAt(n)}%`}>{n.toLocaleString("en-US")}</span>
+          ))}
+        </div>
       </div>
 
       <p class="pc-hint" id="lots-hint">Count each unit that owes an assessment. Common areas do not count.</p>
-
-      <div class="pc-presets" role="group" aria-label="Try a common association size">
-        <span class="pc-presets-label" aria-hidden="true">Try</span>
-        {presets.map((n) => (
-          <button
-            type="button"
-            class="pc-preset"
-            data-preset={n}
-            aria-label={count(n)}
-            aria-pressed={n === lots ? "true" : "false"}
-          >{n}</button>
-        ))}
-      </div>
     </div>
   </div>
 
   <details class="pc-details">
-    <summary>Show how this price is calculated</summary>
+    <summary>
+      <span class="pc-sum-label">How this price is calculated</span>
+      <span class="pc-sum-mark" aria-hidden="true"></span>
+    </summary>
     <div class="pc-sheet">
       <div class="pc-head">
         <span class="pc-head-label" id="pc-working">Graduated rate card</span>
@@ -132,18 +148,19 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
 
 <style>
   .pc { border: 1.5px solid var(--on-dark-tile); background: var(--night-hover); }
-  .pc-summary { display: grid; gap: clamp(28px, 4vw, 64px); padding: clamp(24px, 4vw, 56px); }
+  .pc-summary { display: grid; gap: clamp(28px, 4vw, 56px); padding: clamp(24px, 4vw, 56px); }
   @media (min-width: 860px) {
-    .pc-summary { grid-template-columns: minmax(15em, 0.85fr) minmax(20em, 1.15fr); align-items: end; }
+    .pc-summary { grid-template-columns: minmax(15em, 0.9fr) minmax(20em, 1.1fr); align-items: center; }
+    .pc-control { border-left: 1px solid var(--on-dark-rule); padding-left: clamp(28px, 4vw, 56px); }
   }
 
-  .pc-total-label, .pc-presets-label, .pc-head-label, .pc-head-note, .pc-range-labels {
+  .pc-total-label, .pc-head-label, .pc-head-note, .pc-ticks {
     font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em; text-transform: uppercase;
   }
   .pc-total-label { color: var(--on-dark-label); }
   .pc-out { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-3); margin: var(--s-3) 0 0; }
   .pc-figure {
-    color: var(--amber); font-family: var(--font-mono); font-size: clamp(64px, 10vw, 132px);
+    display: inline-block; min-width: 5ch; color: var(--amber); font-family: var(--font-mono); font-size: clamp(60px, 9vw, 118px);
     font-variant-numeric: tabular-nums; letter-spacing: -0.06em; line-height: 0.86;
   }
   .pc-per {
@@ -153,37 +170,83 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
   .pc-perlot { margin: var(--s-4) 0 0; color: var(--paper); font-family: var(--font-mono); font-size: var(--t-mono-data); font-variant-numeric: tabular-nums; }
   .pc-floor { max-width: 34ch; margin: var(--s-3) 0 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
   .pc-floor[hidden] { display: none; }
+  .pc-sr {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
 
-  .pc-control-head { display: flex; align-items: end; justify-content: space-between; gap: var(--s-4); }
-  .pc-label { max-width: 21ch; color: var(--paper); font-family: var(--font-sans); font-size: var(--t-body); font-weight: 650; line-height: 1.3; }
+  .pc-control-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+  .pc-label { color: var(--paper); font-family: var(--font-sans); font-size: var(--t-body); font-weight: 650; line-height: 1.3; }
   .pc-count {
-    display: inline-flex; align-items: baseline; gap: var(--s-2); min-width: 122px; padding: var(--s-2) var(--s-3);
-    border: 1.5px solid var(--amber); background: var(--paper); color: var(--ink-3); font-family: var(--font-mono);
-    font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase;
+    display: inline-flex; align-items: baseline; gap: var(--s-2); padding: var(--s-2) var(--s-3);
+    border: 1.5px solid var(--on-dark-tile); background: var(--night); color: var(--on-dark-label);
+    font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase;
+    transition: border-color 140ms ease;
   }
+  .pc-count:focus-within { border-color: var(--amber); }
   .pc-input {
-    width: 5ch; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--ink);
-    font-family: var(--font-mono); font-size: var(--t-title); font-variant-numeric: tabular-nums;
+    width: 5ch; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--paper);
+    font-family: var(--font-mono); font-size: var(--t-title); font-variant-numeric: tabular-nums; text-align: right;
   }
-  .pc-range { width: 100%; min-height: 44px; margin-top: var(--s-5); accent-color: var(--amber); cursor: ew-resize; }
-  .pc-range-labels { display: flex; justify-content: space-between; margin-top: -6px; color: var(--on-dark-label); }
-  .pc-hint { max-width: 42ch; margin: var(--s-3) 0 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
-  .pc-presets { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); margin-top: var(--s-3); }
-  .pc-presets-label { color: var(--on-dark-label); }
-  .pc-preset {
-    display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border: 1px solid var(--on-dark-tile);
-    background: transparent; color: var(--amber); font-family: var(--font-mono); font-size: var(--t-mono-data); cursor: pointer;
+  .pc-input:focus-visible { outline: none; }
+  .pc-input::-webkit-outer-spin-button, .pc-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .pc-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+  .pc-slider { position: relative; margin-top: var(--s-5); }
+  .pc-range {
+    -webkit-appearance: none; appearance: none;
+    display: block; width: 100%; min-height: 44px; margin: 0; background: transparent; cursor: pointer;
   }
-  .pc-preset:hover { background: var(--night-hover); }
-  .pc-preset[aria-pressed="true"] { border-color: var(--paper); background: var(--paper); color: var(--ink); }
+  .pc-range::-webkit-slider-runnable-track {
+    height: 3px;
+    background: linear-gradient(to right, var(--amber) var(--fill, 50%), var(--on-dark-tile) var(--fill, 50%));
+  }
+  .pc-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; margin-top: -8.5px;
+    background: var(--paper); border: 3px solid var(--amber); border-radius: 0;
+    transition: box-shadow 140ms ease;
+  }
+  .pc-range:hover::-webkit-slider-thumb, .pc-range:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 6px rgba(232, 168, 124, 0.22);
+  }
+  .pc-range::-moz-range-track {
+    height: 3px;
+    background: linear-gradient(to right, var(--amber) var(--fill, 50%), var(--on-dark-tile) var(--fill, 50%));
+  }
+  .pc-range::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--paper); border: 3px solid var(--amber); border-radius: 0;
+    transition: box-shadow 140ms ease;
+  }
+  .pc-range:hover::-moz-range-thumb, .pc-range:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 6px rgba(232, 168, 124, 0.22);
+  }
+  .pc-range:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+  .pc-ticks { position: relative; height: 16px; margin-top: 2px; color: var(--on-dark-label); }
+  .pc-ticks span { position: absolute; top: 0; transform: translateX(-50%); }
+  .pc-ticks span:first-child { transform: none; }
+  .pc-ticks span:last-child { transform: translateX(-100%); }
+
+  .pc-hint { max-width: 42ch; margin: var(--s-5) 0 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
 
   .pc-details { border-top: 1px solid var(--on-dark-rule); }
   .pc-details summary {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
     min-height: 52px; padding: 14px clamp(24px, 4vw, 56px); color: var(--paper);
-    font-family: var(--font-sans); font-weight: 650; cursor: pointer;
+    font-family: var(--font-sans); font-weight: 650; cursor: pointer; list-style: none;
   }
+  .pc-details summary::-webkit-details-marker { display: none; }
   .pc-details summary:hover { background: var(--night-hover); }
   .pc-details[open] summary { border-bottom: 1px solid var(--on-dark-rule); }
+  .pc-sum-mark { position: relative; width: 14px; height: 14px; flex: none; }
+  .pc-sum-mark::before, .pc-sum-mark::after {
+    content: ""; position: absolute; background: var(--amber); transition: transform 160ms ease;
+  }
+  .pc-sum-mark::before { left: 0; top: 6px; width: 14px; height: 2px; }
+  .pc-sum-mark::after { left: 6px; top: 0; width: 2px; height: 14px; }
+  .pc-details[open] .pc-sum-mark::after { transform: scaleY(0); }
   .pc-sheet { margin: clamp(20px, 3vw, 40px); border: var(--stroke-consequence); background: var(--paper); }
   .pc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 11px 18px; background: var(--field); }
   .pc-head-label { color: var(--ink-2); }
@@ -202,9 +265,10 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
   .pc-sheet tfoot tr[hidden] { display: none; }
 
   @media (max-width: 560px) {
-    .pc-control-head { align-items: start; flex-direction: column; }
-    .pc-count { min-width: 0; }
+    .pc-control-head { align-items: start; flex-direction: column; gap: var(--s-3); }
     .pc-sheet { margin-inline: var(--s-3); }
+    /* On a narrow track the 1,000 label runs into 5,000. */
+    .pc-ticks span:nth-child(4) { display: none; }
   }
 </style>
 
@@ -212,6 +276,22 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
   import { price, money, clampLots, type Bracket } from "./brackets";
 
   interface Cfg { brackets: Bracket[]; minimum: number; }
+
+  // Mirrors the constants in the frontmatter above: the track is 0..STEPS and
+  // position maps to lots exponentially, so small associations get most of it.
+  const MIN = 1;
+  const MAX = 5000;
+  const STEPS = 500;
+  const LN = Math.log(MAX / MIN);
+  const toPos = (lots: number) => Math.round((STEPS * Math.log(lots / MIN)) / LN);
+  // Snap to coarser grids as the counts grow, so dragging clicks through
+  // round numbers instead of flickering through 4,113.
+  const toLots = (pos: number) => {
+    const raw = MIN * Math.exp((LN * pos) / STEPS);
+    const snap = raw >= 1500 ? 100 : raw >= 400 ? 25 : raw >= 150 ? 10 : raw >= 40 ? 5 : 1;
+    return clampLots(Math.round(raw / snap) * snap);
+  };
+
   const root = document.querySelector<HTMLElement>("[data-calc]");
   if (root) {
     const cfg: Cfg = JSON.parse(root.dataset.cfg!);
@@ -219,13 +299,42 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
     const range = root.querySelector<HTMLInputElement>("[data-range]")!;
     const q = <T extends Element>(selector: string) => root.querySelector<T>(selector)!;
     const n = (value: number) => value.toLocaleString("en-US");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+
+    // The figure eases to its new value; the screen-reader copy of it does
+    // not, so the live region announces once per change instead of per frame.
+    const figure = q<HTMLElement>("[data-total]");
+    let anim = 0;
+    let shown = price(cfg.brackets, clampLots(Number(input.value)), cfg.minimum).total;
+    const showTotal = (to: number) => {
+      cancelAnimationFrame(anim);
+      if (reduced.matches || to === shown) {
+        shown = to;
+        figure.textContent = money(to);
+        return;
+      }
+      const from = shown;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / 240);
+        const eased = 1 - Math.pow(1 - t, 3);
+        shown = from + (to - from) * eased;
+        figure.textContent = money(shown);
+        if (t < 1) anim = requestAnimationFrame(tick);
+        else shown = to;
+      };
+      anim = requestAnimationFrame(tick);
+    };
 
     const render = (lotCount: number, source?: HTMLInputElement) => {
       const result = price(cfg.brackets, lotCount, cfg.minimum);
       if (source !== input) input.value = String(lotCount);
-      if (source !== range) range.value = String(lotCount);
+      if (source !== range) range.value = String(toPos(lotCount));
+      range.style.setProperty("--fill", `${(100 * Number(range.value)) / STEPS}%`);
+      range.setAttribute("aria-valuenow", String(lotCount));
       range.setAttribute("aria-valuetext", `${n(lotCount)} ${lotCount === 1 ? "lot" : "lots"}`);
-      q<HTMLElement>("[data-total]").textContent = money(result.total);
+      showTotal(result.total);
+      q<HTMLElement>("[data-total-sr]").textContent = `${money(result.total)} per month`;
       q<HTMLElement>("[data-perlot]").textContent = `${money(result.perLot)} per lot`;
       q<HTMLElement>("[data-count]").textContent = `${n(result.lots)} ${result.lots === 1 ? "lot" : "lots"}`;
       q<HTMLElement>("[data-foot-lots]").textContent = n(result.lots);
@@ -240,10 +349,6 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
         row.querySelector<HTMLElement>("[data-band-lots]")!.textContent = n(band.lots);
         row.querySelector<HTMLElement>("[data-band-amount]")!.textContent = money(band.amount);
       });
-
-      for (const button of root.querySelectorAll<HTMLButtonElement>("[data-preset]")) {
-        button.setAttribute("aria-pressed", String(Number(button.dataset.preset) === lotCount));
-      }
     };
 
     input.addEventListener("input", () => render(clampLots(Number(input.value)), input));
@@ -252,9 +357,22 @@ const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "
       input.value = String(lotCount);
       render(lotCount, input);
     });
-    range.addEventListener("input", () => render(clampLots(Number(range.value)), range));
-    for (const button of root.querySelectorAll<HTMLButtonElement>("[data-preset]")) {
-      button.addEventListener("click", () => render(clampLots(Number(button.dataset.preset))));
-    }
+    range.addEventListener("input", () => render(toLots(Number(range.value)), range));
+
+    // Arrow keys step the lot count itself, on the same grid the drag snaps
+    // to. Stepping the track position instead leaves presses that move the
+    // thumb a pixel and the count not at all.
+    range.addEventListener("keydown", (event) => {
+      const lots = clampLots(Number(input.value));
+      const grid = lots >= 1500 ? 100 : lots >= 400 ? 25 : lots >= 150 ? 10 : lots >= 40 ? 5 : 1;
+      let next: number | null = null;
+      if (event.key === "ArrowRight" || event.key === "ArrowUp") next = lots + grid;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next = lots - grid;
+      else if (event.key === "Home") next = MIN;
+      else if (event.key === "End") next = MAX;
+      if (next === null) return;
+      event.preventDefault();
+      render(clampLots(next));
+    });
   }
 </script>
