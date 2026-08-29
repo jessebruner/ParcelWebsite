@@ -1,0 +1,85 @@
+---
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import Band from "../../components/Band.astro";
+import Blocks from "../../components/Blocks.astro";
+import { POSTS } from "../../data/posts";
+
+/** A stable seed per page: the same slug always paints the same treeline. */
+const seedFor = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) || 7;
+
+export function getStaticPaths() {
+  return POSTS.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+const fmt = (iso: string) =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.description,
+  datePublished: post.published,
+  dateModified: post.checked,
+  inLanguage: "en-US",
+  author: { "@type": "Person", name: "Jesse Bruner", email: "jesse@commonparcel.com" },
+  publisher: { "@id": "https://commonparcel.com/#organization" },
+  mainEntityOfPage: `https://commonparcel.com/blog/${post.slug}`,
+});
+---
+
+<Base
+  title={post.title}
+  description={post.description}
+  path={`/blog/${post.slug}`}
+  reviewed={fmt(post.checked)}
+  schema={schema}
+>
+  <Hero eyebrow={post.topic} compact seed={seedFor(post.slug)}>
+    <h1 class="t-display">{post.h1}</h1>
+    <p class="t-lede">{post.lede}</p>
+    <p class="byline">
+      Jesse Bruner · <time datetime={post.published}>{fmt(post.published)}</time>
+    </p>
+  </Hero>
+
+  {post.bands.map((band) => (
+    <Band title={band.title} field={band.field} note={band.note?.[0]} noteHref={band.note?.[1]}>
+      <Blocks body={band.body} />
+    </Band>
+  ))}
+
+  <Band title="What Parcel does about it">
+    <p>{post.productNote}</p>
+    <p class="coda"><a href={post.cta.href}>{post.cta.label}</a></p>
+  </Band>
+
+  <Band title="More" field>
+    <ul class="rows">
+      {others.map((o) => (
+        <li>
+          <a href={`/blog/${o.slug}`}>{o.short}</a>
+          <span class="topic t-mono"> · {o.topic}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="foot t-mono">
+      Published {fmt(post.published)}. Last checked {fmt(post.checked)}. {post.footnote}
+    </p>
+  </Band>
+</Base>
+
+<style>
+  h1 { max-width: 24ch; }
+  .byline {
+    margin: clamp(22px, 2.6vw, 32px) 0 0; padding-top: var(--s-4);
+    border-top: 1px solid var(--night-rule);
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-dark-label);
+  }
+  .topic { color: var(--ink-3); }
+  .foot { color: var(--ink-3); margin-top: var(--s-8) !important; }
+</style>

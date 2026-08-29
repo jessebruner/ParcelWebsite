@@ -1,0 +1,76 @@
+---
+/**
+ * The masthead, matched to the homepage's.
+ *
+ * The homepage is the original bundle and carries its own masthead. Two
+ * different navigations on one site is the first thing anybody notices, so this
+ * one reproduces that bar exactly: the same lockup, the same mono links at the
+ * same size and tracking, the same terracotta block stretching full height, and
+ * the same underline that wipes in from the left on hover.
+ *
+ * NO DROPDOWNS, for now, and on purpose. The bundle cannot render an Astro
+ * component, so a panel here would be a panel the homepage does not have. When
+ * the homepage moves into Astro both gain them together.
+ *
+ * The links come from src/data/routes.ts, and tools/patch-homepage-nav.mjs
+ * writes the same list into the bundle from the same file, so the two bars
+ * cannot list different pages.
+ */
+import Mark from "./Mark.astro";
+import { TOP_NAV, PRODUCT, COMPARE } from "../data/routes";
+
+/* The bundle's bar is flat, so a panel trigger becomes a link to the first page
+   behind it. Same order, same labels. */
+const LINKS = TOP_NAV.map((item) =>
+  item.panel === "product"
+    ? { href: PRODUCT[0].path, label: item.label }
+    : item.panel === "compare"
+      ? { href: COMPARE[0].path, label: item.label }
+      : { href: item.path!, label: item.label }
+);
+
+const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const section = (href: string) =>
+  href.startsWith("/product") ? "/product" : href.startsWith("/vs") ? "/vs" : href;
+const isCurrent = (href: string) =>
+  here === href || (section(href).startsWith("/") && here.startsWith(section(href)) && section(href) !== href);
+---
+
+<header class="mast">
+  <div class="lockup-pad">
+    <a class="lockup" href="/">
+      <Mark size={34} />
+      <span class="wordmark">Common Parcel</span>
+    </a>
+  </div>
+
+  <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="nav" aria-label="Main">
+    <div class="nav-links">
+      {LINKS.map((l) => (
+        <a class:list={["navlink", { on: isCurrent(l.href) }]} href={l.href}
+           aria-current={here === l.href ? "page" : undefined}>{l.label}</a>
+      ))}
+    </div>
+    <a class="nav-cta" href="/demo">Get early access</a>
+  </nav>
+</header>
+
+
+<script>
+  const mast = document.querySelector<HTMLElement>(".mast");
+  const burger = mast?.querySelector<HTMLButtonElement>(".burger");
+  burger?.addEventListener("click", () => {
+    const open = mast!.hasAttribute("data-open");
+    open ? mast!.removeAttribute("data-open") : mast!.setAttribute("data-open", "");
+    burger.setAttribute("aria-expanded", String(!open));
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    mast?.removeAttribute("data-open");
+    burger?.setAttribute("aria-expanded", "false");
+  });
+</script>

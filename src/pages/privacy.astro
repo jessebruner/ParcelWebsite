@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Privacy"
+  description="What Common Parcel collects, who owns association records, and how to get them out."
+  path="/privacy"
+>
+  <Hero eyebrow="Privacy">
+    <h1 class="t-display">Privacy</h1>
+    <p class="t-lede">The full policy is with counsel. What follows is factual and will not change when it lands.</p>
+  </Hero>
+  <Band title="Who owns the records">
+    <p>The association owns its records. Parcel processes them on the association's behalf and holds no claim to them.</p>
+  </Band>
+
+  <Band title="What that means in practice" field>
+    <ul class="rows"><li>A full export of ledgers, documents, minutes and the record is available any month.</li><li>Reads are logged as well as writes.</li><li>Owners pay into the association's own bank account. Parcel is not in the payment path.</li><li>A resident sees their own lots and nothing else.</li></ul>
+  </Band>
+
+  <Band title="Questions about your data" note="Email the founder" noteHref="/contact">
+    <p>Write to <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a> and I will answer directly.</p>
+  </Band>
+
+</Base>

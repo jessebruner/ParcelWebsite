@@ -1,0 +1,51 @@
+---
+/**
+ * A ROW OF COUNTED THINGS.
+ *
+ * Ruled cells, mono figures, one label each. Terracotta on paper is 6.36:1, so
+ * the figure can carry the brand at display size and still be read by somebody
+ * who is not looking hard.
+ *
+ * The last cell is the one that matters, and it is not styled to hide: a page
+ * that draws "read" large and "not read" small has already started lying.
+ */
+interface Item {
+  figure: string;
+  label: string;
+}
+interface Props { items: Item[] }
+const { items } = Astro.props;
+---
+
+<ul class="figs">
+  {items.map((i) => (
+    <li>
+      <span class="fig">{i.figure}</span>
+      <span class="lab">{i.label}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .figs {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: var(--s-5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: var(--stroke-consequence);
+    padding-top: var(--s-5);
+  }
+  @media (min-width: 760px) { .figs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .figs > li { display: flex; flex-direction: column; gap: var(--s-2); }
+
+  .fig {
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: var(--t-figure); line-height: 1; letter-spacing: -0.02em;
+    color: var(--terracotta);
+  }
+  .lab {
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+    text-wrap: balance;
+  }
+</style>

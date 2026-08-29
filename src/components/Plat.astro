@@ -1,0 +1,23 @@
+---
+/**
+ * A plat: lots as tiles, one marked. The tile motif is licensed for the plat by
+ * Tile.tsx, and each tile carries a bottom edge one eleventh of its size.
+ *
+ * Decorative here, so aria-hidden. It is not the band and it is not the margin.
+ */
+interface Props { cols?: number; rows?: number; mark?: number; }
+const { cols = 6, rows = 4, mark = 9 } = Astro.props;
+const cells = Array.from({ length: cols * rows }, (_, i) => i);
+---
+<div class="plat" aria-hidden="true" style={`--cols:${cols}`}>
+  {cells.map(i => <span class:list={["lot", { on: i === mark }]}></span>)}
+</div>
+
+<style>
+  .plat { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 8px; width: 100%; max-width: 22em; }
+  .lot {
+    aspect-ratio: 1; display: block;
+    background: linear-gradient(to bottom, var(--on-dark-tile) 0 90.909%, var(--on-dark-tile-edge) 90.909% 100%);
+  }
+  .lot.on { background: linear-gradient(to bottom, var(--amber) 0 90.909%, var(--amber-edge) 90.909% 100%); }
+</style>

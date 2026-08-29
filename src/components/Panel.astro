@@ -1,0 +1,144 @@
+---
+/**
+ * THE SHEET. The homepage's product panel, made reusable.
+ *
+ * Construction copied from the original: a 1.5px ink edge on paper, a night
+ * header carrying a label on the left and a figure on the right, then rows.
+ * That is the enforcement tier, so the edge is the consequence stroke and the
+ * header is the only dark thing in it.
+ *
+ * Rows take three shapes, because the homepage's panels do:
+ *   plain   a label and a value
+ *   cited   a label, a value, and where the value came from
+ *   meter   a label, a value, and a filled bar
+ *
+ * Every figure here is demo data on a marketing page, which is why the panel
+ * always carries its caption. A board should never mistake it for their numbers.
+ */
+export interface Row {
+  label: string;
+  value?: string;
+  /** Rendered in mono under the value. A page reference, a statute, a date. */
+  cite?: string;
+  /** 0 to 1. Draws a bar rather than a value. */
+  meter?: number;
+  /** Small uppercase chip on the right. */
+  chip?: string;
+  /** Marks the row as still running rather than settled. */
+  pending?: boolean;
+}
+
+interface Props {
+  label: string;
+  note?: string;
+  rows: Row[];
+  /** Reconciles to the rows above it. Every list here ends in a footing. */
+  footing?: { label: string; value: string };
+  caption?: string;
+}
+
+const { label, note, rows, footing, caption = "Sample data" } = Astro.props;
+---
+
+<figure class="sheet">
+  <div class="head">
+    <span class="lab">{label}</span>
+    {note && <span class="note">{note}</span>}
+  </div>
+
+  <div class="rows">
+    {rows.map((r) => (
+      <div class:list={["row", { pending: r.pending }]}>
+        <span class="rl">
+          {r.label}
+          {r.cite && <span class="cite">{r.cite}</span>}
+        </span>
+        {r.meter !== undefined ? (
+          <span class="meter" aria-hidden="true"><span style={`width:${Math.round(r.meter * 100)}%`}></span></span>
+        ) : r.chip ? (
+          <span class="chip">{r.chip}</span>
+        ) : (
+          <span class="rv">{r.value}</span>
+        )}
+      </div>
+    ))}
+  </div>
+
+  {footing && (
+    <div class="foot">
+      <span>{footing.label}</span>
+      <span class="fv">{footing.value}</span>
+    </div>
+  )}
+
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .sheet {
+    border: var(--stroke-consequence);
+    background: var(--paper);
+    margin: 0;
+  }
+
+  .head {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+    padding: 11px 18px;
+    background: var(--night);
+  }
+  .lab, .note {
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .lab { color: var(--on-dark-label); }
+  .note { color: var(--sand); white-space: nowrap; }
+
+  .rows { padding: 6px 18px 10px; }
+  .row {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+    padding-block: 10px;
+    border-bottom: var(--stroke-hairline);
+  }
+  .row:last-child { border-bottom: none; }
+  /* A clock still running. Clay fills and never sets text, so it is the bar. */
+  .row.pending .rv { color: var(--ink-3); }
+
+  .rl { font-size: var(--t-body); color: var(--ink); min-width: 0; }
+  .cite {
+    display: block; margin-top: 2px;
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta);
+  }
+  .rv {
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: var(--t-mono-data); color: var(--ink); white-space: nowrap;
+  }
+  .chip {
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--paper); background: var(--terracotta);
+    padding: 3px 8px; white-space: nowrap;
+  }
+
+  .meter { display: block; width: 42%; height: 12px; background: var(--field); border: 1px solid var(--c-edge); }
+  .meter > span { display: block; height: 100%; background: var(--clay); }
+
+  .foot {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+    margin: 0 18px; padding: 12px 0;
+    border-top: var(--stroke-consequence);
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .fv {
+    font-size: var(--t-title); letter-spacing: -0.02em; text-transform: none;
+    color: var(--terracotta); font-variant-numeric: tabular-nums;
+  }
+
+  figcaption {
+    padding: 8px 18px 12px;
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+    border-top: var(--stroke-hairline);
+  }
+</style>

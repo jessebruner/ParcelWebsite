@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Band from "../components/Band.astro";
+---
+<Base
+  title="Terms"
+  description="Billing, cancellation, export, and what Common Parcel is not."
+  path="/terms"
+>
+  <Hero eyebrow="Terms">
+    <h1 class="t-display">Terms</h1>
+    <p class="t-lede">The full terms are with counsel. The commercial ones below are settled and will not change when they land.</p>
+  </Hero>
+  <Band title="Billing">
+    <ul class="rows"><li>Monthly. No contract and no setup fee.</li><li>Priced per lot on the published rate card, with a monthly minimum.</li><li>Migration is included.</li></ul>
+  </Band>
+
+  <Band title="Leaving" field>
+    <p>Cancel any month. A full export of ledgers, documents, minutes and the record is available in the month you leave.</p>
+  </Band>
+
+  <Band title="What Parcel is not" note="See the price" noteHref="/pricing">
+    <p>Parcel is not a law firm and does not give legal advice. It records what your documents and your state's statute say, and where each came from.</p>
+    <p class="coda">Anything with legal weight waits for two officers to sign. That is a product constraint, not a setting.</p>
+  </Band>
+
+</Base>

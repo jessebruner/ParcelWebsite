@@ -1,0 +1,97 @@
+---
+/**
+ * EVERY JURISDICTION, AND HOW MUCH OF IT HAS BEEN READ.
+ *
+ * Fifty-three cells, each carrying its real ratio. The bar is `--clay`, which
+ * fills and never sets text, so the quantity is a length and the numbers stay
+ * ink. A jurisdiction nobody has opened draws no bar at all, which is the point:
+ * the empty cells are as visible as the full ones.
+ *
+ * Not tiles. The tile means a lot's status and is the product's, not the site's,
+ * and a warm square standing for a state would be the same square meaning two
+ * things. These are plain ruled cells.
+ *
+ * The visible code and ratio are hidden from assistive tech and replaced by one
+ * sentence per cell, because "FL 12/15" is read aloud as "F L twelve slash
+ * fifteen".
+ */
+import { COVERAGE, NAMES, TOTALS, MEASURED_ON } from "./coverage";
+---
+
+<figure class="cov">
+  <figcaption class="t-label">Provisions read, of provisions held</figcaption>
+
+  <ul class="grid">
+    {COVERAGE.map(([code, read, held]) => (
+      <li class:list={["cell", { none: read === 0, full: read === held }]}>
+        <span aria-hidden="true" class="line">
+          <span class="code">{code}</span>
+          <span class="ratio">{read}/{held}</span>
+        </span>
+        <span class="vh">{NAMES[code]}: {read} of {held} read</span>
+        <span class="bar" aria-hidden="true"><span style={`width:${(read / held) * 100}%`}></span></span>
+      </li>
+    ))}
+  </ul>
+
+  <p class="foot">
+    <span>{TOTALS.read} of {TOTALS.held} read</span>
+    <span class="on">Counted {MEASURED_ON}</span>
+  </p>
+</figure>
+
+<style>
+  .cov { margin: 0; }
+  .cov > figcaption { margin-bottom: var(--s-3); }
+
+  /* Ruled by cell borders rather than by a gap over a coloured ground. With a
+     gap the container's colour shows through the empty tracks of the last row,
+     which draws a band of nothing across a figure whose whole subject is what is
+     missing. Borders on the cells let a short final row simply end. */
+  .grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+    border-top: var(--stroke-edge);
+    border-left: var(--stroke-edge);
+  }
+
+  .cell {
+    background: var(--paper);
+    border-right: var(--stroke-edge);
+    border-bottom: var(--stroke-edge);
+    padding: var(--s-2) var(--s-2) var(--s-1);
+  }
+  .cell.full { background: var(--card); }
+  .cell.none { background: var(--field); }
+
+  .line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-1); }
+  .code {
+    font-family: var(--font-mono); font-size: var(--t-mono-label); font-weight: 500;
+    letter-spacing: 0.08em; color: var(--ink);
+  }
+  .ratio {
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    font-variant-numeric: tabular-nums; color: var(--ink-3);
+  }
+
+  /* A length, not a colour on text. An unread jurisdiction draws nothing. */
+  .bar { display: block; height: 4px; margin-top: 6px; background: var(--c-rule); }
+  .bar > span { display: block; height: 100%; background: var(--clay); }
+
+  .foot {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    justify-content: space-between; gap: var(--s-3);
+    margin: 0; padding-top: var(--s-3);
+    border-top: var(--stroke-consequence);
+    font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink);
+  }
+  .foot .on { color: var(--ink-3); letter-spacing: 0.14em; }
+
+  .vh {
+    position: absolute; width: 1px; height: 1px;
+    margin: -1px; padding: 0; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+</style>

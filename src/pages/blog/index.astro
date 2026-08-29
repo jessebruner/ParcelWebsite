@@ -1,0 +1,54 @@
+---
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import Band from "../../components/Band.astro";
+import { POSTS, TOPICS } from "../../data/posts";
+
+const fmt = (iso: string) =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const sorted = [...POSTS].sort((a, b) => b.published.localeCompare(a.published));
+const used = new Set(POSTS.map((p) => p.topic));
+---
+
+<Base
+  title="Blog"
+  description="Statutory deadlines, due process, and what things actually cost. Written for volunteer boards."
+  path="/blog"
+>
+  <Hero eyebrow="Blog">
+    <h1 class="t-display">Notes for volunteer boards</h1>
+    <p class="t-lede">
+      Statutory deadlines, due process, and what things actually cost. Written for people who did
+      not ask to become an expert in this.
+    </p>
+  </Hero>
+
+  <Band title="Latest">
+    <p class="topics t-mono">
+      {TOPICS.filter((t) => used.has(t)).join(" · ")}
+    </p>
+    <ul class="posts">
+      {sorted.map((p) => (
+        <li>
+          <p class="meta t-mono">{p.topic} · <time datetime={p.published}>{fmt(p.published)}</time></p>
+          <h3 class="t-title"><a href={`/blog/${p.slug}`}>{p.title}</a></h3>
+          <p class="desc">{p.description}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="coda">
+      Every post is dated and says when it was last checked. Statutory content goes stale.
+    </p>
+  </Band>
+</Base>
+
+<style>
+  .topics { color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase; }
+  .posts { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; gap: var(--s-8); }
+  .posts > li { border-top: var(--stroke-edge); padding-top: var(--s-4); }
+  .meta { color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 var(--s-2); }
+  .posts h3 { margin: 0; }
+  .posts h3 a { color: var(--ink); text-decoration: none; }
+  .posts h3 a:hover { color: var(--terracotta); text-decoration: underline; }
+  .desc { margin: var(--s-2) 0 0; color: var(--ink-body); }
+</style>
