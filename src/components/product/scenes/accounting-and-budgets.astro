@@ -56,7 +56,18 @@ const LINES = ["$2,850", "$4,275", "$1,180", "$9,404"];
     <span class="hd hd--book">Ledger</span>
     <span class="hd"></span>
     <span class="hd hd--bank">
-      <span class="acct-vault"><i></i><i></i><i></i><i></i></span>
+      <span class="acct-vault">
+        <svg viewBox="0 0 12 11" aria-hidden="true">
+          <rect x="0" y="0" width="12" height="9" fill="currentColor" />
+          <rect x="1" y="1" width="10" height="7" class="px-night" />
+          <rect x="2" y="2" width="8" height="5" fill="currentColor" />
+          <rect x="3" y="3" width="2" height="2" class="px-night" />
+          <rect x="3" y="3" width="1" height="1" class="px-amber" />
+          <rect x="7" y="3" width="1" height="3" class="px-night" />
+          <rect x="1" y="9" width="2" height="2" fill="currentColor" />
+          <rect x="9" y="9" width="2" height="2" fill="currentColor" />
+        </svg>
+      </span>
       Bank
     </span>
 
@@ -112,23 +123,17 @@ const LINES = ["$2,850", "$4,275", "$1,180", "$9,404"];
   .hd--book { padding-right: var(--gap); }
   .hd--bank { padding-left: var(--gap); }
 
-  /* The bank, drawn: pediment, cornice, four columns, plinth. Same building as
-     dues-and-payments, at label height, so the word has an object on it. */
+  /* The safe: body, inset door, dial with amber pixel, handle, feet.
+     Same brand safe motif as dues-and-payments. */
   .acct-vault {
-    display: grid;
-    justify-items: center;
-    gap: 1px;
+    display: block;
+    width: 14px;
+    height: 13px;
     color: var(--sand);
   }
-  .acct-vault i { display: block; background: currentColor; }
-  .acct-vault i:nth-child(1) { width: 8px; height: 2px; }
-  .acct-vault i:nth-child(2) { width: 18px; height: 2px; }
-  .acct-vault i:nth-child(3) {
-    width: 18px;
-    height: 6px;
-    background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 6px);
-  }
-  .acct-vault i:nth-child(4) { width: 18px; height: 2px; }
+  .acct-vault svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
+  .px-amber { fill: var(--amber); }
+  .px-night { fill: var(--night); }
 
   /* A row of the reconciliation. */
   .cell {
