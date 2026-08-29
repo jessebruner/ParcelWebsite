@@ -1,0 +1,139 @@
+---
+/**
+ * Stakeholder Value Grid
+ * Shows how Common Parcel delivers specific value to Board Officers, Homeowners, and Treasurers.
+ */
+interface Stakeholder {
+  role: string;
+  badge: string;
+  title: string;
+  points: string[];
+}
+
+const STAKEHOLDERS: Stakeholder[] = [
+  {
+    role: "Board Officers",
+    badge: "Leadership",
+    title: "Clear records and consistent board decisions",
+    points: [
+      "Review and log architectural requests with recorded committee notes.",
+      "Send neighborhood notices by email or generate clean PDF letters.",
+      "Keep vendor agreements, insurance documents, and meeting minutes in one place."
+    ]
+  },
+  {
+    role: "Homeowners & Residents",
+    badge: "Community",
+    title: "Straightforward balances and request tracking",
+    points: [
+      "When online payments are enabled, pay dues directly to your association account.",
+      "Submit architectural requests with photo attachments and review status tracking.",
+      "Check community governing documents and meeting schedules without calling the board."
+    ]
+  },
+  {
+    role: "Treasurers",
+    badge: "Finance",
+    title: "Accurate ledgers without handling owner funds",
+    points: [
+      "When online payments are enabled, dues deposit straight into the HOA's bank account.",
+      "Track open balances and payment statuses without manual spreadsheet entry.",
+      "Export ledgers and summaries for your board or accountant to review."
+    ]
+  }
+];
+---
+
+<div class="stakeholder-grid">
+  {STAKEHOLDERS.map((s) => (
+    <div class="stakeholder-card">
+      <div class="card-top">
+        <span class="role-badge">{s.badge}</span>
+        <h3 class="role-name">{s.role}</h3>
+      </div>
+      <h4 class="card-headline">{s.title}</h4>
+      <ul class="point-list">
+        {s.points.map((p) => (
+          <li>
+            <svg class="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.5L6.5 12L13 4.5" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="square"/>
+            </svg>
+            <span>{p}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .stakeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--s-6);
+    margin-block: var(--s-6);
+  }
+  .stakeholder-card {
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    transition: border-color 0.16s ease, transform 0.16s ease;
+  }
+  .stakeholder-card:hover {
+    border-color: var(--terracotta);
+    transform: translateY(-2px);
+  }
+  .card-top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    border-bottom: var(--stroke-hairline);
+    padding-bottom: var(--s-3);
+  }
+  .role-badge {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .role-name {
+    font-family: var(--font-serif);
+    font-size: var(--t-title);
+    color: var(--ink);
+    margin: 0;
+    font-weight: 600;
+  }
+  .card-headline {
+    font-family: var(--font-sans);
+    font-size: var(--t-lede);
+    font-weight: 600;
+    color: var(--ink-body);
+    margin: 0;
+    line-height: 1.35;
+  }
+  .point-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .point-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    font-size: var(--t-micro);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .check-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+</style>

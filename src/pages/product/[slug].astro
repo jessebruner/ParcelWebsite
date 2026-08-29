@@ -1,64 +1,162 @@
 ---
 /**
- * One template for the eight feature pages. Content lives in
- * src/data/content.ts; the shape lives here, once.
+ * The feature route.
+ *
+ * Nine pages still render from one template, and that is not the problem worth
+ * solving — nine hand-written files would drift. What was wrong is that the
+ * template gave every page the identical shape and then refused to be loud
+ * anywhere in it:
+ *
+ *   - a small label above the h1 that was a byte-for-byte copy of the page's
+ *     own name, while the h1 said something else entirely
+ *   - a display size overridden DOWN to 78px, under a token already below the
+ *     homepage's 108px
+ *   - a still frame of a sky that the homepage animates
+ *   - no pixel strip, on the only page family without one
+ *   - alternating field/paper bands at one padding value, forever
+ *   - a closing band generated as `See ${title} in Common Parcel.`
+ *
+ * The shape now varies with the page: the marsh moves, a weather strip breaks
+ * the run of bands, the air opens and tightens, and every page writes its own
+ * closing line.
  */
 import Base from "../../layouts/Base.astro";
 import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import Faq from "../../components/Faq.astro";
 import PixelSky from "../../components/PixelSky.astro";
-import { FEATURES } from "../../data/content";
-
-/** A stable seed per page: the same slug always paints the same treeline. */
-const seedFor = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) || 7;
+import FeatureScene from "../../components/product/FeatureScene.astro";
+import { FEATURES, type PageSpec } from "../../data/content";
+import { FEATURE_ART, DEFAULT_ART } from "../../data/scenes.ts";
 
 export function getStaticPaths() {
-  return FEATURES.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+  return FEATURES.map((feat) => ({
+    params: { slug: feat.slug },
+    props: { feature: feat },
+  }));
 }
 
-const { page } = Astro.props;
+interface Props {
+  feature: PageSpec;
+}
+
+const { feature } = Astro.props;
+
+/**
+ * Which landscape this page stands in, and the seed that makes it its own
+ * picture. See src/data/scenes.ts -- the table is there rather than here
+ * because a test reads it.
+ */
+const art = FEATURE_ART[feature.slug] ?? DEFAULT_ART;
+
+/**
+ * Where the weather strip falls. After the first band on a short page, after
+ * the second on a long one, so it never lands as the last thing before the
+ * closer and never separates the hero from the page's opening argument.
+ */
+const stripAfter = feature.bands.length >= 4 ? 2 : 1;
+
+/**
+ * FAQPage, and it is not free SEO decoration: Google's own guidance is that
+ * the markup must match question-and-answer content the reader can see on the
+ * page. It is generated from the same array the section renders, so the two
+ * cannot drift apart -- a hand-written block would be one more place for a
+ * claim to live after the page stopped making it.
+ *
+ * `<` is escaped because this goes into a <script> via set:html, and a literal
+ * `</script>` inside a JSON string would end the block early. Nothing in the
+ * copy contains one today; the escape is so nothing has to remember that.
+ */
+const faqs = feature.faqs ?? [];
+const schema = faqs.length
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map(([question, answer]) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: { "@type": "Answer", text: answer },
+      })),
+    }).replaceAll("<", "\\u003c")
+  : undefined;
 ---
 
 <Base
-  title={page.title}
-  description={page.description}
-  path={`/product/${page.slug}`}
-  reviewed="August 2026"
+  title={feature.title}
+  description={feature.description}
+  path={`/product/${feature.slug}`}
+  shareTitle={`Common Parcel: ${feature.title}`}
+  schema={schema}
 >
-  <Hero eyebrow={page.eyebrow} seed={seedFor(page.slug)}>
-    <h1 class="t-display">{page.h1}</h1>
-    <p class="t-lede">{page.lede}</p>
+  <Hero scene={art.scene} seed={art.seed} live>
+    <div class="feature-hero">
+      <div class="feature-copy">
+        <h1 class="t-display">{feature.h1}</h1>
+        <p class="t-lede">{feature.lede}</p>
+        <div class="actions">
+          <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
+        </div>
+      </div>
+      <FeatureScene slug={feature.slug} />
+    </div>
   </Hero>
 
-  {page.bands.map((band, i) => (
+  {feature.bands.map((band, i) => (
     <>
-    {i === 2 && <PixelSky mode="band" scene="dawn" seed={seedFor(page.slug) + 3} />}
-    <Band
-      title={band.title}
-      field={band.field}
-      note={band.note?.[0]}
-      noteHref={band.note?.[1]}
-    >
-      <Blocks body={band.body} />
-    </Band>
+      <Band
+        title={band.title}
+        field={band.field}
+        air={band.air}
+        layout={band.layout}
+        note={band.note ? band.note[0] : undefined}
+        noteHref={band.note ? band.note[1] : undefined}
+      >
+        <Blocks body={band.body} />
+      </Band>
+      {i === stripAfter - 1 && (
+        <div class="strip">
+          <PixelSky mode="band" scene={art.strip} seed={art.seed + 1} />
+        </div>
+      )}
     </>
   ))}
 
-  <section class="close on-ink">
-    <div class="page">
-      <h2 class="t-sheet">Get your evenings back.</h2>
-      <div class="actions">
-        <a class="btn btn--on-ink" href="/demo">Get early access</a>
-        <a class="btn btn--ghost-on-ink" href="/pricing">See the price</a>
-      </div>
-    </div>
-  </section>
+  {faqs.length > 0 && <Faq items={faqs} />}
+
+  <CtaBand headline={feature.closer} scene={art.closeScene} seed={art.seedClose} />
 </Base>
 
 <style>
-  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
-  .close h2 { color: var(--paper); }
-  .close .actions { margin-top: var(--s-6); }
-  h1 { max-width: 20ch; }
+  .feature-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+    gap: clamp(36px, 5vw, 72px);
+    align-items: center;
+  }
+  .feature-copy { min-width: 0; }
+  /* The measure belongs to the headline, not to the column. Putting it on the
+     column broke the lede into a four-word-wide ribbon. */
+  .feature-copy :global(h1) { max-width: 13ch; }
+  /*
+   * No font-size here. The old rule set clamp(40px, 5.2vw, 78px), which is 28%
+   * smaller than the homepage's headline on the same fonts and the same tokens.
+   * .t-display is the scale; a page does not get to shrink it.
+   */
+
+  .strip { position: relative; }
+
+  @media (max-width: 900px) {
+    .feature-hero { grid-template-columns: 1fr; }
+    /*
+     * The measure stays on the headline here too. It was on .feature-copy, and
+     * the same mistake the desktop rule above documents was live on every
+     * phone: 18ch resolved to a 199px column inside a 390px viewport, so the
+     * lede wrapped to nine lines and the button sat 18px from its own edge.
+     * Measured on all nine pages before and after.
+     */
+    .feature-copy :global(h1) { max-width: 15ch; }
+    .feature-hero :global(.feature-scene) { justify-self: stretch; width: 100%; }
+  }
 </style>

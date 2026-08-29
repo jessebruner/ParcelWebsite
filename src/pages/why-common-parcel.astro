@@ -1,0 +1,304 @@
+---
+/**
+ * WHY COMMON PARCEL — the positioning page, and only that.
+ *
+ * Three pages could plausibly hold this argument, so the boundary matters:
+ *
+ *   /about        who we are, what we are for, what we believe
+ *   /compare/*    head to head against a named alternative
+ *   here          why software built for a board rather than for a manager
+ *
+ * The first draft of this page argued the cost case against management
+ * companies, which is what /compare/management-company is for, and did it with
+ * unsourced figures. That argument is not repeated here and neither are the
+ * figures.
+ *
+ * NO PAYMENT CLAIM ON THIS PAGE, DELIBERATELY.
+ * src/data/content.ts:625 renders "Paying through the portal is built and not
+ * yet switched on" on /product/resident-portal, while /security, /pricing and
+ * the nav all present online payment as live. That contradiction is open with
+ * the owner as of 2026-08-22. Rather than pick a side on a new page, this one
+ * makes its argument without ever touching payments. If the answer comes back
+ * that payment is live, this page does not need changing; if it comes back the
+ * other way, this page does not need correcting either.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import PixelSky from "../components/PixelSky.astro";
+
+/**
+ * The contrast that is the whole page. Left is the assumption a manager-first
+ * tool makes; right is what is true of a volunteer board. Nothing on the right
+ * is a product claim, so nothing here can go stale.
+ */
+const CONTRAST = [
+  {
+    them: "Somebody opens it every morning",
+    us: "You open it when something needs doing, and not otherwise",
+  },
+  {
+    them: "That person was trained on it",
+    us: "Nobody trained you, and nobody will train the next treasurer",
+  },
+  {
+    them: "Setup is a project with a kickoff call",
+    us: "Setup has to fit into one weekend, or it does not happen",
+  },
+  {
+    them: "Someone is paid to notice the date",
+    us: "Nobody is watching the calendar, so the software has to",
+  },
+  {
+    them: "The same staff are there next year",
+    us: "Your board turns over, and the handover is a folder",
+  },
+];
+
+/** From the homepage, which is the approved description of setup. */
+const SETUP = [
+  {
+    n: "01",
+    title: "Upload what you already have",
+    body: "The declaration, the bylaws, the owner roster. Whatever the association was handed when it was formed.",
+  },
+  {
+    n: "02",
+    title: "It reads them",
+    body: "The assessment, the due date, the grace period and the late fee come out of the recorded text, so there is nothing to type in from a form.",
+  },
+  {
+    n: "03",
+    title: "You confirm what it read",
+    body: "You check the handful of numbers it found against your own documents, and that is the setup.",
+  },
+];
+
+/**
+ * Every limit below is quoted from copy already on this site, with the source
+ * beside it, so this section cannot drift into being softer than the pages it
+ * summarizes. If one of these changes, change it there first.
+ */
+const LIMITS = [
+  {
+    title: "It does not do the physical work",
+    body: "Software does not attend your meeting and it does not walk the property after a storm. The parts of this job that need a person in the neighborhood still need a person in the neighborhood.",
+    source: "/about",
+    sourceLabel: "About Common Parcel",
+  },
+  {
+    title: "It does not tell you what a rule means",
+    body: "It quotes your documents and shows you where the words are. What a provision means in a dispute, and whether a rule is enforceable, is your board's judgment and your attorney's advice.",
+    source: "/product/documents-and-answers",
+    sourceLabel: "Documents and answers",
+  },
+  {
+    title: "Certified mail is not connected",
+    body: "Common Parcel can show that a notice was drafted and approved. It cannot yet show that it was served.",
+    source: "/product/collections",
+    sourceLabel: "Collections",
+  },
+  {
+    title: "What it cannot find, it prints as unknown",
+    body: "Not a default, and not a number borrowed from a similar association. A blank you have to fill is better than a plausible figure you did not check.",
+    source: "/product/accounting-and-budgets",
+    sourceLabel: "Accounting and budgets",
+  },
+];
+---
+
+<Base
+  title="Why Common Parcel"
+  description="Most HOA software is built for property managers who use it daily. Common Parcel is built for a volunteer board: setup from your own documents, dates that come from your declaration, and a plain account of what it will not do."
+  path="/why-common-parcel"
+  shareTitle="Why Common Parcel, for a volunteer board"
+>
+  <Hero seed={77}>
+    <h1 class="t-display">Most HOA software was not built for you</h1>
+    <p class="t-lede">
+      It was built for property managers, who open it every morning and were trained on it. You are a
+      volunteer with a job. Common Parcel is built for the second case, which is a different product.
+    </p>
+  </Hero>
+
+  <section class="wy-contrast">
+    <div class="page">
+      <div class="wy-head">
+        <p class="t-label">The difference</p>
+        <h2 class="t-sheet">Built for the way a board actually works</h2>
+        <p class="wy-lede">
+          Almost everything in this category assumes a paid administrator on the other side of the
+          screen. Take that person away and the assumptions underneath the software stop holding.
+        </p>
+      </div>
+
+      <div class="wy-table" role="group" aria-label="What manager-first software assumes, and what is true of a volunteer board">
+        <div class="wy-table-head" aria-hidden="true">
+          <span class="wy-col-them">Built for a manager</span>
+          <span class="wy-col-us">Built for a board</span>
+        </div>
+        <ol class="wy-rows">
+          {CONTRAST.map((row) => (
+            <li class="wy-row">
+              <p class="wy-them"><span class="wy-tag">Assumes</span>{row.them}</p>
+              <p class="wy-us"><span class="wy-tag wy-tag--us">Actually</span>{row.us}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <PixelSky mode="band" scene="dusk" seed={83} />
+
+  <section class="wy-setup">
+    <div class="page">
+      <div class="wy-head">
+        <p class="t-label">Setup</p>
+        <h2 class="t-sheet">The dates come from your documents</h2>
+        <p class="wy-lede">
+          A tool built for a manager asks you to configure it, because configuring things is that
+          person's job. Your declaration already says when dues are due and what the late fee is, so
+          the setup is reading it rather than retyping it.
+        </p>
+      </div>
+
+      <ol class="wy-steps">
+        {SETUP.map((s) => (
+          <li class="wy-step">
+            <span class="wy-step-n t-mono-label">{s.n}</span>
+            <h3 class="t-title">{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="wy-limits">
+    <div class="page">
+      <div class="wy-head">
+        <p class="t-label">Limits</p>
+        <h2 class="t-sheet">What Common Parcel will not do</h2>
+        <p class="wy-lede">
+          Every line here is quoted from somewhere else on this site, with the page it came from. If
+          a board is going to trust the rest of it, this is the section that has to be true.
+        </p>
+      </div>
+
+      <ul class="wy-limit-list">
+        {LIMITS.map((l) => (
+          <li class="wy-limit">
+            <h3 class="t-title">{l.title}</h3>
+            <p>{l.body}</p>
+            <a class="wy-limit-src t-mono-label" href={l.source}>{l.sourceLabel}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="close on-ink">
+    <div class="page">
+      <h2 class="t-sheet">See whether this fits your board</h2>
+      <p class="close-lede">Tell us the size of your association and what takes the most time.</p>
+      <div class="actions">
+        <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
+        <a class="btn btn--ghost-on-ink" href="/pricing">See what it costs</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wy-head { max-width: 48em; }
+  .wy-head h2 { max-width: 22ch; }
+  .wy-lede { margin: var(--s-4) 0 0; max-width: 52ch; font-size: var(--t-lede); line-height: 1.5; color: var(--ink-2); }
+
+  /* ── The contrast ─────────────────────────────────────────────────────── */
+
+  .wy-contrast { padding-block: var(--pad-y); border-bottom: var(--stroke-rule); }
+
+  .wy-table { margin-top: clamp(32px, 4vw, 56px); border: var(--stroke-consequence); background: var(--card); }
+
+  /* The column headings are a desktop affordance. On a phone the rows stack and
+     each half carries its own tag, so a repeated header would be noise. */
+  .wy-table-head { display: none; }
+  @media (min-width: 820px) {
+    .wy-table-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: var(--stroke-consequence);
+      font-family: var(--font-mono);
+      font-size: var(--t-mono-label);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .wy-table-head span { padding: var(--s-4) var(--s-6); }
+    .wy-col-them { color: var(--ink-3); background: var(--field); }
+    .wy-col-us { color: var(--terracotta); border-left: var(--stroke-consequence); }
+  }
+
+  .wy-rows { list-style: none; margin: 0; padding: 0; }
+  .wy-row { display: grid; border-top: var(--stroke-rule); }
+  .wy-row:first-child { border-top: none; }
+  @media (min-width: 820px) { .wy-row { grid-template-columns: 1fr 1fr; } }
+
+  .wy-row p { margin: 0; padding: var(--s-5) var(--s-6); font-size: var(--t-body); line-height: 1.5; }
+
+  /* The left column is deliberately the quieter of the two: it is the world the
+     reader is leaving. Contrast still clears AA at --ink-3 on --field. */
+  .wy-them { color: var(--ink-3); background: var(--field); }
+  .wy-us { color: var(--ink); }
+  @media (min-width: 820px) { .wy-us { border-left: var(--stroke-consequence); } }
+
+  .wy-tag {
+    display: block;
+    margin-bottom: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .wy-tag--us { color: var(--terracotta); }
+  @media (min-width: 820px) { .wy-tag { display: none; } }
+
+  /* ── Setup ────────────────────────────────────────────────────────────── */
+
+  .wy-setup { padding-block: var(--pad-y); border-bottom: var(--stroke-rule); background: var(--field); }
+  .wy-steps { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; gap: var(--s-6); }
+  @media (min-width: 820px) { .wy-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .wy-step { background: var(--card); border: var(--stroke-edge); border-top: 4px solid var(--terracotta); padding: clamp(20px, 2.2vw, 30px); }
+  .wy-step-n { display: block; color: var(--terracotta); letter-spacing: 0.18em; }
+  .wy-step h3 { margin: var(--s-3) 0 0; color: var(--ink); max-width: 18ch; }
+  .wy-step p { margin: var(--s-4) 0 0; font-size: var(--t-body); line-height: 1.55; color: var(--ink-body); }
+
+  /* ── Limits ───────────────────────────────────────────────────────────── */
+
+  .wy-limits { padding-block: var(--pad-y); border-bottom: var(--stroke-rule); }
+  .wy-limit-list { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; gap: var(--s-6); }
+  @media (min-width: 760px) { .wy-limit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* The dashed clay stroke is the held/pending treatment from the app. These are
+     statements about what is not there, so they should not look like features. */
+  .wy-limit { border: var(--stroke-held); background: var(--held); padding: clamp(20px, 2.2vw, 30px); }
+  .wy-limit h3 { margin: 0; color: var(--ink); max-width: 22ch; }
+  .wy-limit p { margin: var(--s-4) 0 0; font-size: var(--t-body); line-height: 1.55; color: var(--ink-2); }
+  .wy-limit-src {
+    display: inline-block;
+    margin-top: var(--s-5);
+    color: var(--terracotta);
+    letter-spacing: 0.12em;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    min-height: 24px;
+  }
+
+  /* ── The close ────────────────────────────────────────────────────────── */
+
+  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
+  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close-lede { margin: var(--s-4) 0 0; color: var(--mist); font-size: var(--t-lede); }
+  .close .actions { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-4); }
+</style>

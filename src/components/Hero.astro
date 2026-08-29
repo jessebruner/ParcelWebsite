@@ -10,27 +10,42 @@
  * Linted at the hero surface where the page declares it, so nothing in the
  * slot may carry a digit, a counted quantity, or back-office vocabulary.
  */
+import type { SceneKey } from "../data/scenes.ts";
 import PixelSky from "./PixelSky.astro";
 
 interface Props {
-  eyebrow?: string;
   /** dusk is the default. dawn for the lighter, colder scene. */
-  scene?: "dusk" | "dawn";
+  scene?: SceneKey;
   /** Change it per page so no two heroes paint the same treeline. */
   seed?: number;
   /** Shorter hero for pages that are mostly body copy. */
   compact?: boolean;
+  /**
+   * The whole marsh, moving, the way the homepage hero does it. Off by default:
+   * a page that is mostly reading keeps the still texture behind its heading.
+   *
+   * PixelSky's own note reserved `scene` for the homepage, on the grounds that
+   * a heron behind a page heading puts the mark on screen twice. That was our
+   * rule, not the brief's, and the brief now asks for the homepage's motion on
+   * every page. Recorded here rather than deleted, because the mark-twice
+   * objection is still true and is a thing to look at once it is on screen.
+   */
+  live?: boolean;
 }
-const { eyebrow, scene = "dusk", seed = 7, compact = false } = Astro.props;
+const { scene = "dusk", seed = 7, compact = false, live = false } = Astro.props;
 ---
 
-<section class:list={["hero on-ink", { compact }]}>
+{/*
+  No eyebrow. It used to render a small label above the h1, and on every
+  feature page that label was a byte-for-byte copy of the page's own name while
+  the h1 said something else. The page's name belongs in the heading.
+*/}
+<section class:list={["hero on-ink", { compact, live }]} data-scene={scene}>
   <div class="art" aria-hidden="true">
-    <PixelSky mode="texture" scene={scene} seed={seed} />
+    <PixelSky mode={live ? "scene" : "texture"} scene={scene} seed={seed} />
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="page inner">
-    {eyebrow && <p class="t-label">{eyebrow}</p>}
     <slot />
   </div>
 </section>
@@ -44,19 +59,59 @@ const { eyebrow, scene = "dusk", seed = 7, compact = false } = Astro.props;
     padding-block: clamp(56px, 7vw, 116px) clamp(48px, 6vw, 96px);
   }
   .hero.compact { padding-block: clamp(44px, 5vw, 80px) clamp(40px, 4.5vw, 68px); }
+  /* A moving scene needs room to be a picture. The marsh is composed with the
+     horizon at 54.6% of a 216-row canvas, and object-fit: cover on a short
+     section crops away the treeline and the heron entirely. */
+  .hero.live { padding-block: clamp(84px, 9.5vw, 156px) clamp(64px, 7vw, 108px); }
 
   .art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
   .art :global(canvas) { width: 100%; height: 100%; }
 
-  /* Keeps text legible against a sky that moves through nineteen stops. */
+  /*
+   * Texture heroes still contain nineteen colour stops, even though the
+   * canvas itself is painted once. The old vertical veil left seven non-live
+   * ledes between 2.08:1 and 2.60:1 at 1440px. Keep the copy side dark and
+   * give the picture back after the longest reading measure, the same geometry
+   * the live treatment below uses without flattening the whole sky.
+   */
   .veil {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background: linear-gradient(180deg, rgba(20, 18, 15, 0.42) 0%, rgba(20, 18, 15, 0.30) 100%);
+    background:
+      linear-gradient(90deg, rgba(14, 12, 20, 0.78) 0%, rgba(14, 12, 20, 0.70) 46%, rgba(14, 12, 20, 0.34) 70%, rgba(14, 12, 20, 0) 84%),
+      linear-gradient(180deg, rgba(20, 18, 15, 0.42) 0%, rgba(20, 18, 15, 0.30) 100%);
+  }
+  /*
+   * A live hero is taller, so the copy crosses more of the ramp and can end up
+   * sitting on the horizon, which is the brightest part of the picture: sand
+   * at #F4CB9F under mist-coloured body text. A vertical veil alone cannot fix
+   * that without flattening the sky it exists to show.
+   *
+   * So the copy side gets its own scrim, heaviest where the text is and gone by
+   * the middle of the section, and the right two thirds keep the picture.
+   */
+  .hero.live .veil {
+    background:
+      linear-gradient(90deg, rgba(14, 12, 20, 0.80) 0%, rgba(14, 12, 20, 0.72) 46%, rgba(14, 12, 20, 0.30) 68%, rgba(14, 12, 20, 0) 84%),
+      linear-gradient(180deg, rgba(20, 18, 15, 0.38) 0%, rgba(20, 18, 15, 0.30) 100%);
+  }
+
+  /*
+   * Below the two-column breakpoint the copy spans the full width, so a scrim
+   * that fades out to the right leaves the end of every line sitting on the
+   * horizon — the brightest part of the dawn ramp, which tops out at --paper.
+   * Measured there, the lede read 1.75:1 against a 4.5 requirement. On a narrow
+   * screen the scrim runs down the page instead of across it, and the picture
+   * is given back below the copy.
+   */
+  @media (max-width: 900px) {
+    .veil, .hero.live .veil {
+      background:
+        linear-gradient(180deg, rgba(14, 12, 20, 0.86) 0%, rgba(14, 12, 20, 0.82) 52%, rgba(14, 12, 20, 0.58) 78%, rgba(14, 12, 20, 0.34) 100%);
+    }
   }
 
   .inner { position: relative; z-index: 2; }
   .hero :global(h1) { color: var(--paper); }
-  .hero :global(.t-label) { color: var(--sand); }
   .hero :global(.t-lede) { color: var(--mist); max-width: 34em; margin-top: clamp(20px, 2.6vw, 34px); }
   .hero :global(.actions) { margin-top: clamp(24px, 3vw, 34px); }
 </style>

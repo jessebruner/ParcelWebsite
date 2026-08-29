@@ -44,9 +44,7 @@ board two decisions and about twenty-two minutes of work.
 
 ## Custody of funds
 
-Owners pay into the association's own bank account, in the association's own
-name. Common Parcel is not in that payment path and has no ability to move
-association money.
+Dues and assessment charges process through the association's connected Stripe account directly into the association's bank account. Common Parcel does not hold association funds, maintain account balances, or sit in custody of association money.
 
 ## Citations
 
@@ -57,28 +55,28 @@ inventing a citation.
 ## Pricing
 
 Graduated per lot, per month, like a tax bracket: $2.50 each for the first 10
-lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, and $0.50 above 500,
-with a $10 monthly minimum.
+lots, $1.10 for lots 11 to 70, and $0.40 for lots 71 and above, with a $10
+monthly minimum.
 
-- A four-lot association pays $10 a month
-- A 100-lot association pays about $110 a month
-- A 1,000-lot association pays about $513 a month
+- A four-lot association pays $10 a month (monthly minimum)
+- A 100-lot association pays $103 a month
+- A 319-lot association pays $190.60 a month
+- A 1,000-lot association pays $463 a month
 
-Everything is included. Collections, violations, elections, vendor management,
-documents and the record, with no feature tiers and no per-notice charge.
-Owners pay no fee to pay their dues. Civic and neighbourhood associations pay a
-reduced rate. Billing is month to month with no contract, no setup fee, and a
-full export of ledgers, documents, minutes and audit trail available in any
-month, including the month an association leaves.
+Everything is included: collections, violations, elections, vendor management,
+documents, and the record, with no feature tiers and no per-notice charges.
+Owners pay no fee to pay their dues. Billing is month to month with no contract,
+no setup fee, and an association export of ledgers, documents, minutes, and the
+audit log with a manifest report available in any month, including the month an
+association leaves.
 
 ## Comparison
 
-A local property management company typically charges $15 to $25 per door per
-month, which is roughly $1,800 a month for a 100-home association. Other HOA
-software platforms typically tier to $1.50 to $2.00 per door and still expect a
-volunteer to configure the rules, remember the deadlines and write the notices.
-Common Parcel configures itself from the association's own documents and runs the
-month unattended.
+Common Parcel is designed for self-managed associations that run their own
+operations without a traditional property management company. While manual
+workflows require volunteers to track statutory deadlines and draft notices by
+hand, Common Parcel configures itself directly from the association's governing
+documents and runs recurring schedules unattended.
 
 ## Migration
 

@@ -1,0 +1,373 @@
+---
+/**
+ * Early Access Modal Component
+ * Accessible dialog for early access inquiries with real endpoint submission
+ * or honest demo mode feedback.
+ */
+import Mark from "./Mark.astro";
+
+interface Props {
+  formEndpoint?: string;
+}
+
+const { formEndpoint = import.meta.env.PUBLIC_EARLY_ACCESS_ENDPOINT || "" } = Astro.props;
+---
+
+<dialog id="early-access-modal" class="ea-dialog" aria-labelledby="ea-modal-title" aria-modal="true" data-endpoint={formEndpoint}>
+  <div class="ea-card">
+    <div class="ea-top">
+      <span class="ea-eyebrow">Early access</span>
+      <button type="button" class="ea-close-btn" id="ea-close-btn" aria-label="Close dialog">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Active Form View -->
+    <div id="ea-form-view">
+      <h2 id="ea-modal-title" class="ea-title">Tell Parcel about your association.</h2>
+      <p class="ea-lede">We will reach out with early access details for your neighborhood.</p>
+
+      <form id="early-access-form" class="ea-form" novalidate>
+        <div class="ea-fields">
+          <div class="ea-field">
+            <label for="ea-assoc" class="ea-label">Association name</label>
+            <input id="ea-assoc" name="association" type="text" required placeholder="Oakridge Estates" class="ea-input" />
+          </div>
+
+          <div class="ea-field-row">
+            <div class="ea-field">
+              <label for="ea-name" class="ea-label">Your name</label>
+              <input id="ea-name" name="name" type="text" required placeholder="M. Torres" class="ea-input" />
+            </div>
+            <div class="ea-field">
+              <label for="ea-lots" class="ea-label">Lots</label>
+              <input id="ea-lots" name="lots" type="number" min="1" max="50000" required placeholder="118" class="ea-input" />
+            </div>
+          </div>
+
+          <div class="ea-field">
+            <label for="ea-email" class="ea-label">Email</label>
+            <input id="ea-email" name="email" type="email" required placeholder="you@example.com" class="ea-input" />
+          </div>
+        </div>
+
+        <div id="ea-form-error" class="ea-error" role="alert" style="display: none;"></div>
+
+        <div class="ea-actions">
+          <button type="submit" class="btn btn--primary" id="ea-submit-btn">
+            {formEndpoint ? "Request early access" : "Open email request"}
+          </button>
+          <button type="button" class="btn" id="ea-cancel-btn">Cancel</button>
+        </div>
+
+        {formEndpoint ? (
+          <p class="ea-footnote">Direct inquiry &middot; no marketing spam</p>
+        ) : (
+          <p class="ea-footnote">Opens your email app &middot; no automated transmission</p>
+        )}
+      </form>
+    </div>
+
+    <!-- Success / Demo View -->
+    <div id="ea-success-view" class="ea-success" style="display: none;">
+      <div class="ea-heron-icon">
+        <Mark size={34} />
+      </div>
+      <h2 class="ea-title" id="ea-success-title">Request received.</h2>
+      <p class="ea-lede" id="ea-success-body">Thank you for your interest. We will be in touch with access details.</p>
+      <div class="ea-actions" style="margin-top: var(--s-4);">
+        <button type="button" class="btn btn--primary" id="ea-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .ea-dialog {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: auto;
+    max-width: 560px;
+    width: calc(100% - 32px);
+  }
+  .ea-dialog::backdrop {
+    background: rgba(20, 18, 15, 0.72);
+    backdrop-filter: blur(2px);
+  }
+  .ea-card {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    padding: clamp(24px, 4vw, 32px);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+  .ea-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--s-3);
+  }
+  .ea-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .ea-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: -10px -10px -10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+  .ea-close-btn:hover {
+    color: var(--ink);
+  }
+  .ea-title {
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 3vw, 26px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 6px;
+  }
+  .ea-lede {
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0 0 var(--s-4);
+  }
+  .ea-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .ea-field-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--s-3);
+  }
+  @media (max-width: 480px) {
+    .ea-field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .ea-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ea-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .ea-input {
+    font-family: var(--font-sans);
+    font-size: var(--t-body);
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--c-edge);
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .ea-input:focus {
+    border-color: var(--ink);
+  }
+  .ea-error {
+    font-family: var(--font-sans);
+    font-size: var(--t-micro);
+    color: var(--terracotta);
+    margin-top: var(--s-2);
+    padding: 6px 10px;
+    background: var(--held);
+    border: 1px solid var(--bisque-edge);
+  }
+  .ea-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+  .ea-footnote {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: var(--s-3) 0 0;
+  }
+  .ea-success {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ea-heron-icon {
+    margin-bottom: var(--s-3);
+  }
+</style>
+
+<script>
+  function setupEarlyAccessModal() {
+    const dialog = document.getElementById("early-access-modal") as HTMLDialogElement | null;
+    if (!dialog) return;
+
+    const endpoint = dialog.getAttribute("data-endpoint") || "";
+    const closeBtn = document.getElementById("ea-close-btn");
+    const cancelBtn = document.getElementById("ea-cancel-btn");
+    const doneBtn = document.getElementById("ea-done-btn");
+    const formView = document.getElementById("ea-form-view");
+    const successView = document.getElementById("ea-success-view");
+    const successTitle = document.getElementById("ea-success-title");
+    const successBody = document.getElementById("ea-success-body");
+    const errorBox = document.getElementById("ea-form-error");
+    const form = document.getElementById("early-access-form") as HTMLFormElement | null;
+
+    function showError(msg: string) {
+      if (!errorBox) return;
+      errorBox.textContent = msg;
+      errorBox.style.display = "block";
+    }
+
+    function clearError() {
+      if (!errorBox) return;
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function openDialog() {
+      if (dialog && !dialog.open) {
+        clearError();
+        if (formView) formView.style.display = "block";
+        if (successView) successView.style.display = "none";
+        dialog.showModal();
+        const firstInput = dialog.querySelector<HTMLInputElement>("input");
+        firstInput?.focus();
+      }
+    }
+
+    function closeDialog() {
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+    }
+
+    document.querySelectorAll("[data-open-modal='early-access']").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        openDialog();
+      });
+    });
+
+    closeBtn?.addEventListener("click", closeDialog);
+    cancelBtn?.addEventListener("click", closeDialog);
+    doneBtn?.addEventListener("click", closeDialog);
+
+    dialog.addEventListener("click", (e) => {
+      const rect = dialog.getBoundingClientRect();
+      const isInDialog = (
+        rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+      );
+      if (!isInDialog) {
+        closeDialog();
+      }
+    });
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const formData = new FormData(form);
+      const assoc = (formData.get("association") as string || "").trim();
+      const name = (formData.get("name") as string || "").trim();
+      const lots = (formData.get("lots") as string || "").trim();
+      const email = (formData.get("email") as string || "").trim();
+
+      if (!assoc || !name || !lots || !email) {
+        showError("Please complete all required fields.");
+        return;
+      }
+
+      const lotsNum = parseInt(lots, 10);
+      if (isNaN(lotsNum) || lotsNum < 1 || lotsNum > 50000 || String(lotsNum) !== lots) {
+        showError("Please enter a valid lot count between 1 and 50,000.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showError("Please enter a valid email address.");
+        return;
+      }
+
+      if (!endpoint) {
+        // Honest demo mode: open prefilled mailto draft
+        const subject = encodeURIComponent(`Early Access Inquiry: ${assoc}`);
+        const mailBody = encodeURIComponent(`Association: ${assoc}\nName: ${name}\nLots: ${lots}\nEmail: ${email}\n\n`);
+        window.location.href = `mailto:jesse@commonparcel.com?subject=${subject}&body=${mailBody}`;
+
+        if (successTitle) successTitle.textContent = "Check your email app";
+        if (successBody) {
+          successBody.innerHTML = 'Your email application should open with your inquiry details prefilled. If it did not open, email us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
+        }
+        if (formView) formView.style.display = "none";
+        if (successView) successView.style.display = "block";
+        return;
+      }
+
+      try {
+        const submitBtn = document.getElementById("ea-submit-btn") as HTMLButtonElement | null;
+        if (submitBtn) submitBtn.disabled = true;
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ association: assoc, name, lots, email, timestamp: new Date().toISOString() })
+        });
+
+        if (!res.ok) {
+          throw new Error(`Server returned status ${res.status}`);
+        }
+
+        if (successTitle) successTitle.textContent = "Request received.";
+        if (successBody) successBody.textContent = "Thank you for your interest. We will follow up directly by email.";
+        if (formView) formView.style.display = "none";
+        if (successView) successView.style.display = "block";
+      } catch (err) {
+        if (errorBox) {
+          errorBox.innerHTML = 'Unable to submit your request. Please email us directly at <a href="mailto:jesse@commonparcel.com" style="color: var(--terracotta); text-decoration: underline;">jesse@commonparcel.com</a>.';
+          errorBox.style.display = "block";
+        }
+      } finally {
+        const submitBtn = document.getElementById("ea-submit-btn") as HTMLButtonElement | null;
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupEarlyAccessModal);
+  } else {
+    setupEarlyAccessModal();
+  }
+</script>

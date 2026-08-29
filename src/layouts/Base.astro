@@ -14,6 +14,7 @@ import "../styles/tokens.css";
 import "../styles/fonts.css";
 import Masthead from "../components/Masthead.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import EarlyAccessModal from "../components/EarlyAccessModal.astro";
 
 interface Props {
   title: string;
@@ -26,12 +27,16 @@ interface Props {
   reviewed?: string;
   /** Extra JSON-LD, already stringified. */
   schema?: string;
+  /** When true, omits canonical tag and sets robots to noindex, nofollow */
+  noindex?: boolean;
 }
 
-const { title, description, path, shareTitle, reviewed, schema } = Astro.props;
+const { title, description, path, shareTitle, reviewed, schema, noindex = false } = Astro.props;
 const site = "https://commonparcel.com";
 const canonical = `${site}${path === "/" ? "/" : path}`;
-const share = shareTitle ?? title;
+const pageTitle = title.includes("Common Parcel") ? title : `${title} — Common Parcel`;
+const share = shareTitle ?? pageTitle;
+const robots = noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max-image-preview:large";
 ---
 
 <!doctype html>
@@ -40,10 +45,10 @@ const share = shareTitle ?? title;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{title}</title>
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={robots} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Common Parcel" />
@@ -83,6 +88,7 @@ const share = shareTitle ?? title;
     <Masthead />
     <main id="main"><slot /></main>
     <SiteFooter reviewed={reviewed} />
+    <EarlyAccessModal />
 
     <style>
       .skip {

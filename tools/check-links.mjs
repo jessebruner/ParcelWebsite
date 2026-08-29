@@ -15,12 +15,12 @@
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import { requireFreshDist } from "./dist-freshness.mjs";
 
 const DIST = "dist";
-if (!existsSync(DIST)) {
-  console.error("No dist/. Run `npm run build` first.");
-  process.exit(2);
-}
+// This resolves hrefs against dist, so a stale build would be graded as if it
+// were this tree. The guard covers absence and staleness both.
+requireFreshDist();
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir)) {
@@ -93,7 +93,7 @@ for (const file of pages) {
 /* ── 2. Every declared route has a page. ───────────────────────────────── */
 const routesSrc = readFileSync("src/data/routes.ts", "utf8");
 const declared = Array.from(routesSrc.matchAll(/path:\s*"([^"]+)"/g), (m) => m[1]);
-const extraDeclared = ["/", "/pricing", "/compliance", "/use-cases", "/blog", "/404"];
+const extraDeclared = ["/", "/pricing", "/404"];
 for (const path of new Set([...declared, ...extraDeclared])) {
   if (!built.has(path)) problems.push(["src/data/routes.ts", path, "declared in the manifest but no page was built"]);
 }

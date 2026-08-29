@@ -1,44 +1,29 @@
 ---
 /**
- * The masthead, matched to the homepage's.
+ * Global Masthead with Product & Company Dropdowns and Early Access CTA.
  *
- * The homepage is the original bundle and carries its own masthead. Two
- * different navigations on one site is the first thing anybody notices, so this
- * one reproduces that bar exactly: the same lockup, the same mono links at the
- * same size and tracking, the same terracotta block stretching full height, and
- * the same underline that wipes in from the left on hover.
- *
- * NO DROPDOWNS, for now, and on purpose. The bundle cannot render an Astro
- * component, so a panel here would be a panel the homepage does not have. When
- * the homepage moves into Astro both gain them together.
- *
- * The links come from src/data/routes.ts, and tools/patch-homepage-nav.mjs
- * writes the same list into the bundle from the same file, so the two bars
- * cannot list different pages.
+ * Provides responsive navigation across desktop and mobile, with keyboard-accessible
+ * mega menus for Product and Company.
  */
 import Mark from "./Mark.astro";
-import { TOP_NAV, PRODUCT, COMPARE } from "../data/routes";
-
-/* The bundle's bar is flat, so a panel trigger becomes a link to the first page
-   behind it. Same order, same labels. */
-const LINKS = TOP_NAV.map((item) =>
-  item.panel === "product"
-    ? { href: PRODUCT[0].path, label: item.label }
-    : item.panel === "compare"
-      ? { href: COMPARE[0].path, label: item.label }
-      : { href: item.path!, label: item.label }
-);
+import { PRODUCT_GROUPS, COMPANY_NAV } from "../data/routes";
 
 const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
-const section = (href: string) =>
-  href.startsWith("/product") ? "/product" : href.startsWith("/vs") ? "/vs" : href;
-const isCurrent = (href: string) =>
-  here === href || (section(href).startsWith("/") && here.startsWith(section(href)) && section(href) !== href);
+const isCurrent = (href: string) => here === href;
+const isProductActive = here.startsWith("/product");
+const isCompanyActive = here === "/about" || here === "/why-common-parcel" || here === "/blog";
 ---
 
 <header class="mast">
   <div class="lockup-pad">
-    <a class="lockup" href="/">
+    {/*
+      aria-label, not the wordmark, is this link's accessible name.
+      The heron Mark is aria-hidden (decorative) and masthead.css hides
+      .wordmark at 420px and below, so without the label the home link is an
+      unnamed link on every phone. Guarded by tests/masthead-a11y.test.mjs.
+      An HTML comment here would ship on all 23 pages; this form is compiled away.
+    */}
+    <a class="lockup" href="/" aria-label="Common Parcel home">
       <Mark size={34} />
       <span class="wordmark">Common Parcel</span>
     </a>
@@ -48,29 +33,260 @@ const isCurrent = (href: string) =>
     <span></span><span></span><span></span>
   </button>
 
-  <nav id="nav" aria-label="Main">
+  <nav id="nav" aria-label="Main navigation">
     <div class="nav-links">
-      {LINKS.map((l) => (
-        <a class:list={["navlink", { on: isCurrent(l.href) }]} href={l.href}
-           aria-current={here === l.href ? "page" : undefined}>{l.label}</a>
-      ))}
+      <!-- PRODUCT MEGA DROPDOWN -->
+      <div class="nav-item has-dropdown">
+        <button type="button" class:list={["navlink nav-btn", { on: isProductActive }]} aria-expanded="false">
+          <span>Product</span>
+          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu mega-menu">
+          <div class="mega-shell">
+            <div class="mega-directory">
+              <div class="mega-directory-head">
+                <a href="/product" class:list={["mega-overview", { active: isCurrent("/product") }]}>
+                  <span>Explore the whole product</span>
+                  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 5l4 4-4 4" /></svg>
+                </a>
+                <a href="/security" class:list={["mega-security", { active: isCurrent("/security") }]}>Security and records</a>
+              </div>
+              <div class="mega-link-grid">
+                {PRODUCT_GROUPS.map((group, i) => (
+                  <div class="mega-group" role="group" aria-labelledby={`mega-g${i}`}>
+                    <span class="mega-head" id={`mega-g${i}`}>{group.name}</span>
+                    {group.items.map((p) => (
+                      <a href={p.path} class:list={["mega-item", { active: isCurrent(p.path) }]}>
+                        <span class="mega-ico" aria-hidden="true">
+                          <svg viewBox="0 0 24 24"><use href={`#nav-${p.icon}`} /></svg>
+                        </span>
+                        <span class="mega-copy">
+                          <span class="mega-name">{p.label}</span>
+                          <span class="mega-desc">{p.blurb}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <a class="mega-spotlight" href="/product">
+              <span class="mega-spotlight-art" aria-hidden="true">
+                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid slice">
+                  <rect width="360" height="190" class="spot-night" />
+                  <rect y="116" width="360" height="74" class="spot-ground" />
+                  <rect x="0" y="83" width="360" height="6" class="spot-horizon" />
+                  <circle cx="310" cy="34" r="13" class="spot-moon" />
+                  <path d="M0 83h34V67h28v16h30V53h34v30h36V62h32v21h34V45h36v38h34V59h29v24h53" class="spot-roofs" />
+                  <g class="spot-windows">
+                    <rect x="42" y="72" width="8" height="8" /><rect x="101" y="61" width="9" height="9" />
+                    <rect x="173" y="69" width="9" height="9" /><rect x="239" y="55" width="9" height="9" />
+                  </g>
+                  <path d="M30 138h300" class="spot-line" />
+                  <g class="spot-steps">
+                    <rect x="30" y="122" width="48" height="33" /><path d="M40 132h28M40 140h19" />
+                    <rect x="105" y="122" width="48" height="33" /><path d="M115 132h28M115 140h22" />
+                    <rect x="180" y="122" width="48" height="33" /><path d="M190 132h28M190 140h15" />
+                    <rect x="255" y="122" width="48" height="33" /><path d="M265 132h28M265 140h24" />
+                    <path d="M78 138h27M153 138h27M228 138h27" class="spot-connectors" />
+                  </g>
+                </svg>
+              </span>
+              <span class="mega-spotlight-copy">
+                <strong>A month in Common Parcel</strong>
+                <span>See dues, collections, books, notices, renewals, meetings, and resident records in one place.</span>
+                <span class="mega-spotlight-link">See the whole product <span aria-hidden="true">→</span></span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="nav-item">
+        <a class:list={["navlink", { on: isCurrent("/pricing") }]} href="/pricing" aria-current={here === "/pricing" ? "page" : undefined}>
+          Pricing
+        </a>
+      </div>
+
+      <!-- COMPANY DROPDOWN -->
+      <div class="nav-item has-dropdown">
+        <button type="button" class:list={["navlink nav-btn", { on: isCompanyActive }]} aria-expanded="false">
+          <span>Company</span>
+          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <div class="dropdown-menu company-menu">
+          <div class="company-menu-inner">
+            <div class="company-directory">
+              {COMPANY_NAV.map((c) => (
+                <a href={c.path} class:list={["company-item", { active: isCurrent(c.path) }]}>
+                  <span class="company-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href={`#nav-${c.icon}`} /></svg></span>
+                  <span>
+                    <span class="company-name">{c.label}</span>
+                    <span class="company-desc">{c.blurb}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+            <a class="company-spotlight" href="/about">
+              <span class="company-spotlight-mark" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </span>
+              <strong>Built in Detroit for volunteer boards.</strong>
+              <span>Meet the small team behind Common Parcel.</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="nav-item">
+        <a class:list={["navlink", { on: isCurrent("/contact") }]} href="/contact" aria-current={here === "/contact" ? "page" : undefined}>
+          Contact
+        </a>
+      </div>
     </div>
-    <a class="nav-cta" href="/demo">Get early access</a>
+
+    <!-- CTA -->
+    <button type="button" class="nav-cta" data-open-modal="early-access">
+      Early Access
+    </button>
   </nav>
+
+  <svg class="nav-symbols" aria-hidden="true">
+    <defs>
+      <symbol id="nav-dues" viewBox="0 0 24 24"><path d="M5 4h11v16H5zM8 8h5M8 12h5M8 16h3M17 8h3v8h-3" /></symbol>
+      <symbol id="nav-collections" viewBox="0 0 24 24"><path d="M4 5h12v14H4zM7 9h6M7 13h4M17 12h4M19 10v4" /></symbol>
+      <symbol id="nav-books" viewBox="0 0 24 24"><path d="M4 5h6v14H4zM14 5h6v14h-6M6 9h2M16 9h2M6 13h2M16 13h2" /></symbol>
+      <symbol id="nav-documents" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v5h4M9 12h7M9 16h5" /></symbol>
+      <symbol id="nav-vendors" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM8 3v6M16 3v6M4 10h16M8 15h3M14 15h2" /></symbol>
+      <symbol id="nav-meetings" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h2v2H8zM12 9h2v2h-2zM16 9h2v2h-2zM8 14h2v2H8zM12 14h6" /></symbol>
+      <symbol id="nav-rules" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h8M16 11v3M14.5 12.5h3" /></symbol>
+      <symbol id="nav-records" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5" /></symbol>
+      <symbol id="nav-resident" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M6 10v10h12V10M10 20v-6h4v6" /></symbol>
+      <symbol id="nav-about" viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12M8 10h2M14 10h2M8 14h2M14 14h2" /></symbol>
+      <symbol id="nav-difference" viewBox="0 0 24 24"><path d="M4 5h6v14H4zM14 5h6v14h-6M7 9h0M17 9h0M7 15h0M17 15h0" /></symbol>
+      <symbol id="nav-blog" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" /></symbol>
+      <symbol id="nav-contact" viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 7l9 7 9-7" /></symbol>
+    </defs>
+  </svg>
 </header>
 
-
 <script>
-  const mast = document.querySelector<HTMLElement>(".mast");
-  const burger = mast?.querySelector<HTMLButtonElement>(".burger");
-  burger?.addEventListener("click", () => {
-    const open = mast!.hasAttribute("data-open");
-    open ? mast!.removeAttribute("data-open") : mast!.setAttribute("data-open", "");
-    burger.setAttribute("aria-expanded", String(!open));
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    mast?.removeAttribute("data-open");
-    burger?.setAttribute("aria-expanded", "false");
-  });
+  function initMasthead() {
+    const mast = document.querySelector<HTMLElement>(".mast");
+    if (!mast) return;
+
+    const burger = mast.querySelector<HTMLButtonElement>(".burger");
+    const dropdownBtns = mast.querySelectorAll<HTMLButtonElement>(".has-dropdown > .nav-btn");
+
+    burger?.addEventListener("click", () => {
+      const open = mast.hasAttribute("data-open");
+      open ? mast.removeAttribute("data-open") : mast.setAttribute("data-open", "");
+      burger.setAttribute("aria-expanded", String(!open));
+    });
+
+    const dropdownContainers = mast.querySelectorAll<HTMLElement>(".has-dropdown");
+
+    /**
+     * A panel is open for one of two reasons, and they close differently.
+     *
+     * Hovering opens it and moving away closes it. Clicking LATCHES it, and a
+     * latched panel ignores the pointer entirely: it closes on a second click,
+     * on Escape, or on a click outside the masthead. Before this, `mouseleave`
+     * tore the panel down however it had been opened, so a clicked panel died
+     * the moment the pointer left it.
+     *
+     * Clicking also could not open a panel at all on a desktop pointer. The
+     * old handler asked whether the panel was already open, but `mouseenter`
+     * fires as the pointer arrives on the button and opens it first, so by the
+     * time the click landed the answer was always yes and the click closed
+     * what the hover had just opened. Latching is tracked separately from
+     * `.open` for exactly that reason.
+     */
+    const closeTimers = new WeakMap<HTMLElement, number>();
+
+    const shut = (el: Element) => {
+      el.removeAttribute("data-latched");
+      el.classList.remove("open");
+      el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
+    };
+
+    dropdownContainers.forEach((container) => {
+      const btn = container.querySelector<HTMLButtonElement>(".nav-btn");
+
+      container.addEventListener("mouseenter", () => {
+        if (window.innerWidth > 860) {
+          const pending = closeTimers.get(container);
+          if (pending) { window.clearTimeout(pending); closeTimers.delete(container); }
+          container.classList.add("open");
+          btn?.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      container.addEventListener("mouseleave", () => {
+        if (window.innerWidth > 860) {
+          if (container.hasAttribute("data-latched")) return;
+          const pending = closeTimers.get(container);
+          if (pending) window.clearTimeout(pending);
+          // A short grace period. Leaving a menu by a diagonal path clips the
+          // corner of a neighbouring element on the way, and an instant close
+          // makes the menu feel like it is running away from the pointer.
+          closeTimers.set(container, window.setTimeout(() => {
+            closeTimers.delete(container);
+            container.classList.remove("open");
+            btn?.setAttribute("aria-expanded", "false");
+          }, 220));
+        }
+      });
+    });
+
+    dropdownBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const parent = btn.closest<HTMLElement>(".has-dropdown");
+        if (!parent) return;
+        const wasLatched = parent.hasAttribute("data-latched");
+
+        mast.querySelectorAll(".has-dropdown").forEach((el) => {
+          if (el !== parent) shut(el);
+        });
+
+        if (wasLatched) {
+          shut(parent);
+        } else {
+          parent.setAttribute("data-latched", "");
+          parent.classList.add("open");
+          btn.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+
+    // Close on escape or outside click
+    document.addEventListener("click", (e) => {
+      if (!mast.contains(e.target as Node)) {
+        mast.querySelectorAll(".has-dropdown").forEach(shut);
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        mast.removeAttribute("data-open");
+        burger?.setAttribute("aria-expanded", "false");
+        mast.querySelectorAll(".has-dropdown").forEach(shut);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMasthead);
+  } else {
+    initMasthead();
+  }
 </script>

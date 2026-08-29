@@ -1,0 +1,290 @@
+---
+/**
+ * THE PRODUCT HUB.
+ *
+ * What this replaced: four hand-built FeatureCard "pillars", each with a bullet
+ * list and a hand-drawn mock -- a fake dues table, a fake portal, a fake
+ * architectural request, a fake governance list -- about 160 lines of markup
+ * covering four of the nine pages and leaving five reachable only from the nav.
+ * Codex's word for the result was that the hub presents its destinations
+ * flatly, and the deeper problem was that it did not present most of them at
+ * all.
+ *
+ * It is now an index, in the shape Jesse's prototype uses: a numbered rule per
+ * group, then the pages in that group as cards with the one line that says
+ * what each does. Same five groups as the nav panel, from the same array in
+ * routes.ts, so the hub and the dropdown cannot disagree about where a page
+ * lives.
+ *
+ * The blurbs render HERE and not in the nav panel. masthead.css states the
+ * reason: a person opening a nav menu is choosing where to go and has not
+ * asked to be sold to on the way. A person who has arrived at the hub has.
+ *
+ * The hero is still `texture` rather than `live`. Its lede is one of the seven
+ * measured below 4.5:1 by tools/measure-contrast.mjs, and that defect is
+ * Codex's to fix across all seven at once; switching this one page to a live
+ * scene would take it out of their set mid-repair and leave six.
+ */
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import StakeholderGrid from "../components/ui/StakeholderGrid.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import { PRODUCT_GROUPS } from "../data/routes";
+
+const description =
+  "Dues, collections, books, notices, vendor renewals and voting for a self-managed association, in one place. Here is each part of it.";
+---
+
+<Base
+  title="What Common Parcel does"
+  description={description}
+  path="/product"
+  shareTitle="Common Parcel: Software for Self-Managed HOAs"
+>
+  <Hero scene="dusk" seed={42}>
+    {/*
+      NOT "Everything a management company does for an HOA." That is Jesse's
+      prototype h1 verbatim and it was here until Codex read it against the
+      page under it: a universal claim the page then disproves by listing six
+      jobs, on a site that elsewhere discloses physical mail and lead capture
+      as not connected. A management company also walks the property, takes the
+      owner's phone call and coordinates a repair.
+
+      Codex's replacement, "The recurring work behind a self-managed HOA",
+      fails the voice lint -- "recurring work" is on the VAGUE_WORK list in
+      tools/voice-lint.mjs, next to "busywork" and "the heavy lifting". This
+      says the outcome instead, in the words the approved homepage already
+      uses: "Ditch your HOA management company."
+    */}
+    <h1 class="t-display">Run the association without a management company.</h1>
+    <p class="t-lede">
+      Common Parcel bills the dues, follows up on late accounts, keeps the books, drafts
+      the notices the board sends, watches the vendor renewals, and runs the vote. Here is
+      each part of it.
+    </p>
+    <div class="actions">
+      <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
+    </div>
+  </Hero>
+
+  {/*
+    NOT class="band". tokens.css turns `.band > .page` into the two-track rail
+    grid above 1000px, and the five groups are direct children of .page, so
+    they auto-placed into two columns of different widths -- five chapter
+    rules at two different lengths down one page. `section` alone already
+    carries the page's vertical rhythm from tokens.css; only the hairline had
+    to be borrowed.
+  */}
+  <section class="index">
+    <div class="page">
+      {PRODUCT_GROUPS.map((group, i) => (
+        <div class="group">
+          <div class="group-head">
+            <span class="group-no">{String(i + 1).padStart(2, "0")}</span>
+            <span class="group-name">{group.name}</span>
+          </div>
+          <div class="group-grid">
+            {group.items.map((item) => (
+              <a class="hub-card" href={item.path}>
+                <h2 class="hub-name">{item.label}</h2>
+                <p class="hub-blurb">{item.blurb}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="band band--field">
+    <div class="page">
+      <div class="section-intro">
+        <h2 class="t-sheet">Built for everyone in the neighborhood.</h2>
+        <p class="t-lede">
+          Software that makes board volunteering sustainable while giving homeowners clear answers.
+        </p>
+      </div>
+      <StakeholderGrid />
+    </div>
+  </section>
+
+  <section class="product-next">
+    <div class="page">
+      <div class="compare-teaser">
+        <div class="teaser-text">
+          <h2 class="t-headline">Built specifically for volunteer boards</h2>
+          <p class="t-lede">
+            Why software written for a volunteer works differently, and the guides we
+            keep for self-managed associations.
+          </p>
+        </div>
+        <div class="teaser-links">
+          <a href="/why-common-parcel" class="compare-link-card">
+            <span class="card-label">Philosophy</span>
+            <div class="card-name">Why Common Parcel</div>
+            <div class="card-desc">Why software built for volunteer boards operates on your governing documents.</div>
+          </a>
+          <a href="/blog" class="compare-link-card">
+            <span class="card-label">Blog</span>
+            <div class="card-name">Guides for self-managed boards</div>
+            <div class="card-desc">Practical guides with primary statutory citations for self-managed boards.</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand headline="Run it yourselves." scene="dawn" seed={191} />
+</Base>
+
+<style>
+  .index { border-bottom: var(--stroke-rule); }
+  .product-next { border-bottom: var(--stroke-rule); }
+
+  .section-intro {
+    max-width: 36em;
+    margin-bottom: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  /* ── The index ──────────────────────────────────────────────────────── */
+
+  .group { margin-bottom: clamp(32px, 4vw, 60px); }
+  .group:last-child { margin-bottom: 0; }
+
+  /*
+   * The heavy rule under the group name is the whole device: it is what makes
+   * five groups read as five chapters rather than as one long grid with
+   * subheadings. 1.5px against the hairlines everywhere else on the page.
+   */
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: var(--stroke-consequence);
+  }
+  .group-no,
+  .group-name {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .group-no { color: var(--terracotta); }
+  .group-name { color: var(--ink-3); }
+
+  /*
+   * A FIXED three-track grid, not auto-fit and not auto-fill.
+   *
+   * auto-fit collapses the empty tracks, so the three groups that hold one
+   * page each stretched that card the full 1240 -- one card three times the
+   * width of its neighbours in the group above it. auto-fill keeps the tracks
+   * but chooses how many from the available width, which came out at four, so
+   * every three-card row then left one empty column and nothing lined up with
+   * anything. Three named tracks means a row of three fills the width and a
+   * lone card is a third of it.
+   */
+  .group-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+    margin-top: clamp(16px, 2vw, 26px);
+  }
+  @media (min-width: 700px) {
+    .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1000px) {
+    .group-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .hub-card {
+    display: block;
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    background: var(--card);
+    border: var(--stroke-edge);
+    text-decoration: none;
+    transition: border-color 0.16s ease, background 0.16s ease;
+  }
+  .hub-card:hover {
+    border-color: var(--terracotta);
+    background: var(--held);
+  }
+  /*
+   * The card names are h2, which puts them under voice-lint's heading rules --
+   * ten words, one sentence, no hinge, no counted quantity, no back-office
+   * noun. They are page names, so they pass, and holding them to it is right:
+   * this is the page where a board first reads the nine.
+   */
+  .hub-name {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .hub-blurb {
+    margin: var(--s-2) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  /* ── Compare teaser ─────────────────────────────────────────────────── */
+
+  .compare-teaser {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .compare-teaser { grid-template-columns: 1fr; }
+  }
+  .teaser-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .compare-link-card {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--c-edge);
+    padding: var(--s-4) var(--s-5);
+    text-decoration: none;
+    transition: border-color 0.16s ease, transform 0.16s ease;
+  }
+  .compare-link-card:hover {
+    border-color: var(--terracotta);
+    transform: translateX(4px);
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .card-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 2px 0 4px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hub-card, .compare-link-card { transition: none; }
+    .compare-link-card:hover { transform: none; }
+  }
+</style>

@@ -1,0 +1,160 @@
+---
+/**
+ * resident-portal — the hero diagram.
+ *
+ * THIS IS THE ONE SCENE THE OWNER LIKED. "Really simple and it kind of shows
+ * what's going on. But it'd be better if you basically just had an animation of
+ * the actual resident portal going through."
+ *
+ * So the composition is the one that was approved: a dark rail on the left, a
+ * paper application on the right, a figure at the top, three cards under it.
+ * Nothing has been redesigned. Two things changed.
+ *
+ * It moves. A cursor walks the rail and an amber tab tracks the card it lands
+ * on, which is the portal being gone through. Two elements move, in step, on
+ * one clock. Nothing else animates.
+ *
+ * It stopped talking. "Resident home", "Your association at a glance",
+ * "Requests" and "Documents" were nine words inside an aria-hidden block, read
+ * by nobody. Two are left, and they are the two an owner opens the portal for.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame, so 100% is the walk's starting position and a still scene is the
+ * scene at rest rather than mid-stride.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * .scene-body is redefined here because Astro scopes that file's styles to
+ * that file's own markup, and this markup is not in it.
+ */
+---
+
+<div class="portal scene-body">
+  <div class="rail">
+    <span class="cursor"></span>
+    <i></i><i></i><i></i><i></i>
+  </div>
+
+  <div class="main">
+    <div class="figure">
+      <span>Balance</span>
+      <b>$285</b>
+    </div>
+
+    <div class="cards">
+      <div><i class="k"></i><i class="v"></i></div>
+      <div><i class="k k--wide"></i><i class="v v--short"></i></div>
+      <div><i class="k"></i><i class="v v--long"></i></div>
+      <span class="tab"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .portal {
+    --pitch: 32px;
+    --cg: var(--s-3);
+    min-height: 278px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .rail {
+    position: relative;
+    background: var(--night);
+    border-right: 1px solid var(--night-rule);
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-5) 21px 0;
+  }
+  .rail i { display: block; width: 16px; height: 16px; background: var(--on-dark-tile); }
+  .cursor {
+    position: absolute;
+    top: var(--s-5);
+    left: 21px;
+    width: 16px;
+    height: 16px;
+    background: var(--amber);
+    animation: rail-walk 7.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  .main { padding: var(--s-5); display: grid; align-content: space-between; gap: var(--s-6); }
+
+  .figure { display: grid; gap: var(--s-2); }
+  .figure span {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+  .figure b {
+    font: 600 clamp(28px, 3.2vw, 40px)/1 var(--font-serif);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--cg);
+    padding-bottom: 11px;
+  }
+  .cards > div {
+    min-height: 92px;
+    background: var(--field);
+    border: var(--stroke-edge);
+    padding: var(--s-3);
+    display: grid;
+    align-content: space-between;
+    gap: var(--s-4);
+  }
+  .k { display: block; height: 7px; width: 54%; background: var(--bisque-edge); }
+  .k--wide { width: 72%; }
+  .v { display: block; height: 10px; width: 44%; background: var(--ink-3); }
+  .v--short { width: 30%; }
+  .v--long { width: 62%; }
+
+  /* Which card the rail is on. Moves with the cursor, on the same clock. */
+  .tab {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: calc((100% - 2 * var(--cg)) / 3);
+    height: 3px;
+    background: var(--amber);
+    animation: card-walk 7.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  }
+
+  @keyframes rail-walk {
+    0%, 25% { transform: translateY(0); }
+    33%, 58% { transform: translateY(var(--pitch)); }
+    66%, 91% { transform: translateY(calc(2 * var(--pitch))); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes card-walk {
+    0%, 25% { transform: translateX(0); }
+    33%, 58% { transform: translateX(calc(100% + var(--cg))); }
+    66%, 91% { transform: translateX(calc(200% + 2 * var(--cg))); }
+    100% { transform: translateX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor, .tab { animation: none; }
+  }
+
+  @media (max-width: 620px) {
+    .portal { min-height: 238px; grid-template-columns: 46px 1fr; --cg: var(--s-2); }
+    .rail { padding: var(--s-4) 15px 0; }
+    .cursor { top: var(--s-4); left: 15px; }
+    .main { padding: var(--s-4); gap: var(--s-5); }
+    .cards > div { min-height: 76px; padding: var(--s-2); }
+  }
+</style>

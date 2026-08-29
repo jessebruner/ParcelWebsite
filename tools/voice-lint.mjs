@@ -31,7 +31,7 @@ import { join, relative } from "node:path";
 const BANNED_WORDS = [
   "leverage", "synerg", "solution", "ecosystem", "best-in-class", "world-class",
   "cutting-edge", "state-of-the-art", "next-generation", "robust", "holistic",
-  "end-to-end", "seamless", "frictionless", "scalable", "empower", "supercharge",
+  "end-to-end", "seamless", "frictionless", "scalable", "supercharge",
   "unlock", "unleash", "elevate", "revolution", "disrupt", "game-changer",
   "one-stop shop", "peace of mind", "delv", "underscore", "tapestry", "intricat",
   "meticulous", "pivotal", "realm", "navigate", "foster", "showcase", "boast",
@@ -41,7 +41,7 @@ const BANNED_WORDS = [
   "crucial", "chase", "chasing", "vital", "comprehensive", "poised", "deep dive",
   "shed light on", "demystify",
 ];
-const WORD_EXCEPTIONS = { chase: [/purchas/g], chasing: [/purchasing/g], navigate: [/navigation/g] };
+const WORD_EXCEPTIONS = { chase: [/purchas/g], chasing: [/purchasing/g], navigate: [/navigation/g], solution: [/resolution/g] };
 
 const BANNED_FRAMES = [
   "say goodbye to", "look no further", "we've got you covered", "in today's fast-paced world",
@@ -83,6 +83,30 @@ const LOT_COUNT = /\b\d{1,5}\s?(?:homes|lots|doors|units|owners|households)\b/i;
 const AI_WORD = /\bai\b|artificial intelligence|machine learning|\bllm\b/i;
 const USER_WORD = /\busers?\b/i;
 
+/**
+ * SECTION HEADINGS ARE HELD TO A HIGHER BAR THAN BODY COPY.
+ *
+ * A heading gets about two seconds. Body copy that reads badly still gets
+ * read; a heading that reads badly loses the reader, so the rules below apply
+ * to h1 and h2 only. Not h3: the FAQ questions are h3, and a question is
+ * allowed to be long and to contain a hinge ("What is HOA management
+ * software, and what does Common Parcel actually do?").
+ *
+ * These do not widen the hero surface. Linting /pricing at hero surface
+ * produces 43 problems and most are correct copy: the bracket table and the
+ * Detroit street address are supposed to contain digits. Body copy is left
+ * alone. See docs/VOICE.md.
+ */
+const HEAD_MARK = "<!-- voice-h -->";
+
+/** Two sentences in one heading: the mirrored-fragment aphorism. */
+const HEAD_TWO_SENTENCES = /[a-z0-9)"'][.][ ]+[A-Z]/;
+/** Two half-topics hinged together because neither carried the heading alone. */
+const HEAD_HINGE = /,[ ]+(and|or|but)[ ]/i;
+/** Coinages nobody said before they met us. */
+const HEAD_JARGON = /(custody|custodial|settlement|dispatch|provenance|matrix|surface|pass-through|consequential|scoped|ingest|artifact|artefact)/i;
+const HEAD_MAX_WORDS = 10;
+
 const BLOCK = "h1 h2 h3 h4 p li dt dd th td caption blockquote summary a button label".split(" ");
 
 /** Pull the human-visible copy, plus the head copy, out of a built page. */
@@ -94,10 +118,16 @@ export function extractCopy(html) {
 
   const out = [];
   const t = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(s);
-  if (t) out.push(t[1]);
+  if (t) out.push(`<!-- voice-title -->${t[1].trim()}`);
   for (const re of [/<meta\s+name="description"\s+content="([^"]*)"/i, /<meta\s+property="og:title"\s+content="([^"]*)"/i]) {
     const m = re.exec(s);
-    if (m) out.push(m[1]);
+    if (m) {
+      if (re.source.includes("og:title")) {
+        out.push(`<!-- voice-title -->${m[1].trim()}`);
+      } else {
+        out.push(m[1]);
+      }
+    }
   }
   for (const m of s.matchAll(/<!--([\s\S]*?)-->/g)) if (/voice-(allow|surface)/i.test(m[1])) out.push(`<!--${m[1]}-->`);
 
@@ -109,7 +139,7 @@ export function extractCopy(html) {
       .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
       .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&mdash;/g, "—")
       .replace(/\s+/g, " ").trim();
-    if (text) out.push(text);
+    if (text) out.push(/^h[12]$/i.test(m[1]) ? HEAD_MARK + text : text);
   }
   const seen = new Set();
   return out.filter((x) => { const k = x.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).join("\n");
@@ -132,10 +162,17 @@ export function lint(text, surface = "general") {
   const lines = text.split("\n");
 
   lines.forEach((line, i) => {
-    const low = line.toLowerCase();
+    const isTitle = line.startsWith("<!-- voice-title -->");
+    const isHeading = line.startsWith(HEAD_MARK);
+    const rawLine = isTitle
+      ? line.replace("<!-- voice-title -->", "")
+      : isHeading
+        ? line.slice(HEAD_MARK.length)
+        : line;
+    const low = rawLine.toLowerCase();
     const push = (code, msg) => { if (!allow.has(code)) problems.push([i + 1, code, msg]); };
 
-    if (line.includes("—") || line.includes("–")) push("EM_DASH", line.trim().slice(0, 70));
+    if (!isTitle && (rawLine.includes("—") || rawLine.includes("–"))) push("EM_DASH", rawLine.trim().slice(0, 70));
     for (const w of BANNED_WORDS) if (hit(low, w)) push("BANNED_WORD", `'${w}'`);
     for (const f of BANNED_FRAMES) if (low.includes(f)) push("BANNED_FRAME", `'${f}'`);
     for (const r of REVERSALS) if (r.test(low)) push("REVERSAL", line.trim().slice(0, 60));
@@ -145,6 +182,22 @@ export function lint(text, surface = "general") {
     if (FROM_TO.test(line)) push("FROM_TO_SWEEP", line.trim().slice(0, 60));
     if (AI_WORD.test(low)) push("AI_WORD", line.trim().slice(0, 60));
     if (USER_WORD.test(low)) push("USER_WORD", line.trim().slice(0, 60));
+
+    // A privacy policy section heading is meant to be descriptive, not a
+    // selling point: "Data export, retention, and deletion" is exactly right
+    // there and exactly wrong on /security. Legal pages declare themselves
+    // with <!-- voice-surface: legal --> and skip this block only.
+    if (isHeading && surface !== "legal") {
+      const h = rawLine.trim();
+      const clip = h.slice(0, 60);
+      if (MECHANISM.test(h)) push("HEAD_MECHANISM", clip);
+      if (COUNT_WORD.test(h)) push("HEAD_COUNT", clip);
+      if (HEAD_TWO_SENTENCES.test(h)) push("HEAD_TWO_SENTENCES", clip);
+      if (HEAD_HINGE.test(h)) push("HEAD_HINGE", clip);
+      if (HEAD_JARGON.test(h)) push("HEAD_JARGON", clip);
+      if (h.split(" ").length > HEAD_MAX_WORDS) push("HEAD_LONG", clip);
+      for (const n of NOT_SELLING) if (h.toLowerCase().includes(n)) push("HEAD_NOT_SELLING", "'" + n + "'");
+    }
 
     if (!tof) return;
     if (PRICE_FIGURE.test(line)) push("PRICE_IN_TOF", line.trim().slice(0, 60));
@@ -158,7 +211,10 @@ export function lint(text, surface = "general") {
     for (const p of PRESUMPTION) if (low.includes(p)) push("PRESUMPTION", `'${p}'`);
   });
 
-  const excl = (text.match(/!/g) || []).length;
+  const cleanForPunctuation = lines
+    .filter((l) => !l.startsWith("<!--"))
+    .join("\n");
+  const excl = (cleanForPunctuation.match(/!/g) || []).length;
   if (excl > 1 && !allow.has("EXCLAMATION")) problems.push([0, "EXCLAMATION", `${excl} exclamation marks`]);
   return problems;
 }
@@ -189,26 +245,32 @@ function walk(dir, out = []) {
   return out;
 }
 
-if (!existsSync("dist")) {
-  console.error("No dist/. Run `npm run build` first.");
-  process.exit(2);
-}
+import { fileURLToPath } from "node:url";
+import { requireFreshDist } from "./dist-freshness.mjs";
 
-let total = 0;
-const files = walk("dist");
-for (const file of files) {
-  const html = readFileSync(file, "utf8");
-  const surface = surfaceFor(file, html);
-  const problems = lint(extractCopy(html), surface);
-  const name = relative("dist", file).replace(/\\/g, "/");
-  if (!problems.length) continue;
-  total += problems.length;
-  console.log(`\n${name}  [${surface}]  ${problems.length} problem(s)`);
-  for (const [ln, code, msg] of problems) console.log(`  [${code}] ${ln ? "line " + ln : "doc"}: ${msg}`);
-}
+const isMain = process.argv[1] && (process.argv[1].endsWith("voice-lint.mjs") || fileURLToPath(import.meta.url) === process.argv[1]);
 
-if (total) {
-  console.log(`\n${total} problem(s). The judgment half of the pre-flight is still yours.`);
-  process.exit(1);
+if (isMain) {
+  // This lints dist, so a stale build would be graded as if it were this tree.
+  // The guard covers absence and staleness both.
+  requireFreshDist();
+
+  let total = 0;
+  const files = walk("dist");
+  for (const file of files) {
+    const html = readFileSync(file, "utf8");
+    const surface = surfaceFor(file, html);
+    const problems = lint(extractCopy(html), surface);
+    const name = relative("dist", file).replace(/\\/g, "/");
+    if (!problems.length) continue;
+    total += problems.length;
+    console.log(`\n${name}  [${surface}]  ${problems.length} problem(s)`);
+    for (const [ln, code, msg] of problems) console.log(`  [${code}] ${ln ? "line " + ln : "doc"}: ${msg}`);
+  }
+
+  if (total) {
+    console.log(`\n${total} problem(s). The judgment half of the pre-flight is still yours.`);
+    process.exit(1);
+  }
+  console.log(`${files.length} pages clean.`);
 }
-console.log(`${files.length} pages clean.`);

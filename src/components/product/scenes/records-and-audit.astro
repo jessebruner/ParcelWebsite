@@ -1,0 +1,256 @@
+---
+/**
+ * records-and-audit — the hero diagram.
+ *
+ * ONE OBJECT: a file drawer, standing open, with the association's records in
+ * it and a label card on the drawer front. ONE MOMENT: the nameplate below it
+ * is swapped — a new treasurer takes the seat — and the drawer does not move.
+ * That is the closer, drawn: "Nothing leaves with the treasurer."
+ *
+ * It replaces three anonymous figures in a rail beside eight grey lines that
+ * filled in. Nobody could name what that was a picture of. A drawer of manila
+ * folders and a nameplate are both things a board member has stood in front
+ * of, so there is nothing to decode: the person changes, the files stay.
+ *
+ * Four real words carry the meaning and the rest is geometry — the drawer's
+ * label card, the role, and the two names on the plate. The five scenes that
+ * work do the same ("April", "Owner", "Stripe", "HOA bank", "Quorum"); a name
+ * IS the picture when the picture is about whose name is on something.
+ *
+ * Deliberately NOT the panel from the first band. That is a dark navy list of
+ * four record types with status chips, and the reader meets it two screens
+ * down. This is a physical drawer and a nameplate; no rows, no chips.
+ *
+ * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
+ * `animation-duration: 0.001ms !important`, which lands every animation on its
+ * 100% frame. So the base styles and 100% are the same settled state — the new
+ * treasurer's plate in place, the drawer full — and the handover happens in
+ * the middle. The scene is never blank at frame zero and never blank for a
+ * reader who asked for no motion. The explicit reduced-motion rule at the
+ * bottom says the same thing without leaning on that global staying put.
+ *
+ * Only two things animate: the two name plates. The drawer is completely
+ * static except for one tab brightening as the new name lands, which is the
+ * next board finding the file. A picture whose argument is "this does not
+ * move" should not move.
+ *
+ * No <script>: pure CSS needs no IntersectionObserver.
+ *
+ * The shared chrome (.feature-scene, .scene-top) lives in FeatureScene.astro.
+ * This file carries its own box, because Astro scopes that file's styles to
+ * that file's own markup and this markup is not in it.
+ */
+
+/** Five hanging folders. The third one stands proud: it is the one in use. */
+const FOLDERS = [1, 2, 3, 4, 5];
+const LIVE = 3;
+---
+
+<div class="rec">
+  <div class="cab">
+    <div class="folders">
+      {FOLDERS.map((n) => <i class:list={["fol", { "fol--live": n === LIVE }]}></i>)}
+    </div>
+
+    <div class="front">
+      <span class="card">Association records <em>2026</em></span>
+      <span class="pull"></span>
+    </div>
+  </div>
+
+  <div class="chair">
+    <span class="role">Treasurer</span>
+    <span class="plate">
+      <b class="name name--out"><i></i>R. Alvarez</b>
+      <b class="name name--in"><i></i>T. Novak</b>
+    </span>
+  </div>
+</div>
+
+<style>
+  .rec {
+    min-height: 278px;
+    padding: clamp(18px, 2.6vw, 24px);
+    background: var(--night);
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: clamp(18px, 2.6vw, 24px);
+    align-content: center;
+  }
+
+  /* ── THE DRAWER ─────────────────────────────────────────────────────── */
+
+  /* The cabinet: a dark opening with a frame, which is what an open drawer
+     looks like from the front. --bank is a stop darker than --night, so the
+     inside of the cabinet reads as inside. */
+  .cab {
+    border: 1px solid var(--on-dark-tile);
+    background: var(--bank);
+    padding: var(--s-3);
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  /* Hanging folders, seen standing in the drawer. --sand is manila. */
+  .folders {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    height: 84px;
+    padding-inline: var(--s-2);
+  }
+  .fol {
+    position: relative;
+    flex: 1;
+    height: 60px;
+    background: var(--sand);
+  }
+  /* The tab, alternating side to side the way a real drawer staggers them. */
+  .fol::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 0;
+    width: 58%;
+    height: 9px;
+    background: var(--bisque-edge);
+  }
+  .fol:nth-child(even)::before { left: auto; right: 0; }
+  /* The record in use: pulled up, brighter, amber tab. */
+  .fol--live { height: 74px; background: var(--paper); }
+  .fol--live::before { background: var(--amber); }
+
+  /* The drawer face: a label card in its holder, and a pull. Pulled out to the
+     cabinet's inner edges with negative margin, because a drawer front fills
+     the opening rather than floating inside it. */
+  .front {
+    height: 54px;
+    margin: 0 calc(-1 * var(--s-3)) calc(-1 * var(--s-3));
+    border-top: 1px solid var(--slate);
+    background: var(--cold);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--s-4);
+    overflow: hidden;
+  }
+  .card {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 5px var(--s-3);
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .card em { font-style: normal; color: var(--ink-3); }
+  .pull {
+    margin-left: auto;
+    flex: none;
+    width: 54px;
+    height: 7px;
+    background: var(--on-dark-label);
+  }
+
+  /* ── THE SEAT ───────────────────────────────────────────────────────── */
+
+  .chair {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .role {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+    white-space: nowrap;
+  }
+  /* A desk nameplate: one slot, and the card in it gets changed. */
+  .plate {
+    position: relative;
+    overflow: hidden;
+    height: 38px;
+    background: var(--plum);
+    border-bottom: 3px solid var(--rose);
+  }
+  .name {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--s-4);
+    font: 600 var(--t-micro)/1 var(--font-sans);
+    color: var(--paper);
+    white-space: nowrap;
+  }
+  /* A head and a pair of shoulders, off the same 2px grid as the other scenes,
+     so the plate is unmistakably a person and not a caption. */
+  .name i { position: relative; flex: none; width: 16px; height: 18px; }
+  .name i::before,
+  .name i::after { content: ""; position: absolute; left: 50%; background: currentColor; }
+  .name i::before { top: 0; width: 8px; height: 8px; margin-left: -4px; }
+  .name i::after { top: 10px; width: 16px; height: 8px; margin-left: -8px; }
+
+  /* Base state IS the rest state: the new plate is in, the old one is gone. */
+  .name--out { opacity: 0; transform: translateX(112%); }
+  .name--in { opacity: 1; transform: translateX(0); }
+
+  .name--out { animation: rec-leave 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite; }
+  .name--in { animation: rec-arrive 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite; }
+  .fol--live::before { animation: rec-found 8s infinite; }
+
+  @keyframes rec-leave {
+    0%, 40% { opacity: 1; transform: translateX(0); }
+    54%, 100% { opacity: 0; transform: translateX(112%); }
+  }
+  @keyframes rec-arrive {
+    0%, 46% { opacity: 0; transform: translateX(-112%); }
+    64%, 100% { opacity: 1; transform: translateX(0); }
+  }
+  /* The next board opens the same file. */
+  @keyframes rec-found {
+    0%, 64% { background: var(--amber); }
+    72%, 82% { background: var(--paper); }
+    92%, 100% { background: var(--amber); }
+  }
+
+  @media (max-width: 620px) {
+    /* min-height stays at 278px, but no longer because it has to. The wrapper
+       used to hold a 320px floor at every width, so a 238px body left a 40px
+       band of translucent --night-active showing under this opaque scene -- a
+       seam on a dusk hero, plainly visible under the nameplate at 390x844. The
+       floor is now off below 620px. 278 stays because a drawer, five folders
+       and a nameplate need the room. */
+    .rec { padding: var(--s-4); gap: var(--s-4); }
+    .cab { padding: var(--s-2); gap: var(--s-2); }
+    .folders { height: 70px; gap: 5px; padding-inline: var(--s-1); }
+    .fol { height: 50px; }
+    .fol--live { height: 62px; }
+    .front {
+      height: 46px;
+      margin: 0 calc(-1 * var(--s-2)) calc(-1 * var(--s-2));
+      padding-inline: var(--s-3);
+      gap: var(--s-2);
+    }
+    .card { padding: 4px var(--s-2); letter-spacing: 0.04em; gap: var(--s-2); }
+    .pull { width: 32px; height: 6px; }
+    .chair { gap: var(--s-3); }
+    .role { letter-spacing: 0.08em; }
+    .plate { height: 34px; }
+    .name { padding-inline: var(--s-3); gap: var(--s-2); }
+  }
+
+  /* Stillness holds the settled frame: the drawer full, the new treasurer's
+     plate in the slot, the file in use lit. Nothing is mid-slide. */
+  @media (prefers-reduced-motion: reduce) {
+    .name--out,
+    .name--in,
+    .fol--live::before { animation: none; }
+  }
+</style>

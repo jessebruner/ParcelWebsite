@@ -17,6 +17,14 @@ export interface Bracket {
   label: string;
 }
 
+export const DEFAULT_BRACKETS: Bracket[] = [
+  { upTo: 10, rate: 2.5, label: "First 10" },
+  { upTo: 70, rate: 1.1, label: "11 to 70" },
+  { upTo: null, rate: 0.4, label: "71 and above" },
+];
+
+export const DEFAULT_MINIMUM = 10;
+
 export interface Band extends Bracket {
   lots: number;
   amount: number;

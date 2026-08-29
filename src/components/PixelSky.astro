@@ -10,15 +10,36 @@
  *
  *   texture  sky only, hero height, painted once. Behind headings.
  *   band     sky only, strip height, painted once. Between chapters.
- *   scene    the whole marsh, animated. The homepage hero, and nowhere else.
+ *   scene    a whole landscape, animated. Heroes and closers.
  *
  * The canvas is small and scaled with image-rendering: pixelated, which is where
  * the grid comes from. A CSS gradient would be the one soft edge in a system
  * whose argument is that it is drawn on a grid.
+ *
+ * TWO PAINTERS, AND THE SPLIT IS DELIBERATE.
+ *
+ * texture and band still run src/scripts/sky.js, which is small and paints a
+ * sky ramp and nothing else. scene runs src/scripts/scene-engine.js -- the
+ * painter from the design project, carried over whole rather than
+ * reimplemented, because the last reimplementation is the reason our marsh was
+ * a treeline of value noise while the project's was a composed picture.
+ *
+ * The engine is 2,471 lines and 34KB gzipped, which is why it is a dynamic
+ * import in the client script rather than a static one: a page with no scene
+ * on it never fetches it. Every page has a closer, so in practice every page
+ * does fetch it -- off the critical path, after first paint.
+ *
+ * Eight scenes exist in the engine. Six are listed here. `summer` and
+ * `winterglade` are bright enough that white hero copy over them would need a
+ * scrim heavy enough to hide the picture, which is a worse outcome than not
+ * using them; they are good art for a light surface and this component only
+ * ever draws behind white.
  */
+export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn";
+
 interface Props {
   mode?: "texture" | "band" | "scene";
-  scene?: "dusk" | "dawn";
+  scene?: SceneKey;
   seed?: number;
   /** Where in the ramp the strip sits. 0 is night, 1 is the horizon. */
   crop?: number;
@@ -26,11 +47,9 @@ interface Props {
 const { mode = "texture", scene = "dusk", seed = 7, crop } = Astro.props;
 const band = mode !== "scene";
 const h = mode === "band" ? 54 : 216;
-const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <canvas
-  id={id}
   class:list={["sky", mode]}
   width={384}
   height={h}
@@ -56,19 +75,117 @@ const id = `sky-${Math.random().toString(36).slice(2, 9)}`;
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const painted = new WeakSet<HTMLCanvasElement>();
 
+  /*
+   * A running scene redraws 82,944 pixels about fourteen times a second, for as
+   * long as the page is open. The homepage gets away with two of them because
+   * its hero is the first thing on screen; a closing band is not, and a phone
+   * should not be painting a marsh nobody is looking at. So a scene runs only
+   * while it is on screen, and stops when it leaves.
+   *
+   * A single frame is still painted immediately, so the section is never empty
+   * and never fades in.
+   */
+  const running = new WeakMap<HTMLCanvasElement, { start(): void; stop(): void }>();
+  const watcher = "IntersectionObserver" in window
+    ? new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const scene = running.get(entry.target as HTMLCanvasElement);
+          if (!scene) continue;
+          if (entry.isIntersecting) scene.start();
+          else scene.stop();
+        }
+      }, { rootMargin: "120px" })
+    : null;
+
+  /*
+   * The phase the still frame is drawn at, and it is not zero.
+   *
+   * The engine's loop is 240 seconds and phase 0 is one particular instant in
+   * it. Every scene was looked at across the loop before this was picked:
+   * 0.24 is where the cloud layers have separated and the sun is off the
+   * vertical, which is the frame you would choose if you were choosing one.
+   * A reduced-motion reader gets this frame and no other, so it has to be a
+   * frame worth having.
+   */
+  const STILL = 0.24;
+  const LOOP_MS = 240000;
+
+  /** The six scenes this component draws. Anything else falls back to dusk. */
+  const SCENES = new Set(["dusk", "dawn", "winter", "street", "storm", "autumn"]);
+
+  /**
+   * Wraps one engine instance in the start/stop pair the observer above
+   * expects. requestAnimationFrame paced by a timeout, the same cadence sky.js
+   * used: the art is on a 240-second loop and does not need 60fps.
+   */
+  function driver(engine: { draw(t: number): void }) {
+    let raf = 0;
+    let live = false;
+    const frame = () => {
+      if (!live) return;
+      engine.draw((Date.now() % LOOP_MS) / LOOP_MS);
+      raf = requestAnimationFrame(() => setTimeout(frame, 70));
+    };
+    return {
+      start() { if (live) return; live = true; frame(); },
+      stop() { live = false; cancelAnimationFrame(raf); },
+    };
+  }
+
+  /**
+   * A scene canvas gets the full engine. Loaded once, lazily, and shared by
+   * every scene on the page.
+   *
+   * If the import fails the canvas stays as the browser made it -- transparent
+   * over the section's own --night background. That is a dark hero missing its
+   * picture, not a white hero with unreadable copy, which is why nothing here
+   * paints a fallback.
+   */
+  let enginePromise: Promise<typeof import("../scripts/scene-engine.js")> | null = null;
+  function loadEngine() {
+    enginePromise ??= import("../scripts/scene-engine.js");
+    return enginePromise;
+  }
+
+  async function paintScene(cv: HTMLCanvasElement) {
+    const key = cv.dataset.scene ?? "dusk";
+    const { SceneEngine } = await loadEngine();
+    const engine = new SceneEngine(cv, SCENES.has(key) ? key : "dusk", {
+      w: cv.width,
+      h: cv.height,
+      seed: Number(cv.dataset.seed) || 7,
+    });
+    engine.draw(reduce ? STILL : (Date.now() % LOOP_MS) / LOOP_MS);
+    if (reduce) return;
+    const d = driver(engine);
+    if (watcher) {
+      running.set(cv, d);
+      watcher.observe(cv);
+    } else {
+      d.start();
+    }
+  }
+
   function paint() {
     for (const cv of document.querySelectorAll<HTMLCanvasElement>("canvas.sky")) {
       if (painted.has(cv)) continue;
       painted.add(cv);
       const mode = cv.dataset.mode ?? "texture";
-      const s = new Scene(cv, {
+      if (mode === "scene") {
+        paintScene(cv).catch((e) => console.error("scene engine failed", e));
+        continue;
+      }
+      /*
+       * texture and band stay on sky.js. It knows two ramps, dusk and dawn, so
+       * a strip beside a storm hero draws the dusk ramp -- deliberate, because
+       * a strip is a texture between chapters and not a small copy of the
+       * hero.
+       */
+      new Scene(cv, {
         scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk",
         seed: Number(cv.dataset.seed) || 7,
-        band: mode !== "scene",
-      });
-      // Only the full scene moves, and only where nothing is being read.
-      if (mode === "scene" && !reduce) s.start();
-      else s.draw();
+        band: true,
+      }).draw();
     }
   }
   paint();

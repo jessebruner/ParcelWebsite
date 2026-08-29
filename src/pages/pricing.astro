@@ -1,379 +1,226 @@
 ---
-/**
- * The one page where prices belong.
- *
- * Shape, in order, and why:
- *
- *   hero          the pricing model in one sentence, no figures
- *   calculator    a board's own number, plus the arithmetic that produced it
- *   three figures the budget line a treasurer has to defend
- *   included      the vocabulary of the association's work, grouped
- *   comparison    what a management contract bills on top of its base fee
- *   statutory     the one place a law draws a line around a charge
- *   questions     the four objections that are actually asked
- *
- * The calculator sits second because every competitor's pricing page opens with
- * a unit-count selector and then hides the arithmetic behind a quote request.
- * The arithmetic is the whole advantage here, so it is on the page.
- *
- * No testimonials, no logo wall, no review scores, no count of communities
- * served. Nothing has launched. The proof on this page is the working.
- */
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 import PixelSky from "../components/PixelSky.astro";
 import RateCalculator from "../components/pricing/RateCalculator.astro";
-import type { Bracket } from "../components/pricing/brackets";
-
-const BRACKETS: Bracket[] = [
-  { upTo: 10, rate: 2.5, label: "First 10" },
-  { upTo: 70, rate: 1.1, label: "11 to 70" },
-  { upTo: 500, rate: 0.4, label: "71 to 500" },
-  { upTo: null, rate: 0.5, label: "Above 500" },
-];
-const MINIMUM = 10;
-
-/** Per door, per month, for full management. Industry reporting, not a survey. */
-const MANAGER_LOW = 15;
-const MANAGER_HIGH = 25;
+import { DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "../components/pricing/brackets";
 
 const included = [
   {
-    title: "The money",
-    items: ["Dues invoicing", "Payments", "Collections", "Accounting and budgets", "Vendor contracts", "Insurance renewals"],
-    href: "/product/dues-and-payments",
-    label: "Dues and payments",
+    label: "Money",
+    title: "Dues and accounting",
+    items: ["Dues invoices", "Online payments when connected", "Collections", "Ledgers and budgets"],
+    icon: "ledger",
   },
   {
-    title: "The governance",
-    items: ["Violations", "Cure windows and hearings", "Meeting notice and agendas", "Minutes", "Elections and ballots"],
-    href: "/product/meetings-and-voting",
-    label: "Meetings and voting",
+    label: "Board",
+    title: "Board operations",
+    items: ["Meetings and elections", "Violations and notices", "Architectural requests", "Vendor records"],
+    icon: "board",
   },
   {
-    title: "The record",
-    items: ["Governing documents, read and cited", "Records requests", "Resale and estoppel packets", "The resident portal", "Every action, and who signed it"],
-    href: "/product/documents-and-answers",
-    label: "Documents and answers",
+    label: "Community",
+    title: "Residents and records",
+    items: ["Resident portal", "Governing documents", "Insurance records", "Association export"],
+    icon: "community",
   },
-];
-
-/** Row order follows /blog/hoa-management-company-cost, which sources it. */
-const contract: [string, string, string][] = [
-  ["Base management", `$${MANAGER_LOW} to $${MANAGER_HIGH} per door, per month`, "$0.40 to $2.50 per lot, per month"],
-  ["Setup and onboarding", "Once, up front", "Nothing"],
-  ["Statutory notice mailings", "Per notice, plus postage", "Nothing per notice"],
-  ["Resale and estoppel packets", "Per request, often capped by statute", "Nothing per packet"],
-  ["Collections and lien filing", "Per action, sometimes a share of what is recovered", "Included"],
-  ["Records requests", "Per page, or per hour", "Included"],
-  ["After hours calls", "Per call", "Parcel does not take calls"],
-  ["Meetings beyond a set number", "Per meeting", "Parcel does not attend meetings"],
 ];
 
 const faqs: [string, string][] = [
-  ["Is there a free trial?",
-   "Founding associations are being onboarded now. Ask and we will talk about what makes sense for yours."],
-  ["Is it priced per lot or per owner?",
-   "Per lot. Two owners on one deed is one lot, and an owner who holds three lots is three."],
-  ["Do owners pay a fee to pay their dues?",
-   "No. An owner pays the assessment. The association pays for the software."],
-  ["What happens to the price as we grow?",
-   "It follows the lot count, and the average per lot falls as the count rises. The rate card above is the whole price list."],
-  ["What happens if we leave?",
-   "Billing stops. A full export of ledgers, documents, minutes and the record is available in the month you leave."],
+  ["What does the software price include?", "Every association gets the same software features. There are no feature plans to compare or upgrade later."],
+  ["How is the monthly price calculated?", "Each group of lots is charged at the rate shown in the calculator. The lower rate applies only to the lots in that group."],
+  ["Is postal mail included?", "No. Postal mail is outside the software price. We have not set the mail price yet, and certified-mail service is not connected."],
+  ["Is there a setup fee or long contract?", "There is no setup fee. Billing is monthly, and the association can request an export when it leaves."],
 ];
 
 const schema = JSON.stringify({
   "@context": "https://schema.org",
-  "@type": "Product",
+  "@type": "WebApplication",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web browser",
   name: "Common Parcel",
-  description: "HOA management software for self-managed boards, priced per lot with a $10 monthly minimum.",
+  description: "HOA management software priced per lot with the same feature set for every association.",
   offers: {
     "@type": "AggregateOffer",
     priceCurrency: "USD",
-    lowPrice: "10",
-    offerCount: "1",
-    description: "Graduated per lot, per month. $2.50 each for the first 10 lots, $1.10 for lots 11 to 70, $0.40 for lots 71 to 500, $0.50 above 500, with a $10 monthly minimum.",
+    lowPrice: "10.00",
+    description: "Graduated per-lot monthly pricing with a $10 monthly minimum. Postal mail is outside the software price and its price has not been set.",
   },
 });
 ---
 
 <Base
-  title="Pricing"
-  description="Graduated per lot, per month, with a $10 minimum. Everything included. No contract, no setup fee, and no charge to owners for paying their dues."
+  title="HOA Software Pricing"
+  description="See your monthly Common Parcel software price by lot count. Every association gets the same features; postal mail is separate and its price is not set."
   path="/pricing"
   reviewed="August 2026"
   schema={schema}
 >
-  <Hero eyebrow="Pricing" seed={313} compact>
-    <h1 class="t-display">One price. Everything is in it.</h1>
+  <Hero seed={313} compact>
+    <h1 class="t-display">Simple pricing for your entire HOA</h1>
     <p class="t-lede">
-      Parcel bills per lot, per month, in bands, the way a tax bracket works. The bigger the
-      association, the less each lot costs.
+      Enter your lot count to see the monthly software price. Every association gets the same
+      features. Postal mail is outside the software price, and its price has not been set.
     </p>
   </Hero>
 
-  <section class="pr-price" id="calculator">
+  <section class="pr-calculator on-ink" id="calculator">
     <div class="page">
-      <h2 class="t-sheet">What your association pays</h2>
-      <div class="pr-price-body">
-        <RateCalculator
-          brackets={BRACKETS}
-          minimum={MINIMUM}
-          lots={60}
-          anchorLow={MANAGER_LOW}
-          anchorHigh={MANAGER_HIGH}
-        />
-        <ul class="rows pr-terms">
-          <li><b>Billed monthly.</b> No contract, so any month can be your last.</li>
-          <li><b>Migration is included.</b> Ledgers, documents, minutes and the roster load as they arrive.</li>
-          <li><b>A full export in any month,</b> the month you leave included: ledgers, documents, minutes, the record.</li>
-          <li><b>Civic and neighborhood associations pay a reduced rate.</b> Ask for the number.</li>
-        </ul>
+      <div class="pr-heading">
+        <p class="t-label">Your price</p>
+        <h2 class="t-sheet">See your monthly software price</h2>
+        <p>Move the slider or enter the exact number of lots in your association.</p>
       </div>
-    </div>
-  </section>
-
-  <section class="pr-figures">
-    <div class="page">
-      <h2 class="t-sheet">Set the budget line from three numbers.</h2>
-      <dl class="pr-figs">
-        <div>
-          <dt class="pr-fig">${MINIMUM}</dt>
-          <dd>The least any association pays in a month, whatever the bands add to.</dd>
-        </div>
-        <div>
-          <dt class="pr-fig">$0</dt>
-          <dd>To start. There is no setup fee and no minimum term.</dd>
-        </div>
-        <div>
-          <dt class="pr-fig">$0</dt>
-          <dd>Charged to an owner for paying dues. The association pays for the software.</dd>
-        </div>
-      </dl>
-      <p class="coda">Nothing is billed per notice, per document or per owner.</p>
+      <RateCalculator brackets={DEFAULT_BRACKETS} minimum={DEFAULT_MINIMUM} lots={60} />
+      <div class="pr-terms" aria-label="Subscription terms">
+        <span>Monthly billing</span>
+        <span>No setup fee</span>
+        <span>Same software features</span>
+      </div>
     </div>
   </section>
 
   <section class="pr-included">
     <div class="page">
-      <h2 class="t-sheet">Everything is included.</h2>
+      <div class="pr-section-head">
+        <p class="t-label">Included</p>
+        <h2 class="t-sheet">Manage the whole association with one subscription</h2>
+        <p class="pr-lede">
+          The subscription covers the work your board, treasurer, and residents do in Common Parcel.
+        </p>
+      </div>
+
       <div class="pr-cards">
         {included.map((group) => (
           <article class="pr-card">
+            <div class:list={["pr-icon", `pr-icon--${group.icon}`]} aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <p class="t-label">{group.label}</p>
             <h3 class="t-title">{group.title}</h3>
-            <ul class="pr-card-list">
+            <ul>
               {group.items.map((item) => <li>{item}</li>)}
             </ul>
-            <p class="pr-card-link"><a href={group.href}>{group.label}</a></p>
           </article>
         ))}
       </div>
-      <p class="coda">
-        There are no feature tiers. A twelve lot association and a twelve hundred lot association
-        get the same product, and pay by size.
-      </p>
     </div>
   </section>
 
   <PixelSky mode="band" scene="dawn" seed={317} />
 
-  <section class="pr-vs">
-    <div class="page">
-      <div class="pr-vs-head">
-        <h2 class="t-sheet">A manager's base fee is not the whole invoice.</h2>
-        <p class="pr-vs-lede">
-          These are the charges a management contract commonly bills on top of the per door fee, and
-          what each one costs here.
+  <section class="pr-bill">
+    <div class="page pr-bill-grid">
+      <div class="pr-bill-copy">
+        <p class="t-label">Your bill</p>
+        <h2 class="t-sheet">Know what can cost extra</h2>
+        <p>
+          The calculator shows the software subscription. Postal mail is outside that price.
+          We have not set the mail price yet.
         </p>
       </div>
 
-      <div class="scroll-x pr-table">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Charge</th>
-              <th scope="col">A management company</th>
-              <th scope="col">Common Parcel</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contract.map(([charge, manager, parcel]) => (
-              <tr>
-                <th scope="row">{charge}</th>
-                <td>{manager}</td>
-                <td>{parcel}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <th scope="row">Billed on top of the base fee</th>
-              <td class="num">7 of 7</td>
-              <td class="num">0 of 7</td>
-            </tr>
-          </tfoot>
-        </table>
+      <div class="pr-receipt" aria-label="Example subscription bill categories">
+        <div class="pr-receipt-head">
+          <span>Monthly bill</span>
+          <span>How it appears</span>
+        </div>
+        <dl>
+          <div>
+            <dt>Common Parcel software</dt>
+            <dd>Based on lot count</dd>
+          </div>
+          <div>
+            <dt>Software features</dt>
+            <dd>Included</dd>
+          </div>
+          <div>
+            <dt>Setup</dt>
+            <dd>$0</dd>
+          </div>
+          <div class="pr-receipt-separate">
+            <dt>Postal mail</dt>
+            <dd>Price not set</dd>
+          </div>
+        </dl>
+        <p>Mail is not included in the calculator total. Certified-mail service is not connected yet.</p>
       </div>
-
-      <p class="pr-src">
-        Manager figures are typical ranges from industry reporting, not a survey we ran. Your own
-        contract is the authority on what yours bills.
-      </p>
-
-      <aside class="panel--statutory pr-statutory">
-        <p class="t-label">Statutory</p>
-        <p class="lede">
-          Many states cap what an association may charge an owner for a resale or estoppel packet.
-        </p>
-        <p class="note">
-          A per packet software charge comes out of that cap. Parcel does not add one, so the cap
-          stays where the statute put it.
-        </p>
-      </aside>
     </div>
   </section>
 
-  <Band title="Questions" field note="Ask a question" noteHref="/contact">
+  <Band title="Questions" field note="Ask a pricing question" noteHref="/contact">
     <dl class="faq">
-      {faqs.map(([q, a]) => <div><dt class="t-title">{q}</dt><dd>{a}</dd></div>)}
+      {faqs.map(([question, answer]) => <div><dt class="t-title">{question}</dt><dd>{answer}</dd></div>)}
     </dl>
   </Band>
 
   <section class="close on-ink">
     <div class="page">
-      <h2 class="t-sheet">Bring this to the board. The vote is theirs.</h2>
+      <h2 class="t-sheet">See if Common Parcel fits your budget</h2>
+      <p>Tell us your association size and what your board needs help with.</p>
       <div class="actions">
-        <a class="btn btn--on-ink" href="/demo">Get early access</a>
-        <a class="btn btn--ghost-on-ink" href="/contact">Ask about your association</a>
+        <a class="btn btn--on-ink" href="/contact">Ask about early access</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ── The price section ───────────────────────────────────────────────── */
+  .pr-calculator { background: var(--night); border-bottom: 1px solid var(--on-dark-rule); }
+  .pr-heading { max-width: 44em; margin-bottom: clamp(28px, 4vw, 56px); }
+  .pr-heading .t-label { color: var(--amber); }
+  .pr-heading h2 { max-width: 18ch; color: var(--paper); }
+  .pr-heading > p:last-child { max-width: 48ch; margin: var(--s-4) 0 0; color: var(--mist); }
+  .pr-terms {
+    display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-8); padding-top: var(--s-5);
+    color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .pr-terms span::before { content: "✓"; margin-right: var(--s-2); color: var(--amber); }
 
-  .pr-price { border-bottom: var(--stroke-rule); }
-  .pr-price h2 { max-width: 22ch; }
-  .pr-price-body { margin-top: clamp(28px, 3.4vw, 48px); }
+  .pr-included { background: var(--paper); border-bottom: var(--stroke-rule); }
+  .pr-section-head { max-width: 46em; }
+  .pr-section-head h2 { max-width: 22ch; }
+  .pr-lede { max-width: 48ch; margin: var(--s-4) 0 0; color: var(--ink-body); }
+  .pr-cards { display: grid; gap: var(--s-6); margin-top: clamp(32px, 4vw, 56px); }
+  @media (min-width: 760px) { .pr-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .pr-card { position: relative; min-height: 100%; padding: var(--s-6); border: var(--stroke-consequence); background: var(--card); transition: transform 160ms ease, border-color 160ms ease; }
+  .pr-card:hover { transform: translateY(-3px); border-color: var(--terracotta); }
+  .pr-card .t-label { margin-top: var(--s-6); }
+  .pr-card h3 { margin-top: var(--s-2); color: var(--ink); }
+  .pr-card ul { list-style: none; margin: var(--s-5) 0 0; padding: 0; }
+  .pr-card li { padding-block: var(--s-2); border-bottom: var(--stroke-hairline); color: var(--ink-body); }
+  .pr-icon { position: relative; width: 48px; height: 48px; background: var(--field); border: var(--stroke-edge); image-rendering: pixelated; }
+  .pr-icon span { position: absolute; width: 10px; height: 10px; background: var(--terracotta); }
+  .pr-icon span:nth-child(1) { left: 8px; top: 8px; }
+  .pr-icon span:nth-child(2) { right: 8px; top: 8px; }
+  .pr-icon span:nth-child(3) { left: 8px; bottom: 8px; }
+  .pr-icon span:nth-child(4) { right: 8px; bottom: 8px; }
+  .pr-icon--ledger span:nth-child(2), .pr-icon--ledger span:nth-child(3) { background: var(--bisque-edge); }
+  .pr-icon--board span:nth-child(1), .pr-icon--board span:nth-child(4) { background: var(--plum); }
+  .pr-icon--community span:nth-child(1), .pr-icon--community span:nth-child(4) { background: var(--amber-edge); }
+  .pr-icon--community span:nth-child(2), .pr-icon--community span:nth-child(3) { background: var(--terracotta); }
 
-  .pr-terms { margin-top: clamp(32px, 4vw, 56px); }
-  .pr-terms > li { color: var(--ink-body); }
-
-  /* ── Three figures ───────────────────────────────────────────────────── */
-
-  .pr-figures { background: var(--field); border-bottom: var(--stroke-rule); }
-  .pr-figures h2 { max-width: 24ch; }
-
-  .pr-figs {
-    margin: clamp(28px, 3.4vw, 48px) 0 0;
-    display: grid;
-    gap: var(--s-8);
+  .pr-bill { background: var(--field); border-bottom: var(--stroke-rule); }
+  .pr-bill-grid { display: grid; gap: clamp(32px, 5vw, 80px); align-items: start; }
+  @media (min-width: 880px) { .pr-bill-grid { grid-template-columns: minmax(15em, 0.75fr) minmax(24em, 1.25fr); } }
+  .pr-bill-copy h2 { max-width: 16ch; }
+  .pr-bill-copy > p:last-child { max-width: 40ch; margin: var(--s-4) 0 0; }
+  .pr-receipt { border: var(--stroke-consequence); background: var(--paper); }
+  .pr-receipt-head {
+    display: flex; justify-content: space-between; gap: var(--s-4); padding: var(--s-3) var(--s-5); background: var(--night);
+    color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase;
   }
-  @media (min-width: 760px) {
-    .pr-figs { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 3.5vw, 64px); }
-  }
-  .pr-figs > div { border-top: var(--stroke-consequence); padding-top: var(--s-4); }
-  .pr-fig {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    font-size: var(--t-figure);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--terracotta);
-  }
-  .pr-figs dd {
-    margin: var(--s-4) 0 0;
-    font-size: var(--t-body);
-    line-height: 1.55;
-    color: var(--ink-body);
-    max-width: 30ch;
-  }
-  .pr-figures .coda { max-width: 46ch; }
-
-  /* ── What is included ────────────────────────────────────────────────── */
-
-  .pr-included h2 { max-width: 20ch; }
-  .pr-cards {
-    margin-top: clamp(28px, 3.4vw, 48px);
-    display: grid;
-    gap: var(--s-8);
-  }
-  @media (min-width: 760px) {
-    .pr-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 3.5vw, 64px); }
-  }
-  /* Column, so the onward link sits on one line across all three cards however
-     many items each carries. */
-  .pr-card {
-    border-top: var(--stroke-consequence);
-    padding-top: var(--s-4);
-    display: flex;
-    flex-direction: column;
-  }
-  .pr-card h3 { color: var(--ink); }
-  .pr-card-list { list-style: none; margin: var(--s-4) 0 0; padding: 0; }
-  .pr-card-list > li {
-    border-bottom: var(--stroke-hairline);
-    padding-block: var(--s-2);
-    color: var(--ink-body);
-  }
-  .pr-card-link {
-    margin: auto 0 0;
-    padding-top: var(--s-3);
-    font-family: var(--font-mono);
-    font-size: var(--t-mono-label);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-  /* An 11px line box is a 14px tap target. The padding buys the 24px the small
-     target rule asks for without moving the text. */
-  .pr-card-link a { display: inline-block; padding-block: var(--s-1); }
-  .pr-included .coda { max-width: 52ch; }
-
-  /* ── The comparison ──────────────────────────────────────────────────── */
-
-  .pr-vs-head h2 { max-width: 26ch; }
-  .pr-vs-lede {
-    margin: var(--s-5) 0 0;
-    font-size: var(--t-body);
-    line-height: 1.55;
-    color: var(--ink-body);
-    max-width: 56ch;
-  }
-  .pr-table { margin-top: clamp(28px, 3.4vw, 48px); }
-  .pr-table table { min-width: 34em; }
-  .pr-table th[scope="row"] {
-    font-family: var(--font-sans);
-    font-size: var(--t-body);
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--ink);
-    border-bottom: var(--stroke-hairline);
-    padding-right: var(--s-5);
-  }
-  .pr-table tfoot th[scope="row"], .pr-table tfoot td {
-    border-top: var(--stroke-consequence);
-    border-bottom: none;
-    padding-top: var(--s-3);
-  }
-  .pr-table tfoot th[scope="row"] { font-weight: 600; }
-  .pr-table tfoot td { color: var(--ink); font-weight: 600; }
-
-  .pr-src {
-    margin: var(--s-5) 0 0;
-    font-size: var(--t-micro);
-    line-height: 1.55;
-    color: var(--ink-3);
-    max-width: 62ch;
-  }
-  .pr-statutory { margin-top: clamp(32px, 4vw, 56px); }
-
-  /* ── The close ───────────────────────────────────────────────────────── */
+  .pr-receipt dl { margin: 0; padding: 0 var(--s-5); }
+  .pr-receipt dl > div { display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); padding-block: var(--s-4); border-bottom: var(--stroke-hairline); }
+  .pr-receipt dt { color: var(--ink); font-weight: 650; }
+  .pr-receipt dd { margin: 0; color: var(--ink-3); font-family: var(--font-mono); font-size: var(--t-mono-data); text-align: right; }
+  .pr-receipt .pr-receipt-separate { margin-top: var(--s-2); border-top: var(--stroke-consequence); }
+  .pr-receipt > p { margin: 0; padding: var(--s-4) var(--s-5); background: var(--held); color: var(--ink-2); font-size: var(--t-micro); }
 
   .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
-  .close h2 { color: var(--paper); max-width: 26ch; }
+  .close h2 { max-width: 22ch; color: var(--paper); }
+  .close p { max-width: 44ch; margin: var(--s-4) 0 0; color: var(--mist); }
   .close .actions { margin-top: var(--s-6); }
 </style>

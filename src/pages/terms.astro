@@ -3,26 +3,39 @@ import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 ---
+
+{/* Section headings here describe a clause, not a benefit, so the
+    marketing heading rules do not apply. See docs/VOICE.md. */}
+<!-- voice-surface: legal -->
 <Base
-  title="Terms"
-  description="Billing, cancellation, export, and what Common Parcel is not."
+  title="Terms of Service"
+  description="Subscription terms, cancellation, data export, and software scope for Common Parcel."
   path="/terms"
 >
-  <Hero eyebrow="Terms">
-    <h1 class="t-display">Terms</h1>
-    <p class="t-lede">The full terms are with counsel. The commercial ones below are settled and will not change when they land.</p>
+  <Hero>
+    <h1 class="t-display">Terms of service</h1>
+    <p class="t-lede">Month-to-month subscription terms for self-managed associations.</p>
   </Hero>
-  <Band title="Billing">
-    <ul class="rows"><li>Monthly. No contract and no setup fee.</li><li>Priced per lot on the published rate card, with a monthly minimum.</li><li>Migration is included.</li></ul>
+
+  <Band title="Subscription and billing">
+    <ul class="rows">
+      <li><b>Month-to-month:</b> Subscriptions are billed monthly with no long-term contract requirement.</li>
+      <li><b>Published rate card:</b> Pricing follows the published graduated bracket schedule, with a $10 monthly minimum.</li>
+      <li><b>Setup and migration:</b> Onboarding and roster and document migration are included with service.</li>
+    </ul>
   </Band>
 
-  <Band title="Leaving" field>
-    <p>Cancel any month. A full export of ledgers, documents, minutes and the record is available in the month you leave.</p>
+  <Band title="Cancellation and data export" field>
+    <p>An association may cancel service in any billing cycle. Financial ledgers, governing documents, meeting minutes, and timestamped activity records with an archive manifest report remain exportable by the association.</p>
   </Band>
 
-  <Band title="What Parcel is not" note="See the price" noteHref="/pricing">
-    <p>Parcel is not a law firm and does not give legal advice. It records what your documents and your state's statute say, and where each came from.</p>
-    <p class="coda">Anything with legal weight waits for two officers to sign. That is a product constraint, not a setting.</p>
+  <Band title="Platform scope and legal disclaimer" note="View pricing" noteHref="/pricing">
+    <p>Common Parcel provides administrative, recordkeeping, and workflow software. Common Parcel is not a law firm and does not provide legal advice or formal legal representation.</p>
+    <p class="coda">Statutory citations and document references are provided for operational guidance. Formal statutory actions (such as notices, fines, and lien filings) require verified approval and signatures from authorized board officers.</p>
+  </Band>
+
+  <Band title="Questions about terms" field note="Contact Jesse" noteHref="/contact">
+    <p>For questions regarding service agreements or commercial terms, contact <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
   </Band>
 
 </Base>

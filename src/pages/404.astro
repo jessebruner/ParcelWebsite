@@ -7,13 +7,20 @@ import Band from "../components/Band.astro";
   title="Page not found"
   description="That page is not here."
   path="/404"
+  noindex={true}
 >
   <Hero>
     <h1 class="t-display">That page is not here</h1>
     <p class="t-lede">It may have moved, or the link may be wrong.</p>
   </Hero>
   <Band title="Try one of these">
-    <ul class="rows"><li><a href="/">Home</a></li><li><a href="/product/dues-and-payments">What Parcel does</a></li><li><a href="/compliance">Compliance</a></li><li><a href="/pricing">Pricing</a></li></ul>
+    <ul class="rows">
+      <li><a href="/">Home</a></li>
+      <li><a href="/pricing">Pricing</a></li>
+      <li><a href="/security">Security</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
   </Band>
 
   <Band title="If a link on this site sent you here" field>

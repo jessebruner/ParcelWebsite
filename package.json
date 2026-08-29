@@ -7,9 +7,11 @@
     "dev": "astro dev",
     "build": "astro build && node tools/sync-homepage-masthead.mjs && node tools/gen-sitemap.mjs",
     "preview": "astro preview",
+    "test": "node --test tests/pricing.test.mjs tests/voice-headings.test.mjs tests/blog-citations.test.mjs tests/blog-schema.test.mjs tests/homepage-modal.test.mjs tests/blog.test.mjs tests/masthead-a11y.test.mjs tests/accessibility-surfaces.test.mjs tests/product-faq.test.mjs tests/product-scenes.test.mjs",
+    "determinism": "node tools/check-determinism.mjs",
     "links": "node tools/check-links.mjs",
     "voice": "node tools/voice-lint.mjs",
-    "verify": "npm run build && npm run links"
+    "verify": "npm run build && npm run test && npm run determinism && npm run links && npm run voice"
   },
   "dependencies": {
     "astro": "7.2.3"

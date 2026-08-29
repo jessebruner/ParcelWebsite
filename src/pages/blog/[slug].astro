@@ -1,85 +1,338 @@
 ---
+/**
+ * Dynamic Blog Post Route.
+ *
+ * Renders authoritative HOA guides with structured statutory citations, procedural hero art,
+ * and clear typography.
+ */
 import Base from "../../layouts/Base.astro";
-import Hero from "../../components/Hero.astro";
-import Band from "../../components/Band.astro";
-import Blocks from "../../components/Blocks.astro";
-import { POSTS } from "../../data/posts";
-
-/** A stable seed per page: the same slug always paints the same treeline. */
-const seedFor = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) || 7;
+import BlogHeaderArt from "../../components/blog/BlogHeaderArt.astro";
+import CitationBlock from "../../components/blog/CitationBlock.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import { BLOG_POSTS, readingMinutes, type BlogPost } from "../../data/blog";
 
 export function getStaticPaths() {
-  return POSTS.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  return BLOG_POSTS.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: BlogPost;
 }
 
 const { post } = Astro.props;
-const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
-const fmt = (iso: string) =>
-  new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-const schema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: post.title,
-  description: post.description,
-  datePublished: post.published,
-  dateModified: post.checked,
-  inLanguage: "en-US",
-  author: { "@type": "Person", name: "Jesse Bruner", email: "jesse@commonparcel.com" },
-  publisher: { "@id": "https://commonparcel.com/#organization" },
-  mainEntityOfPage: `https://commonparcel.com/blog/${post.slug}`,
-});
+/**
+ * **Lead-in.** rest -> <b>Lead-in.</b> rest
+ *
+ * Same convention and same one-line implementation as Blocks.astro, so a
+ * writer moving between a product page and a post does not have to remember
+ * which file uses which markup. Nothing else in the copy is marked up.
+ */
+function bold(s: string): string {
+  return s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+}
+
+/** `callout` then `callouts`, so a section may hold one or several. */
+function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
+  return [section.callout, ...(section.callouts ?? [])].filter(Boolean);
+}
+
+const minutes = readingMinutes(post);
 ---
 
 <Base
-  title={post.title}
+  title={`${post.title} | Common Parcel`}
   description={post.description}
   path={`/blog/${post.slug}`}
-  reviewed={fmt(post.checked)}
-  schema={schema}
+  shareTitle={post.title}
 >
-  <Hero eyebrow={post.topic} compact seed={seedFor(post.slug)}>
-    <h1 class="t-display">{post.h1}</h1>
-    <p class="t-lede">{post.lede}</p>
-    <p class="byline">
-      Jesse Bruner · <time datetime={post.published}>{fmt(post.published)}</time>
-    </p>
-  </Hero>
+  <article class="post-layout" itemscope itemtype="https://schema.org/Article">
+    <!-- Header / Hero -->
+    <header class="post-hero">
+      <div class="page">
+        <nav class="post-breadcrumbs" aria-label="Breadcrumbs">
+          <a href="/blog" class="crumb-link">Blog</a>
+          <span class="crumb-separator" aria-hidden="true">/</span>
+          <span class="crumb-current">{post.category}</span>
+        </nav>
 
-  {post.bands.map((band) => (
-    <Band title={band.title} field={band.field} note={band.note?.[0]} noteHref={band.note?.[1]}>
-      <Blocks body={band.body} />
-    </Band>
-  ))}
+        <h1 class="t-display post-title" itemprop="headline">{post.title}</h1>
+        <p class="t-lede post-lede" itemprop="description">{post.lede}</p>
 
-  <Band title="What Parcel does about it">
-    <p>{post.productNote}</p>
-    <p class="coda"><a href={post.cta.href}>{post.cta.label}</a></p>
-  </Band>
+        <div class="post-meta">
+          <div class="post-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <span class="author-label t-mono-label">Author</span>
+            <span class="author-name" itemprop="name">{post.author.name}</span>
+            <span class="author-role t-micro">({post.author.role})</span>
+          </div>
 
-  <Band title="More" field>
-    <ul class="rows">
-      {others.map((o) => (
-        <li>
-          <a href={`/blog/${o.slug}`}>{o.short}</a>
-          <span class="topic t-mono"> · {o.topic}</span>
-        </li>
-      ))}
-    </ul>
-    <p class="foot t-mono">
-      Published {fmt(post.published)}. Last checked {fmt(post.checked)}. {post.footnote}
-    </p>
-  </Band>
+          <div class="meta-divider" aria-hidden="true"></div>
+
+          <div class="post-date-group">
+            <span class="date-label t-mono-label">Published</span>
+            <time datetime={post.publishedAt} class="published-date t-mono" itemprop="datePublished">
+              {post.publishedAt}
+            </time>
+          </div>
+
+          <div class="meta-divider" aria-hidden="true"></div>
+
+          <div class="post-read-time">
+            <span class="read-label t-mono-label">Reading Time</span>
+            <span class="read-time t-mono">{minutes} min</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Procedural Hero Art -->
+    <div class="page post-art-wrap">
+      <BlogHeaderArt subject={post.artSubject} mode="hero" />
+    </div>
+
+    <!-- Post Body -->
+    <div class="page post-body-container">
+      <div class="post-content" itemprop="articleBody">
+        {post.sections.map((section) => (
+          <section class="post-section">
+            {section.heading && (
+              <h2 class="t-sheet post-section-heading">{section.heading}</h2>
+            )}
+
+            {(section.paragraphs ?? []).map((p) => (
+              <p class="post-paragraph" set:html={bold(p)} />
+            ))}
+
+            {calloutsOf(section).map((c) => (
+              <div class:list={["post-callout", `callout--${c.type}`]}>
+                {c.title && (
+                  <div class="callout-header t-mono-label">{c.title}</div>
+                )}
+                <p class="callout-text">{c.text}</p>
+              </div>
+            ))}
+
+            {section.list && (
+              <div class="post-list-block">
+                {section.list.title && (
+                  <h3 class="t-title list-title">{section.list.title}</h3>
+                )}
+                <ul class="rows post-list">
+                  {section.list.items.map((item) => (
+                    <li set:html={bold(item)} />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        ))}
+
+        <!-- Primary Sources and Statutory Citations -->
+        <CitationBlock citations={post.citations} />
+
+        <!--
+          The card at the foot of every post. It said "Common Parcel provides
+          verified governance tools and statutory workflows", which claims
+          something nobody has verified, and "these guides cite statutory
+          reference provisions", which is not true of a post that cites
+          nothing. It now says what the guides are and who writes them.
+        -->
+        <div class="post-author-box">
+          <div class="author-box-content">
+            <span class="t-mono-label">About these guides</span>
+            <p class="author-box-bio">
+              Common Parcel builds software for HOA and condominium boards that run their own
+              association. We write these guides for the same boards. Where one quotes a statute,
+              the section and the date it was read are printed at the foot of the post, so you can
+              open it yourself. None of it is legal advice.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- CTA -->
+  <!-- "required books" asserted a legal requirement this site has not sourced. -->
+  <CtaBand
+    headline="Your association, in your hands."
+    scene="dusk"
+    seed={197}
+  />
 </Base>
 
 <style>
-  h1 { max-width: 24ch; }
-  .byline {
-    margin: clamp(22px, 2.6vw, 32px) 0 0; padding-top: var(--s-4);
-    border-top: 1px solid var(--night-rule);
-    font-family: var(--font-mono); font-size: var(--t-mono-label);
-    letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-dark-label);
+  .post-layout {
+    background: var(--paper);
+    padding-bottom: var(--pad-y);
   }
-  .topic { color: var(--ink-3); }
-  .foot { color: var(--ink-3); margin-top: var(--s-8) !important; }
+  .post-hero {
+    padding-top: clamp(32px, 5vw, 64px);
+    padding-bottom: clamp(24px, 3vw, 40px);
+    border-bottom: var(--stroke-rule);
+  }
+  .post-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-4);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .crumb-link {
+    color: var(--terracotta);
+    text-decoration: none;
+  }
+  .crumb-link:hover {
+    text-decoration: underline;
+  }
+  .crumb-separator {
+    color: var(--ink-3);
+  }
+  .crumb-current {
+    color: var(--ink-2);
+  }
+  .post-title {
+    max-width: 26ch;
+    margin-bottom: var(--s-4);
+  }
+  .post-lede {
+    max-width: 44ch;
+    color: var(--ink-2);
+    margin-bottom: var(--s-6);
+  }
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: var(--stroke-hairline);
+  }
+  .meta-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--c-edge);
+  }
+  .post-author, .post-date-group, .post-read-time {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .author-label, .date-label, .read-label {
+    color: var(--ink-3);
+  }
+  .author-name {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: var(--t-micro);
+  }
+  .author-role {
+    color: var(--ink-3);
+  }
+  .published-date, .read-time {
+    color: var(--ink);
+    font-size: var(--t-mono-data);
+  }
+
+  .post-art-wrap {
+    margin-top: clamp(24px, 3vw, 40px);
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+
+  .post-body-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 900px) {
+    .post-body-container {
+      grid-template-columns: minmax(0, 44em);
+    }
+  }
+
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-8);
+  }
+  .post-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .post-section-heading {
+    margin-top: var(--s-4);
+    color: var(--ink);
+  }
+  .post-paragraph {
+    font-size: var(--t-body);
+    line-height: 1.65;
+    color: var(--ink-body);
+    margin: 0;
+  }
+
+  /* Callout styling */
+  .post-callout {
+    margin-top: var(--s-3);
+    margin-bottom: var(--s-3);
+    padding: var(--s-5) var(--s-6);
+    border: var(--stroke-rule);
+    background: var(--card);
+  }
+  .callout--statutory {
+    background: var(--night);
+    color: var(--paper);
+    border: 1px solid var(--plum);
+  }
+  .callout--statutory .callout-header {
+    color: var(--sand);
+  }
+  .callout--statutory .callout-text {
+    color: var(--mist);
+  }
+  .callout--note {
+    background: var(--field);
+    border-left: 4px solid var(--terracotta);
+  }
+  .callout--note .callout-header {
+    color: var(--terracotta);
+  }
+  .callout-header {
+    margin-bottom: var(--s-2);
+    letter-spacing: 0.14em;
+  }
+  .callout-text {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--t-body);
+    line-height: 1.55;
+  }
+
+  .post-list-block {
+    margin-top: var(--s-3);
+  }
+  .list-title {
+    margin-bottom: var(--s-3);
+  }
+  .post-list {
+    margin-top: var(--s-2);
+  }
+
+  .post-author-box {
+    margin-top: var(--s-8);
+    padding: var(--s-6);
+    background: var(--field);
+    border-top: 2px solid var(--terracotta);
+  }
+  .author-box-bio {
+    margin: var(--s-2) 0 0;
+    font-size: var(--t-micro);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
 </style>
