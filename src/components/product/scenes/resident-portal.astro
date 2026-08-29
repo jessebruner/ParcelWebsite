@@ -2,21 +2,20 @@
 /**
  * resident-portal — the hero diagram.
  *
- * THIS IS THE ONE SCENE THE OWNER LIKED. "Really simple and it kind of shows
- * what's going on. But it'd be better if you basically just had an animation of
- * the actual resident portal going through."
+ * THE COMPOSITION IS THE ONE THE OWNER APPROVED: a dark rail on the left, a
+ * balance figure at the top, three cards under it, a cursor that walks the
+ * rail while an amber tab tracks the card it lands on. His one ask was "an
+ * animation of the actual resident portal going through" — and the first cut
+ * answered it with four blank rail squares and grey-bar wireframe cards,
+ * which he later flagged as placeholder-grade. So the geometry now shows the
+ * portal: the rail carries pixel icons for home, dues, requests, and
+ * documents (8×8 grids, drawn as SVG rects with crispEdges), and the cards
+ * carry the three things an owner actually opens the portal for, each with a
+ * real example state. Same clock, same two movements, nothing else animates.
  *
- * So the composition is the one that was approved: a dark rail on the left, a
- * paper application on the right, a figure at the top, three cards under it.
- * Nothing has been redesigned. Two things changed.
- *
- * It moves. A cursor walks the rail and an amber tab tracks the card it lands
- * on, which is the portal being gone through. Two elements move, in step, on
- * one clock. Nothing else animates.
- *
- * It stopped talking. "Resident home", "Your association at a glance",
- * "Requests" and "Documents" were nine words inside an aria-hidden block, read
- * by nobody. Two are left, and they are the two an owner opens the portal for.
+ * The block is aria-hidden, so the words inside reach nobody by ear; they are
+ * there because a portal with no content in it is a wireframe, and the owner
+ * has seen enough wireframes.
  *
  * REST IS THE LAST KEYFRAME. tokens.css answers prefers-reduced-motion with
  * `animation-duration: 0.001ms !important`, which lands every animation on its
@@ -34,7 +33,41 @@
 <div class="portal scene-body">
   <div class="rail">
     <span class="cursor"></span>
-    <i></i><i></i><i></i><i></i>
+    <span class="ri">
+      <!-- Home -->
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="3" y="0" width="2" height="1" fill="currentColor" />
+        <rect x="2" y="1" width="4" height="1" fill="currentColor" />
+        <rect x="1" y="2" width="6" height="1" fill="currentColor" />
+        <rect x="1" y="3" width="6" height="5" fill="currentColor" />
+        <rect x="3" y="5" width="2" height="3" class="px-night" />
+      </svg>
+    </span>
+    <span class="ri">
+      <!-- Dues: payment card -->
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="0" y="1" width="8" height="6" fill="currentColor" />
+        <rect x="1" y="2" width="2" height="2" class="px-night" />
+        <rect x="1" y="5" width="4" height="1" class="px-night" />
+      </svg>
+    </span>
+    <span class="ri">
+      <!-- Requests: a form -->
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="1" y="0" width="6" height="8" fill="currentColor" />
+        <rect x="2" y="2" width="4" height="1" class="px-night" />
+        <rect x="2" y="4" width="4" height="1" class="px-night" />
+        <rect x="2" y="6" width="2" height="1" class="px-night" />
+      </svg>
+    </span>
+    <span class="ri">
+      <!-- Documents: a folder -->
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="0" y="1" width="3" height="2" fill="currentColor" />
+        <rect x="0" y="2" width="8" height="5" fill="currentColor" />
+        <rect x="1" y="4" width="6" height="1" class="px-night" />
+      </svg>
+    </span>
   </div>
 
   <div class="main">
@@ -44,9 +77,18 @@
     </div>
 
     <div class="cards">
-      <div><i class="k"></i><i class="v"></i></div>
-      <div><i class="k k--wide"></i><i class="v v--short"></i></div>
-      <div><i class="k"></i><i class="v v--long"></i></div>
+      <div>
+        <span class="ct">Dues</span>
+        <b class="cv">Paid · March 1</b>
+      </div>
+      <div>
+        <span class="ct">Requests</span>
+        <b class="cv">Fence · In&nbsp;review</b>
+      </div>
+      <div>
+        <span class="ct">Documents</span>
+        <b class="cv">CC&amp;Rs · Bylaws</b>
+      </div>
       <span class="tab"></span>
     </div>
   </div>
@@ -73,14 +115,20 @@
     gap: var(--s-4);
     padding: var(--s-5) 21px 0;
   }
-  .rail i { display: block; width: 16px; height: 16px; background: var(--on-dark-tile); }
+  .ri { display: block; width: 16px; height: 16px; color: var(--on-dark-label); }
+  .ri svg { display: block; width: 16px; height: 16px; shape-rendering: crispEdges; }
+  .px-night { fill: var(--night); }
+
+  /* The cursor is a selection frame around the icon the walk is on, so the
+     icon stays legible inside it. */
   .cursor {
     position: absolute;
-    top: var(--s-5);
-    left: 21px;
-    width: 16px;
-    height: 16px;
-    background: var(--amber);
+    top: calc(var(--s-5) - 4px);
+    left: 17px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--amber);
+    box-sizing: border-box;
     animation: rail-walk 7.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
   }
 
@@ -116,11 +164,16 @@
     align-content: space-between;
     gap: var(--s-4);
   }
-  .k { display: block; height: 7px; width: 54%; background: var(--bisque-edge); }
-  .k--wide { width: 72%; }
-  .v { display: block; height: 10px; width: 44%; background: var(--ink-3); }
-  .v--short { width: 30%; }
-  .v--long { width: 62%; }
+  .ct {
+    font: 500 var(--t-mono-label)/1 var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+  .cv {
+    font: 500 13px/1.35 var(--font-sans);
+    color: var(--ink);
+  }
 
   /* Which card the rail is on. Moves with the cursor, on the same clock. */
   .tab {
@@ -153,8 +206,9 @@
   @media (max-width: 620px) {
     .portal { min-height: 238px; grid-template-columns: 46px 1fr; --cg: var(--s-2); }
     .rail { padding: var(--s-4) 15px 0; }
-    .cursor { top: var(--s-4); left: 15px; }
+    .cursor { top: calc(var(--s-4) - 4px); left: 11px; }
     .main { padding: var(--s-4); gap: var(--s-5); }
     .cards > div { min-height: 76px; padding: var(--s-2); }
+    .cv { font-size: 12px; }
   }
 </style>
