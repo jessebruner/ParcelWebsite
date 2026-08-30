@@ -4,7 +4,7 @@ import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
 import PixelSky from "../components/PixelSky.astro";
 import RateCalculator from "../components/pricing/RateCalculator.astro";
-import { DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "../components/pricing/brackets";
+import { DEFAULT_BRACKETS, DEFAULT_MINIMUM, DEFAULT_ALTERNATIVES } from "../components/pricing/brackets";
 
 const included = [
   {
@@ -76,6 +76,7 @@ const schema = JSON.stringify({
         brackets={DEFAULT_BRACKETS}
         minimum={DEFAULT_MINIMUM}
         lots={4}
+        compare={DEFAULT_ALTERNATIVES}
         includes={[
           "Dues invoices",
           "Online payments when connected",
