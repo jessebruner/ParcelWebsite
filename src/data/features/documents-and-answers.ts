@@ -20,7 +20,7 @@ export const documentsAndAnswers: PageSpec = {
   slug: "documents-and-answers",
   title: "Documents and answers",
   description:
-    "Upload the declaration, the bylaws and the rules. Common Parcel reads them, shows each rule with the page it sits on, and answers questions out of your own documents.",
+    "Upload the declaration, the bylaws and the rules. Common Parcel reads them, shows each rule with the page it sits on, and answers questions from your own documents.",
   h1: "Documents and answers",
   lede: "Boards answer the same questions over and over. Can I put a shed there? When are dues late? The answer is in the documents, if someone can find it.",
   closer: "Ask your declaration.",

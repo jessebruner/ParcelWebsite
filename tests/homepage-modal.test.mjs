@@ -7,8 +7,12 @@ import {
   rewriteHomepageAccessSurface,
   verifyBehaviorScript,
   verifyHomepageTemplate,
+  verifyHomepageDocument,
   syncHomepageContent,
   extractRootTokens,
+  extractRules,
+  extractElement,
+  assertClassesStyled,
   assertTokensResolve,
   referencedTokens,
   definedTokens
@@ -17,6 +21,33 @@ import {
 /** The real token block, read fresh, so a token deleted from tokens.css fails here. */
 function tokens() {
   return extractRootTokens(readFileSync("src/styles/tokens.css", "utf8"));
+}
+
+/**
+ * The stylesheets that travel with the footer and the calculator, read fresh
+ * for the same reason: deleting a rule from either has to fail here.
+ */
+function extras() {
+  return [
+    extractRules(readFileSync("src/styles/tokens.css", "utf8"), [".page"]),
+    readFileSync("src/styles/site-footer.css", "utf8"),
+    readFileSync("src/styles/rate-calculator.css", "utf8"),
+  ].join("\n");
+}
+
+/**
+ * A stand-in built page. The sync lifts three components out of one, so a mock
+ * carrying only a masthead makes the tool throw before it reaches whatever the
+ * test was actually about. Small on purpose: these tests are about the sync,
+ * and the real markup is compared against the component in the build itself.
+ */
+function built(mastheadMarkup) {
+  return (
+    mastheadMarkup +
+    '<footer class="site-footer"><div class="page sf-inner"><p class="sf-addr">Detroit</p></div></footer>' +
+    '<div class="pc" data-calc data-cfg="{}"><div class="pc-grid"><div class="pc-main"></div></div></div>' +
+    '<script type="module">var root=document.querySelector("[data-calc]");</script>'
+  );
 }
 
 function sourceTemplateAfterMastheadReplacement() {
@@ -145,7 +176,7 @@ test("syncHomepageContent executes deterministically on clean source fixtures", 
   const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><div class="has-dropdown"><button class="nav-btn">Product</button></div><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
   const mockCss = ".mast { display: block; }";
 
-  const { resultHtml, template } = syncHomepageContent(sourceHomepage, mockBuilt, mockCss, tokens());
+  const { resultHtml, template } = syncHomepageContent(sourceHomepage, built(mockBuilt), mockCss, tokens(), extras());
   assert.ok(resultHtml.includes("/* injected: masthead and modal behaviour */"));
   assert.doesNotThrow(() => verifyBehaviorScript(template));
   assert.doesNotThrow(() => verifyHomepageTemplate(template));
@@ -172,7 +203,7 @@ test("homepage rewrite fails if the structural modal tail boundary moves", () =>
 test("homepage template verifier rejects a restored old binding", () => {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }", tokens());
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
   const mutated = template.replace('data-open-modal="early-access"', BUNDLE_OPEN_ACCESS_BINDING);
   assert.throws(
     () => verifyHomepageTemplate(mutated),
@@ -183,7 +214,7 @@ test("homepage template verifier rejects a restored old binding", () => {
 test("homepage template verifier rejects a second dialog", () => {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, ".mast { display:block; }", tokens());
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
   const mutated = template.replace("</body>", '<dialog id="early-access-modal"></dialog></body>');
   assert.throws(
     () => verifyHomepageTemplate(mutated),
@@ -195,7 +226,7 @@ test("homepage content sync against source assets satisfies all template and beh
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
   const mockBuiltMasthead = '<header class=\"mast\"><nav><button class=\"burger\">Menu</button><button data-open-modal=\"early-access\">Early Access</button></nav></header><dialog id=\"early-access-modal\"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuiltMasthead, mastheadCss, tokens());
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuiltMasthead), mastheadCss, tokens(), extras());
 
   assert.ok(template.includes('<header class=\"mast\">'), "Homepage template missing unified masthead");
   assert.doesNotThrow(() => verifyBehaviorScript(template));
@@ -264,7 +295,7 @@ test("the token definitions actually reach the homepage template", () => {
   const sourceHomepage = readFileSync("public/index.html", "utf8");
   const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
   const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
-  const { template } = syncHomepageContent(sourceHomepage, mockBuilt, mastheadCss, tokens());
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), mastheadCss, tokens(), extras());
 
   // Not "a :root block is present" — the specific declarations whose absence
   // was measured on the built page.
@@ -283,7 +314,7 @@ test("mutation test: syncing with an empty token block fails instead of shipping
   const mastheadCss = readFileSync("src/styles/masthead.css", "utf8");
   const mockBuilt = '<header class="mast"><nav><button class="burger">Menu</button><button data-open-modal="early-access">Early Access</button></nav></header><dialog id="early-access-modal"></dialog>';
   assert.throws(
-    () => syncHomepageContent(sourceHomepage, mockBuilt, mastheadCss, ":root { }"),
+    () => syncHomepageContent(sourceHomepage, built(mockBuilt), mastheadCss, ":root { }", extras()),
     /token\(s\) the homepage does not define/
   );
 });
@@ -331,4 +362,232 @@ test("Escape and outside click clear the latch, not just the open class", () => 
   // had already been removed, stranding the attribute set.
   assert.ok(!script.includes('m.querySelectorAll(".has-dropdown.open").forEach(shut)'),
     "dismissal is still filtering on the open class");
+});
+
+/*
+ * ── THE FOOTER AND THE CALCULATOR ─────────────────────────────────
+ *
+ * They reached the homepage the same way the masthead did, so they can fail
+ * the same way. Two of them are new failure modes the masthead never had: the
+ * bundle's own copy surviving beside the injected one, and a class arriving
+ * with no rule behind it because a global utility did not travel.
+ */
+
+test("the sync replaces the bundle's own footer, not adds to it", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
+
+  assert.equal(template.split('<footer class="site-footer">').length - 1, 1);
+  assert.equal(template.split("<footer style=").length - 1, 0, "the bundle's own footer survived");
+});
+
+test("the sync replaces the bundle's own price widget with the calculator", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const { template, resultHtml } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
+
+  assert.equal(template.split('<div class="pc" data-calc').length - 1, 1);
+  assert.equal(template.split("lot-slider").length - 1, 0, "the bundle's own slider survived the swap");
+
+  // Markup in the payload, behaviour in the document, and the split is the
+  // point rather than an implementation detail. The payload is JSON the
+  // unpacker parses and re-renders, so a <script> written into it never
+  // becomes a script the browser owns: the calculator renders and never
+  // moves. Both halves are asserted, and the second is asserted as an
+  // absence, because a marker in the payload is the failure.
+  assert.match(resultHtml, /\/\* injected: rate calculator \*\//);
+  assert.ok(!template.includes("/* injected: rate calculator */"),
+    "calculator behaviour is in the payload, where the unpacker re-creates it");
+});
+
+test("mutation test: a second footer in the template fails the verifier", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
+  const mutated = template.replace("</body>", '<footer class="site-footer"></footer></body>');
+  assert.throws(() => verifyHomepageTemplate(mutated), /expected 1 site footer, found 2/);
+});
+
+test("mutation test: the bundle's price widget left in place fails the verifier", () => {
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const { template } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
+  const mutated = template.replace(
+    "</body>",
+    '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: clamp(32px, 4vw, 88px); margin-top: clamp(34px, 4vw, 64px); align-items: start;"></div></body>'
+  );
+  assert.throws(() => verifyHomepageTemplate(mutated), /own price widget is still/);
+});
+
+test("mutation test: dropping .page from the injected CSS fails the sync", () => {
+  // The footer's outer container uses .page, which is a tokens.css utility and
+  // not a footer rule. Only the :root block of tokens.css is injected, so
+  // without the lift the class arrives with nothing behind it: no max-width,
+  // no page padding, footer text against the viewport edge. Nothing about that
+  // raises, which is why it is asserted rather than assumed.
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const withoutPage = extras().split(".page {").join(".page-renamed {");
+  assert.throws(
+    () => syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), withoutPage),
+    /unstyled class\(es\): page/
+  );
+});
+
+test("extractRules lifts the rule itself and throws on a name that is gone", () => {
+  const tokensCss = readFileSync("src/styles/tokens.css", "utf8");
+  const lifted = extractRules(tokensCss, [".page"]);
+  assert.match(lifted, /max-width: var\(--page-max\)/);
+  // Not the nested one. ".band > .page" is a different rule with a different
+  // declaration, and a looser match would have returned it instead.
+  assert.ok(!lifted.includes("display: grid"), "extractRules returned a nested .page rule");
+  assert.throws(() => extractRules(tokensCss, [".not-a-real-class"]), /no top-level/);
+});
+
+test("assertClassesStyled distinguishes a class from a longer one that shares its prefix", () => {
+  // ".pc" is a substring of ".pc-grid". A plain includes() reports the card
+  // styled the moment any child rule exists, which is the one rule in that
+  // stylesheet whose loss would flatten the whole component.
+  assert.throws(
+    () => assertClassesStyled('<div class="pc"></div>', ".pc-grid { display: grid; }"),
+    /unstyled class\(es\): pc/
+  );
+  assert.doesNotThrow(() => assertClassesStyled('<div class="pc"></div>', ".pc { border: 0; }"));
+});
+
+/*
+ * The document guard, driven directly.
+ *
+ * The two assertions above about the payload being free of the calculator
+ * behaviour cannot fail on their own: every route to putting the marker there
+ * trips this function first. So the property is proved here, where the input
+ * is hand-built and the guard is the only thing under test.
+ */
+
+const calcBlock = (extra = "") =>
+  "<script>/* injected: rate calculator */\n" +
+  "var bound = null;\n" +
+  "function attempt() { var el = document.querySelector('[data-calc]'); if (el === bound) return; bound = el; }\n" +
+  "new MutationObserver(attempt).observe(document.documentElement, { childList: true, subtree: true });\n" +
+  "setInterval(attempt, 400);\n" +
+  extra +
+  "/* end rate calculator */</script>";
+
+const docWith = (body) =>
+  "<!DOCTYPE html><html><body>\n" +
+  '<script type="__bundler/template">\n' +
+  JSON.stringify("<body>a template</body>") + "\n" +
+  "</script>\n" +
+  body +
+  "\n</body></html>";
+
+test("the document guard accepts behaviour that sits outside the bundle payload", () => {
+  assert.doesNotThrow(() => verifyHomepageDocument(docWith(calcBlock())));
+});
+
+test("the document guard rejects behaviour that sits inside the bundle payload", () => {
+  // The marker appears exactly once, so the count check passes and the payload
+  // check is what has to catch it. This is the dead-calculator shape: a script
+  // written into the JSON the unpacker parses never runs as a script.
+  const doc =
+    "<!DOCTYPE html><html><body>\n" +
+    '<script type="__bundler/template">\n' +
+    JSON.stringify("<body>" + calcBlock() + "</body>") + "\n" +
+    "</script>\n</body></html>";
+  assert.equal(doc.split("/* injected: rate calculator */").length - 1, 1);
+  assert.throws(() => verifyHomepageDocument(doc), /landed inside the bundle payload/);
+});
+
+test("the document guard rejects behaviour that binds once instead of following the node", () => {
+  // Each of the three required mechanisms, removed one at a time. A guard that
+  // accepted any one of them would have passed the version that shipped a
+  // calculator reading $10 at every lot count.
+  const full = calcBlock();
+  for (const [needle, expected] of [
+    ["new MutationObserver(attempt)", /no observer for the first render/],
+    ["setInterval(attempt", /does not rebind when the bundle replaces the node/],
+    ["el === bound", /binds once instead of following the node/]
+  ]) {
+    const broken = full.replace(needle, "/* removed */");
+    assert.notEqual(broken, full, `mutation anchor '${needle}' is not in the fixture`);
+    assert.throws(() => verifyHomepageDocument(docWith(broken)), expected, `removing '${needle}' did not fail the guard`);
+  }
+});
+
+test("extractElement walks tag depth rather than stopping at the first close", () => {
+  const html = '<div class="pc" data-calc><div><div></div></div></div><p>after</p>';
+  assert.equal(extractElement(html, '<div class="pc" data-calc', "div"), '<div class="pc" data-calc><div><div></div></div></div>');
+});
+
+test("the calculator boots on a page whose DOM is written after the script runs", () => {
+  // The homepage bundle writes its own body from JavaScript. The component's
+  // script guards on `if (root)` and returns silently when the element is not
+  // there yet, so lifting it unwrapped gives a calculator that renders and
+  // never moves, with nothing anywhere reporting it.
+  const sourceHomepage = readFileSync("public/index.html", "utf8");
+  const mockBuilt = '<header class="mast"><button data-open-modal="early-access">Early Access</button></header><dialog id="early-access-modal"></dialog>';
+  const { resultHtml } = syncHomepageContent(sourceHomepage, built(mockBuilt), ".mast { display:block; }", tokens(), extras());
+  const start = resultHtml.indexOf("/* injected: rate calculator */");
+  const end = resultHtml.indexOf("/* end rate calculator */", start);
+  assert.ok(start !== -1 && end > start, "calculator behaviour missing or unclosed");
+  const script = resultHtml.slice(start, end);
+  assert.match(script, /new MutationObserver\(attempt\)/);
+  assert.match(script, /DOMContentLoaded/);
+});
+
+/*
+ * ── WHAT ACTUALLY SHIPPED ─────────────────────────────────────────
+ *
+ * The tests above drive the sync with a stand-in built page, so they prove the
+ * mechanism and nothing about the site. These read dist/index.html, which is
+ * the file GitHub Pages serves, and assert the two things a visitor came for.
+ */
+
+const shippedTemplate = () => {
+  if (!existsSync("dist/index.html")) return null;
+  const lines = readFileSync("dist/index.html", "utf8").split("\n");
+  const at = lines.findIndex((line) => line.includes('<script type="__bundler/template">'));
+  if (at === -1) return null;
+  return JSON.parse(lines[at + 1]);
+};
+
+test("the shipped homepage footer carries the links the bundle's footer never had", () => {
+  const template = shippedTemplate();
+  if (!template) { assert.ok(true, "no build present; run npm run build"); return; }
+
+  // Anchors to #product, #price and #faq were the whole of it. The site's
+  // most-visited page linked to neither the privacy policy nor the terms, and
+  // to no other page on the site at all.
+  for (const href of ["/pricing", "/security", "/about", "/contact", "/privacy", "/terms", "/blog", "/product"]) {
+    assert.ok(template.includes('href="' + href + '"'), `shipped homepage footer has no link to ${href}`);
+  }
+  assert.equal(template.split('<footer class="site-footer">').length - 1, 1);
+});
+
+test("the shipped homepage runs the pricing page's own calculator", () => {
+  const template = shippedTemplate();
+  if (!template) { assert.ok(true, "no build present; run npm run build"); return; }
+  const pricing = existsSync("dist/pricing.html") ? readFileSync("dist/pricing.html", "utf8") : null;
+  if (!pricing) { assert.ok(true, "no build present"); return; }
+
+  const fromHome = extractElement(template, '<div class="pc" data-calc', "div");
+  const fromPricing = extractElement(pricing, '<div class="pc" data-calc', "div");
+  assert.equal(fromHome, fromPricing, "the homepage calculator is not byte-identical to the pricing page's");
+
+  // And the parts of it that carry the numbers, named rather than counted.
+  for (const hook of ["data-count-input", "data-range", "data-total", "pc-includes-list", "data-bar=\"manager\""]) {
+    assert.ok(fromHome.includes(hook), `shipped calculator is missing ${hook}`);
+  }
+
+  // The behaviour is asserted on the file GitHub Pages serves, not on the
+  // payload inside it, and the payload is asserted to be free of it. A
+  // calculator whose script sits in the payload still renders — it reads $10
+  // at every lot count forever, because nothing rebinds it after the
+  // unpacker replaces the node. That is the shape of the bug this pair
+  // exists to catch, and only one of the two assertions can see it.
+  const doc = readFileSync("dist/index.html", "utf8");
+  assert.ok(doc.includes("/* injected: rate calculator */"), "shipped homepage has no calculator behaviour");
+  assert.ok(!template.includes("/* injected: rate calculator */"),
+    "shipped calculator behaviour is inside the bundle payload, where it cannot rebind");
 });

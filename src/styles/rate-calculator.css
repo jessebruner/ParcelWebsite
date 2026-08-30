@@ -1,0 +1,254 @@
+/**
+ * THE RATE CALCULATOR, IN ONE STYLESHEET.
+ *
+ * Plain CSS rather than a scoped <style> block for the same reason
+ * masthead.css is plain: the homepage is an exported bundle, not an Astro
+ * page, so tools/sync-homepage-masthead.mjs has to inject the rules as text.
+ * A scoped block compiles to [data-astro-cid-*] selectors inside a hashed
+ * stylesheet the bundle never loads, and the calculator would render on the
+ * homepage with every declaration silently dropped.
+ *
+ * Every class here is prefixed .pc- and every rule is inside .pc, so making
+ * it global collides with nothing.
+ */
+
+/* The bundle sets no box-sizing or base font of its own; it styles every
+   element inline. So the card states both rather than inheriting them, and
+   renders the same on an Astro page and on the homepage. */
+.pc, .pc *, .pc *::before, .pc *::after { box-sizing: border-box; }
+.pc { font-family: var(--font-sans); font-size: var(--t-body); line-height: 1.5; color: var(--paper); text-align: left; }
+.pc p, .pc ul, .pc table { margin: 0; }
+
+
+.pc { border: 1.5px solid var(--on-dark-tile); background: var(--night-hover); }
+.pc-grid { display: grid; gap: clamp(28px, 4vw, 56px); padding: clamp(24px, 4vw, 56px); }
+@media (min-width: 900px) {
+  .pc-grid { grid-template-columns: minmax(22em, 1.2fr) minmax(16em, 0.8fr); align-items: stretch; }
+}
+
+.pc-total-label, .pc-meta, .pc-ends, .pc-includes-label, .pc-head-label, .pc-head-note {
+  font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em; text-transform: uppercase;
+}
+.pc-total-label { color: var(--on-dark-label); }
+.pc-out { margin: var(--s-3) 0 0; }
+.pc-figure {
+  display: inline-block; min-width: 4ch; color: var(--amber); font-family: var(--font-mono);
+  font-size: clamp(64px, 9vw, 124px); font-variant-numeric: tabular-nums; letter-spacing: -0.06em; line-height: 0.86;
+}
+.pc-meta { margin: var(--s-4) 0 0; color: var(--on-dark-label); }
+.pc-meta [data-perlot] { color: var(--paper); font-variant-numeric: tabular-nums; }
+.pc-floor { max-width: 40ch; margin: var(--s-3) 0 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
+.pc-floor[hidden] { display: none; }
+.pc-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.pc-rule { margin: clamp(24px, 3vw, 40px) 0; border: 0; border-top: 1px solid var(--on-dark-rule); }
+
+.pc-size-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.pc-label {
+  color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.pc-count {
+  display: inline-flex; align-items: baseline; justify-content: space-between; gap: var(--s-2);
+  flex: none; width: 128px; box-sizing: border-box; padding: 5px 13px;
+  border: 1.5px solid var(--amber); background: var(--paper);
+}
+.pc-input {
+  width: 5ch; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--ink);
+  font-family: var(--font-mono); font-size: var(--t-title); font-variant-numeric: tabular-nums;
+}
+.pc-input:focus-visible { outline: none; }
+.pc-count:focus-within { outline: 2px solid var(--amber); outline-offset: 2px; }
+.pc-count > span { color: var(--ink-3); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em; text-transform: uppercase; }
+.pc-input::-webkit-outer-spin-button, .pc-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.pc-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+/* The slider is built like the homepage's: a bordered 14px channel, a
+   bisque fill that ends in an amber edge, hairline ticks below, and a
+   terracotta thumb with three grip lines. */
+.pc-slider { position: relative; height: 44px; margin-top: var(--s-4); }
+.pc-track {
+  position: absolute; left: 0; right: 0; top: 15px; height: 14px;
+  background: rgba(251, 248, 244, 0.08); border: 1px solid var(--on-dark-rule); box-sizing: border-box;
+}
+.pc-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; max-width: 100%;
+  background: var(--bisque); border-right: 1.5px solid var(--amber);
+}
+.pc-ticks span {
+  position: absolute; top: 31px; width: 1px; height: 6px;
+  background: var(--on-dark-rule); transform: translateX(-0.5px);
+}
+.pc-range {
+  -webkit-appearance: none; appearance: none;
+  position: absolute; inset: 0; width: 100%; height: 44px; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.pc-range::-webkit-slider-runnable-track { height: 44px; background: transparent; }
+.pc-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 30px; height: 28px; margin-top: 8px; border: 0; border-radius: 0;
+  background-color: var(--terracotta);
+  background-image: linear-gradient(
+    to right,
+    transparent 9px, rgba(251, 248, 244, 0.75) 9px, rgba(251, 248, 244, 0.75) 10.5px,
+    transparent 10.5px, transparent 14.25px, rgba(251, 248, 244, 0.75) 14.25px, rgba(251, 248, 244, 0.75) 15.75px,
+    transparent 15.75px, transparent 19.5px, rgba(251, 248, 244, 0.75) 19.5px, rgba(251, 248, 244, 0.75) 21px,
+    transparent 21px
+  );
+  background-size: 30px 12px; background-position: center; background-repeat: no-repeat;
+  transition: box-shadow 140ms ease;
+}
+.pc-range:hover::-webkit-slider-thumb, .pc-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px rgba(232, 168, 124, 0.22);
+}
+.pc-range::-moz-range-track { height: 44px; background: transparent; }
+.pc-range::-moz-range-thumb {
+  width: 30px; height: 28px; border: 0; border-radius: 0;
+  background-color: var(--terracotta);
+  background-image: linear-gradient(
+    to right,
+    transparent 9px, rgba(251, 248, 244, 0.75) 9px, rgba(251, 248, 244, 0.75) 10.5px,
+    transparent 10.5px, transparent 14.25px, rgba(251, 248, 244, 0.75) 14.25px, rgba(251, 248, 244, 0.75) 15.75px,
+    transparent 15.75px, transparent 19.5px, rgba(251, 248, 244, 0.75) 19.5px, rgba(251, 248, 244, 0.75) 21px,
+    transparent 21px
+  );
+  background-size: 30px 12px; background-position: center; background-repeat: no-repeat;
+  transition: box-shadow 140ms ease;
+}
+.pc-range:hover::-moz-range-thumb, .pc-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 5px rgba(232, 168, 124, 0.22);
+}
+.pc-range:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+.pc-ends { display: flex; justify-content: space-between; gap: var(--s-3); margin-top: var(--s-2); color: var(--on-dark-label); }
+.pc-drag { color: var(--amber); }
+
+.pc-includes {
+  display: flex; flex-direction: column; box-sizing: border-box; min-width: 0;
+  background: rgba(251, 248, 244, 0.05); border: 1.5px solid var(--on-dark-rule);
+  padding: clamp(20px, 2.6vw, 32px);
+}
+.pc-includes-label { color: var(--amber); }
+.pc-includes-list { list-style: none; margin: var(--s-4) 0 0; padding: 0; flex: 1; }
+.pc-includes-list li {
+  display: flex; align-items: baseline; gap: var(--s-3); padding-block: 5px;
+  color: var(--mist); font-size: var(--t-micro); line-height: 1.45;
+}
+.pc-check { color: var(--amber); font-family: var(--font-mono); font-size: var(--t-mono-data); }
+.pc-includes-note {
+  margin: var(--s-4) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--on-dark-rule);
+  color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label);
+  letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.8;
+}
+
+/* Reveal: the card eases up once, list rows follow in a quiet stagger.
+   The hidden start state only exists once the script adds .js-reveal, so
+   a visitor without JavaScript always sees the card. */
+@media (prefers-reduced-motion: no-preference) {
+  .pc.js-reveal { opacity: 0; transform: translateY(14px); transition: opacity 500ms ease, transform 500ms ease; }
+  .pc.js-reveal.is-in { opacity: 1; transform: none; }
+  .pc.js-reveal .pc-includes-list li { opacity: 0; transform: translateY(6px); transition: opacity 360ms ease var(--d, 0ms), transform 360ms ease var(--d, 0ms); }
+  .pc.js-reveal.is-in .pc-includes-list li { opacity: 1; transform: none; }
+}
+
+.pc-details { border-top: 1px solid var(--on-dark-rule); }
+.pc-details summary {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  min-height: 52px; padding: 14px clamp(24px, 4vw, 56px); color: var(--paper);
+  font-family: var(--font-sans); font-weight: 650; cursor: pointer; list-style: none;
+}
+.pc-details summary::-webkit-details-marker { display: none; }
+.pc-details summary:hover { background: var(--night-hover); }
+.pc-details[open] summary { border-bottom: 1px solid var(--on-dark-rule); }
+.pc-sum-mark { position: relative; width: 14px; height: 14px; flex: none; }
+.pc-sum-mark::before, .pc-sum-mark::after {
+  content: ""; position: absolute; background: var(--amber); transition: transform 160ms ease;
+}
+.pc-sum-mark::before { left: 0; top: 6px; width: 14px; height: 2px; }
+.pc-sum-mark::after { left: 6px; top: 0; width: 2px; height: 14px; }
+.pc-details[open] .pc-sum-mark::after { transform: scaleY(0); }
+.pc-sheet { margin: clamp(20px, 3vw, 40px); border: var(--stroke-consequence); background: var(--paper); }
+.pc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 11px 18px; background: var(--field); }
+.pc-head-label { color: var(--ink-2); }
+.pc-head-note { color: var(--terracotta); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pc-scroll { overflow-x: auto; padding: var(--s-2) 18px var(--s-4); }
+.pc-sheet th[scope="col"]:not(:first-child), .pc-sheet td { text-align: right; }
+.pc-sheet tbody th[scope="row"] {
+  padding: var(--s-3) var(--s-4) var(--s-3) 0; border-bottom: var(--stroke-hairline); color: var(--ink);
+  font-family: var(--font-sans); font-size: var(--t-body); font-weight: 400; letter-spacing: 0; text-transform: none; white-space: nowrap;
+}
+.pc-row.is-empty th, .pc-row.is-empty td { color: var(--ink-3); }
+.pc-sheet tfoot th, .pc-sheet tfoot td { padding-top: var(--s-3); border-top: var(--stroke-consequence); border-bottom: 0; }
+.pc-sheet tfoot th[scope="row"] {
+  color: var(--ink); font-family: var(--font-sans); font-size: var(--t-body); font-weight: 650; letter-spacing: 0; text-transform: none;
+}
+.pc-sheet tfoot tr[hidden] { display: none; }
+.pc-sheet-note { margin: 0; padding: var(--s-4) 18px; border-top: var(--stroke-hairline); color: var(--ink-2); font-size: var(--t-micro); line-height: 1.5; }
+
+@media (max-width: 560px) {
+  .pc-size-head { align-items: start; flex-direction: column; gap: var(--s-3); }
+  .pc-sheet { margin-inline: var(--s-3); }
+}
+
+/* The three cost bars. Stepped rather than a smooth wash — the fill is cut
+   into 9px blocks by a repeating gradient, so a bar is countable, which is
+   the rule the icons and the ledger tiles on this site already follow. This
+   is the homepage's own bar language, kept when the widget it belonged to
+   was replaced by this card. */
+.pc-compare {
+  padding: clamp(20px, 2.6vw, 32px) clamp(24px, 4vw, 56px) clamp(24px, 3vw, 40px);
+  border-top: 1px solid var(--on-dark-rule);
+}
+.pc-compare-label {
+  display: block; color: var(--on-dark-label);
+  font-family: var(--font-mono); font-size: var(--t-mono-label);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.pc-compare-rows { list-style: none; margin: var(--s-4) 0 0; padding: 0; }
+.pc-bar + .pc-bar { margin-top: clamp(14px, 1.8vw, 22px); }
+.pc-bar-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3);
+  color: var(--on-dark-label);
+  font-family: var(--font-mono); font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+.pc-bar-label { flex: 1 1 auto; min-width: 0; }
+.pc-bar-total { flex: 0 0 auto; white-space: nowrap; }
+.pc-bar.is-parcel .pc-bar-head { color: var(--sand); font-weight: 600; }
+.pc-bar-track {
+  display: block; height: 26px; margin-top: 9px;
+  background: rgba(251, 248, 244, 0.06); border: 1px solid var(--on-dark-rule);
+}
+.pc-bar-fill {
+  display: block; height: 100%; min-width: 3px;
+  background-color: var(--slate);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(23, 19, 38, 0) 0px, rgba(23, 19, 38, 0) 8px,
+    rgba(23, 19, 38, 0.85) 8px, rgba(23, 19, 38, 0.85) 9px
+  );
+  transition: width 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pc-bar[data-bar="software"] .pc-bar-fill { background-color: var(--rose); }
+.pc-bar.is-parcel .pc-bar-fill { background-color: var(--sand); }
+@media (prefers-reduced-motion: reduce) {
+  .pc-bar-fill { transition: none; }
+}
+.pc-compare-note {
+  margin: var(--s-4) 0 0; max-width: 52ch;
+  color: var(--mist); font-size: var(--t-micro); line-height: 1.5;
+}
+
+/* Three classes the markup carried with no rule behind them. Each gets the
+   declaration it was always implying rather than an exemption:
+   a grid child defaults to min-width auto and the rate card inside this one
+   scrolls, so without min-width:0 the column blows past the card on a narrow
+   screen; the summary label has to be the flexible half so the +/- mark stays
+   pinned right when the text wraps; and a column of money should be tabular. */
+.pc-main { min-width: 0; }
+.pc-sum-label { flex: 1 1 auto; min-width: 0; }
+.pc-sheet .num { font-variant-numeric: tabular-nums; }

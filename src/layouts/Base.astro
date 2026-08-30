@@ -34,7 +34,19 @@ interface Props {
 const { title, description, path, shareTitle, reviewed, schema, noindex = false } = Astro.props;
 const site = "https://commonparcel.com";
 const canonical = `${site}${path === "/" ? "/" : path}`;
-const pageTitle = title.includes("Common Parcel") ? title : `${title} — Common Parcel`;
+/*
+ * The brand suffix is a nicety; the 65-character limit is not. Past it Google
+ * cuts the title off, and what gets cut is the tail — which is where the
+ * suffix is. So a page whose own title is long keeps its own words and loses
+ * the brand, rather than shipping a result that ends mid-phrase.
+ *
+ * The rule lives here because the head lives here. Doing it per page is how
+ * three blog posts came to ship at 69, 71 and 77 characters.
+ * tools/check-seo.mjs fails the build if anything still lands over.
+ */
+const TITLE_MAX = 65;
+const withBrand = title.includes("Common Parcel") ? title : `${title} — Common Parcel`;
+const pageTitle = withBrand.length <= TITLE_MAX ? withBrand : title;
 const share = shareTitle ?? pageTitle;
 const robots = noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max-image-preview:large";
 ---

@@ -69,3 +69,41 @@ export function clampLots(n: number): number {
   if (!Number.isFinite(n)) return 1;
   return Math.max(1, Math.min(5000, Math.floor(n)));
 }
+
+/**
+ * WHAT THE ALTERNATIVES COST, IN THE SAME PLACE AS THE PRICE.
+ *
+ * These three bars were homepage-only markup driven by the exported bundle's
+ * own state. Replacing that widget with this component would have deleted the
+ * only place on the site that says what a manager costs, so the figures moved
+ * in here instead of being dropped. They are the same numbers the homepage has
+ * been publishing: 18 dollars per door for a local manager, and other HOA
+ * software at 1.55 per door with a 49 dollar floor. They are typical published
+ * rates rather than quotes, and the card says so on the page.
+ */
+export interface Alternatives {
+  /** Per door, per month, for a local management company. */
+  managerRate: number;
+  /** Per door, per month, for a tiered HOA software platform. */
+  softwareRate: number;
+  /** The monthly floor those platforms charge a small association. */
+  softwareFloor: number;
+}
+
+export const DEFAULT_ALTERNATIVES: Alternatives = {
+  managerRate: 18,
+  softwareRate: 1.55,
+  softwareFloor: 49,
+};
+
+export interface Comparison {
+  manager: number;
+  software: number;
+}
+
+export function alternatives(a: Alternatives, lots: number): Comparison {
+  return {
+    manager: lots * a.managerRate,
+    software: Math.max(a.softwareFloor, lots * a.softwareRate),
+  };
+}

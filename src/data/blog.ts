@@ -433,7 +433,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: "michigan-hoa-records-request",
     title: "How to get your association's records in Michigan",
     description:
-      "Michigan condominium co-owners and subdivision association members may use different records laws. Read the quoted sections and build the handover list before leaving a management company.",
+      "Michigan condominium co-owners and subdivision members may use different records laws. Read the quoted sections, then build the handover list.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",

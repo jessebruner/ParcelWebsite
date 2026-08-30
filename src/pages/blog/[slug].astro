@@ -41,13 +41,86 @@ function calloutsOf(section: { callout?: unknown; callouts?: unknown[] }) {
 }
 
 const minutes = readingMinutes(post);
+
+/*
+ * BlogPosting and BreadcrumbList.
+ *
+ * The posts already carried Article microdata — headline, description, author,
+ * datePublished, articleBody — so this is not markup arriving where there was
+ * none. What the microdata has never carried is `image` or `publisher`, both of
+ * which Google asks for on an article, and a crawler had no breadcrumb for the
+ * blog at all.
+ *
+ * Every value is read from src/data/blog.ts. There is deliberately no
+ * `dateModified`: the schema has no field for it, and stamping today's date or
+ * copying datePublished would both be claims about a revision that never
+ * happened. A post that gets rewritten needs a field, not a default.
+ *
+ * The breadcrumb is Home > Blog > this post, which is the path that actually
+ * exists. The visible trail above reads Blog / {category}, and category is not
+ * a page, so it is not in the markup pointing at a URL that would 404.
+ */
+const site = "https://commonparcel.com";
+const url = `${site}/blog/${post.slug}`;
+const schema = JSON.stringify([
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.publishedAt,
+    inLanguage: "en-US",
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    image: `${site}/og.png`,
+    articleSection: post.category,
+    wordCount: post.sections.reduce(
+      (n, s) =>
+        n +
+        (s.paragraphs ?? []).join(" ").split(/\s+/).filter(Boolean).length +
+        (s.list?.items ?? []).join(" ").split(/\s+/).filter(Boolean).length,
+      post.lede.split(/\s+/).filter(Boolean).length
+    ),
+    /*
+     * The author of all six posts is "Common Parcel", so it is an
+     * Organization. Emitting it as a Person produced a person named Common
+     * Parcel, and `role` is "Detroit, Michigan" on every post, so mapping it
+     * to jobTitle gave that person the job title "Detroit, Michigan". `role`
+     * is a place here; there is no field that means job, so nothing claims
+     * one. A named human author later needs a field, not this one reused.
+     */
+    author:
+      post.author.name === "Common Parcel"
+        ? { "@type": "Organization", name: post.author.name, url: site }
+        : { "@type": "Person", name: post.author.name },
+    publisher: {
+      "@type": "Organization",
+      name: "Common Parcel",
+      url: site,
+      logo: { "@type": "ImageObject", url: `${site}/apple-touch-icon.png` },
+    },
+    ...(post.citations.length
+      ? { citation: post.citations.map((c) => [c.source, c.section, c.title].filter(Boolean).join(", ")) }
+      : {}),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${site}/` },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${site}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title },
+    ],
+  },
+]);
 ---
 
 <Base
-  title={`${post.title} | Common Parcel`}
+  title={post.title}
   description={post.description}
   path={`/blog/${post.slug}`}
   shareTitle={post.title}
+  schema={schema}
 >
   <article class="post-layout" itemscope itemtype="https://schema.org/Article">
     <!-- Header / Hero -->
@@ -63,7 +136,14 @@ const minutes = readingMinutes(post);
         <p class="t-lede post-lede" itemprop="description">{post.lede}</p>
 
         <div class="post-meta">
-          <div class="post-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <!--
+            Organization, not Person. Every post is authored by Common Parcel,
+            and this said Person, so the markup Google reads today describes a
+            person by that name. The visible "(Detroit, Michigan)" stays as
+            presentation and carries no itemprop, because it is a place and
+            there is no author property it belongs to.
+          -->
+          <div class="post-author" itemprop="author" itemscope itemtype="https://schema.org/Organization">
             <span class="author-label t-mono-label">Author</span>
             <span class="author-name" itemprop="name">{post.author.name}</span>
             <span class="author-role t-micro">({post.author.role})</span>

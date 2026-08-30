@@ -1,0 +1,64 @@
+/**
+ * THE SITE FOOTER, IN ONE STYLESHEET.
+ *
+ * Plain CSS rather than a scoped <style> block, for the reason masthead.css is
+ * plain: the homepage is an exported bundle, not an Astro page, so
+ * tools/sync-homepage-masthead.mjs injects these rules as text. A scoped block
+ * compiles to [data-astro-cid-*] selectors in a hashed stylesheet the bundle
+ * never loads.
+ *
+ * Every class is prefixed sf- and every rule is inside .site-footer. The
+ * component's classes used to be .inner, .brand, .head and .cols, which are
+ * safe while they are scoped and are landmines the moment they are not.
+ */
+
+/* The bundle sets no box-sizing and no base font of its own — it styles every
+   element inline — so the footer states both rather than inheriting them, and
+   renders the same on an Astro page and on the homepage. */
+.site-footer, .site-footer *, .site-footer *::before, .site-footer *::after { box-sizing: border-box; }
+.site-footer {
+  background: var(--night); color: var(--paper);
+  font-family: var(--font-sans); font-size: var(--t-body); line-height: 1.5;
+  padding-block: var(--s-12) var(--s-6);
+  text-align: left;
+}
+.site-footer p, .site-footer ul { margin: 0; }
+
+.sf-inner { display: flex; justify-content: space-between; gap: var(--s-12); flex-wrap: wrap; }
+.sf-lockup { display: flex; align-items: center; gap: var(--s-3); }
+.sf-lockup > span {
+  font-family: var(--font-serif); font-size: 23px; font-weight: 600;
+  letter-spacing: -0.025em; white-space: nowrap;
+}
+.sf-lockup svg { display: block; flex: 0 0 auto; }
+.sf-addr {
+  color: var(--on-dark-label); line-height: 1.8; margin: var(--s-4) 0 0;
+  font-family: var(--font-mono); font-size: var(--t-mono-data);
+}
+.sf-mail {
+  color: var(--amber); display: inline-flex; align-items: center; min-height: 24px;
+  margin-top: var(--s-2); font-family: var(--font-mono); font-size: var(--t-mono-data);
+}
+.sf-cols { display: flex; gap: clamp(24px, 3.5vw, 64px); flex-wrap: wrap; }
+.sf-head {
+  font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--sand); margin: 0 0 var(--s-3);
+}
+.sf-cols ul { list-style: none; margin: 0; padding: 0; }
+.sf-cols a {
+  display: inline-flex; align-items: center; min-height: 24px; color: var(--on-dark-label);
+  text-decoration: none; font-size: var(--t-micro);
+}
+.sf-cols a:hover { color: var(--paper); text-decoration: underline; }
+.sf-baseline {
+  display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap;
+  margin-top: var(--s-12); padding-top: var(--s-4); border-top: 1px solid var(--on-dark-rule);
+  font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--on-dark-label);
+}
+.sf-legal { display: flex; gap: var(--s-4); align-items: center; }
+.sf-legal a {
+  display: inline-flex; align-items: center; min-height: 24px; padding-block: 2px;
+  color: var(--on-dark-label); text-decoration: none;
+}
+.sf-legal a:hover { color: var(--paper); }

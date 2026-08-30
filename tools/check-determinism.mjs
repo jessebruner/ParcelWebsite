@@ -90,15 +90,41 @@ console.log(`Verifying date sink response with skewed SOURCE_DATE_EPOCH=${TEST_E
 rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 execSync(`${npmCmd} run build`, { stdio: "inherit", env: { ...process.env, SOURCE_DATE_EPOCH: TEST_EPOCH } });
 
-const sitemapContent = readFileSync("dist/sitemap.xml", "utf8");
-if (!sitemapContent.includes("<lastmod>2001-01-01</lastmod>")) {
-  throw new Error("Date sink failure: sitemap.xml does not contain expected skewed lastmod 2001-01-01");
-}
+/*
+ * The footer year is the date sink, and it has to respond, or step 3's
+ * "two builds match" proves nothing: a build with no clock read anywhere
+ * would pass it trivially.
+ */
 const pricingHtml = readFileSync("dist/pricing.html", "utf8");
 if (!pricingHtml.includes("2001")) {
   throw new Error("Date sink failure: pricing.html footer does not reflect skewed year 2001");
 }
-console.log("✓ Date sinks positively verified against SOURCE_DATE_EPOCH.");
+
+/*
+ * The sitemap used to be the second sink, stamping the build date on every
+ * URL. It no longer is, on purpose: a lastmod that says "today" for all 25
+ * pages on every deploy is a false claim, so dates now come from post data and
+ * pages with no tracked date carry none. That turns the old assertion inside
+ * out. The sitemap must NOT move with the clock, and every date in it must be
+ * a date something actually knows.
+ */
+const sitemapContent = readFileSync("dist/sitemap.xml", "utf8");
+if (sitemapContent.includes("2001")) {
+  throw new Error("sitemap.xml still reads the build clock: it moved with the skewed SOURCE_DATE_EPOCH");
+}
+const stamps = [...sitemapContent.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
+const known = new Set(
+  [...readFileSync("src/data/blog.ts", "utf8").matchAll(/publishedAt:\s*"(\d{4}-\d{2}-\d{2})"/g)].map((m) => m[1])
+);
+if (stamps.length === 0) {
+  throw new Error("sitemap.xml carries no lastmod at all; the post dates stopped reaching it");
+}
+for (const stamp of stamps) {
+  if (!known.has(stamp)) {
+    throw new Error(`sitemap.xml lastmod ${stamp} matches no publishedAt in src/data/blog.ts`);
+  }
+}
+console.log(`✓ Date sink positively verified against SOURCE_DATE_EPOCH; sitemap holds ${stamps.length} data-derived dates and no build date.`);
 
 // 3. Source determinism dual-build check
 let epoch = process.env.SOURCE_DATE_EPOCH;
