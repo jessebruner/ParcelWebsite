@@ -82,6 +82,40 @@ const BODY_MASK = [
 ];
 const BODY_AX = 10, BODY_AY = 6;
 
+/* ── Hilltop sunset constants & helpers ──────────────────────────────────── */
+const HT_CLOUD = ["#1E1A2E","#2A2340","#3D2F52","#553C61","#734C6C","#966073","#BC7878","#DE9B7E","#EBB289","#F4CB9F"].map(pack);
+const HT_RIDGE_DARK = pack("#0E0B18");
+const HT_HILL = ["#08060E","#0C0912","#120E1A","#1A1424"].map(pack);
+const HT_GRASS = ["#0A0810","#100C18","#181222"].map(pack);
+const HT_SEED = pack("#4A3A46");
+const HT_MIST = pack("#C9A9A4");
+const HT_SUN_CORE = pack("#FFF4DA"), HT_SUN_EDGE = pack("#FAE0BC");
+const HT_HERON = {
+  body: pack("#07050C"), wing: pack("#0C0914"),
+  rim: pack("#F4CB9F"), rimLow: pack("#A96B75"), eye: pack("#FBF8F4"), bill: pack("#8A5638")
+};
+const HT_RANKS = [
+  { crest: 120, fade: 0.93, rough: 0.24, f: [0.0090, 0.0230, 0.0510], a: [5.4, 2.2, 0.9] },
+  { crest: 128, fade: 0.85, rough: 0.42, f: [0.0110, 0.0290, 0.0620], a: [5.4, 2.6, 1.2] },
+  { crest: 137, fade: 0.72, rough: 0.60, f: [0.0130, 0.0330, 0.0730], a: [6.0, 3.0, 1.5] },
+  { crest: 148, fade: 0.52, rough: 0.76, f: [0.0150, 0.0380, 0.0850], a: [6.6, 3.4, 1.8] },
+  { crest: 160, fade: 0.24, rough: 0.90, f: [0.0170, 0.0430, 0.0960], a: [7.2, 3.8, 2.1] },
+];
+const HT_HERON_X = Math.round(384 * 0.30);
+const htClamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const htLerp = (a, b, k) => a + (b - a) * k;
+const htSs = k => (k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k));
+const htRgb = c => [c & 255, (c >> 8) & 255, (c >> 16) & 255];
+const htMixc = (a, b, k) => {
+  const [r1, g1, b1] = htRgb(a), [r2, g2, b2] = htRgb(b);
+  return (255 << 24) | (Math.round(b1 + (b2 - b1) * k) << 16)
+    | (Math.round(g1 + (g2 - g1) * k) << 8) | Math.round(r1 + (r2 - r1) * k);
+};
+const htHash2 = (x, y) => {
+  let h = (Math.round(x) * 374761393 + Math.round(y) * 668265263) | 0;
+  h = (h ^ (h >>> 13)) * 1274126177 | 0;
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+};
 const SCENES = {
   dusk: {
     label: "Dusk marsh", hz: 128,
@@ -291,6 +325,17 @@ const SCENES = {
     mote: { colour: "#E8A87C", hot: "#F4CB9F", count: 0 },
     birds: 3, mist: null, stars: 0,
   },
+
+  hilltop: {
+    label: "Hilltop sunset", hz: 128,
+    title: "A heron on a hilltop at sundown.",
+    alt: "Pixel art of a heron standing on a hilltop watching the sun set over receding ridges",
+    layout: "hilltop",
+    sky: ["#171326","#1C1830","#221D37","#2A2340","#332949","#3D2F52","#48355A","#553C61","#634468",
+          "#734C6C","#845670","#966073","#A96B75","#BC7878","#CE8878","#DE9B7E","#EBB289","#F4CB9F","#FAE0BC"],
+    sun: { x: 0.68, y: 122, r: 9, disc: true },
+    curve: 1.95,
+  },
 };
 
 for (const k of Object.keys(SCENES))
@@ -324,6 +369,11 @@ export class SceneEngine {
     const SKY = S.sky.map(pack);
     const SKY_N = SKY.length - 1;
     this.SKY = SKY; this.SKY_N = SKY_N;
+    if (S.layout === "hilltop") {
+      this.buildHilltop(S, rng);
+      this.lit = [250, 224, 188];
+      return;
+    }
 
     this.sunX = W * S.sun.x;
     this.sunY = S.sun.y;
@@ -2256,6 +2306,7 @@ export class SceneEngine {
     const TAU = Math.PI * 2;
 
     if (S.layout === "creek") return this.drawCreek(t, TAU);
+    if (S.layout === "hilltop") return this.drawHilltop(t, TAU);
 
     buf.set(this.sky);
 
@@ -2467,5 +2518,495 @@ export class SceneEngine {
     this.ctx.putImageData(this.img, 0, 0);
 
   }
+
+
+  /* ── The hilltop: receding ridges at sundown ──────────────────────────── */
+  buildHilltop(S, rng) {
+    this.size();
+    HZ = S.hz || 128;
+    const land = new Uint32Array(W * H);
+    const sunX = Math.round(W * htClamp(this.opts.sunAzimuth ?? 0.68, 0.12, 0.88));
+    this.htSunX = sunX;
+
+    this.baseV = new Float32Array(HZ + 46);
+    for (let y = 0; y < HZ + 46; y++)
+      this.baseV[y] = Math.pow(htClamp(y / HZ, 0, 1), 1.95) * 0.90;
+    const skyFlat = y => this.SKY[htClamp(Math.round(this.baseV[htClamp(Math.round(y), 0, HZ + 45)]
+      * (this.SKY.length - 1)), 0, this.SKY.length - 1)];
+
+    this.crests = [];
+    const smooth1 = (x, wl, seed) => {
+      const p = x / wl, i0 = Math.floor(p), f = p - i0;
+      const a = htHash2(i0, seed), b = htHash2(i0 + 1, seed);
+      const k = f * f * (3 - 2 * f);
+      return a + (b - a) * k - 0.5;
+    };
+
+    HT_RANKS.forEach((R, rank) => {
+      const top = new Int16Array(W);
+      for (let x = 0; x < W; x++) {
+        let h = R.crest;
+        h += smooth1(x, 1 / R.f[0] * 0.9, rank * 7 + 1) * R.a[0] * 2.6;
+        h += smooth1(x, 1 / R.f[1] * 0.9, rank * 7 + 2) * R.a[1] * 1.15;
+        h += smooth1(x, 1 / R.f[2] * 0.9, rank * 7 + 3) * R.a[2] * 0.42;
+        h += (htHash2(x * 0.7, rank * 31) - 0.5) * R.rough * 2.4;
+        top[x] = Math.round(h);
+      }
+      const sm = new Int16Array(W);
+      for (let x = 0; x < W; x++) {
+        const a = top[Math.max(0, x - 1)], b = top[x], c = top[Math.min(W - 1, x + 1)];
+        sm[x] = Math.round((a + b * 2 + c) / 4);
+      }
+      this.crests.push(sm);
+
+      for (let x = 0; x < W; x++) {
+        for (let y = sm[x]; y < H; y++) {
+          const depth = htClamp((y - sm[x]) / 46, 0, 1);
+          const base = htMixc(HT_RIDGE_DARK, skyFlat(sm[x]), R.fade);
+          land[y * W + x] = htMixc(base, HT_RIDGE_DARK, depth * (1 - R.fade) * 0.52);
+        }
+        if (R.fade > 0.70) continue;
+        const slope = sm[Math.min(W - 1, x + 2)] - sm[Math.max(0, x - 2)];
+        const facing = (x < sunX ? slope > 0 : slope < 0) ? Math.min(1, Math.abs(slope) / 3) : 0;
+        if (!facing) continue;
+        const near = Math.exp(-Math.pow((x - sunX) / 150, 2));
+        const k = facing * near * (0.30 + (1 - R.fade) * 0.34);
+        for (let d = 0; d < 2; d++) {
+          const y = sm[x] + d;
+          if (BAYER[(y & 3) * 4 + (x & 3)] + 0.47 > k * (d ? 0.5 : 1.1)) continue;
+          land[y * W + x] = htMixc(land[y * W + x], this.SKY[16 - d * 2], 0.62);
+        }
+      }
+    });
+
+    for (let rank = 4; rank <= 4; rank++) {
+      const crest = this.crests[rank];
+      const R = HT_RANKS[rank];
+      const dark = htMixc(htMixc(HT_RIDGE_DARK, skyFlat(R.crest), R.fade), HT_RIDGE_DARK, 0.20);
+      for (let x = 2; x < W - 2; x++) {
+        const grove = smooth1(x, 52, 900 + rank) + 0.5;
+        if (grove < 0.60) continue;
+        if (htHash2(x, 500 + rank) > (grove - 0.60) * (rank === 4 ? 2.0 : 1.3)) continue;
+        const h = 4 + Math.round(Math.pow(htHash2(x, 611 + rank), 1.8) * 4);
+        const cap = 1;
+        for (let r = 0; r < h; r++) {
+          const hw = Math.min(cap, Math.floor(r * 0.5));
+          const y = crest[x] - h + r;
+          for (let d = -hw; d <= hw; d++) {
+            const xx = x + d;
+            if (y < 0 || y >= H || xx < 0 || xx >= W) continue;
+            land[y * W + xx] = dark;
+          }
+        }
+      }
+    }
+
+    const hillTop = new Int16Array(W);
+    for (let x = 0; x < W; x++) {
+      let h = 177 + (x / W) * 10 + Math.sin(x * 0.0125 + 0.7) * 5
+        + Math.sin(x * 0.034 + 2.1) * 2.2 + Math.sin(x * 0.088) * 1.1;
+      h += (htHash2(x * 0.9, 77) - 0.5) * 2.0;
+      const d = (x - HT_HERON_X) / 46;
+      h -= 15 * Math.exp(-d * d);
+      hillTop[x] = Math.round(h);
+    }
+    for (let x = 0; x < W; x++) {
+      const t = hillTop[x];
+      for (let y = t; y < H; y++) {
+        const d = htClamp((y - t) / 34, 0, 1);
+        land[y * W + x] = HT_HILL[htClamp(3 - Math.round(d * 3.4 + (BAYER[(y & 3) * 4 + (x & 3)] < 0 ? 0 : 0.4)), 0, 3)];
+      }
+    }
+    this.hillTop = hillTop;
+
+    for (let x = 0; x < W; x++) {
+      const clump = smooth1(x, 26, 313) + 0.5;
+      if (htHash2(x, 401) > clump * 0.72) continue;
+      const n = 1 + Math.round(htHash2(x, 907) * 3 + clump * 2);
+      const lean = (htHash2(x, 55) - 0.5) * 0.7;
+      for (let k = 0; k < n; k++) {
+        const xx = Math.round(x + lean * k), yy = hillTop[x] - 1 - k;
+        if (xx < 0 || xx >= W || yy < 0) continue;
+        land[yy * W + xx] = HT_GRASS[k > n - 2 ? 2 : 0];
+      }
+    }
+
+    const stone = (cx, cy, r) => {
+      for (let j = -r; j <= r * 0.7; j++)
+        for (let k = -r * 1.35; k <= r * 1.35; k++) {
+          const q = Math.pow(k / (r * 1.35), 2) + Math.pow(j / r, 2);
+          if (q > 1) continue;
+          const x = Math.round(cx + k), y = Math.round(cy + j);
+          if (x < 0 || x >= W || y < 0 || y >= H) continue;
+          land[y * W + x] = j < -r * 0.35 ? HT_HILL[3] : j < 0 ? HT_HILL[2] : HT_HILL[0];
+        }
+    };
+    stone(58, hillTop[58] + 3, 5);
+    stone(322, hillTop[322] + 5, 7);
+    {
+      const pxp = 316, ph = 20, ln = 0.14;
+      for (let k = 0; k < ph; k++) {
+        const x = Math.round(pxp + ln * k), y = hillTop[pxp] - k;
+        if (y < 0 || y >= H) continue;
+        land[y * W + x] = HT_HILL[1];
+        land[y * W + x + 1] = HT_HILL[0];
+      }
+    }
+
+    this.land = land;
+
+    this.stems = [];
+    for (let i = 0; i < 46; i++) {
+      const x = Math.round(rng() * W);
+      const edge = Math.min(x, W - x) / (W * 0.5);
+      if (rng() < edge * 0.62) continue;
+      const bs = hillTop[htClamp(x, 0, W - 1)] + Math.round(rng() * 3);
+      this.stems.push({
+        x, base: bs, h: 4 + Math.round(rng() * 6), ph: rng() * 6.283,
+        lean: (rng() - 0.5) * 0.5, seed: rng() < 0.34,
+      });
+    }
+
+    this.htClouds = [];
+    const shelf = (n, y0, y1, len0, len1, hi0, hi1, speed) => {
+      for (let i = 0; i < n; i++) {
+        const len = Math.round(htLerp(len0, len1, rng()));
+        const hgt = Math.round(htLerp(hi0, hi1, rng()));
+        const nb = 3 + Math.floor(rng() * 5);
+        const grid = new Uint8Array(len * (hgt + 4));
+        const GH = hgt + 4;
+        for (let b = 0; b < nb; b++) {
+          const bx = (0.10 + 0.80 * (b / Math.max(1, nb - 1)) + (rng() - 0.5) * 0.12) * len;
+          const t = 1 - Math.abs(b / Math.max(1, nb - 1) - 0.5) * 1.7;
+          const rx = (0.10 + rng() * 0.16) * len * (0.45 + t);
+          const ry = Math.max(1, (0.30 + rng() * 0.42) * hgt * (0.5 + t));
+          const by = 2 + hgt * 0.5 + (rng() - 0.5) * hgt * 0.5;
+          for (let y = Math.floor(by - ry); y <= Math.ceil(by + ry); y++)
+            for (let x = Math.floor(bx - rx); x <= Math.ceil(bx + rx); x++) {
+              if (x < 0 || x >= len || y < 0 || y >= GH) continue;
+              const q = Math.pow((x - bx) / rx, 2) + Math.pow((y - by) / ry, 2);
+              if (q > 1) continue;
+              if (q > 0.66 && htHash2(x + i * 97, y + b * 31) < (q - 0.66) * 1.5) continue;
+              grid[y * len + x] = 1;
+            }
+        }
+        const top = new Int16Array(len).fill(-1), bot = new Int16Array(len).fill(-1);
+        for (let x = 0; x < len; x++)
+          for (let y = 0; y < GH; y++)
+            if (grid[y * len + x]) { if (top[x] < 0) top[x] = y; bot[x] = y; }
+        this.htClouds.push({
+          x: rng() * (W + 300) - 150, y: Math.round(htLerp(y0, y1, rng())),
+          len, top, bot, speed, tilt: (rng() - 0.5) * 0.04,
+        });
+      }
+    };
+    shelf(7, 8, 40, 34, 76, 7, 15, 1.0);
+    shelf(8, 40, 76, 48, 116, 5, 11, 1.5);
+    shelf(9, 76, 114, 70, 165, 3, 7, 2.2);
+
+    this.htFlock = [];
+    for (let i = 0; i < 7; i++)
+      this.htFlock.push({ o: rng(), y: 52 + rng() * 40, sp: 0.5 + rng() * 0.3, ph: rng() * 6.283 });
+  }
+
+  drawHilltop(t, TAU) {
+    this.size();
+    HZ = this.S.hz || 128;
+    const buf = this.buf, land = this.land;
+    const sunX = this.htSunX || Math.round(W * 0.68);
+    const sunY = HZ - 6 + (this.opts.sunHeight ?? 0) + t * 5;
+
+    const px = (x, y, c) => {
+      x = Math.round(x); y = Math.round(y);
+      if (x >= 0 && x < W && y >= 0 && y < H) buf[y * W + x] = c;
+    };
+    const blend = (x, y, c, k) => {
+      x = Math.round(x); y = Math.round(y);
+      if (!(k > 0.01) || !(x >= 0) || x >= W || !(y >= 0) || y >= H) return;
+      buf[y * W + x] = htMixc(buf[y * W + x], c, k > 1 ? 1 : k);
+    };
+
+    const gl = this.opts.glow ?? 1;
+    const NS = this.SKY.length - 1;
+    for (let y = 0; y < HZ + 46; y++) {
+      const bv = this.baseV[y];
+      for (let x = 0; x < W; x++) {
+        const dx = (x - sunX), dy = (y - sunY);
+        const near = Math.exp(-(dx * dx / 5200 + dy * dy / 1500));
+        const wide = Math.exp(-(dx * dx / 46000 + dy * dy / 9000));
+        const v = bv + gl * (near * 0.30 + wide * 0.17);
+        buf[y * W + x] = this.SKY[htClamp(Math.round(v * NS + BAYER[(y & 3) * 4 + (x & 3)]), 0, NS)];
+      }
+    }
+
+    const sr = 9;
+    for (let j = -sr - 1; j <= sr + 1; j++)
+      for (let k = -sr - 1; k <= sr + 1; k++) {
+        const q = (k * k) / (sr * sr) + (j * j) / (sr * 0.86 * sr * 0.86);
+        if (q > 1) continue;
+        px(sunX + k, sunY + j, q > 0.66 ? HT_SUN_EDGE : HT_SUN_CORE);
+      }
+
+    const NC = HT_CLOUD.length - 1;
+    for (const c of this.htClouds) {
+      const cx = Math.round(((c.x + t * c.speed * 400) % (W + 300)) - 150);
+      if (!(cx <= W + 4) || !(cx + c.len >= -4)) continue;
+      for (let d = 0; d < c.len; d++) {
+        const x = cx + d;
+        if (x < 0 || x >= W) continue;
+        const tp = c.top[d], bt = c.bot[d];
+        if (tp < 0) continue;
+        const span = Math.max(1, bt - tp);
+        const near = Math.exp(-Math.pow((x - sunX) / 150, 2));
+        const yOff = c.y + Math.round(c.tilt * d);
+        for (let j = tp; j <= bt; j++) {
+          const y = yOff + j;
+          if (y < 0 || y >= HZ + 30) continue;
+          const under = (j - tp) / span;
+          const lip = j >= bt - 1 ? 1 : Math.pow(under, 1.7);
+          const v = 0.06 + lip * 0.30 + near * (0.10 + lip * 0.62);
+          const idx = htClamp(Math.round(v * NC + BAYER[(y & 3) * 4 + (x & 3)]), 0, NC);
+          buf[y * W + x] = HT_CLOUD[idx];
+        }
+      }
+    }
+
+    for (const b of this.htFlock) {
+      const p = (t * b.sp + b.o) % 1;
+      const x = -20 + p * (W + 40);
+      const y = b.y + Math.sin(p * 9 + b.ph) * 3;
+      const up = Math.floor((t * LOOP / 1000) * 5 + b.ph * 3) % 2 === 0;
+      const c = htMixc(this.SKY[htClamp(Math.round(this.baseV[htClamp(Math.round(y), 0, HZ + 45)] * (this.SKY.length - 1)), 0, this.SKY.length - 1)], HT_RIDGE_DARK, 0.55);
+      px(x, y, c);
+      if (up) { px(x - 1, y - 1, c); px(x + 1, y - 1, c); }
+      else { px(x - 1, y + 1, c); px(x + 1, y + 1, c); }
+    }
+
+    for (let y = 0; y < H; y++) {
+      const r = y * W;
+      for (let x = 0; x < W; x++) { const c = land[r + x]; if (c) buf[r + x] = c; }
+    }
+
+    for (let rank = 0; rank < HT_RANKS.length; rank++) {
+      const crest = this.crests[rank];
+      const R = HT_RANKS[rank];
+      const depth = 7 + rank * 3;
+      const strength = (0.50 - rank * 0.075) * (this.opts.haze ?? 1);
+      if (strength <= 0) continue;
+      for (let x = 0; x < W; x++) {
+        const drift = Math.sin(x * 0.021 + t * TAU * 0.5 + rank) * 0.5
+          + Math.sin(x * 0.058 - t * TAU * 0.34) * 0.3;
+        const near = 0.55 + 0.45 * Math.exp(-Math.pow((x - sunX) / 190, 2));
+        for (let d = 0; d < depth; d++) {
+          const y = crest[x] - d;
+          if (y < 0 || y >= H) continue;
+          const k = strength * Math.pow(1 - d / depth, 1.7) * near * (0.72 + drift * 0.4);
+          if (BAYER[(y & 3) * 4 + (x & 3)] + 0.47 > k * 1.9) continue;
+          blend(x, y, HT_MIST, k * 0.66);
+        }
+      }
+    }
+
+    if (this.opts.showHeron !== false) this.drawHilltopHeron(t, TAU, sunX, sunY);
+
+    for (const s of this.stems) {
+      const sway = Math.sin(t * TAU * 1.6 + s.ph) * 1.9
+        + Math.sin(t * TAU * 3.7 + s.ph * 2) * 0.6;
+      let lastX = s.x, lastY = s.base;
+      for (let k = 0; k < s.h; k++) {
+        const q = k / s.h;
+        lastX = s.x + (s.lean + sway * 0.32) * q * q * s.h * 0.34;
+        lastY = s.base - k;
+        px(lastX, lastY, HT_GRASS[k > s.h - 3 ? 2 : k > s.h * 0.5 ? 1 : 0]);
+      }
+      if (s.seed) { px(lastX, lastY - 1, HT_SEED); px(lastX, lastY - 2, HT_SEED); }
+    }
+
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++) {
+        const ex = Math.max(0, 1 - Math.min(x, W - 1 - x) / 62);
+        const ey = Math.max(0, 1 - Math.min(y, H - 1 - y) / 34);
+        const k = Math.max(ex, ey) * 0.30;
+        if (k < 0.02) continue;
+        const i = y * W + x, c = buf[i];
+        buf[i] = (255 << 24)
+          | (Math.round(((c >> 16) & 255) * (1 - k)) << 16)
+          | (Math.round(((c >> 8) & 255) * (1 - k)) << 8)
+          | Math.round((c & 255) * (1 - k));
+      }
+
+    this.ctx.putImageData(this.img, 0, 0);
+  }
+
+  drawHilltopHeron(t, TAU, sunX, sunY) {
+    const buf = this.buf;
+    const ox = this.opts.heronAt === undefined
+      ? HT_HERON_X : Math.round(W * htClamp(this.opts.heronAt, 0.08, 0.92));
+    const base = this.hillTop[htClamp(ox, 0, W - 1)] + 2;
+    const face = sunX > ox ? 1 : -1;
+    const B = HT_HERON;
+
+    let lean = 0, preen = 0, stretch = 0, tilt = 0, turn = 0, ruffle = 0;
+    const cyc = (t * LOOP / 1000) % 40;
+    const band = (a, b) => (cyc >= a && cyc < b) ? (cyc - a) / (b - a) : -1;
+    let u;
+    if ((u = band(5, 11)) >= 0) {
+      turn = Math.sin(htSs(u) * Math.PI);
+    } else if ((u = band(14, 19)) >= 0) {
+      stretch = Math.sin(htSs(u) * Math.PI);
+    } else if ((u = band(22, 26)) >= 0) {
+      preen = Math.sin(htSs(u) * Math.PI) * (0.78 + 0.22 * Math.sin(u * TAU * 5));
+    } else if ((u = band(29, 32)) >= 0) {
+      tilt = Math.sin(htSs(u) * Math.PI);
+    } else if ((u = band(35, 38)) >= 0) {
+      ruffle = Math.sin(htSs(u) * Math.PI);
+      lean = ruffle * 0.3;
+    }
+
+    const TARSUS = 15, THIGH = 8, NECK = 24;
+    const breathe = Math.sin(t * TAU * 8) * 0.4;
+    const bodyCX = ox + 11 * face + lean * 2 * face;
+    const bodyCY = base - (TARSUS + THIGH + 6) + lean * 2 + breathe - stretch * 1.6;
+    const hipY = bodyCY + 5;
+
+    const pts = [];
+    const put = (x, y, c) => { pts.push(Math.round(x), Math.round(y), c); };
+
+    for (let n = 0; n < 2; n++) {
+      const fx = ox + (n ? 13 : 9) * face;
+      const lx = bodyCX - 3 * face + n * 6 * face;
+      const ankleX = htLerp(lx, fx, 0.42) - 2.2 * face;
+      const ankleY = hipY + THIGH;
+      for (let k = 0; k <= THIGH; k++) {
+        const q = k / THIGH;
+        put(htLerp(lx, ankleX, q), htLerp(hipY, ankleY, q), B.body);
+        if (k < 4) put(htLerp(lx, ankleX, q) + face, htLerp(hipY, ankleY, q), B.body);
+      }
+      for (let k = 0; k <= TARSUS; k++) {
+        const q = k / TARSUS;
+        put(htLerp(ankleX, fx, q), htLerp(ankleY, base, q), B.body);
+      }
+      for (let k = 0; k < 5; k++) put(fx + (k - 2) * face, base + 1, B.body);
+      put(fx - 2 * face, base, B.body);
+    }
+
+    for (let my = 0; my < BODY_MASK.length; my++) {
+      const row = BODY_MASK[my];
+      for (let mx = 0; mx < row.length; mx++) {
+        const ch = row[mx];
+        if (ch === ".") continue;
+        put(bodyCX + (mx - BODY_AX) * face, bodyCY + my - BODY_AY,
+          ch === "W" ? B.wing : B.body);
+      }
+    }
+
+    for (let k = 0; k < 5; k++) {
+      const q = k / 4;
+      const tx = bodyCX - (8 + k) * face;
+      const ty = bodyCY + 2 - k * 0.34;
+      const th = Math.max(2, Math.round(3.4 * (1 - q * 0.42)));
+      for (let j = 0; j < th; j++) put(tx, ty + j, k > 2 ? B.body : B.wing);
+    }
+
+    if (stretch > 0.06) {
+      const sp = stretch;
+      for (let k = 0; k < 16; k++) {
+        const q = k / 15;
+        const wx = bodyCX - face * (2 + q * 15 * sp);
+        const wy = bodyCY + 2 + Math.sin(q * Math.PI) * 5 * sp - q * 3 * sp;
+        const th = Math.round(3 * (1 - q * 0.6));
+        for (let j = 0; j < th; j++) put(wx, wy + j, B.wing);
+        if (q > 0.55) put(wx - face, wy + th, B.body);
+      }
+    }
+
+    if (ruffle > 0.3) {
+      for (let mx = 0; mx < BODY_MASK[0].length; mx++) {
+        let top = -1, bot = -1;
+        for (let my = 0; my < BODY_MASK.length; my++)
+          if (BODY_MASK[my][mx] !== ".") { if (top < 0) top = my; bot = my; }
+        if (top < 0) continue;
+        if ((mx + 1) % 3 === 0) continue;
+        const bx = bodyCX + (mx - BODY_AX) * face;
+        put(bx, bodyCY + bot - BODY_AY + 1, B.wing);
+        if (mx < BODY_AX) put(bx, bodyCY + top - BODY_AY - 1, B.wing);
+      }
+    }
+
+    const headTop = bodyCY - NECK;
+    let hx = ox + (24 - turn * 9) * face;
+    let hy = headTop - stretch * 2.6 + turn * 3;
+    hx = htLerp(hx, bodyCX + 5 * face, preen); hy = htLerp(hy, bodyCY - 1, preen);
+    let ang = htLerp(-0.10, -1.02, tilt);
+    ang = htLerp(ang, 1.45, preen);
+    ang += turn * 0.5;
+    if (face < 0) ang = Math.PI - ang;
+
+    const p0x = bodyCX + 4 * face, p0y = bodyCY - 5;
+    const c1x = bodyCX - (2 + turn * 2) * face, c1y = bodyCY - NECK * 0.42;
+    const c2x = ox + (20 - turn * 8) * face, c2y = headTop + NECK * 0.20 + turn * 2;
+    for (let k = 0; k <= 46; k++) {
+      const q = k / 46, m = 1 - q;
+      const nx = m * m * m * p0x + 3 * m * m * q * c1x + 3 * m * q * q * c2x + q * q * q * hx;
+      const ny = m * m * m * p0y + 3 * m * m * q * c1y + 3 * m * q * q * c2y + q * q * q * hy;
+      const th = q < 0.26 ? 3 : q < 0.62 ? 2 : 1;
+      for (let i = 0; i < th; i++) put(nx + (i - (th - 1) / 2) * face, ny, B.body);
+      put(nx, ny + 1, B.body);
+    }
+
+    const ux = Math.cos(ang), uy = Math.sin(ang);
+    const vx = -uy * face, vy = ux * face;
+    for (let a = -4; a <= 2; a++)
+      for (let b = -2; b <= 2; b++) {
+        const aa = a / (a < 0 ? 3.8 : 2.4), bb = b / 1.9;
+        if (aa * aa + bb * bb > 1) continue;
+        put(hx + ux * a + vx * b, hy + uy * a + vy * b, B.body);
+      }
+    put(hx - ux * 0.8 - vx * 1.9, hy - uy * 0.8 - vy * 1.9, B.body);
+    put(hx - ux * 2.1 - vx * 1.7, hy - uy * 2.1 - vy * 1.7, B.body);
+    for (let k = 0; k < 4; k++)
+      put(hx - ux * (2.4 + k * 1.05) - vx * (1.3 - k * 0.42),
+          hy - uy * (2.4 + k * 1.05) - vy * (1.3 - k * 0.42), B.body);
+
+    const bl = 10;
+    for (let k = 0; k <= bl; k++) {
+      const q = k / bl;
+      put(hx + ux * (2.2 + k), hy + uy * (2.2 + k), B.body);
+      if (q < 0.58) put(hx + ux * (2.2 + k) + vx, hy + uy * (2.2 + k) + vy, B.bill);
+    }
+
+    const solid = new Set();
+    for (let i = 0; i < pts.length; i += 3) {
+      const x = pts[i], y = pts[i + 1];
+      if (x < 0 || x >= W || y < 0 || y >= H) continue;
+      buf[y * W + x] = pts[i + 2];
+      solid.add(y * W + x);
+    }
+
+    for (const i of solid) {
+      const x = i % W, y = (i - x) / W;
+      const nx = x + face, ny = y;
+      if (nx < 0 || nx >= W) continue;
+      const openSide = !solid.has(ny * W + nx);
+      const openUp = y > 0 && !solid.has((y - 1) * W + x);
+      if (!openSide && !openUp) continue;
+      let nb = 0;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++)
+          if ((dx || dy) && solid.has((y + dy) * W + (x + dx))) nb++;
+      if (nb < 4) continue;
+      const dy = (y - sunY) / 60;
+      const facingLight = Math.exp(-dy * dy * 0.5);
+      const c = openSide && facingLight > 0.45 ? B.rim : B.rimLow;
+      const k = openSide ? 0.92 : 0.34;
+      if (!openSide && BAYER[(y & 3) * 4 + (x & 3)] + 0.47 > 0.4) continue;
+      buf[i] = htMixc(buf[i], c, k);
+    }
+
+    const eh = Math.round(hy), ex2 = Math.round(hx + ux * 0.6 - vx * 1.2);
+    if (eh < this.hillTop[htClamp(ex2, 0, W - 1)] - 3 && ((t * LOOP) % 5700) > 130)
+      buf[htClamp(eh, 0, H - 1) * W + htClamp(ex2, 0, W - 1)] = B.eye;
+  }
+
 
 }
