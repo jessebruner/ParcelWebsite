@@ -27,7 +27,7 @@
  * tests/product-scenes.test.mjs, because a table is exactly the kind of thing
  * that gets edited one row at a time.
  */
-export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn";
+export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn" | "hilltop";
 
 export interface FeatureArt {
   /** Behind the h1. */

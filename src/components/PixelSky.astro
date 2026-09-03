@@ -35,7 +35,7 @@
  * using them; they are good art for a light surface and this component only
  * ever draws behind white.
  */
-export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn";
+export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn" | "hilltop";
 
 interface Props {
   mode?: "texture" | "band" | "scene";
@@ -110,8 +110,8 @@ const h = mode === "band" ? 54 : 216;
   const STILL = 0.24;
   const LOOP_MS = 240000;
 
-  /** The six scenes this component draws. Anything else falls back to dusk. */
-  const SCENES = new Set(["dusk", "dawn", "winter", "street", "storm", "autumn"]);
+  /** The scenes this component draws. Anything else falls back to dusk. */
+  const SCENES = new Set(["dusk", "dawn", "winter", "street", "storm", "autumn", "hilltop"]);
 
   /**
    * Wraps one engine instance in the start/stop pair the observer above
