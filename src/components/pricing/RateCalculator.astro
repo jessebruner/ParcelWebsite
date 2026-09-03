@@ -55,6 +55,7 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
 <div class="pc" data-calc data-cfg={cfg}>
   <div class="pc-grid">
     <div class="pc-main">
+      <span class="pc-total-label">Pricing Calculator</span>
       <p class="pc-out">
         <span class="pc-figure" data-total aria-hidden="true">{dollars(p.total)}</span>
       </p>
@@ -64,9 +65,6 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
       <span class="pc-sr" data-total-sr aria-live="polite" aria-atomic="true">
         {dollars(p.total)} per month, {money(p.perLot)} per lot
       </span>
-      <p class="pc-floor" data-floor hidden={!p.floored}>
-        The rate card adds to <span data-raw>{money(p.raw)}</span>. The {money(minimum, 0)} monthly minimum applies.
-      </p>
 
       <hr class="pc-rule" />
 
@@ -280,8 +278,6 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
       q<HTMLElement>("[data-count]").textContent = `${n(result.lots)} ${result.lots === 1 ? "lot" : "lots"}`;
       q<HTMLElement>("[data-foot-lots]").textContent = n(result.lots);
       q<HTMLElement>("[data-foot-raw]").textContent = money(result.raw);
-      q<HTMLElement>("[data-floor]").hidden = !result.floored;
-      q<HTMLElement>("[data-raw]").textContent = money(result.raw);
       q<HTMLElement>("[data-floor-row]").hidden = !result.floored;
 
       if (cfg.compare) {
