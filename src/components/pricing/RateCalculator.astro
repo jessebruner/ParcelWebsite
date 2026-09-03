@@ -35,7 +35,7 @@ const toPos = (n: number) =>
 
 const { brackets, minimum, lots = 4, includes = [], compare } = Astro.props;
 const p = price(brackets, lots, minimum);
-const cfg = JSON.stringify({ brackets, minimum, compare: compare ?? null });
+const cfg = JSON.stringify({ brackets, minimum, lots, compare: compare ?? null });
 const dollars = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "lots"}`;
 const startPos = toPos(lots);
@@ -55,7 +55,6 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
 <div class="pc" data-calc data-cfg={cfg}>
   <div class="pc-grid">
     <div class="pc-main">
-      <span class="pc-total-label">Monthly software price</span>
       <p class="pc-out">
         <span class="pc-figure" data-total aria-hidden="true">{dollars(p.total)}</span>
       </p>
@@ -81,7 +80,7 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
             min="1"
             max="5000"
             step="1"
-            value={lots}
+            placeholder={String(lots)}
             inputmode="numeric"
             autocomplete="off"
             aria-describedby="lots-hint"
@@ -104,7 +103,6 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
           min="0"
           max={STEPS}
           step="1"
-          value={startPos}
           aria-label="Association lot count"
           aria-valuemin={S_MIN}
           aria-valuemax={S_MAX}
@@ -130,13 +128,11 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
           </li>
         ))}
       </ul>
-      <p class="pc-includes-note">Monthly billing. No setup fee. No feature tiers.</p>
     </aside>
   </div>
 
   {compare && (
     <div class="pc-compare" data-compare>
-      <span class="pc-compare-label">What the same month costs elsewhere</span>
       <ul class="pc-compare-rows">
         {bars.map((b) => (
           <li class:list={["pc-bar", { "is-parcel": b.key === "parcel" }]} data-bar={b.key}>
@@ -150,10 +146,6 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
           </li>
         ))}
       </ul>
-      <p class="pc-compare-note">
-        The two figures above Common Parcel are typical published rates, not quotes. Ask for your
-        own and compare those.
-      </p>
     </div>
   )}
 
@@ -217,7 +209,7 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
 <script>
   import { price, money, clampLots, alternatives, type Bracket, type Alternatives } from "./brackets";
 
-  interface Cfg { brackets: Bracket[]; minimum: number; compare: Alternatives | null; }
+  interface Cfg { brackets: Bracket[]; minimum: number; lots?: number; compare: Alternatives | null; }
 
   // Mirrors the homepage widget exactly: 4 × 250^(t/200), snapped to 1s
   // under 20 lots, 5s under 100, 10s above, capped at 1,000 on the track.
@@ -244,11 +236,15 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
     const n = (value: number) => value.toLocaleString("en-US");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
+    const initialLots = clampLots(Number(input.value) || cfg.lots || 4);
+    input.value = String(initialLots);
+    range.value = String(toPos(initialLots));
+
     // The figure eases to its new value; the screen-reader copy of it does
     // not, so the live region announces once per change instead of per frame.
     const figure = q<HTMLElement>("[data-total]");
     let anim = 0;
-    let shown = price(cfg.brackets, clampLots(Number(input.value)), cfg.minimum).total;
+    let shown = price(cfg.brackets, initialLots, cfg.minimum).total;
     const showTotal = (to: number, slow = false) => {
       cancelAnimationFrame(anim);
       if (reduced.matches || Math.round(to) === Math.round(shown)) {
@@ -319,6 +315,7 @@ const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.mana
       render(lotCount, input);
     });
     range.addEventListener("input", () => render(toLots(Number(range.value)), range));
+    range.addEventListener("change", () => render(toLots(Number(range.value))));
 
     // Arrow keys step the lot count on the drag's own snap grid; stepping
     // the raw track position leaves presses that move nothing.

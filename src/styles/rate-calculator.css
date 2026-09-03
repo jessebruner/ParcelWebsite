@@ -17,7 +17,7 @@
    renders the same on an Astro page and on the homepage. */
 .pc, .pc *, .pc *::before, .pc *::after { box-sizing: border-box; }
 .pc { font-family: var(--font-sans); font-size: var(--t-body); line-height: 1.5; color: var(--paper); text-align: left; }
-.pc p, .pc ul, .pc table { margin: 0; }
+.pc :where(p, ul, table) { margin: 0; }
 
 
 .pc { border: 1.5px solid var(--on-dark-tile); background: var(--night-hover); }
@@ -26,16 +26,15 @@
   .pc-grid { grid-template-columns: minmax(22em, 1.2fr) minmax(16em, 0.8fr); align-items: stretch; }
 }
 
-.pc-total-label, .pc-meta, .pc-ends, .pc-includes-label, .pc-head-label, .pc-head-note {
+.pc-meta, .pc-ends, .pc-includes-label, .pc-head-label, .pc-head-note {
   font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.14em; text-transform: uppercase;
 }
-.pc-total-label { color: var(--on-dark-label); }
-.pc-out { margin: var(--s-3) 0 0; }
+.pc-out { margin: 0; }
 .pc-figure {
   display: inline-block; min-width: 4ch; color: var(--amber); font-family: var(--font-mono);
-  font-size: clamp(64px, 9vw, 124px); font-variant-numeric: tabular-nums; letter-spacing: -0.06em; line-height: 0.86;
+  font-size: clamp(64px, 9vw, 124px); font-variant-numeric: tabular-nums; letter-spacing: -0.06em; line-height: 1;
 }
-.pc-meta { margin: var(--s-4) 0 0; color: var(--on-dark-label); }
+.pc-meta { margin: var(--s-3) 0 0; color: var(--on-dark-label); }
 .pc-meta [data-perlot] { color: var(--paper); font-variant-numeric: tabular-nums; }
 .pc-floor { max-width: 40ch; margin: var(--s-3) 0 0; color: var(--mist); font-size: var(--t-micro); line-height: 1.5; }
 .pc-floor[hidden] { display: none; }
@@ -71,6 +70,7 @@
    terracotta thumb with three grip lines. */
 .pc-slider { position: relative; height: 44px; margin-top: var(--s-4); }
 .pc-track {
+  pointer-events: none;
   position: absolute; left: 0; right: 0; top: 15px; height: 14px;
   background: rgba(251, 248, 244, 0.08); border: 1px solid var(--on-dark-rule); box-sizing: border-box;
 }
@@ -78,6 +78,7 @@
   position: absolute; left: 0; top: 0; bottom: 0; max-width: 100%;
   background: var(--bisque); border-right: 1.5px solid var(--amber);
 }
+.pc-ticks { pointer-events: none; }
 .pc-ticks span {
   position: absolute; top: 31px; width: 1px; height: 6px;
   background: var(--on-dark-rule); transform: translateX(-0.5px);
@@ -139,11 +140,6 @@
   color: var(--mist); font-size: var(--t-micro); line-height: 1.45;
 }
 .pc-check { color: var(--amber); font-family: var(--font-mono); font-size: var(--t-mono-data); }
-.pc-includes-note {
-  margin: var(--s-4) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--on-dark-rule);
-  color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label);
-  letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.8;
-}
 
 /* Reveal: the card eases up once, list rows follow in a quiet stagger.
    The hidden start state only exists once the script adds .js-reveal, so
@@ -203,12 +199,7 @@
   padding: clamp(20px, 2.6vw, 32px) clamp(24px, 4vw, 56px) clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--on-dark-rule);
 }
-.pc-compare-label {
-  display: block; color: var(--on-dark-label);
-  font-family: var(--font-mono); font-size: var(--t-mono-label);
-  letter-spacing: 0.14em; text-transform: uppercase;
-}
-.pc-compare-rows { list-style: none; margin: var(--s-4) 0 0; padding: 0; }
+.pc-compare-rows { list-style: none; margin: 0; padding: 0; }
 .pc-bar + .pc-bar { margin-top: clamp(14px, 1.8vw, 22px); }
 .pc-bar-head {
   display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3);
@@ -237,10 +228,6 @@
 .pc-bar.is-parcel .pc-bar-fill { background-color: var(--sand); }
 @media (prefers-reduced-motion: reduce) {
   .pc-bar-fill { transition: none; }
-}
-.pc-compare-note {
-  margin: var(--s-4) 0 0; max-width: 52ch;
-  color: var(--mist); font-size: var(--t-micro); line-height: 1.5;
 }
 
 /* Three classes the markup carried with no rule behind them. Each gets the
