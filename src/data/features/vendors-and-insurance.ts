@@ -3,33 +3,32 @@ import type { PageSpec } from "../content";
 export const vendorsAndInsurance: PageSpec = {
   "slug": "vendors-and-insurance",
   "title": "HOA vendor and insurance records",
-  "description": "Keep vendor agreements, insurance records, and renewal dates where the whole board can find them.",
-  "h1": "Keep renewals off the last-minute list.",
-  "lede": "Keep vendor agreements, insurance records, and renewal dates where the whole board can find them.",
-  "closer": "Bring your board’s work together.",
+  "description": "See the agreements, insurance policies, and renewal dates your board needs. Review the terms before a contract renews or a bill is approved.",
+  "h1": "Keep track of contracts and insurance renewals.",
+  "lede": "See the agreements, insurance policies, and renewal dates your board needs. Review the terms before a contract renews or a bill is approved.",
   "bands": [
     {
-      "title": "Know what renews and when",
+      "title": "See which contracts are coming up for renewal",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep contract terms and key dates together. Give the board time to review the agreement, ask questions, or request new quotes."
+          "p": "Store contract terms and renewal dates together. Your board can review the agreement, ask questions, and request new quotes before deciding whether to renew."
         }
       ]
     },
     {
-      "title": "Review the bill against the agreement",
+      "title": "Check the bill against the contract",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Keep vendor invoices close to the contract and approval record. Check the amount and the work before authorizing payment."
+          "p": "Keep vendor invoices with the contract and approval record. Review what was agreed, what work was completed, and what is being charged before authorizing payment."
         }
       ]
     },
     {
-      "title": "Keep insurance details in reach",
+      "title": "Find policy details when you need them",
       "layout": "rail",
       "field": false,
       "body": [

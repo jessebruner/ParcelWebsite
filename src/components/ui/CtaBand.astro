@@ -1,22 +1,20 @@
 ---
-import PixelSky from "../PixelSky.astro";
+import PixelSky, { type SceneKey } from "../PixelSky.astro";
 import { APP_URL } from "../../data/site";
-interface Props { headline?: string; scene?: "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn" | "hilltop"; seed?: number; cta?: string; }
-const { headline = "A clearer day for your board.", scene = "dusk", seed = 197, cta = "Get started" } = Astro.props;
+interface Props { headline?: string; scene?: SceneKey; seed?: number; cta?: string; }
+const { headline = "More time for your neighborhood.", scene = "dawn", seed = 197, cta = "Get started" } = Astro.props;
 ---
 <section class="closing on-ink">
-  <div class="page closing-grid">
-    <div class="closing-copy"><p class="eyebrow">Common Parcel</p><h2>{headline}</h2><p>Bring your association’s work together.</p><a class="btn btn--on-ink" href={APP_URL}>{cta}<span aria-hidden="true">↗</span></a></div>
-    <div class="closing-art" aria-hidden="true"><PixelSky mode="scene" scene={scene} seed={seed} /></div>
-  </div>
+  <div class="closing-art"><PixelSky mode="scene" scene={scene} seed={seed} animated /></div>
+  <div class="closing-veil" aria-hidden="true"></div>
+  <div class="page closing-copy"><h2>{headline}</h2><a class="btn btn--on-ink" href={APP_URL}>{cta}<span aria-hidden="true">↗</span></a></div>
 </section>
 <style>
-  .closing { background: var(--night); color: var(--paper); padding-block: 0; }
-  .closing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
-  .closing-copy { padding-block: 72px; position: relative; z-index: 1; }
-  .eyebrow { color: var(--sand); }
-  h2 { font: 450 clamp(32px, 3.5vw, 48px)/1.16 var(--font-serif); letter-spacing: -.04em; max-width: 18ch; margin: 18px 0; text-wrap: balance; }
-  .closing-copy > p:not(.eyebrow) { color: var(--mist); margin-bottom: 26px; }
-  .closing-art { min-height: 300px; }
-  @media(max-width: 700px) { .closing-grid { grid-template-columns: 1fr; gap: 0; } .closing-copy { padding-block: 48px 36px; } .closing-art { height: 180px; min-height: 0; margin-inline: calc(-1 * var(--pad-x)); } }
+  .closing { position: relative; isolation: isolate; overflow: hidden; background: var(--night); color: var(--paper); padding: clamp(80px, 9vw, 140px) 0; border-top: 1px solid var(--terracotta); }
+  .closing-art { position: absolute; inset: 0; z-index: -2; }
+  .closing-veil { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, #171326cc 0%, #171326a8 45%, #17132633 100%); }
+  .closing-copy { pointer-events: none; }
+  h2 { font: 650 clamp(46px, 7.2vw, 100px)/1.02 var(--font-sans); letter-spacing: -.055em; max-width: 13ch; margin: 0; text-wrap: balance; }
+  .btn { margin-top: 36px; pointer-events: auto; }
+  @media(max-width: 700px) { .closing { padding-block: 72px 100px; }.closing-veil { background: linear-gradient(90deg, #171326cc, #17132680); } h2 { max-width: 12ch; } }
 </style>

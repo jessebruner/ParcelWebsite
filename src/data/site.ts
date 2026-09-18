@@ -3,8 +3,8 @@ export const APP_URL = "https://app.commonparcel.com";
 export const CONTACT_EMAIL = "jesse@commonparcel.com";
 export const HOME_FAQS: [string, string][] = [
   ["What is Common Parcel?", "Common Parcel is HOA software for volunteer boards that manage their own association. It brings dues, financial records, governing documents, meetings, and resident access into one place."],
-  ["Does Common Parcel replace our board?", "No. Your board makes the decisions. Common Parcel helps organize the information and the work around them. Your association still needs people to approve spending, handle disputes, and look after the property."],
-  ["How much does it cost?", "Pricing depends on your lot count, with a $10 monthly minimum. A 50-lot association pays $69 per month for the software; a 100-lot association pays $103. Postal mail is separate, and payment processing may carry separate fees."],
+  ["What can residents do?", "Residents can check their balance and payment history, read shared association documents, and submit architectural requests. They can pay online when the association connects its payment account. The board reviews requests and decides what information to share."],
+  ["How much does it cost?", "A four-unit association pays $10 per month for all software features. Pricing increases with the number of lots or units: 50 units cost $69 per month, and 100 units cost $103. The monthly minimum is $10. Postal mail is separate, and payment processing may carry separate fees."],
   ["What do we need to get started?", "Start with your governing documents and a list of lots and owners. The board reviews the information used to set up the association. You can add financial records and invite residents as you get organized."],
 ];
 export function faqSchema(items: [string, string][]) {

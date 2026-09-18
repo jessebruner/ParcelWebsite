@@ -1,21 +1,21 @@
 ---
 import { price, money, DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "./brackets";
 import { APP_URL } from "../../data/site";
-const initial = price(DEFAULT_BRACKETS, 50, DEFAULT_MINIMUM);
+const initial = price(DEFAULT_BRACKETS, 4, DEFAULT_MINIMUM);
 ---
 <div class="calculator" data-calculator>
   <div class="calculator-input">
-    <p class="eyebrow">Your association</p><h2 class="t-headline">How many lots?</h2><p>Count each lot or condominium unit once.</p>
-    <label for="lot-count">Number of lots</label><input id="lot-count" disabled type="number" inputmode="numeric" min="1" max="5000" step="1" value="50" aria-describedby="lot-help lot-error" />
+    <h2 class="t-headline">How many lots or units?</h2><p>Count each lot or condominium unit once.</p>
+    <label for="lot-count">Number of lots or units</label><input id="lot-count" disabled type="number" inputmode="numeric" min="1" max="5000" step="1" value="4" aria-describedby="lot-help lot-error" />
     <p id="lot-help" class="help">Enter a whole number from 1 to 5,000.</p><p id="lot-error" class="error" role="alert" hidden></p>
-    <div class="presets" aria-label="Example association sizes"><button type="button" data-lots="25">25 lots</button><button type="button" data-lots="50">50 lots</button><button type="button" data-lots="100">100 lots</button><button type="button" data-lots="250">250 lots</button></div>
-    <noscript><p class="help">The example below is for 50 lots. Use the rate table below to calculate another size, or contact us for a quote.</p></noscript>
+    <div class="presets" aria-label="Example association sizes"><button type="button" data-lots="4">4 units</button><button type="button" data-lots="25">25 units</button><button type="button" data-lots="50">50 units</button><button type="button" data-lots="100">100 units</button></div>
+    <noscript><p class="help">This example is for four units. <a href="/pricing">See the rate table</a> to calculate another size, or <a href="/contact">ask us for your price</a>.</p></noscript>
   </div>
   <div class="calculator-result">
-    <p class="eyebrow">Monthly software subscription</p>
-    <output for="lot-count" id="price-total" aria-live="polite" aria-atomic="true"><span class="total">{money(initial.total, 0)}</span><span class="per-month"> / month</span><span class="sr-only"> for 50 lots</span></output>
-    <p class="result-note">All software features. One association price.</p>
-    <dl id="price-breakdown">{initial.bands.filter(band => band.lots > 0).map(band => <div><dt>{band.lots} lots × {money(band.rate)}</dt><dd>{money(band.amount)}</dd></div>)}</dl>
+    <p class="price-caption">Your monthly subscription</p>
+    <output for="lot-count" id="price-total" aria-live="polite" aria-atomic="true"><span class="total">{money(initial.total, 0)}</span><span class="per-month"> / month</span><span class="sr-only"> for 4 units</span></output>
+    <p class="result-note">All software features included.</p>
+    <dl id="price-breakdown">{initial.bands.filter(band => band.lots > 0).map(band => <div><dt>{band.lots} units × {money(band.rate)}</dt><dd>{money(band.amount)}</dd></div>)}</dl>
     <p id="minimum-note" class="help" hidden>$10 monthly minimum applies.</p>
     <a class="btn btn--primary" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a>
     <p class="fine-print">Postal mail and any payment processing fees are separate.</p>
@@ -32,25 +32,28 @@ const initial = price(DEFAULT_BRACKETS, 50, DEFAULT_MINIMUM);
     const lots = input.valueAsNumber;
     const valid = Number.isInteger(lots) && lots >= 1 && lots <= 5000;
     input.setAttribute("aria-invalid", String(!valid));
+    document.querySelectorAll<HTMLButtonElement>("[data-lots]").forEach(button => button.setAttribute("aria-pressed", String(valid && Number(button.dataset.lots) === lots)));
     error.hidden = valid;
     error.textContent = valid ? "" : "Enter a whole number from 1 to 5,000 to see your price.";
     if (!valid) { output.textContent = "—"; breakdown.replaceChildren(); document.querySelector<HTMLElement>("#minimum-note")!.hidden = true; return; }
     const result = price(DEFAULT_BRACKETS, lots, DEFAULT_MINIMUM);
     const total = document.createElement("span"); total.className = "total"; total.textContent = money(result.total, Number.isInteger(result.total) ? 0 : 2);
     const suffix = document.createElement("span"); suffix.className = "per-month"; suffix.textContent = " / month";
-    const context = document.createElement("span"); context.className = "sr-only"; context.textContent = ` for ${lots} ${lots === 1 ? "lot" : "lots"}`;
+    const context = document.createElement("span"); context.className = "sr-only"; context.textContent = ` for ${lots} ${lots === 1 ? "unit" : "units"}`;
     output.replaceChildren(total, suffix, context);
     breakdown.replaceChildren(...result.bands.filter(band => band.lots > 0).map(band => {
       const row = document.createElement("div"); const term = document.createElement("dt"); const value = document.createElement("dd");
-      term.textContent = `${band.lots} ${band.lots === 1 ? "lot" : "lots"} × ${money(band.rate)}`; value.textContent = money(band.amount); row.append(term, value); return row;
+      term.textContent = `${band.lots} ${band.lots === 1 ? "unit" : "units"} × ${money(band.rate)}`; value.textContent = money(band.amount); row.append(term, value); return row;
     }));
     document.querySelector<HTMLElement>("#minimum-note")!.hidden = !result.floored;
   }
-  if (input) { input.disabled = false; document.querySelector("[data-calculator]")?.setAttribute("data-enhanced", "true"); }
+  if (input) { input.disabled = false; update(); document.querySelector("[data-calculator]")?.setAttribute("data-enhanced", "true"); }
   input?.addEventListener("input", update);
   document.querySelectorAll<HTMLButtonElement>("[data-lots]").forEach(button => button.addEventListener("click", () => { if (input) { input.value = button.dataset.lots!; update(); } }));
 </script>
 <style>
-  .calculator { display: grid; grid-template-columns: 1fr 1fr; border: var(--stroke-edge); background: var(--card); }.calculator-input, .calculator-result { padding: clamp(24px, 4vw, 48px); }.calculator-result { background: var(--field); border-left: var(--stroke-edge); }.calculator-input > p:not(.eyebrow) { font-size: 15px; color: var(--ink-3); } label { display: block; font-size: 15px; font-weight: 550; margin-top: 28px; } input { display: block; width: 100%; max-width: 240px; margin-top: 8px; padding: 12px 16px; min-height: 56px; background: var(--paper); border: 1px solid var(--ink-3); font-size: 25px; color: var(--ink); } input[aria-invalid="true"] { border-color: var(--terracotta); }.help { font-size: 12px !important; color: var(--ink-3); }.error { font-size: 14px !important; color: var(--terracotta) !important; }.calculator[data-enhanced] .presets { display: flex; }.presets { display: none; flex-wrap: wrap; gap: 8px; margin-top: 22px; }.presets button { background: transparent; padding: 8px 13px; border: var(--stroke-edge); min-height: 44px; font-size: 14px; color: var(--ink); }.presets button:hover { background: var(--field); border-color: var(--terracotta); } output { display: block; line-height: 1.1; min-height: 74px; color: var(--ink); } output :global(.total) { font-size: clamp(50px, 5vw, 68px); font-weight: 500; letter-spacing: -.05em; } output :global(.per-month) { font-size: 16px; color: var(--ink-3); }.result-note { font-size: 14px; margin-block: 16px 22px; } dl { margin: 0 0 22px; } dl :global(div) { display: flex; justify-content: space-between; gap: 14px; padding-block: 10px; border-top: var(--stroke-edge); font: 400 13px/1.6 var(--font-mono); } dl :global(dd) { margin: 0; }.fine-print { font-size: 12px; color: var(--ink-3); max-width: 32em; margin-top: 18px; }
+  .price-caption { font-size: 16px; color: var(--ink-2); margin: 0 0 20px; }
+  .calculator { display: grid; grid-template-columns: 1fr 1fr; border: var(--stroke-edge); background: var(--card); }.calculator-input, .calculator-result { padding: clamp(24px, 4vw, 48px); }.calculator-result { background: var(--field); border-left: var(--stroke-edge); }.calculator-input > p:not(.eyebrow) { font-size: 15px; color: var(--ink-3); } label { display: block; font-size: 15px; font-weight: 550; margin-top: 28px; } input { display: block; width: 100%; max-width: 240px; margin-top: 8px; padding: 12px 16px; min-height: 56px; background: var(--paper); border: 1px solid var(--ink-3); font-size: 25px; color: var(--ink); } input[aria-invalid="true"] { border-color: var(--terracotta); }.help { font-size: 14px !important; color: var(--ink-3); }.error { font-size: 14px !important; color: var(--terracotta) !important; }.calculator[data-enhanced] .presets { display: flex; }.presets { display: none; flex-wrap: wrap; gap: 8px; margin-top: 22px; }.presets button { background: transparent; padding: 8px 13px; border: var(--stroke-edge); min-height: 44px; font-size: 14px; color: var(--ink); }.presets button[aria-pressed="true"] { border-color: var(--terracotta); background: var(--field); box-shadow: inset 0 -2px var(--terracotta); } .presets button:hover { background: var(--field); border-color: var(--terracotta); } output { display: block; line-height: 1.1; min-height: 74px; color: var(--ink); } output :global(.total) { font-size: clamp(50px, 5vw, 68px); font-weight: 500; letter-spacing: -.05em; } output :global(.per-month) { font-size: 16px; color: var(--ink-3); }.result-note { font-size: 14px; margin-block: 16px 22px; } dl { margin: 0 0 22px; } dl :global(div) { display: flex; justify-content: space-between; gap: 14px; padding-block: 10px; border-top: var(--stroke-edge); font: 400 13px/1.6 var(--font-mono); } dl :global(dd) { margin: 0; }.fine-print { font-size: 14px; color: var(--ink-3); max-width: 32em; margin-top: 18px; }
   @media(max-width: 700px) { .calculator { grid-template-columns: 1fr; }.calculator-result { border-left: 0; border-top: var(--stroke-edge); } }
+  @media(max-width: 500px) { .calculator[data-enhanced] .presets { display: grid; grid-template-columns: 1fr 1fr; } }
 </style>

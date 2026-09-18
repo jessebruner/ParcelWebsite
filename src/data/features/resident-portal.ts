@@ -3,38 +3,37 @@ import type { PageSpec } from "../content";
 export const residentPortal: PageSpec = {
   "slug": "resident-portal",
   "title": "HOA resident portal",
-  "description": "A balance to check. A document to find. A request to submit. Put everyday association information within reach.",
-  "h1": "Give residents a place to start.",
-  "lede": "A balance to check. A document to find. A request to submit. Put everyday association information within reach.",
-  "closer": "Bring your board’s work together.",
+  "description": "Give owners their own account to check dues, read shared documents, and send requests. Put everyday HOA information within reach without another email to the board.",
+  "h1": "Give residents their own HOA account.",
+  "lede": "Give owners their own account to check dues, read shared documents, and send requests. Put everyday HOA information within reach without another email to the board.",
   "bands": [
     {
-      "title": "Make the account easy to find",
+      "title": "Let owners check their own account",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Owners can check their own account and payment history. Online payments are available when the association connects its payment service."
+          "p": "Owners can see their balance and payment history without asking the treasurer. Online payments are available when the association connects its payment service."
         }
       ]
     },
     {
-      "title": "Keep common documents close",
+      "title": "Share documents and meeting information",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Give residents access to the association documents and meeting information shared with them. Help people find the source without asking the board to resend it."
+          "p": "Give residents access to the documents and meeting information your association shares. They can find a copy themselves instead of asking the board to resend it."
         }
       ]
     },
     {
-      "title": "Keep access tied to the right person",
+      "title": "Approve access for the right owners",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Owners request access to their association. Board approval and assigned roles determine what they can open, with personal account information kept separate from board work."
+          "p": "Owners request access to their association, and the board reviews the request. Approved roles determine what each person can open. Residents see their own account information separately from the board’s work."
         }
       ]
     }

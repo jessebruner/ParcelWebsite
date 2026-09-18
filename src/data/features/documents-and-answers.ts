@@ -3,38 +3,37 @@ import type { PageSpec } from "../content";
 export const documentsAndAnswers: PageSpec = {
   "slug": "documents-and-answers",
   "title": "HOA document management and answers",
-  "description": "Keep your declaration, bylaws, and rules in one place. Ask questions about them and check the supporting passage before acting.",
-  "h1": "Find the rule and see the source.",
-  "lede": "Keep your declaration, bylaws, and rules in one place. Ask questions about them and check the supporting passage before acting.",
-  "closer": "Bring your board’s work together.",
+  "description": "Ask questions about your declaration, bylaws, or rules. See the relevant passage and check the original document before making a decision.",
+  "h1": "Get answers from your HOA documents.",
+  "lede": "Ask questions about your declaration, bylaws, or rules. See the relevant passage and check the original document before making a decision.",
   "bands": [
     {
-      "title": "Start with your own governing documents",
+      "title": "Upload the documents your association already has",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Upload the association’s declaration, bylaws, and rules, including scanned copies. Keep the originals available for the people who need to read them."
+          "p": "Add your declaration, bylaws, and rules, including readable scanned copies. Your board can find the originals in one place instead of searching personal folders and email attachments."
         }
       ]
     },
     {
-      "title": "Review answers beside the source",
+      "title": "Ask a question in your own words",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Use document answers to locate relevant passages. Check the cited text and the surrounding context, especially when dates, amounts, or obligations matter."
+          "p": "Ask about a topic such as dues dates or parking rules. Common Parcel finds relevant text in your documents and shows the source so you can check the answer and read the surrounding wording."
         }
       ]
     },
     {
-      "title": "Leave room for a careful review",
+      "title": "Check the details before acting",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Document answers can be incomplete or wrong. Confirm setup information before using it, and ask your attorney about legal interpretation or a dispute."
+          "p": "Document answers can be incomplete or wrong. Read the cited text, confirm dates and amounts, and ask your attorney about legal interpretation or a dispute."
         }
       ]
     }

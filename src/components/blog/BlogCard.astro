@@ -6,6 +6,7 @@
  */
 import { readingMinutes, type BlogPost } from "../../data/blog";
 import BlogHeaderArt from "./BlogHeaderArt.astro";
+import { displayDate } from "../../data/dates";
 
 interface Props {
   post: BlogPost;
@@ -35,7 +36,7 @@ const { post } = Astro.props;
     <div class="blog-card-footer">
       <span class="author-name">{post.author.name}</span>
       <time datetime={post.publishedAt} class="published-date t-mono-label">
-        {post.publishedAt}
+        {displayDate(post.publishedAt)}
       </time>
     </div>
   </div>

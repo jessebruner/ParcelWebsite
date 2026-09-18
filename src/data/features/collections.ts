@@ -3,18 +3,17 @@ import type { PageSpec } from "../content";
 export const collections: PageSpec = {
   "slug": "collections",
   "title": "HOA collections and late accounts",
-  "description": "Review balances, prepare notices, and keep the history together. Your board decides how to handle each account.",
-  "h1": "Keep late accounts on a clear path.",
-  "lede": "Review balances, prepare notices, and keep the history together. Your board decides how to handle each account.",
-  "closer": "Bring your board’s work together.",
+  "description": "Review what is owed, see previous notices, and prepare the next follow-up. Keep the payment history and correspondence together for each account.",
+  "h1": "Follow up on unpaid HOA dues.",
+  "lede": "Review what is owed, see previous notices, and prepare the next follow-up. Keep the payment history and correspondence together for each account.",
   "bands": [
     {
-      "title": "See the balance and the history",
+      "title": "See what is owed and what was sent",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep the account record close to the correspondence. Review what is owed, what has been paid, and what the board has already communicated."
+          "p": "Review the unpaid balance, past payments, and previous correspondence in the same account record. Board members can see what has already been discussed before contacting an owner."
         }
       ]
     },
@@ -24,12 +23,12 @@ export const collections: PageSpec = {
       "field": true,
       "body": [
         {
-          "p": "Work from the association’s confirmed rules and review the draft before it is sent. A prepared notice is a starting point for the board’s review."
+          "p": "Prepare a notice using the association’s confirmed rules. Check the amount, dates, and wording before the board authorizes it."
         }
       ]
     },
     {
-      "title": "Know when to involve an attorney",
+      "title": "Get legal help with formal collection actions",
       "layout": "rail",
       "field": false,
       "body": [

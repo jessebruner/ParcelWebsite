@@ -1,59 +1,82 @@
 ---
-/** Procedural landscape art. Painted once when near the viewport. */
 export type SceneKey = "dusk" | "dawn" | "winter" | "street" | "storm" | "autumn" | "hilltop";
-
-interface Props {
-  mode?: "texture" | "band" | "scene";
-  scene?: SceneKey;
-  seed?: number;
-  /** Where in the ramp the strip sits. 0 is night, 1 is the horizon. */
-  crop?: number;
-}
-const { mode = "texture", scene = "dusk", seed = 7, crop } = Astro.props;
-const band = mode !== "scene";
-const h = mode === "band" ? 54 : 216;
+interface Props { mode?: "texture" | "band" | "scene"; scene?: SceneKey; seed?: number; crop?: number; animated?: boolean; }
+const { mode = "texture", scene = "dusk", seed = 7, crop, animated = false } = Astro.props;
 ---
-
-<canvas
-  class:list={["sky", mode]}
-  width={384}
-  height={h}
-  aria-hidden="true"
-  data-mode={mode}
-  data-scene={scene}
-  data-seed={seed}
-  data-crop={crop ?? undefined}
-></canvas>
-
+<div class:list={["pixel-scene", mode]} data-animated={animated ? "true" : undefined}>
+  <canvas class="sky" width={384} height={mode === "band" ? 54 : 216} aria-hidden="true" data-mode={mode} data-scene={scene} data-seed={seed} data-crop={crop}></canvas>
+  {animated && <button class="motion-toggle" type="button" hidden>Pause animation</button>}
+</div>
 <style>
+  .pixel-scene { position: relative; width: 100%; height: 100%; background: var(--night); }
   .sky { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-  .band {
-    height: clamp(56px, 6vw, 84px);
-    border-top: var(--stroke-edge);
-    border-bottom: var(--stroke-edge);
-  }
+  .band { height: clamp(56px, 6vw, 84px); border-block: var(--stroke-edge); }
+  .motion-toggle { position: absolute; right: 16px; bottom: 16px; z-index: 4; min-height: 44px; padding: 8px 13px; border: 1px solid #fbf8f455; background: #171326e8; color: var(--paper); font: 400 12px/1.4 var(--font-sans); cursor: pointer; }
+  .motion-toggle:hover { background: var(--night); border-color: var(--paper); }
 </style>
-
 <script>
   import { Scene } from "../scripts/sky.js";
-  const canvases = document.querySelectorAll<HTMLCanvasElement>("canvas.sky");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  let paused = reduce.matches;
+  // One control pauses every landscape on the page.
+  const controls = Array.from(document.querySelectorAll<HTMLButtonElement>(".motion-toggle"));
+  type PaintedScene = { draw: (phase: number) => void; visible: boolean; animated: boolean };
+  const scenes = new Map<Element, PaintedScene>();
   let engine: Promise<typeof import("../scripts/scene-engine.js")> | undefined;
+  let frame = 0, last = 0, elapsed = 0;
+  function updateControls() {
+    controls.forEach(button => { button.textContent = paused ? "Play animation" : "Pause animation"; });
+    document.querySelectorAll<HTMLElement>("[data-animated]").forEach(el => { el.dataset.motion = paused ? "paused" : "playing"; });
+  }
+  function tick(now: number) {
+    frame = 0;
+    if (paused || document.hidden || ![...scenes.values()].some(scene => scene.animated && scene.visible)) { last = 0; return; }
+    if (!last) last = now;
+    if (now - last >= 1000 / 12) {
+      elapsed += Math.min(now - last, 200); last = now;
+      const phase = (.24 + elapsed / 240000) % 1;
+      scenes.forEach(scene => { if (scene.animated && scene.visible) scene.draw(phase); });
+    }
+    frame = requestAnimationFrame(tick);
+  }
+  function schedule() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0; last = 0;
+    if (!paused && !document.hidden && [...scenes.values()].some(scene => scene.animated && scene.visible)) frame = requestAnimationFrame(tick);
+  }
+  controls.forEach(button => button.addEventListener("click", () => { paused = !paused; updateControls(); schedule(); }));
+  reduce.addEventListener("change", () => { paused = reduce.matches; updateControls(); schedule(); });
+  document.addEventListener("visibilitychange", schedule);
+  window.addEventListener("pagehide", () => { if (frame) cancelAnimationFrame(frame); frame = 0; last = 0; });
+  window.addEventListener("pageshow", schedule);
+  const visibility = new Map<Element, boolean>();
+  const loading = new Set<Element>();
   async function paint(cv: HTMLCanvasElement) {
+    if (scenes.has(cv) || loading.has(cv)) return;
+    loading.add(cv);
     if (cv.dataset.mode === "scene") {
       engine ??= import("../scripts/scene-engine.js");
       const { SceneEngine } = await engine;
-      new SceneEngine(cv, cv.dataset.scene ?? "dusk", { w: cv.width, h: cv.height, seed: Number(cv.dataset.seed) || 7 }).draw(0.24);
-    } else {
-      new Scene(cv, { scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk", seed: Number(cv.dataset.seed) || 7, band: true }).draw();
-    }
+      const landscape = new SceneEngine(cv, cv.dataset.scene ?? "dusk", { w: cv.width, h: cv.height, seed: Number(cv.dataset.seed) || 7 });
+      const scene = { draw: (phase: number) => landscape.draw(phase), visible: visibility.get(cv) ?? true, animated: cv.parentElement?.dataset.animated === "true" };
+      scene.draw(.24); scenes.set(cv, scene);
+      const button = cv.parentElement?.querySelector<HTMLButtonElement>(".motion-toggle");
+      if (button) button.hidden = false;
+      updateControls(); schedule();
+    } else new Scene(cv, { scene: cv.dataset.scene === "dawn" ? "dawn" : "dusk", seed: Number(cv.dataset.seed) || 7, band: true }).draw();
   }
+  const canvases = document.querySelectorAll<HTMLCanvasElement>("canvas.sky");
   if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) if (entry.isIntersecting) {
-        observer.unobserve(entry.target);
-        paint(entry.target as HTMLCanvasElement).catch(console.error);
-      }
-    }, { rootMargin: "240px" });
+      entries.forEach(entry => {
+        visibility.set(entry.target, entry.isIntersecting);
+        const scene = scenes.get(entry.target);
+        if (scene) scene.visible = entry.isIntersecting;
+        if (entry.isIntersecting) paint(entry.target as HTMLCanvasElement).catch(console.error);
+      });
+      schedule();
+    });
     canvases.forEach(cv => observer.observe(cv));
   } else canvases.forEach(cv => paint(cv).catch(console.error));
+  updateControls();
 </script>

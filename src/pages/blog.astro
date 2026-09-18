@@ -2,13 +2,11 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import BlogCard from "../components/blog/BlogCard.astro";
-import CtaBand from "../components/ui/CtaBand.astro";
 import { getAllPosts } from "../data/blog";
 const posts = getAllPosts();
 ---
 <Base title="Practical HOA guides for volunteer boards" description="Practical HOA board guides: review a budget, prepare a meeting, organize a handover, and review records requests. Checklists and cited legal references." path="/blog">
-  <Hero><p class="eyebrow">The board’s bookshelf</p><h1 class="t-display">A useful place<br />to look things up.</h1><p class="t-lede">Practical guides for the work of a volunteer board. Start with the task in front of you.</p></Hero>
-  <section><div class="page"><div class="section-heading"><h2 class="t-sheet">Guides for your next board task.</h2><p>Checklists, explanations, and sources to read further.<br />Legal guides include the provisions they cite.</p></div><div class="blog-grid">{posts.map(post => <BlogCard post={post} />)}</div></div></section>
-  <CtaBand headline="Put the guidance to work." />
+  <Hero><h1 class="t-display">Practical guides for your HOA board.</h1><p class="t-lede">Prepare a budget, plan a meeting, review a vendor contract, or welcome new officers. Start with the checklist you need.</p></Hero>
+  <section><div class="page"><div class="section-heading"><h2 class="t-sheet">Choose a guide for the task ahead.</h2><p>Written for boards that manage their own association.<br />Legal references link to the source.</p></div><div class="blog-grid">{posts.map(post => <BlogCard post={post} />)}</div></div></section>
 </Base>
 <style>.blog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }.section-heading > p { font-size: 15px; color: var(--ink-3); } @media(max-width: 1050px) { .blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } } @media(max-width: 680px) { .blog-grid { grid-template-columns: 1fr; } }</style>

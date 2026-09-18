@@ -1,0 +1,13 @@
+---
+interface Props { name: string; }
+const { name } = Astro.props;
+const paths: Record<string, string> = {
+  books: "M3 4h7v16H3zM14 4h7v16h-7M6 8h1M17 8h1M6 12h1M17 12h1",
+  collections: "M4 3h12v18H4zM7 7h6M7 11h4M17 14h5M19.5 11.5v5",
+  resident: "M2 11 12 3l10 8M5 9v12h14V9M10 21v-7h4v7",
+  rules: "M5 3h14v18H5zM8 7h8M8 11h5M8 16l2 2 5-5",
+  vendors: "M3 6h18v15H3zM7 3v6M17 3v6M3 11h18M7 15h3M14 15h3",
+  records: "M3 7h18v14H3zM6 3h12v4M8 12h8M8 16h5",
+};
+---
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="miter" aria-hidden="true"><path d={paths[name] ?? paths.records} /></svg>

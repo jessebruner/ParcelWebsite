@@ -6,9 +6,10 @@
  * and clear typography.
  */
 import Base from "../../layouts/Base.astro";
+import BlogHeaderArt from "../../components/blog/BlogHeaderArt.astro";
+import { displayDate } from "../../data/dates";
 
 import CitationBlock from "../../components/blog/CitationBlock.astro";
-import CtaBand from "../../components/ui/CtaBand.astro";
 import { BLOG_POSTS, readingMinutes, type BlogPost } from "../../data/blog";
 
 export function getStaticPaths() {
@@ -127,7 +128,8 @@ const schema = JSON.stringify([
   <article class="post-layout" itemscope itemtype="https://schema.org/Article">
     <!-- Header / Hero -->
     <header class="post-hero">
-      <div class="page">
+      <div class="page post-header-grid">
+        <div class="post-header-copy">
         <nav class="post-breadcrumbs" aria-label="Breadcrumbs">
           <a href="/blog" class="crumb-link">Board guides</a>
           <span class="crumb-separator" aria-hidden="true">/</span>
@@ -156,7 +158,7 @@ const schema = JSON.stringify([
           <div class="post-date-group">
             <span class="date-label t-mono-label">Published</span>
             <time datetime={post.publishedAt} class="published-date t-mono" itemprop="datePublished">
-              {post.publishedAt}
+              {displayDate(post.publishedAt)}
             </time>
           </div>
 
@@ -167,6 +169,8 @@ const schema = JSON.stringify([
             <span class="read-time t-mono">{minutes} min</span>
           </div>
         </div>
+        </div>
+        <div class="post-illustration"><BlogHeaderArt subject={post.artSubject} mode="hero" /></div>
       </div>
     </header>
 
@@ -233,17 +237,15 @@ const schema = JSON.stringify([
     </div>
   </article>
 
-  <section class="related-guides"><div class="page"><p class="eyebrow">Keep reading</p><h2 class="t-sheet">More for your board.</h2><div>{related.map(item => <a href={`/blog/${item.slug}`}>{item.title}<span aria-hidden="true">→</span></a>)}</div><a class="text-link" href="/blog">All board guides</a></div></section>
+  <section class="related-guides"><div class="page"><h2 class="t-sheet">More guides for your board.</h2><div>{related.map(item => <a href={`/blog/${item.slug}`}>{item.title}<span aria-hidden="true">→</span></a>)}</div><a class="text-link" href="/blog">All board guides</a></div></section>
   <!-- CTA -->
   <!-- "required books" asserted a legal requirement this site has not sourced. -->
-  <CtaBand
-    headline="Your association, in your hands."
-    scene="dusk"
-    seed={197}
-  />
 </Base>
 
 <style>
+  .post-header-grid { display: grid; grid-template-columns: 1.3fr .8fr; gap: 48px; align-items: center; }
+  .post-illustration { min-width: 0; }
+  @media(max-width: 1000px) { .post-header-grid { grid-template-columns: 1fr; gap: 30px; }.post-illustration { max-width: 540px; } }
   .post-layout {
     background: var(--paper);
     padding-bottom: var(--pad-y);
@@ -417,8 +419,8 @@ const schema = JSON.stringify([
   }
   .author-box-bio {
     margin: var(--s-2) 0 0;
-    font-size: var(--t-micro);
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.6;
     color: var(--ink-2);
   }
 

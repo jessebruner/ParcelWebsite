@@ -3,38 +3,37 @@ import type { PageSpec } from "../content";
 export const recordsAndAudit: PageSpec = {
   "slug": "records-and-audit",
   "title": "HOA records and board handover",
-  "description": "Keep minutes, ledgers, notices, and governing documents with the association. Give the next volunteer a useful place to begin.",
-  "h1": "Keep the records when the board changes.",
-  "lede": "Keep minutes, ledgers, notices, and governing documents with the association. Give the next volunteer a useful place to begin.",
-  "closer": "Bring your board’s work together.",
+  "description": "Store minutes, financial records, contracts, and governing documents with the association. New board members can find what they need and continue unfinished work.",
+  "h1": "Keep HOA records available when officers change.",
+  "lede": "Store minutes, financial records, contracts, and governing documents with the association. New board members can find what they need and continue unfinished work.",
   "bands": [
     {
-      "title": "Put the history in a shared home",
+      "title": "Give your board a shared place for records",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep association records in a place the authorized board can access. Reduce reliance on a departing officer’s personal inbox or filing system."
+          "p": "Authorized board members can find association records in one account. Important documents remain available when an officer leaves, instead of staying in a personal inbox."
         }
       ]
     },
     {
-      "title": "Keep context with important decisions",
+      "title": "See who approved an important decision",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Retain the meeting record, supporting information, and recorded approvals together. Review the available activity history when you need to understand a change."
+          "p": "Keep meeting records, supporting documents, and recorded approvals together. Review the available activity history to understand who took an action and when."
         }
       ]
     },
     {
-      "title": "Prepare a practical board handover",
+      "title": "Prepare for the next board",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Review access when officers change and export the records the association needs. Keep a handover checklist so incoming volunteers know where to start."
+          "p": "Update access when officers change. Export the records your association needs and use a handover checklist to explain outstanding bills, contracts, and open decisions."
         }
       ]
     }

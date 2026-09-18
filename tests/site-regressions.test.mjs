@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
-import { ALL_ROUTES } from "../src/data/routes.ts";
+import { ALL_ROUTES, PRODUCT_GROUPS } from "../src/data/routes.ts";
 import { BLOG_POSTS } from "../src/data/blog.ts";
 import { APP_URL, HOME_FAQS } from "../src/data/site.ts";
 import { price, money, DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "../src/components/pricing/brackets.ts";
@@ -47,11 +47,11 @@ test("native homepage is small and has matching visible FAQ data", () => {
   for (const [question, answer] of HOME_FAQS) { assert.ok(shown(html).includes(question)); assert.ok(shown(html).includes(answer)); }
 });
 
-test("pricing is correct before client scripts run", () => {
-  const html = read("/pricing");
-  const total = price(DEFAULT_BRACKETS, 50, DEFAULT_MINIMUM).total;
+for (const route of ["/", "/pricing"]) test(`${route}: four units cost $10 before client scripts run`, () => {
+  const html = read(route);
+  const total = price(DEFAULT_BRACKETS, 4, DEFAULT_MINIMUM).total;
   assert.ok(html.includes(`>${money(total, 0)}</span>`));
-  assert.match(html, /id="lot-count"[^>]*value="50"/);
+  assert.match(html, /id="lot-count"[^>]*value="4"/);
   assert.match(html, /<output[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
   assert.match(html, /<label for="lot-count"[^>]*>/);
   assert.match(html, /<noscript>/);
@@ -79,5 +79,35 @@ test("reading and action colors have sufficient text contrast", () => {
   for (const [fg, bg] of [["ink", "paper"], ["ink-body", "paper"], ["ink-3", "field"], ["terracotta", "paper"], ["paper", "terracotta"], ["mist", "night"], ["sand", "night"]]) {
     const a = luminance(colors[fg]), b = luminance(colors[bg]);
     assert.ok((Math.max(a, b) + .05) / (Math.min(a, b) + .05) >= 4.5, `${fg} on ${bg}`);
+  }
+});
+
+test("all pages have a full closing CTA and no decorative preheadings", () => {
+  for (const route of ALL_ROUTES) {
+    const html = read(route);
+    assert.equal((html.match(/class="closing on-ink"/g) ?? []).length, 1, route);
+    assert.doesNotMatch(shown(html), /class="eyebrow"|Everything in its place|Find a rule|Hand over the records/);
+    const closing = html.slice(html.indexOf('class="closing on-ink"'), html.indexOf("</main>"));
+    assert.ok(closing.includes('data-animated="true"'), route);
+    assert.ok(closing.includes(`href="${APP_URL}"`), route);
+    assert.ok(closing.includes("Pause animation"), route);
+  }
+});
+
+test("the mega menu and homepage reach every product area", () => {
+  const home = read("/");
+  const menu = home.slice(home.indexOf('id="product-menu"'), home.indexOf('id="company-menu"'));
+  const main = home.slice(home.indexOf('<main id="main"'), home.indexOf('</main>'));
+  for (const item of PRODUCT_GROUPS.flatMap(group => group.items)) {
+    assert.ok(menu.includes(`href="${item.path}"`), `menu: ${item.path}`);
+    assert.ok(main.includes(`href="${item.path}"`), `homepage: ${item.path}`);
+  }
+});
+
+test("each guide has its own illustration in the directory and article", () => {
+  const directory = read("/blog");
+  for (const post of BLOG_POSTS) {
+    assert.ok(directory.includes(`subject-${post.artSubject}`));
+    assert.ok(read(`/blog/${post.slug}`).includes(`subject-${post.artSubject}`));
   }
 });

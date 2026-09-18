@@ -3,38 +3,37 @@ import type { PageSpec } from "../content";
 export const meetingsAndVoting: PageSpec = {
   "slug": "meetings-and-voting",
   "title": "HOA meeting and voting software",
-  "description": "Keep meeting plans, notices, attendance, votes, and minutes together. Make it easier to see what was decided and where to find it.",
-  "h1": "Give every HOA meeting a clear record.",
-  "lede": "Keep meeting plans, notices, attendance, votes, and minutes together. Make it easier to see what was decided and where to find it.",
-  "closer": "Bring your board’s work together.",
+  "description": "Keep meeting notices, attendance, votes, and minutes together. Prepare for the meeting and leave a useful record of what the board decided.",
+  "h1": "Plan HOA meetings and record the decisions.",
+  "lede": "Keep meeting notices, attendance, votes, and minutes together. Prepare for the meeting and leave a useful record of what the board decided.",
   "bands": [
     {
-      "title": "Plan around your association’s rules",
+      "title": "Prepare the meeting and notice",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Review the notice period and meeting requirements in your governing documents. Keep the scheduled meeting and notice records together."
+          "p": "Check the notice period and meeting requirements in your governing documents. Keep the meeting date and notice records together so your board can review what is ready."
         }
       ]
     },
     {
-      "title": "Keep voting records with the meeting",
+      "title": "Record attendance and voting results",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Record attendance and voting information so the board can review quorum and results. Use electronic voting only where it is permitted for your association."
+          "p": "Record attendance and votes so the board can check quorum (the minimum participation needed to conduct business) and review the results. Use electronic voting only where your association’s rules and applicable law permit it."
         }
       ]
     },
     {
-      "title": "Leave useful minutes for the next board",
+      "title": "Find the decision after the meeting",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep the decision, supporting documents, and meeting minutes together. Future officers can find the record without reconstructing an old email thread."
+          "p": "Save minutes with the decisions and supporting documents. When a question comes up later, board members can open the meeting record instead of reconstructing an email thread."
         }
       ]
     }

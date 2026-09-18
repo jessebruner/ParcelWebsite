@@ -2,21 +2,19 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Band from "../components/Band.astro";
-import CtaBand from "../components/ui/CtaBand.astro";
 import { APP_URL } from "../data/site";
 const steps = [
   ["Gather what you have", "Start with your declaration, bylaws, rules, and a list of lots and owners. Add financial and vendor records as you get organized."],
   ["Review the important details", "Check the information used to set up your association. Confirm amounts, dates, and rules against the source documents."],
-  ["Bring people in", "Set up board access and invite residents when you are ready. Keep permissions current as people move or officers change."],
+  ["Invite your board and residents", "Set up board access and invite residents when you are ready. Keep permissions current as people move or officers change."],
 ];
 ---
 <Base title="HOA software built for self-managed boards" description="Why Common Parcel is built around volunteer boards: shared records, plain language, clear decisions, and a practical way to get your association organized." path="/why-common-parcel">
-  <Hero><p class="eyebrow">Why Common Parcel</p><h1 class="t-display">Board work belongs<br />in a smaller part of your day.</h1><p class="t-lede">Volunteer boards need useful records and clear next steps. Common Parcel brings association work together so you can pick it up without picking through everything first.</p><div class="actions"><a class="btn btn--primary" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a></div></Hero>
-  <Band title="Built around the association"><p>Dues affect the ledger. A meeting creates minutes. A resident request needs a decision. Keeping the work together gives each piece more context.</p><p>Your board can find the record behind the task, and the next officer has a place to start.</p><a class="text-link" href="/product">Explore the product →</a></Band>
-  <section class="setup"><div class="page"><p class="eyebrow">Getting organized</p><h2 class="t-sheet">Start with your association’s own records.</h2><ol>{steps.map(([title, text], i) => <li><span class="number">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{text}</p></li>)}</ol></div></section>
+  <Hero><h1 class="t-display">Spend less time on HOA paperwork.</h1><p class="t-lede">Running your own association should not mean managing a separate spreadsheet, inbox, and filing cabinet for every task. Common Parcel connects dues, documents, meetings, and resident requests.</p><div class="actions"><a class="btn btn--primary" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a></div></Hero>
+  <Band title="See the information behind each decision"><p>Before following up on dues, review the owner’s balance and payment history. Before approving a vendor bill, check the contract. Before answering a resident, open the relevant document.</p><p>The information stays with the task so board members can review it without asking another volunteer to forward an email.</p><a class="text-link" href="/product">Explore the product →</a></Band>
+  <section class="setup"><div class="page"><h2 class="t-sheet">Start with your association’s own records.</h2><ol>{steps.map(([title, text], i) => <li><span class="number">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{text}</p></li>)}</ol></div></section>
   <Band title="A clear role for the software"><p>Common Parcel helps with administration and recordkeeping. Your board still approves spending, chooses vendors, reviews disputes, and takes care of the property.</p><p>Attorneys, accountants, and insurance professionals have their own roles. Keep them involved where your association needs their judgment.</p></Band>
-  <Band title="Useful through the next election" field><p>A board handover should include the records and the open work. Keep minutes, contracts, and financial records with the association, and review access when officers change.</p><a class="text-link" href="/blog/board-transition-records-retention-checklist">Read the board handover checklist →</a></Band>
-  <CtaBand headline="Keep things moving together." scene="street" />
+  <Band title="Keep records available when officers change" field><p>New officers need the financial records, contracts, meeting minutes, and a list of unfinished work. Keep minutes, contracts, and financial records with the association, and review access when officers change.</p><a class="text-link" href="/blog/board-transition-records-retention-checklist">Read the board handover checklist →</a></Band>
 </Base>
 <style>
   .setup { background: var(--field); border-bottom: var(--stroke-edge); }.setup h2 { max-width: 24ch; } ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; list-style: none; padding: 0; margin: 42px 0 0; } li { border-top: var(--stroke-edge); padding-top: 20px; }.number { color: var(--terracotta); font: 400 12px var(--font-mono); } h3 { font: 450 24px/1.3 var(--font-serif); letter-spacing: -.035em; margin: 22px 0 14px; } li p { font-size: 16px; margin: 0; color: var(--ink-2); } @media(max-width: 700px) { ol { grid-template-columns: 1fr; gap: 28px; } }

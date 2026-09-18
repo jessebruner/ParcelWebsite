@@ -114,7 +114,8 @@ for (const feature of FEATURES) {
     const html = read(feature.slug);
     const shown = decode(visible(html));
 
-    const opened = html.split("<details").length - 1;
+    const faq = html.slice(html.indexOf('class="faq-band"'));
+    const opened = faq.split("<details").length - 1;
     assert.equal(
       opened,
       feature.faqs.length,

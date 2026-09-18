@@ -3,33 +3,32 @@ import type { PageSpec } from "../content";
 export const duesAndPayments: PageSpec = {
   "slug": "dues-and-payments",
   "title": "HOA dues and online payments",
-  "description": "Give owners a clear balance and a place to pay. Keep invoices and payment records connected to the right lot.",
-  "h1": "A clearer way to collect HOA dues.",
-  "lede": "Give owners a clear balance and a place to pay. Keep invoices and payment records connected to the right lot.",
-  "closer": "Bring your board’s work together.",
+  "description": "Give owners a place to pay and see their balance. Review invoices, payments, and unpaid dues for every lot in one place.",
+  "h1": "Collect HOA dues online.",
+  "lede": "Give owners a place to pay and see their balance. Review invoices, payments, and unpaid dues for every lot in one place.",
   "bands": [
     {
-      "title": "Bill from the details your board confirms",
+      "title": "Set up dues with the right amounts and dates",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Set up assessments using your governing documents and the amounts and dates your board has reviewed. Keep the charge, the due date, and the lot together."
+          "p": "Set up dues and other assessments using your governing documents and the amounts and dates your board has reviewed. Each invoice stays linked to the right lot."
         }
       ]
     },
     {
-      "title": "Give residents a clear account",
+      "title": "Let residents check their balance and pay",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Residents can review their own balance and payment history. When online payments are connected, they can pay through the portal."
+          "p": "Residents can review their own balance and payment history. When online payments are connected, they can pay through the portal without asking the treasurer for their account details."
         }
       ]
     },
     {
-      "title": "Keep association funds with the association",
+      "title": "Payments go to your association’s account",
       "layout": "rail",
       "field": false,
       "body": [

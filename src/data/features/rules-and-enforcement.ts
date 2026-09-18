@@ -3,18 +3,17 @@ import type { PageSpec } from "../content";
 export const rulesAndEnforcement: PageSpec = {
   "slug": "rules-and-enforcement",
   "title": "HOA violations and architectural requests",
-  "description": "Organize the rule, the notice, the response, and the decision. Give your board the context to review each case fairly.",
-  "h1": "Keep each HOA case together.",
-  "lede": "Organize the rule, the notice, the response, and the decision. Give your board the context to review each case fairly.",
-  "closer": "Bring your board’s work together.",
+  "description": "Review each request or violation with the documents, photos, notices, and correspondence together. Keep a record of the board’s decision and follow-up.",
+  "h1": "Manage violations and home improvement requests.",
+  "lede": "Review each request or violation with the documents, photos, notices, and correspondence together. Keep a record of the board’s decision and follow-up.",
   "bands": [
     {
-      "title": "Start with the rule and the record",
+      "title": "Review the facts behind a violation",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep the governing rule, observations, and correspondence with the case. Review the record before deciding the next step."
+          "p": "Keep the relevant rule, observations, photos, and correspondence with the case. Read the history before deciding whether a notice or another step is appropriate."
         }
       ]
     },
@@ -24,17 +23,17 @@ export const rulesAndEnforcement: PageSpec = {
       "field": true,
       "body": [
         {
-          "p": "Keep notice dates and hearing records together. Where a verified rule requires procedural steps, record those steps before moving the case forward."
+          "p": "Keep notice dates and hearing records with the case. Record the steps required by your association’s confirmed rules before moving forward."
         }
       ]
     },
     {
-      "title": "Give architectural requests a home",
+      "title": "Review requests for home improvements",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Keep an owner’s proposal, supporting documents, and committee decision in one place. The board or committee reviews the request under the association’s rules."
+          "p": "Keep an owner’s proposal, supporting documents, and committee decision in one place. The board or architectural committee reviews the request under the association’s rules."
         }
       ]
     }

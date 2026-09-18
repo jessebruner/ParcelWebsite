@@ -14,6 +14,8 @@ import "../styles/tokens.css";
 import "../styles/fonts.css";
 import Masthead from "../components/Masthead.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import { closingFor } from "../data/closings";
 
 
 interface Props {
@@ -98,7 +100,7 @@ const robots = noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <Masthead />
-    <main id="main"><slot /></main>
+    <main id="main"><slot /><CtaBand {...closingFor(path)} /></main>
     <SiteFooter reviewed={reviewed} />
 
 

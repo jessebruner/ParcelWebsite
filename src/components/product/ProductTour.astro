@@ -1,8 +1,8 @@
 ---
 const panels = [
-  { id: "dues", label: "Collect dues", eyebrow: "Dues & payments", title: "Know where every account stands.", text: "Give residents a place to check their balance and pay online when payments are connected. Keep the board’s records together as payments come in.", link: "/product/dues-and-payments", linkLabel: "Explore dues and payments" },
-  { id: "documents", label: "Find a rule", eyebrow: "Documents & answers", title: "Find the source. Read it for yourself.", text: "Ask a question about your governing documents and review the supporting passage. Keep the original close by when the wording matters.", link: "/product/documents-and-answers", linkLabel: "Explore documents and answers" },
-  { id: "records", label: "Hand over the records", eyebrow: "Records & continuity", title: "A new board. The same clear records.", text: "Keep minutes, financial records, and association documents in one place. The next volunteer should have a starting point, not a scavenger hunt.", link: "/product/records-and-audit", linkLabel: "Explore association records" },
+  { id: "dues", label: "Collect dues online", title: "See who has paid and what’s still due.", text: "Give owners a place to check their balance and pay online. Your board can review invoices, payments, and unpaid balances by lot. Online payments require the association’s connected payment account.", link: "/product/dues-and-payments", linkLabel: "See dues and payments" },
+  { id: "documents", label: "Answer resident questions", title: "Get answers from your HOA documents.", text: "Ask a question about your bylaws, declaration, or rules. Common Parcel finds the relevant passage so you can read the answer and check the original without searching every document yourself.", link: "/product/documents-and-answers", linkLabel: "See documents and answers" },
+  { id: "meetings", label: "Run board meetings", title: "Have the agenda, votes, and minutes ready.", text: "Plan meetings and keep attendance, voting records, and minutes in one place. When someone asks what the board decided, the record is easy to find.", link: "/product/meetings-and-voting", linkLabel: "See meetings and voting" },
 ];
 ---
 <div class="tour" data-tour>
@@ -10,7 +10,7 @@ const panels = [
     {panels.map((panel, i) => <button type="button" id={`tab-${panel.id}`} aria-controls={`panel-${panel.id}`} data-tab={i}>{panel.label}<span aria-hidden="true">↗</span></button>)}
   </div>
   {panels.map((panel, i) => <div class="tour-panel" id={`panel-${panel.id}`} data-panel={i}>
-    <div class="tour-copy"><p class="eyebrow">{panel.eyebrow}</p><h3>{panel.title}</h3><p>{panel.text}</p><a class="text-link" href={panel.link}>{panel.linkLabel}<span aria-hidden="true">→</span></a></div>
+    <div class="tour-copy"><h3>{panel.title}</h3><p>{panel.text}</p><a class="text-link" href={panel.link}>{panel.linkLabel}<span aria-hidden="true">→</span></a></div>
     <div class="example">
       <div class="example-caption"><span>Example association</span><span>Illustration</span></div>
       {panel.id === "dues" && <div class="example-body">
@@ -28,11 +28,11 @@ const panels = [
         <blockquote><span class="small">Sample declaration · Page 6</span>“The annual assessment shall be due and payable on the first day of January.”</blockquote>
         <div class="example-foot">Read the source before relying on an answer.</div>
       </div>}
-      {panel.id === "records" && <div class="example-body">
-        <div class="example-title"><span>Board handover</span><span class="small">Association records</span></div>
-        <p class="sample-answer">A place for the next board to begin.</p>
-        {[["Meeting minutes", "September board meeting"], ["Financial records", "Budget and monthly ledger"], ["Governing documents", "Declaration, bylaws, and rules"]].map(([title, sub]) => <div class="record-row"><span class="file-icon" aria-hidden="true">≡</span><span><b>{title}</b><small>{sub}</small></span><span aria-hidden="true">↗</span></div>)}
-        <div class="example-foot">Keep the association’s history with the association.</div>
+      {panel.id === "meetings" && <div class="example-body">
+        <div class="example-title"><span>September board meeting</span><span class="small">Meeting records</span></div>
+        <p class="sample-answer">The agenda and the decisions, together.</p>
+        {[["Meeting agenda", "Budget review and landscaping contract"], ["Attendance and votes", "Record who attended and how they voted"], ["Meeting minutes", "Decisions saved for the board to review"]].map(([title, sub]) => <div class="record-row"><span class="file-icon" aria-hidden="true">≡</span><span><b>{title}</b><small>{sub}</small></span><span aria-hidden="true">↗</span></div>)}
+        <div class="example-foot">Review and approve minutes under your association’s rules.</div>
       </div>}
     </div>
   </div>)}
@@ -69,6 +69,8 @@ const panels = [
   .tour-tabs button { padding: 18px 0; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--ink-3); font-size: 17px; text-align: left; display: flex; align-items: center; gap: 28px; min-height: 56px; }
   .tour-tabs button[aria-selected="true"] { color: var(--terracotta); border-bottom-color: var(--terracotta); }
   .tour-tabs button:hover { color: var(--terracotta); }
+  .tour[data-enhanced] .tour-panel:not([hidden]) { animation: panel-in .22s ease-out; }
+  @keyframes panel-in { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
   .tour-panel { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 7vw, 100px); align-items: center; padding-top: 48px; }
   .tour-copy h3 { font: 450 clamp(28px, 3vw, 40px)/1.22 var(--font-serif); letter-spacing: -.035em; margin: 0; max-width: 20ch; }
   .tour-copy > p:not(.eyebrow) { max-width: 36em; color: var(--ink-2); margin-block: 22px; }

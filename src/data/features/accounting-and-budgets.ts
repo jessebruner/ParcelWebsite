@@ -3,33 +3,32 @@ import type { PageSpec } from "../content";
 export const accountingAndBudgets: PageSpec = {
   "slug": "accounting-and-budgets",
   "title": "HOA accounting and budget software",
-  "description": "Bring dues, expenses, and budgets into a shared financial record. Give the treasurer a clearer month-end and the board a better view of the numbers.",
-  "h1": "Keep the HOA’s books understandable.",
-  "lede": "Bring dues, expenses, and budgets into a shared financial record. Give the treasurer a clearer month-end and the board a better view of the numbers.",
-  "closer": "Bring your board’s work together.",
+  "description": "Review dues, expenses, budgets, and bank activity in one place. Give your treasurer the records to prepare for the next board meeting.",
+  "h1": "Understand your HOA’s income and expenses.",
+  "lede": "Review dues, expenses, budgets, and bank activity in one place. Give your treasurer the records to prepare for the next board meeting.",
   "bands": [
     {
-      "title": "Keep the ledger close to the bank records",
+      "title": "Compare your books with the bank statement",
       "layout": "rail",
       "field": false,
       "body": [
         {
-          "p": "Review transactions and compare the ledger with bank activity. Follow up on differences before treating a period as reconciled."
+          "p": "Review income and expenses and compare your transaction records with bank activity. Follow up on differences before marking the accounts as reconciled, meaning the records agree."
         }
       ]
     },
     {
-      "title": "Keep the budget and the decision together",
+      "title": "Keep the budget with the board’s approval",
       "layout": "rail",
       "field": true,
       "body": [
         {
-          "p": "Retain budget drafts and the adopted budget alongside the board’s meeting records. Give future officers the context behind the figures."
+          "p": "Store budget drafts and the approved budget with the meeting records. Board members can see which version was adopted and the decision behind the figures."
         }
       ]
     },
     {
-      "title": "Share the records your accountant needs",
+      "title": "Share financial records with your accountant",
       "layout": "rail",
       "field": false,
       "body": [
