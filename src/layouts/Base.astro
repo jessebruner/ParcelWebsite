@@ -14,7 +14,7 @@ import "../styles/tokens.css";
 import "../styles/fonts.css";
 import Masthead from "../components/Masthead.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import EarlyAccessModal from "../components/EarlyAccessModal.astro";
+
 
 interface Props {
   title: string;
@@ -23,7 +23,7 @@ interface Props {
   path: string;
   /** Overrides og:title where the share headline should differ. */
   shareTitle?: string;
-  /** Renders a reviewed line in the footer. Freshness is a ranking input. */
+  /** Renders a reviewed line in the footer. Use only a verified editorial review date. */
   reviewed?: string;
   /** Extra JSON-LD, already stringified. */
   schema?: string;
@@ -100,7 +100,7 @@ const robots = noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max
     <Masthead />
     <main id="main"><slot /></main>
     <SiteFooter reviewed={reviewed} />
-    <EarlyAccessModal />
+
 
     <style>
       .skip {

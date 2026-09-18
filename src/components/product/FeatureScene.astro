@@ -56,6 +56,19 @@ const Scene = SCENES[slug];
 </div>
 
 <style>
+  /* Keep illustrations at rest while the visitor reads the feature copy. */
+  .feature-scene :global(*),
+  .feature-scene :global(*::before),
+  .feature-scene :global(*::after) { animation: none !important; }
+  .feature-scene :global(.poll-grid--cast),
+  .feature-scene :global(.gate-days-fill) { clip-path: inset(0); }
+  .feature-scene :global(.poll-fill) { width: 62.5%; }
+  .feature-scene :global(.poll-notch) { background: var(--paper); }
+  .feature-scene :global(.poll-word) { color: var(--sand); }
+  .feature-scene :global(.gate-step--notice),
+  .feature-scene :global(.gate-step--hearing) { border-color: var(--amber-edge); }
+  .feature-scene :global(.gate-step--notice .gate-mark),
+  .feature-scene :global(.gate-step--hearing .gate-mark) { background: var(--amber); }
   .feature-scene {
     border: 1px solid var(--night-rule);
     background: var(--night-active);

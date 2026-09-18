@@ -201,17 +201,13 @@ test("no shipped description is written past the point it gets cut off", () => {
   }
 });
 
-test("the homepage's two heads agree on the description", () => {
-  // One lives in the real <head>, one in the payload's helmet block, and they
-  // are read by different consumers. Trimming one and not the other is silent.
+test("the native homepage has one authoritative description", () => {
   const html = distFile("dist/index.html");
-  if (!html) { assert.ok(true, "no build present"); return; }
+  assert.ok(html, "build required");
   const { document, rendered } = views(html);
-  const outer = headOf(document).description;
-  const inner = decodeEntities(/<meta name="description" content="([\s\S]*?)"\s*\/?>/.exec(rendered)?.[1] ?? "");
-  assert.ok(outer, "no description in the document head");
-  assert.ok(inner, "no description in the payload helmet");
-  assert.equal(inner, outer, "the homepage ships two different meta descriptions");
+  assert.equal(rendered, null);
+  assert.ok(headOf(document).description);
+  assert.equal((document.match(/<meta name="description"/g) ?? []).length, 1);
 });
 
 test("the post author is the organization, and no job title is invented for it", () => {

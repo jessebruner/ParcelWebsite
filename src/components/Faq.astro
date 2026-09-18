@@ -1,28 +1,5 @@
 ---
-/**
- * QUESTIONS BOARDS ASK.
- *
- * Two sources, and they agree. Jesse's prototype put an FAQ on every product
- * page and the shipped site had one on none. The homepage -- the page named as
- * the standard -- already carries this exact device: a heading held in its own
- * column beside a hairline-ruled list of <details>, serif question, a plus that
- * rotates into a cross, and a line under the heading offering the inbox for
- * anything the list does not cover.
- *
- * So the measurements here are the homepage's, read out of the shipped bundle
- * rather than guessed at: 18px gap, clamp(15px, 2vw, 20px) of padding, a
- * clamp(18px, 1.6vw, 21px) serif question, a 16px marker with its bar at 7px,
- * and a 0.24s rotate. A second FAQ in a different rhythm would read as a
- * different site.
- *
- * <details> rather than script, so it works before JavaScript, so find-on-page
- * opens a closed answer in a modern browser, and so the disclosure semantics
- * are the browser's rather than ours.
- *
- * The answers restate what the bands above them already claim. An FAQ is where
- * a marketing site quietly promises the thing the page was careful about, so
- * every answer here was written against the page's own copy.
- */
+/** Native disclosures work with and without JavaScript. */
 interface Props {
   /** [question, answer]. Three or four; more is a page that needed writing. */
   items: [string, string][];
@@ -35,7 +12,7 @@ const { items, title = "Questions boards ask" } = Astro.props;
   <div class="page">
     <div class="head">
       <h2>{title}</h2>
-      <p>Anything else: <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
+      <p>Have another question? <a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>.</p>
     </div>
     <div class="faq">
       {items.map(([q, a]) => (
@@ -88,7 +65,7 @@ const { items, title = "Questions boards ask" } = Astro.props;
     color: var(--ink-2);
   }
 
-  .faq { border-top: var(--stroke-edge); }
+  .faq { display: block; border-top: var(--stroke-edge); }
   .faq details { border-bottom: var(--stroke-edge); }
 
   summary {
@@ -130,7 +107,7 @@ const { items, title = "Questions boards ask" } = Astro.props;
     margin: 0;
     padding: 0 34px 20px 0;
     max-width: var(--read);
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.6;
     color: var(--ink-body);
   }

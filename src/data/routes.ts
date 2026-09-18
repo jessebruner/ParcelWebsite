@@ -55,28 +55,28 @@ export const PRODUCT_GROUPS: RouteGroup[] = [
   {
     name: "Money in",
     items: [
-      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Bills every lot what your declaration says it owes.", icon: "dues" },
+      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Keep invoices and payment records with the right lot.", icon: "dues" },
       { path: "/product/collections", label: "Collections", blurb: "Late accounts move on a plan the board controls.", icon: "collections" },
-      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Books that match the bank, month by month.", icon: "books" },
+      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Review ledgers, budgets, and bank activity.", icon: "books" },
     ],
   },
   {
     name: "Compliance",
     items: [
-      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from.", icon: "documents" },
+      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Find information in your governing documents.", icon: "documents" },
     ],
   },
   {
     name: "Property and spend",
     items: [
-      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own.", icon: "vendors" },
+      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Keep contracts, policies, and renewal dates together.", icon: "vendors" },
     ],
   },
   {
     name: "Governance",
     items: [
-      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove.", icon: "meetings" },
-      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot.", icon: "rules" },
+      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Keep meeting plans, voting records, and minutes together.", icon: "meetings" },
+      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "Keep notices, responses, and decisions with the case.", icon: "rules" },
       { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find.", icon: "records" },
     ],
   },

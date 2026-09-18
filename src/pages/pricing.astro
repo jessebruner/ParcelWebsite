@@ -1,232 +1,27 @@
 ---
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
-import Band from "../components/Band.astro";
-import PixelSky from "../components/PixelSky.astro";
 import RateCalculator from "../components/pricing/RateCalculator.astro";
-import { DEFAULT_BRACKETS, DEFAULT_MINIMUM, DEFAULT_ALTERNATIVES } from "../components/pricing/brackets";
-
-const included = [
-  {
-    label: "Money",
-    title: "Dues and accounting",
-    items: ["Dues invoices", "Online payments when connected", "Collections", "Ledgers and budgets"],
-    icon: "ledger",
-  },
-  {
-    label: "Board",
-    title: "Board operations",
-    items: ["Meetings and elections", "Violations and notices", "Architectural requests", "Vendor records"],
-    icon: "board",
-  },
-  {
-    label: "Community",
-    title: "Residents and records",
-    items: ["Resident portal", "Governing documents", "Insurance records", "Association export"],
-    icon: "community",
-  },
-];
-
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import { DEFAULT_BRACKETS, money } from "../components/pricing/brackets";
+import { faqSchema } from "../data/site";
 const faqs: [string, string][] = [
-  ["What does the software price include?", "Every association gets the same software features. There are no feature plans to compare or upgrade later."],
-  ["How is the monthly price calculated?", "Each group of lots is charged at the rate shown in the calculator. The lower rate applies only to the lots in that group."],
-  ["Is postal mail included?", "No. Postal mail is outside the software price. We have not set the mail price yet, and certified-mail service is not connected."],
-  ["Is there a setup fee or long contract?", "There is no setup fee. Billing is monthly, and the association can request an export when it leaves."],
+  ["How is the monthly price calculated?", "Each rate applies only to the lots in that bracket. The first 10 lots are $2.50 each, lots 11 through 70 are $1.10 each, and lots above 70 are $0.40 each. The monthly minimum is $10."],
+  ["Do smaller associations get the same features?", "Yes. Every association gets the same software features. Your lot count determines the subscription price."],
+  ["Is there a setup fee or a long-term contract?", "Setup and roster and document migration are included. Subscriptions are month to month, with no long-term contract requirement."],
+  ["What is separate from the software price?", "Postal mail is outside the subscription, and its price has not been set. Certified-mail service is not connected. Online payments may carry fees from the connected payment service; confirm those costs before enabling payments."],
+  ["Can we take our records with us?", "Yes. Your association can export records including financial ledgers, governing documents, meeting minutes, and available activity records."],
 ];
-
-const schema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web browser",
-  name: "Common Parcel",
-  description: "HOA management software priced per lot with the same feature set for every association.",
-  offers: {
-    "@type": "AggregateOffer",
-    priceCurrency: "USD",
-    lowPrice: "10.00",
-    description: "Graduated per-lot monthly pricing with a $10 monthly minimum. Postal mail is outside the software price and its price has not been set.",
-  },
-});
+const schema = JSON.stringify(faqSchema(faqs));
 ---
-
-<Base
-  title="HOA Software Pricing"
-  description="See your monthly Common Parcel software price by lot count. Every association gets the same features; postal mail is separate and its price is not set."
-  path="/pricing"
-  reviewed="August 2026"
-  schema={schema}
->
-  <Hero seed={313} compact>
-    <h1 class="t-display">Simple pricing for your entire HOA</h1>
-    <p class="t-lede">
-      Enter your lot count to see the monthly software price. Every association gets the same
-      features. Postal mail is outside the software price, and its price has not been set.
-    </p>
-  </Hero>
-
-  <section class="pr-calculator on-ink" id="calculator">
-    <div class="page">
-      <div class="pr-heading">
-        <p class="t-label">Your price</p>
-        <h2 class="t-sheet">See your monthly software price</h2>
-        <p>Drag to your association's size, or type the exact lot count.</p>
-      </div>
-      <RateCalculator
-        brackets={DEFAULT_BRACKETS}
-        minimum={DEFAULT_MINIMUM}
-        lots={4}
-        compare={DEFAULT_ALTERNATIVES}
-        includes={[
-          "Dues invoices",
-          "Online payments when connected",
-          "Collections",
-          "Ledgers and budgets",
-          "Meetings and elections",
-          "Violations and notices",
-          "Architectural requests",
-          "Vendor and insurance records",
-          "Resident portal",
-          "Governing documents",
-          "Association export",
-        ]}
-      />
-    </div>
-  </section>
-
-  <section class="pr-included">
-    <div class="page">
-      <div class="pr-section-head">
-        <p class="t-label">Included</p>
-        <h2 class="t-sheet">Manage the whole association with one subscription</h2>
-        <p class="pr-lede">
-          The subscription covers the work your board, treasurer, and residents do in Common Parcel.
-        </p>
-      </div>
-
-      <div class="pr-cards">
-        {included.map((group) => (
-          <article class="pr-card">
-            <div class:list={["pr-icon", `pr-icon--${group.icon}`]} aria-hidden="true">
-              <span></span><span></span><span></span><span></span>
-            </div>
-            <p class="t-label">{group.label}</p>
-            <h3 class="t-title">{group.title}</h3>
-            <ul>
-              {group.items.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <PixelSky mode="band" scene="dawn" seed={317} />
-
-  <section class="pr-bill">
-    <div class="page pr-bill-grid">
-      <div class="pr-bill-copy">
-        <p class="t-label">Your bill</p>
-        <h2 class="t-sheet">Know what can cost extra</h2>
-        <p>
-          The calculator shows the software subscription. Postal mail is outside that price.
-          We have not set the mail price yet.
-        </p>
-      </div>
-
-      <div class="pr-receipt" aria-label="Example subscription bill categories">
-        <div class="pr-receipt-head">
-          <span>Monthly bill</span>
-          <span>How it appears</span>
-        </div>
-        <dl>
-          <div>
-            <dt>Common Parcel software</dt>
-            <dd>Based on lot count</dd>
-          </div>
-          <div>
-            <dt>Software features</dt>
-            <dd>Included</dd>
-          </div>
-          <div>
-            <dt>Setup</dt>
-            <dd>$0</dd>
-          </div>
-          <div class="pr-receipt-separate">
-            <dt>Postal mail</dt>
-            <dd>Price not set</dd>
-          </div>
-        </dl>
-        <p>Mail is not included in the calculator total. Certified-mail service is not connected yet.</p>
-      </div>
-    </div>
-  </section>
-
-  <Band title="Questions" field note="Ask a pricing question" noteHref="/contact">
-    <dl class="faq">
-      {faqs.map(([question, answer]) => <div><dt class="t-title">{question}</dt><dd>{answer}</dd></div>)}
-    </dl>
-  </Band>
-
-  <section class="close on-ink">
-    <div class="page">
-      <h2 class="t-sheet">See if Common Parcel fits your budget</h2>
-      <p>Tell us your association size and what your board needs help with.</p>
-      <div class="actions">
-        <a class="btn btn--on-ink" href="/contact">Ask about early access</a>
-      </div>
-    </div>
-  </section>
+<Base title="HOA software pricing and calculator" description="Calculate Common Parcel’s monthly HOA software price by lot count. All features included, a $10 monthly minimum, and month-to-month subscriptions." path="/pricing" schema={schema}>
+  <Hero><p class="eyebrow">Common Parcel pricing</p><h1 class="t-display">One price for<br />the whole association.</h1><p class="t-lede">The same software features for every board. A monthly price based on your lot count, with a $10 minimum.</p></Hero>
+  <section class="pricing-calculator" id="calculator"><div class="page"><RateCalculator /></div></section>
+  <section class="rate-section"><div class="page rate-grid"><div><p class="eyebrow">The arithmetic, in plain sight</p><h2 class="t-sheet">Only the lots in each bracket pay that rate.</h2><p>For 100 lots: $25 for the first 10, $66 for the next 60, and $12 for the last 30. That’s <strong>$103 per month.</strong></p></div><div><table><caption>Monthly software rates</caption><thead><tr><th scope="col">Lots in this bracket</th><th scope="col">Per lot / month</th></tr></thead><tbody>{DEFAULT_BRACKETS.map(band => <tr><th scope="row">{band.label}</th><td>{money(band.rate)}</td></tr>)}</tbody></table><p class="small">A $10 monthly minimum applies to the association.</p></div></div></section>
+  <section class="included"><div class="page"><div class="section-heading"><div><p class="eyebrow">Included in the subscription</p><h2 class="t-sheet">The tools your board needs.</h2></div><a class="text-link" href="/product">Explore the product <span aria-hidden="true">→</span></a></div><div class="included-grid">{[["Finances", "Dues and payment records", "Collections", "Ledgers and budgets"], ["Board work", "Meetings and voting", "Violations and requests", "Vendor and insurance records"], ["Your community", "Resident portal", "Governing documents and answers", "Association records and exports"]].map(([title, ...items]) => <div><h3 class="t-title">{title}</h3><ul class="rows">{items.map(item => <li>{item}</li>)}</ul></div>)}</div><p class="small">Online payments require a connected payment service. Postal mail and any processing fees are separate.</p></div></section>
+  <Faq items={faqs} title="Pricing questions." /><CtaBand headline="A price that fits your association." />
 </Base>
-
 <style>
-  .pr-calculator { background: var(--night); border-bottom: 1px solid var(--on-dark-rule); }
-  .pr-heading { max-width: 44em; margin-bottom: clamp(28px, 4vw, 56px); }
-  .pr-heading .t-label { color: var(--amber); }
-  .pr-heading h2 { max-width: 18ch; color: var(--paper); }
-  .pr-heading > p:last-child { max-width: 48ch; margin: var(--s-4) 0 0; color: var(--mist); }
-  .pr-included { background: var(--paper); border-bottom: var(--stroke-rule); }
-  .pr-section-head { max-width: 46em; }
-  .pr-section-head h2 { max-width: 22ch; }
-  .pr-lede { max-width: 48ch; margin: var(--s-4) 0 0; color: var(--ink-body); }
-  .pr-cards { display: grid; gap: var(--s-6); margin-top: clamp(32px, 4vw, 56px); }
-  @media (min-width: 760px) { .pr-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  .pr-card { position: relative; min-height: 100%; padding: var(--s-6); border: var(--stroke-consequence); background: var(--card); transition: transform 160ms ease, border-color 160ms ease; }
-  .pr-card:hover { transform: translateY(-3px); border-color: var(--terracotta); }
-  .pr-card .t-label { margin-top: var(--s-6); }
-  .pr-card h3 { margin-top: var(--s-2); color: var(--ink); }
-  .pr-card ul { list-style: none; margin: var(--s-5) 0 0; padding: 0; }
-  .pr-card li { padding-block: var(--s-2); border-bottom: var(--stroke-hairline); color: var(--ink-body); }
-  .pr-icon { position: relative; width: 48px; height: 48px; background: var(--field); border: var(--stroke-edge); image-rendering: pixelated; }
-  .pr-icon span { position: absolute; width: 10px; height: 10px; background: var(--terracotta); }
-  .pr-icon span:nth-child(1) { left: 8px; top: 8px; }
-  .pr-icon span:nth-child(2) { right: 8px; top: 8px; }
-  .pr-icon span:nth-child(3) { left: 8px; bottom: 8px; }
-  .pr-icon span:nth-child(4) { right: 8px; bottom: 8px; }
-  .pr-icon--ledger span:nth-child(2), .pr-icon--ledger span:nth-child(3) { background: var(--bisque-edge); }
-  .pr-icon--board span:nth-child(1), .pr-icon--board span:nth-child(4) { background: var(--plum); }
-  .pr-icon--community span:nth-child(1), .pr-icon--community span:nth-child(4) { background: var(--amber-edge); }
-  .pr-icon--community span:nth-child(2), .pr-icon--community span:nth-child(3) { background: var(--terracotta); }
-
-  .pr-bill { background: var(--field); border-bottom: var(--stroke-rule); }
-  .pr-bill-grid { display: grid; gap: clamp(32px, 5vw, 80px); align-items: start; }
-  @media (min-width: 880px) { .pr-bill-grid { grid-template-columns: minmax(15em, 0.75fr) minmax(24em, 1.25fr); } }
-  .pr-bill-copy h2 { max-width: 16ch; }
-  .pr-bill-copy > p:last-child { max-width: 40ch; margin: var(--s-4) 0 0; }
-  .pr-receipt { border: var(--stroke-consequence); background: var(--paper); }
-  .pr-receipt-head {
-    display: flex; justify-content: space-between; gap: var(--s-4); padding: var(--s-3) var(--s-5); background: var(--night);
-    color: var(--on-dark-label); font-family: var(--font-mono); font-size: var(--t-mono-label); letter-spacing: 0.12em; text-transform: uppercase;
-  }
-  .pr-receipt dl { margin: 0; padding: 0 var(--s-5); }
-  .pr-receipt dl > div { display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); padding-block: var(--s-4); border-bottom: var(--stroke-hairline); }
-  .pr-receipt dt { color: var(--ink); font-weight: 650; }
-  .pr-receipt dd { margin: 0; color: var(--ink-3); font-family: var(--font-mono); font-size: var(--t-mono-data); text-align: right; }
-  .pr-receipt .pr-receipt-separate { margin-top: var(--s-2); border-top: var(--stroke-consequence); }
-  .pr-receipt > p { margin: 0; padding: var(--s-4) var(--s-5); background: var(--held); color: var(--ink-2); font-size: var(--t-micro); }
-
-  .close { background: var(--cold); color: var(--paper); border-top: 1.5px solid var(--terracotta); }
-  .close h2 { max-width: 22ch; color: var(--paper); }
-  .close p { max-width: 44ch; margin: var(--s-4) 0 0; color: var(--mist); }
-  .close .actions { margin-top: var(--s-6); }
+  .pricing-calculator { padding-top: 48px; }.rate-section { border-top: var(--stroke-edge); }.rate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }.rate-grid h2 { max-width: 20ch; }.rate-grid p { max-width: 35em; }.small { font-size: 13px; color: var(--ink-3); margin-top: 24px; } tbody th { border-bottom: var(--stroke-edge); font-weight: 400; }.included { background: var(--field); border-block: var(--stroke-edge); }.included-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }.included-grid h3 { margin-bottom: 20px; }.included-grid li { font-size: 15px; } @media(max-width: 700px) { .rate-grid, .included-grid { grid-template-columns: 1fr; gap: 32px; } }
 </style>

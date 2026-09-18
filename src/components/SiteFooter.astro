@@ -1,64 +1,35 @@
 ---
 import Mark from "./Mark.astro";
-import { LEGAL } from "../data/routes";
-import "../styles/site-footer.css";
-
 interface Props { reviewed?: string; }
-const { reviewed } = Astro.props;
-const epoch = process.env.SOURCE_DATE_EPOCH ? parseInt(process.env.SOURCE_DATE_EPOCH, 10) * 1000 : Date.now();
+const epoch = import.meta.env.SOURCE_DATE_EPOCH ? Number(import.meta.env.SOURCE_DATE_EPOCH) * 1000 : Date.now(); // SOURCE_DATE_EPOCH controls reproducible builds.
 const year = new Date(epoch).getUTCFullYear();
-
-/**
- * ONE FOOTER. The homepage bundle is served this component's own markup by
- * tools/sync-homepage-masthead.mjs, the way it is already served the masthead,
- * so the styles live in a plain stylesheet and every class is prefixed. The
- * homepage used to end in a bundle-owned footer whose only links were three
- * same-page anchors, which meant the site's most-visited page linked to
- * neither the privacy policy nor the terms.
- */
-const cols = [
-  {
-    head: "Platform",
-    links: [
-      { path: "/product", label: "Product" },
-      { path: "/pricing", label: "Pricing" },
-      { path: "/security", label: "Security" },
-    ],
-  },
-  {
-    head: "Company",
-    links: [
-      { path: "/about", label: "About" },
-      { path: "/why-common-parcel", label: "Why Common Parcel" },
-      { path: "/blog", label: "Blog" },
-      { path: "/contact", label: "Contact" },
-    ],
-  },
-  {
-    head: "Legal",
-    links: LEGAL,
-  },
-];
+const groups = [
+  ["Explore", [["Product", "/product"], ["Pricing", "/pricing"], ["Board guides", "/blog"]]],
+  ["Common Parcel", [["About", "/about"], ["Why Common Parcel", "/why-common-parcel"], ["Contact", "/contact"]]],
+  ["The details", [["Security", "/security"], ["Privacy", "/privacy"], ["Terms", "/terms"]]],
+] as const;
 ---
 <footer class="site-footer">
-  <div class="page sf-inner">
-    <div>
-      <span class="sf-lockup"><Mark size={38} fill="var(--paper)" beak="var(--amber)" /><span>Common Parcel</span></span>
-      <p class="sf-addr">1420 Washington Blvd, Ste 301<br />Detroit, MI 48226</p>
-      <a class="sf-mail" href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a>
+  <div class="page">
+    <div class="footer-top">
+      <div class="footer-brand"><a href="/" aria-label="Common Parcel home"><Mark size={36} /><span>Common Parcel</span></a><p>For the neighbors<br />who keep things running.</p><span class="location">Made in Detroit, Michigan.</span></div>
+      {groups.map(([name, links]) => <nav aria-label={name}><h2>{name}</h2><ul>{links.map(([label, href]) => <li><a href={href}>{label}</a></li>)}</ul></nav>)}
     </div>
-    <div class="sf-cols">
-      {cols.map(c => (
-        <div>
-          <p class="sf-head">{c.head}</p>
-          <ul>{c.links.map(l => <li><a href={l.path}>{l.label}</a></li>)}</ul>
-        </div>
-      ))}
-    </div>
-  </div>
-  <div class="page sf-baseline">
-    <span>Common Parcel {year} · Made in Detroit</span>
-    <span class="sf-legal">{LEGAL.map(l => <a href={l.path}>{l.label}</a>)}</span>
-    {reviewed && <span>Reviewed {reviewed}</span>}
+    <div class="footer-bottom"><p>© {year} Common Parcel</p><p>1420 Washington Blvd, Ste 301 · Detroit, MI 48226</p><a href="mailto:jesse@commonparcel.com">jesse@commonparcel.com</a></div>
   </div>
 </footer>
+<style>
+  .site-footer { background: var(--field); padding-block: 60px 24px; border-top: var(--stroke-edge); }
+  .footer-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 32px; }
+  .footer-brand > a { display: flex; align-items: center; gap: 10px; font-size: 23px; letter-spacing: -.05em; font-weight: 600; text-decoration: none; color: var(--ink); }
+  .footer-brand p { font: 400 21px/1.4 var(--font-serif); margin: 22px 0 12px; }
+  .location { font-size: 13px; color: var(--ink-3); }
+  h2 { font: 600 14px/1.5 var(--font-sans); margin: 6px 0 14px; }
+  ul { padding: 0; list-style: none; margin: 0; }
+  li a { display: inline-flex; min-height: 40px; align-items: center; text-decoration: none; color: var(--ink-2); font-size: 15px; }
+  a:hover { color: var(--terracotta); text-decoration: underline; }
+  .footer-bottom { margin-top: 48px; padding-top: 20px; border-top: var(--stroke-edge); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 24px; font-size: 12px; color: var(--ink-3); }
+  .footer-bottom p { margin: 0; } .footer-bottom a { min-height: 32px; display: inline-flex; align-items: center; }
+  @media(max-width: 850px) { .footer-top { grid-template-columns: repeat(3, 1fr); } .footer-brand { grid-column: 1 / -1; margin-bottom: 16px; } }
+  @media(max-width: 420px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+</style>

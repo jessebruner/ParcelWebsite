@@ -43,8 +43,8 @@ const { post } = Astro.props;
 
 <style>
   .blog-card {
-    background: var(--card);
-    border: var(--stroke-consequence);
+    background: transparent;
+    border: var(--stroke-edge);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -67,6 +67,7 @@ const { post } = Astro.props;
     display: flex;
     align-items: center;
     gap: var(--s-2);
+    flex-wrap: wrap;
     margin-bottom: var(--s-3);
   }
   .blog-category {

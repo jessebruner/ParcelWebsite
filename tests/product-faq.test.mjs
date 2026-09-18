@@ -46,7 +46,7 @@ function schemaOf(html) {
   const at = html.indexOf(mark);
   assert.notEqual(at, -1, "no structured data on the page");
   const end = html.indexOf("</script>", at);
-  return JSON.parse(html.slice(at + mark.length, end));
+  return [JSON.parse(html.slice(at + mark.length, end))].flat().find(item => item["@type"] === "FAQPage");
 }
 
 /**
@@ -86,11 +86,11 @@ const decode = (s) =>
  * sentence quietly deleted while the FAQ around it keeps selling.
  */
 const LIMITS = {
-  collections: "certified mail is not connected",
-  "rules-and-enforcement": "qualified legal review",
-  "dues-and-payments": "connected its own Stripe account",
-  "documents-and-answers": "prints as unknown",
-  "records-and-audit": "only where the rule for that association has been verified",
+  collections: "certified-mail service is not connected",
+  "rules-and-enforcement": "requirements depend on your documents",
+  "dues-and-payments": "when online payments are connected",
+  "documents-and-answers": "document answers can be incomplete or wrong",
+  "records-and-audit": "review each records request",
 };
 
 for (const [slug, keep] of Object.entries(LIMITS)) {

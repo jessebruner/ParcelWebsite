@@ -15,5 +15,6 @@ export default defineConfig({
   trailingSlash: "never",
   build: { format: "file" },
   compressHTML: true,
+  vite: { cacheDir: "./.astro/vite" },
   devToolbar: { enabled: false },
 });

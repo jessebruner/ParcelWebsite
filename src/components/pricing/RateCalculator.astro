@@ -1,351 +1,56 @@
 ---
-import {
-  price,
-  money,
-  alternatives,
-  type Bracket,
-  type Alternatives,
-} from "./brackets";
-import "../../styles/rate-calculator.css";
-
-interface Props {
-  brackets: Bracket[];
-  minimum: number;
-  lots?: number;
-  includes?: string[];
-  /** Renders the three cost bars. Omit to render the card without them. */
-  compare?: Alternatives;
-}
-
-/**
- * This calculator mirrors the homepage pricing widget so the two never
- * disagree: the same 4-to-1,000-lot logarithmic track (4 × 250^(t/200)),
- * the same snap grid, the same whole-dollar figure. The homepage caps its
- * slider at 1,000 lots; so does this one, and the number field accepts up
- * to 5,000 for the associations past the cap. Exact cents live in the
- * rate-card table inside the expander; the big figure rounds to the dollar
- * the way the homepage does.
- */
-const STEPS = 200;
-const S_MIN = 4;
-const S_MAX = 1000;
-const FACTOR = S_MAX / S_MIN;
-const toPos = (n: number) =>
-  Math.max(0, Math.min(STEPS, Math.round((STEPS * Math.log(n / S_MIN)) / Math.log(FACTOR))));
-
-const { brackets, minimum, lots = 4, includes = [], compare } = Astro.props;
-const p = price(brackets, lots, minimum);
-const cfg = JSON.stringify({ brackets, minimum, lots, compare: compare ?? null });
-const dollars = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
-const count = (n: number) => `${n.toLocaleString("en-US")} ${n === 1 ? "lot" : "lots"}`;
-const startPos = toPos(lots);
-const startPct = (100 * startPos) / STEPS;
-
-const alt = compare ? alternatives(compare, lots) : null;
-const bars = alt
-  ? [
-      { key: "manager", label: `A local manager · ${money(compare!.managerRate, 0)} per door`, amount: alt.manager },
-      { key: "software", label: "Other HOA software · typical tiers", amount: alt.software },
-      { key: "parcel", label: "Common Parcel", amount: p.total },
-    ]
-  : [];
-const barPct = (amount: number) => Math.max(1.5, alt ? (100 * amount) / alt.manager : 0);
+import { price, money, DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "./brackets";
+import { APP_URL } from "../../data/site";
+const initial = price(DEFAULT_BRACKETS, 50, DEFAULT_MINIMUM);
 ---
-
-<div class="pc" data-calc data-cfg={cfg}>
-  <div class="pc-grid">
-    <div class="pc-main">
-      <span class="pc-total-label">Pricing Calculator</span>
-      <p class="pc-out">
-        <span class="pc-figure" data-total aria-hidden="true">{dollars(p.total)}</span>
-      </p>
-      <p class="pc-meta" aria-hidden="true">
-        Per month · <span data-perlot>{money(p.perLot)}</span> per lot
-      </p>
-      <span class="pc-sr" data-total-sr aria-live="polite" aria-atomic="true">
-        {dollars(p.total)} per month, {money(p.perLot)} per lot
-      </span>
-
-      <hr class="pc-rule" />
-
-      <div class="pc-size-head">
-        <label class="pc-label" for="lots">Association size</label>
-        <span class="pc-count">
-          <input
-            id="lots"
-            class="pc-input"
-            type="number"
-            min="1"
-            max="5000"
-            step="1"
-            placeholder={String(lots)}
-            inputmode="numeric"
-            autocomplete="off"
-            aria-describedby="lots-hint"
-            data-count-input
-          />
-          <span aria-hidden="true">lots</span>
-        </span>
-      </div>
-
-      <div class="pc-slider">
-        <div class="pc-track" aria-hidden="true">
-          <div class="pc-fill" data-fill style={`width: calc(${startPct}% + ${15 - 0.3 * startPct}px)`}></div>
-        </div>
-        <div class="pc-ticks" aria-hidden="true">
-          {[0, 25, 50, 75, 100].map((t) => <span style={`left: ${t}%`}></span>)}
-        </div>
-        <input
-          class="pc-range"
-          type="range"
-          min="0"
-          max={STEPS}
-          step="1"
-          aria-label="Association lot count"
-          aria-valuemin={S_MIN}
-          aria-valuemax={S_MAX}
-          aria-valuenow={lots}
-          aria-valuetext={count(lots)}
-          data-range
-        />
-      </div>
-      <div class="pc-ends" aria-hidden="true">
-        <span>4 lots</span>
-        <span class="pc-drag">← drag →</span>
-        <span>1,000</span>
-      </div>
-    </div>
-
-    <aside class="pc-includes" aria-label="What the price includes">
-      <span class="pc-includes-label">Everything included</span>
-      <ul class="pc-includes-list">
-        {includes.map((item, i) => (
-          <li style={`--d: ${i * 35}ms`}>
-            <span class="pc-check" aria-hidden="true">✓</span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </aside>
+<div class="calculator" data-calculator>
+  <div class="calculator-input">
+    <p class="eyebrow">Your association</p><h2 class="t-headline">How many lots?</h2><p>Count each lot or condominium unit once.</p>
+    <label for="lot-count">Number of lots</label><input id="lot-count" disabled type="number" inputmode="numeric" min="1" max="5000" step="1" value="50" aria-describedby="lot-help lot-error" />
+    <p id="lot-help" class="help">Enter a whole number from 1 to 5,000.</p><p id="lot-error" class="error" role="alert" hidden></p>
+    <div class="presets" aria-label="Example association sizes"><button type="button" data-lots="25">25 lots</button><button type="button" data-lots="50">50 lots</button><button type="button" data-lots="100">100 lots</button><button type="button" data-lots="250">250 lots</button></div>
+    <noscript><p class="help">The example below is for 50 lots. Use the rate table below to calculate another size, or contact us for a quote.</p></noscript>
   </div>
-
-  {compare && (
-    <div class="pc-compare" data-compare>
-      <ul class="pc-compare-rows">
-        {bars.map((b) => (
-          <li class:list={["pc-bar", { "is-parcel": b.key === "parcel" }]} data-bar={b.key}>
-            <span class="pc-bar-head">
-              <span class="pc-bar-label">{b.label}</span>
-              <span class="pc-bar-total" data-bar-total>{dollars(b.amount)} / mo</span>
-            </span>
-            <span class="pc-bar-track">
-              <span class="pc-bar-fill" data-bar-fill style={`width: ${barPct(b.amount).toFixed(1)}%`}></span>
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-
-  <details class="pc-details">
-    <summary>
-      <span class="pc-sum-label">How this price is calculated</span>
-      <span class="pc-sum-mark" aria-hidden="true"></span>
-    </summary>
-    <div class="pc-sheet">
-      <div class="pc-head">
-        <span class="pc-head-label" id="pc-working">Graduated rate card</span>
-        <span class="pc-head-note" data-count>{count(p.lots)}</span>
-      </div>
-
-      <div class="pc-scroll">
-        <table aria-labelledby="pc-working">
-          <thead>
-            <tr>
-              <th scope="col">Lots in band</th>
-              <th scope="col">Rate</th>
-              <th scope="col">Your lots</th>
-              <th scope="col">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {p.bands.map((b, i) => (
-              <tr class:list={["pc-row", { "is-empty": b.lots === 0 }]} data-band={i}>
-                <th scope="row">{b.label}</th>
-                <td class="num">{money(b.rate)}</td>
-                <td class="num" data-band-lots>{b.lots.toLocaleString("en-US")}</td>
-                <td class="num" data-band-amount>{money(b.amount)}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <th scope="row">Rate card total</th>
-              <td></td>
-              <td class="num" data-foot-lots>{p.lots.toLocaleString("en-US")}</td>
-              <td class="num" data-foot-raw>{money(p.raw)}</td>
-            </tr>
-            <tr data-floor-row hidden={!p.floored}>
-              <th scope="row">Monthly minimum</th>
-              <td></td>
-              <td></td>
-              <td class="num">{money(minimum)}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <p class="pc-sheet-note" id="lots-hint">
-        Count each unit that owes an assessment. Common areas do not count. The big figure rounds
-        to the dollar; this card is the exact arithmetic.
-      </p>
-    </div>
-  </details>
+  <div class="calculator-result">
+    <p class="eyebrow">Monthly software subscription</p>
+    <output for="lot-count" id="price-total" aria-live="polite" aria-atomic="true"><span class="total">{money(initial.total, 0)}</span><span class="per-month"> / month</span><span class="sr-only"> for 50 lots</span></output>
+    <p class="result-note">All software features. One association price.</p>
+    <dl id="price-breakdown">{initial.bands.filter(band => band.lots > 0).map(band => <div><dt>{band.lots} lots × {money(band.rate)}</dt><dd>{money(band.amount)}</dd></div>)}</dl>
+    <p id="minimum-note" class="help" hidden>$10 monthly minimum applies.</p>
+    <a class="btn btn--primary" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a>
+    <p class="fine-print">Postal mail and any payment processing fees are separate.</p>
+  </div>
 </div>
-
-
-
 <script>
-  import { price, money, clampLots, alternatives, type Bracket, type Alternatives } from "./brackets";
-
-  interface Cfg { brackets: Bracket[]; minimum: number; lots?: number; compare: Alternatives | null; }
-
-  // Mirrors the homepage widget exactly: 4 × 250^(t/200), snapped to 1s
-  // under 20 lots, 5s under 100, 10s above, capped at 1,000 on the track.
-  const STEPS = 200;
-  const S_MIN = 4;
-  const S_MAX = 1000;
-  const LN = Math.log(S_MAX / S_MIN);
-  const toPos = (lots: number) =>
-    Math.max(0, Math.min(STEPS, Math.round((STEPS * Math.log(lots / S_MIN)) / LN)));
-  const toLots = (pos: number) => {
-    const raw = S_MIN * Math.exp((LN * pos) / STEPS);
-    const snapped = raw < 20 ? Math.round(raw) : raw < 100 ? Math.round(raw / 5) * 5 : Math.round(raw / 10) * 10;
-    return Math.max(S_MIN, Math.min(S_MAX, snapped));
-  };
-  const dollars = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
-
-  const root = document.querySelector<HTMLElement>("[data-calc]");
-  if (root) {
-    const cfg: Cfg = JSON.parse(root.dataset.cfg!);
-    const input = root.querySelector<HTMLInputElement>("[data-count-input]")!;
-    const range = root.querySelector<HTMLInputElement>("[data-range]")!;
-    const fill = root.querySelector<HTMLElement>("[data-fill]")!;
-    const q = <T extends Element>(selector: string) => root.querySelector<T>(selector)!;
-    const n = (value: number) => value.toLocaleString("en-US");
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-
-    const initialLots = clampLots(Number(input.value) || cfg.lots || 4);
-    input.value = String(initialLots);
-    range.value = String(toPos(initialLots));
-
-    // The figure eases to its new value; the screen-reader copy of it does
-    // not, so the live region announces once per change instead of per frame.
-    const figure = q<HTMLElement>("[data-total]");
-    let anim = 0;
-    let shown = price(cfg.brackets, initialLots, cfg.minimum).total;
-    const showTotal = (to: number, slow = false) => {
-      cancelAnimationFrame(anim);
-      if (reduced.matches || Math.round(to) === Math.round(shown)) {
-        shown = to;
-        figure.textContent = dollars(to);
-        return;
-      }
-      const from = shown;
-      const start = performance.now();
-      const duration = slow ? 600 : 240;
-      const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / duration);
-        const eased = 1 - Math.pow(1 - t, 3);
-        shown = from + (to - from) * eased;
-        figure.textContent = dollars(shown);
-        if (t < 1) anim = requestAnimationFrame(tick);
-        else shown = to;
-      };
-      anim = requestAnimationFrame(tick);
-    };
-
-    const render = (lotCount: number, source?: HTMLInputElement) => {
-      const result = price(cfg.brackets, lotCount, cfg.minimum);
-      if (source !== input) input.value = String(lotCount);
-      if (source !== range) range.value = String(toPos(lotCount));
-      const pct = (100 * Number(range.value)) / STEPS;
-      fill.style.width = `calc(${pct}% + ${15 - 0.3 * pct}px)`;
-      range.setAttribute("aria-valuenow", String(lotCount));
-      range.setAttribute("aria-valuetext", `${n(lotCount)} ${lotCount === 1 ? "lot" : "lots"}`);
-      showTotal(result.total);
-      q<HTMLElement>("[data-total-sr]").textContent = `${dollars(result.total)} per month, ${money(result.perLot)} per lot`;
-      q<HTMLElement>("[data-perlot]").textContent = money(result.perLot);
-      q<HTMLElement>("[data-count]").textContent = `${n(result.lots)} ${result.lots === 1 ? "lot" : "lots"}`;
-      q<HTMLElement>("[data-foot-lots]").textContent = n(result.lots);
-      q<HTMLElement>("[data-foot-raw]").textContent = money(result.raw);
-      q<HTMLElement>("[data-floor-row]").hidden = !result.floored;
-
-      if (cfg.compare) {
-        const alt = alternatives(cfg.compare, lotCount);
-        const amounts: Record<string, number> = {
-          manager: alt.manager,
-          software: alt.software,
-          parcel: result.total,
-        };
-        for (const key of Object.keys(amounts)) {
-          const bar = root.querySelector<HTMLElement>(`[data-bar="${key}"]`);
-          if (!bar) continue;
-          bar.querySelector<HTMLElement>("[data-bar-total]")!.textContent = `${dollars(amounts[key])} / mo`;
-          bar.querySelector<HTMLElement>("[data-bar-fill]")!.style.width =
-            `${Math.max(1.5, (100 * amounts[key]) / alt.manager).toFixed(1)}%`;
-        }
-      }
-
-      result.bands.forEach((band, index) => {
-        const row = q<HTMLElement>(`[data-band="${index}"]`);
-        row.classList.toggle("is-empty", band.lots === 0);
-        row.querySelector<HTMLElement>("[data-band-lots]")!.textContent = n(band.lots);
-        row.querySelector<HTMLElement>("[data-band-amount]")!.textContent = money(band.amount);
-      });
-    };
-
-    input.addEventListener("input", () => render(clampLots(Number(input.value)), input));
-    input.addEventListener("change", () => {
-      const lotCount = clampLots(Number(input.value));
-      input.value = String(lotCount);
-      render(lotCount, input);
-    });
-    range.addEventListener("input", () => render(toLots(Number(range.value)), range));
-    range.addEventListener("change", () => render(toLots(Number(range.value))));
-
-    // Arrow keys step the lot count on the drag's own snap grid; stepping
-    // the raw track position leaves presses that move nothing.
-    range.addEventListener("keydown", (event) => {
-      const lots = clampLots(Number(input.value));
-      const grid = lots < 20 ? 1 : lots < 100 ? 5 : 10;
-      let next: number | null = null;
-      if (event.key === "ArrowRight" || event.key === "ArrowUp") next = Math.min(S_MAX, lots + grid);
-      else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next = Math.max(S_MIN, lots - grid);
-      else if (event.key === "Home") next = S_MIN;
-      else if (event.key === "End") next = S_MAX;
-      if (next === null) return;
-      event.preventDefault();
-      render(next);
-    });
-
-    // Reveal once on scroll into view; the figure counts up from zero the
-    // first time. Reduced motion gets the final state immediately.
-    if (reduced.matches || !("IntersectionObserver" in window)) {
-      root.classList.add("is-in");
-    } else {
-      root.classList.add("js-reveal");
-      const target = shown;
-      const io = new IntersectionObserver(
-        (entries) => {
-          if (!entries.some((entry) => entry.isIntersecting)) return;
-          io.disconnect();
-          root.classList.add("is-in");
-          shown = 0;
-          showTotal(target, true);
-        },
-        { threshold: 0.3 }
-      );
-      io.observe(root);
-    }
+  import { price, money, DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "./brackets";
+  const input = document.querySelector<HTMLInputElement>("#lot-count");
+  const output = document.querySelector<HTMLOutputElement>("#price-total");
+  const error = document.querySelector<HTMLElement>("#lot-error");
+  const breakdown = document.querySelector<HTMLElement>("#price-breakdown");
+  function update() {
+    if (!input || !output || !error || !breakdown) return;
+    const lots = input.valueAsNumber;
+    const valid = Number.isInteger(lots) && lots >= 1 && lots <= 5000;
+    input.setAttribute("aria-invalid", String(!valid));
+    error.hidden = valid;
+    error.textContent = valid ? "" : "Enter a whole number from 1 to 5,000 to see your price.";
+    if (!valid) { output.textContent = "—"; breakdown.replaceChildren(); document.querySelector<HTMLElement>("#minimum-note")!.hidden = true; return; }
+    const result = price(DEFAULT_BRACKETS, lots, DEFAULT_MINIMUM);
+    const total = document.createElement("span"); total.className = "total"; total.textContent = money(result.total, Number.isInteger(result.total) ? 0 : 2);
+    const suffix = document.createElement("span"); suffix.className = "per-month"; suffix.textContent = " / month";
+    const context = document.createElement("span"); context.className = "sr-only"; context.textContent = ` for ${lots} ${lots === 1 ? "lot" : "lots"}`;
+    output.replaceChildren(total, suffix, context);
+    breakdown.replaceChildren(...result.bands.filter(band => band.lots > 0).map(band => {
+      const row = document.createElement("div"); const term = document.createElement("dt"); const value = document.createElement("dd");
+      term.textContent = `${band.lots} ${band.lots === 1 ? "lot" : "lots"} × ${money(band.rate)}`; value.textContent = money(band.amount); row.append(term, value); return row;
+    }));
+    document.querySelector<HTMLElement>("#minimum-note")!.hidden = !result.floored;
   }
+  if (input) { input.disabled = false; document.querySelector("[data-calculator]")?.setAttribute("data-enhanced", "true"); }
+  input?.addEventListener("input", update);
+  document.querySelectorAll<HTMLButtonElement>("[data-lots]").forEach(button => button.addEventListener("click", () => { if (input) { input.value = button.dataset.lots!; update(); } }));
 </script>
+<style>
+  .calculator { display: grid; grid-template-columns: 1fr 1fr; border: var(--stroke-edge); background: var(--card); }.calculator-input, .calculator-result { padding: clamp(24px, 4vw, 48px); }.calculator-result { background: var(--field); border-left: var(--stroke-edge); }.calculator-input > p:not(.eyebrow) { font-size: 15px; color: var(--ink-3); } label { display: block; font-size: 15px; font-weight: 550; margin-top: 28px; } input { display: block; width: 100%; max-width: 240px; margin-top: 8px; padding: 12px 16px; min-height: 56px; background: var(--paper); border: 1px solid var(--ink-3); font-size: 25px; color: var(--ink); } input[aria-invalid="true"] { border-color: var(--terracotta); }.help { font-size: 12px !important; color: var(--ink-3); }.error { font-size: 14px !important; color: var(--terracotta) !important; }.calculator[data-enhanced] .presets { display: flex; }.presets { display: none; flex-wrap: wrap; gap: 8px; margin-top: 22px; }.presets button { background: transparent; padding: 8px 13px; border: var(--stroke-edge); min-height: 44px; font-size: 14px; color: var(--ink); }.presets button:hover { background: var(--field); border-color: var(--terracotta); } output { display: block; line-height: 1.1; min-height: 74px; color: var(--ink); } output :global(.total) { font-size: clamp(50px, 5vw, 68px); font-weight: 500; letter-spacing: -.05em; } output :global(.per-month) { font-size: 16px; color: var(--ink-3); }.result-note { font-size: 14px; margin-block: 16px 22px; } dl { margin: 0 0 22px; } dl :global(div) { display: flex; justify-content: space-between; gap: 14px; padding-block: 10px; border-top: var(--stroke-edge); font: 400 13px/1.6 var(--font-mono); } dl :global(dd) { margin: 0; }.fine-print { font-size: 12px; color: var(--ink-3); max-width: 32em; margin-top: 18px; }
+  @media(max-width: 700px) { .calculator { grid-template-columns: 1fr; }.calculator-result { border-left: 0; border-top: var(--stroke-edge); } }
+</style>
