@@ -1,0 +1,23 @@
+---
+interface Props { fence?: boolean; }
+const { fence = false } = Astro.props;
+---
+<svg viewBox="0 0 440 180" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" class="property-drawing">
+  <path fill="#EDE8DD" d="M0 0h440v180H0z" />
+  <path stroke="#D9D6C9" stroke-width="1" d="M0 130h440M0 153h440M40 0v180M140 0v180M240 0v180M340 0v180" />
+  <path fill="#DCE3D6" d="M0 148h440v32H0z" /><path stroke="#A5B09C" d="M0 148h440" />
+  <path fill="#C3CEBA" d="M58 60h15V43h20v17h16v38H97v19H70V97H58zm284 20h13V61h19v19h14v32h-13v21h-20v-21h-13z" />
+  <path stroke="#65745D" stroke-width="3" d="M84 83v65m282-53v53" />
+  <path fill="#FBF8F4" stroke="#62594F" stroke-width="1.5" d="M126 75h156v73H126z" />
+  <path fill="#D7B498" stroke="#62594F" stroke-width="1.5" d="m111 75 34-42h119l34 42H111Z" />
+  <path stroke="#B38D71" d="m129 66 20-26m-4 27 20-27m-4 27 20-27m-4 27 20-27m-4 27 20-27m-4 27 20-27m-4 27 20-27m-4 27 11-16" />
+  <path fill="#EEE3D6" stroke="#62594F" stroke-width="1.5" d="M230 50h17V24h-17z" />
+  <path fill="#B8C5C1" stroke="#62594F" stroke-width="1.5" d="M144 94h28v29h-28zm90 0h28v29h-28z" />
+  <path stroke="#FBF8F4" stroke-width="2" d="M158 94v29m-14-15h28m76-14v29m-14-15h28" />
+  <path fill="#8A4B2A" stroke="#62594F" stroke-width="1.5" d="M195 103h23v45h-23z" /><path stroke="#F4CB9F" stroke-width="2" d="M211 126v4" />
+  <path fill="#FBF8F4" stroke="#62594F" stroke-width="1.5" d="m189 101 18-17 18 17h-36Z" />
+  <path stroke="#B9B1A0" d="m195 148-13 32m36-32 13 32" />
+  <path fill="#8B9B7C" d="M113 136h18v12h-18zm162-5h18v17h-18z" />
+  {fence && <g stroke="#8A4B2A" stroke-width="3"><path d="M294 121h101m-101 17h101M295 113v35m16-35v35m16-35v35m16-35v35m16-35v35m16-35v35m16-35v35" /><path stroke-dasharray="3 4" stroke-width="1" d="M286 104h117v52H286z" /></g>}
+  <path stroke="#C5C0B2" stroke-width="1" d="M111 13h187m-187-4v8m187-8v8M316 24v124m-4-124h8m-8 124h8" />
+</svg>

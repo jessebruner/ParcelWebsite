@@ -13,7 +13,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   site: "https://commonparcel.com",
   trailingSlash: "never",
-  build: { format: "file" },
+  build: { format: "file", inlineStylesheets: "never" },
   compressHTML: true,
   vite: { cacheDir: "./.astro/vite" },
   devToolbar: { enabled: false },

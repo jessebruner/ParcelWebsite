@@ -30,7 +30,7 @@ export interface RouteGroup {
 
 export const PRODUCT_GROUPS: RouteGroup[] = [
   {
-    name: "Finances",
+    name: "Money and payments",
     items: [
       { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Collect dues and see who has paid.", icon: "dues" },
       { path: "/product/collections", label: "Collections", blurb: "Track unpaid dues and review notices.", icon: "collections" },
@@ -38,29 +38,19 @@ export const PRODUCT_GROUPS: RouteGroup[] = [
     ],
   },
   {
-    name: "Documents",
+    name: "Documents and residents",
     items: [
-      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Ask questions and read the source.", icon: "documents" },
+      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Get answers from your HOA documents.", icon: "documents" },
+      { path: "/product/resident-portal", label: "Resident portal", blurb: "Let owners view dues and send requests.", icon: "resident" },
+      { path: "/product/records-and-audit", label: "Association records", blurb: "Keep records through board changes.", icon: "records" },
     ],
   },
   {
-    name: "Property",
-    items: [
-      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Track contracts and renewal dates.", icon: "vendors" },
-    ],
-  },
-  {
-    name: "Board work",
+    name: "Board and property",
     items: [
       { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Plan meetings and record decisions.", icon: "meetings" },
-      { path: "/product/rules-and-enforcement", label: "Violations and requests", blurb: "Review cases and home improvement requests.", icon: "rules" },
-      { path: "/product/records-and-audit", label: "Association records", blurb: "Keep records available as officers change.", icon: "records" },
-    ],
-  },
-  {
-    name: "Residents",
-    items: [
-      { path: "/product/resident-portal", label: "Resident portal", blurb: "Let owners pay, read documents, and send requests.", icon: "resident" },
+      { path: "/product/rules-and-enforcement", label: "Violations and requests", blurb: "Review violations and improvement requests.", icon: "rules" },
+      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Track contracts and renewal dates.", icon: "vendors" },
     ],
   },
 ];

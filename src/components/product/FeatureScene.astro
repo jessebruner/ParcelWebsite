@@ -1,128 +1,35 @@
 ---
-/**
- * The hero diagram for a feature page. One file per scene under ./scenes.
- *
- * These are diagrams, not screenshots. They are hidden from assistive
- * technology, so any text inside one reaches nobody — not a screen reader,
- * not a crawler. A scene that needs a sentence to be understood is a scene
- * that has not been drawn yet.
- */
-import duesAndPayments from "./scenes/dues-and-payments.astro";
-import collections from "./scenes/collections.astro";
-import accountingAndBudgets from "./scenes/accounting-and-budgets.astro";
-import rulesAndEnforcement from "./scenes/rules-and-enforcement.astro";
-import meetingsAndVoting from "./scenes/meetings-and-voting.astro";
-import documentsAndAnswers from "./scenes/documents-and-answers.astro";
-import vendorsAndInsurance from "./scenes/vendors-and-insurance.astro";
-import residentPortal from "./scenes/resident-portal.astro";
-import recordsAndAudit from "./scenes/records-and-audit.astro";
-
+import Mark from "../Mark.astro";
+import { PRODUCT_ILLUSTRATIONS } from "../../data/product-illustrations";
+import "./feature-scenes.css";
+import DuesAndPayments from "./scenes/dues-and-payments.astro";
+import Collections from "./scenes/collections.astro";
+import AccountingAndBudgets from "./scenes/accounting-and-budgets.astro";
+import RulesAndEnforcement from "./scenes/rules-and-enforcement.astro";
+import MeetingsAndVoting from "./scenes/meetings-and-voting.astro";
+import DocumentsAndAnswers from "./scenes/documents-and-answers.astro";
+import VendorsAndInsurance from "./scenes/vendors-and-insurance.astro";
+import ResidentPortal from "./scenes/resident-portal.astro";
+import RecordsAndAudit from "./scenes/records-and-audit.astro";
 interface Props { slug: string; }
 const { slug } = Astro.props;
-
-const SCENES: Record<string, any> = {
-  "dues-and-payments": duesAndPayments,
-  "collections": collections,
-  "accounting-and-budgets": accountingAndBudgets,
-  "rules-and-enforcement": rulesAndEnforcement,
-  "meetings-and-voting": meetingsAndVoting,
-  "documents-and-answers": documentsAndAnswers,
-  "vendors-and-insurance": vendorsAndInsurance,
-  "resident-portal": residentPortal,
-  "records-and-audit": recordsAndAudit,
+const scenes = {
+  "dues-and-payments": DuesAndPayments,
+  "collections": Collections,
+  "accounting-and-budgets": AccountingAndBudgets,
+  "rules-and-enforcement": RulesAndEnforcement,
+  "meetings-and-voting": MeetingsAndVoting,
+  "documents-and-answers": DocumentsAndAnswers,
+  "vendors-and-insurance": VendorsAndInsurance,
+  "resident-portal": ResidentPortal,
+  "records-and-audit": RecordsAndAudit,
 };
-
-const TITLES: Record<string, string> = {
-  "dues-and-payments": "Owner payments",
-  collections: "Unpaid dues",
-  "accounting-and-budgets": "Books and bank statement",
-  "rules-and-enforcement": "Violation review",
-  "meetings-and-voting": "Meeting attendance",
-  "documents-and-answers": "Document answers",
-  "vendors-and-insurance": "Contract renewals",
-  "resident-portal": "Resident account",
-  "records-and-audit": "Association records",
-};
-
-const Scene = SCENES[slug];
+const Scene = scenes[slug as keyof typeof scenes];
+const example = PRODUCT_ILLUSTRATIONS[slug];
 ---
-
-<div class:list={["feature-scene", `feature-scene--${slug}`]} aria-hidden="true">
-  <div class="scene-top">
-    <span class="scene-mark"><i></i><i></i><i></i></span>
-    <span>{TITLES[slug] ?? "Common Parcel"}</span>
+<div class:list={["feature-scene", `scene--${slug}`]} role="img" aria-label={example.description}>
+  <div class="scene-content" aria-hidden="true">
+    <div class="scene-registration"><Mark size={20} /><span>Common Parcel</span><span class="registration-line"></span></div>
+    <Scene />
   </div>
-  {Scene && <Scene />}
 </div>
-
-<style>
-  /* Keep illustrations at rest while the visitor reads the feature copy. */
-  .feature-scene :global(*),
-  .feature-scene :global(*::before),
-  .feature-scene :global(*::after) { animation: none !important; }
-  .feature-scene :global(.poll-grid--cast),
-  .feature-scene :global(.gate-days-fill) { clip-path: inset(0); }
-  .feature-scene :global(.poll-fill) { width: 62.5%; }
-  .feature-scene :global(.poll-notch) { background: var(--paper); }
-  .feature-scene :global(.poll-word) { color: var(--sand); }
-  .feature-scene :global(.gate-step--notice),
-  .feature-scene :global(.gate-step--hearing) { border-color: var(--amber-edge); }
-  .feature-scene :global(.gate-step--notice .gate-mark),
-  .feature-scene :global(.gate-step--hearing .gate-mark) { background: var(--amber); }
-  .feature-scene {
-    border: 1px solid var(--night-rule);
-    background: var(--night-active);
-    min-height: 320px;
-    width: min(100%, 520px);
-    justify-self: end;
-    align-self: end;
-    color: var(--paper);
-    overflow: hidden;
-  }
-  .scene-top {
-    min-height: 42px;
-    border-bottom: 1px solid var(--night-rule);
-    padding: 0 var(--s-4);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--s-3);
-    color: var(--on-dark-label);
-    font-family: var(--font-mono);
-    font-size: var(--t-mono-label);
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-  .scene-mark { display: inline-flex; gap: 3px; }
-  .scene-mark i { width: 5px; height: 5px; background: var(--on-dark-tile); }
-  .scene-mark i:nth-child(2) { background: var(--amber); }
-
-  /*
-   * The floor keeps an empty box from collapsing. It is a desktop concern only:
-   * every scene body sets its own minimum, and holding 320px on a phone while
-   * six scenes tighten their body to 238 left a 38px band of this element's
-   * translucent background showing under an opaque scene. Seen at 390 on
-   * /product/vendors-and-insurance, and found independently inside two scenes
-   * before it was fixed here.
-   */
-  @media (max-width: 620px) {
-    .feature-scene { min-height: 0; }
-  }
-
-  /*
-   * .scene-body belongs to the scene components, not to this one, so it has to
-   * be global. Astro scopes a style block by stamping a hash onto the elements
-   * in ITS OWN template and onto the selectors here; an element rendered by a
-   * child component never receives that hash, so a plain `.scene-body` rule
-   * written here silently matches nothing.
-   *
-   * That is exactly what happened when the nine scenes were pulled out of this
-   * file into their own components. The check that the split was a no-op
-   * compared the rendered TEXT of every page and found eight of nine identical
-   * — and text cannot see a stylesheet detaching. Measured afterwards:
-   * `.scene-body` had no `data-astro-cid-*` attribute at all and computed to
-   * `display: block` where it had been a padded 278px box.
-   */
-  :global(.scene-body) { min-height: 278px; padding: clamp(20px, 3vw, 32px); }
-
-</style>

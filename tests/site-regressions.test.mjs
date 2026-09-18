@@ -76,7 +76,7 @@ test("reading and action colors have sufficient text contrast", () => {
     const rgb = hex.slice(1).match(/../g).map(channel => parseInt(channel, 16) / 255).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4);
     return rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722;
   };
-  for (const [fg, bg] of [["ink", "paper"], ["ink-body", "paper"], ["ink-3", "field"], ["terracotta", "paper"], ["paper", "terracotta"], ["mist", "night"], ["sand", "night"]]) {
+  for (const [fg, bg] of [["ink", "paper"], ["ink-body", "paper"], ["ink-3", "field"], ["terracotta", "paper"], ["paper", "terracotta"], ["mist", "night"], ["sand", "night"], ["forest", "sage"], ["paper", "forest"]]) {
     const a = luminance(colors[fg]), b = luminance(colors[bg]);
     assert.ok((Math.max(a, b) + .05) / (Math.min(a, b) + .05) >= 4.5, `${fg} on ${bg}`);
   }
