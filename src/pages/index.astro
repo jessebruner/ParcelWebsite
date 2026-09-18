@@ -1,0 +1,82 @@
+---
+import Base from "../layouts/Base.astro";
+import PixelSky from "../components/PixelSky.astro";
+import ProductTour from "../components/product/ProductTour.astro";
+import Faq from "../components/Faq.astro";
+import RateCalculator from "../components/pricing/RateCalculator.astro";
+import FeatureIcon from "../components/product/FeatureIcon.astro";
+import { APP_URL, HOME_FAQS, faqSchema } from "../data/site";
+const features = [
+  { icon: "books", title: "See where the money goes", text: "Review income, expenses, and budgets without piecing together separate spreadsheets. Share financial records with the board or your accountant.", link: "/product/accounting-and-budgets", label: "Accounting and budgets" },
+  { icon: "collections", title: "Follow up on unpaid dues", text: "See the balance, payment history, and previous notices together. Prepare the next notice for your board to review.", link: "/product/collections", label: "Late payments and collections" },
+  { icon: "resident", title: "Give residents an easier way to reach you", text: "Owners can check their balance, read shared documents, and submit home improvement requests through their own account.", link: "/product/resident-portal", label: "Resident portal" },
+  { icon: "rules", title: "Track requests and violations", text: "Keep the photos, correspondence, notices, and board decisions with each case. See what has happened and what still needs attention.", link: "/product/rules-and-enforcement", label: "Violations and architectural requests" },
+  { icon: "vendors", title: "Stay ahead of contract renewals", text: "Keep vendor agreements, insurance policies, and renewal dates together. Review the terms before the next bill arrives.", link: "/product/vendors-and-insurance", label: "Vendors and insurance" },
+  { icon: "records", title: "Keep your records when officers change", text: "Minutes, financial records, and contracts stay with the association. New board members can pick up the work, and your board can export its records.", link: "/product/records-and-audit", label: "Association records" },
+];
+const schema = JSON.stringify([
+  { "@context": "https://schema.org", "@type": "Organization", "@id": "https://commonparcel.com/#organization", name: "Common Parcel", url: "https://commonparcel.com", logo: "https://commonparcel.com/apple-touch-icon.png", email: "jesse@commonparcel.com", description: "HOA software for volunteer boards and self-managed associations." },
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Common Parcel", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: "https://commonparcel.com/product", description: "Software for HOA dues, financial records, governing documents, meetings, and resident access." },
+  faqSchema(HOME_FAQS),
+]).replaceAll("<", "\\u003c");
+---
+<Base title="HOA software for volunteer boards | Common Parcel" description="Collect dues, manage finances, and keep residents informed with Common Parcel. Software for self-managed HOAs and condo boards, from $10 a month for 4 units." path="/" schema={schema}>
+  <section class="home-hero">
+    <div class="page hero-grid">
+      <div class="hero-copy">
+        <h1>Run your HOA.<br /><em>Enjoy your<br class="desktop-break" /> neighborhood.</em></h1>
+        <p class="hero-lede">Common Parcel helps volunteer boards collect dues, manage the books, and keep residents informed.</p>
+        <div class="actions"><a href={APP_URL} class="btn btn--primary">Get started <span aria-hidden="true">↗</span></a><a href="#how-it-works" class="text-link">See how it works <span aria-hidden="true">↓</span></a></div>
+        <p class="hero-note"><a href="#home-calculator">From $10/month for a 4-unit association.</a></p>
+      </div>
+      <div class="hero-art"><PixelSky mode="scene" scene="hilltop" seed={61} animated /></div>
+    </div>
+  </section>
+  <section id="how-it-works" class="work-section">
+    <div class="page">
+      <div class="section-heading"><h2 class="t-sheet">Get more<br />board work done.</h2><p>Collect payments, answer common questions, and prepare for meetings. See how Common Parcel helps with the work on your list.</p></div>
+      <ProductTour />
+    </div>
+  </section>
+  <section class="home-features">
+    <div class="page">
+      <div class="section-heading"><h2 class="t-sheet">The rest of your<br />board work belongs here, too.</h2><p>One place for your association’s finances, residents, and records. Your board stays in charge of the decisions.</p></div>
+      <div class="feature-grid">{features.map(feature => <article><FeatureIcon name={feature.icon} /><h3>{feature.title}</h3><p>{feature.text}</p><a href={feature.link}>{feature.label}<span aria-hidden="true">→</span></a></article>)}</div>
+      <a class="text-link all-features" href="/product">See all Common Parcel features <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+  <section class="home-pricing" id="home-calculator">
+    <div class="page">
+      <div class="section-heading"><h2 class="t-sheet">See your association’s<br />monthly price.</h2><p>All software features included. Four units start at $10 a month. Enter your association’s size to see your price.</p></div>
+      <RateCalculator />
+      <p class="price-note">Month to month. Setup and document migration included. <a href="/pricing">See rates and what’s included <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+  <Faq items={HOME_FAQS} title="Common questions" />
+</Base>
+<style>
+  .home-hero { padding-block: clamp(42px, 5vw, 72px) 64px; }
+  .hero-grid { display: grid; grid-template-columns: 1.03fr 1fr; gap: clamp(36px, 4.5vw, 72px); align-items: center; }
+  .hero-copy { padding-block: 16px; }
+  h1 { font: 550 clamp(42px, 5.3vw, 76px)/1.06 var(--font-sans); letter-spacing: -.052em; margin: 0; }
+  h1 em { font-family: var(--font-serif); font-weight: 400; font-size: .9em; letter-spacing: -.055em; color: var(--terracotta); }
+  .hero-lede { font-size: 19px; line-height: 1.6; max-width: 28em; margin: 28px 0 30px; }
+  .hero-note { font-size: 14px; color: var(--ink-3); margin: 18px 0 0; }.hero-note a { color: inherit; text-underline-offset: 4px; display: inline-flex; align-items: center; min-height: 44px; }
+  .hero-art { height: clamp(410px, 39vw, 525px); background: var(--night); overflow: hidden; }.hero-art :global(canvas) { object-position: 58% center; }
+  .work-section { border-top: var(--stroke-edge); }
+  .section-heading { align-items: end; }.section-heading > p { max-width: 30em; font-size: 16px; color: var(--ink-2); margin: 0; }
+  .home-features { background: var(--field); border-block: var(--stroke-edge); }
+  .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 44px 40px; }
+  .feature-grid article { border-top: var(--stroke-edge); padding-top: 26px; display: flex; flex-direction: column; align-items: start; }
+  .feature-grid article :global(svg) { width: 30px; height: 30px; color: var(--terracotta); margin-bottom: 22px; }
+  .feature-grid h3 { font: 450 26px/1.24 var(--font-serif); letter-spacing: -.035em; margin: 0; max-width: 20ch; }
+  .feature-grid p { font-size: 16px; color: var(--ink-2); margin: 18px 0; }
+  .feature-grid a { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; margin-top: auto; font-size: 14px; text-decoration: none; }
+  .feature-grid a:hover { text-decoration: underline; text-underline-offset: 4px; }.feature-grid a span { transition: transform .18s; }.feature-grid a:hover span { transform: translateX(4px); }
+  .all-features { margin-top: 38px; }.price-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; font-size: 14px; margin: 20px 0 0; color: var(--ink-3); }.price-note a { min-height: 44px; display: inline-flex; align-items: center; gap: 12px; }
+  @media(max-width: 950px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
+  @media(max-width: 700px) {
+    .home-hero { padding-block: 36px; }.hero-grid { grid-template-columns: 1fr; gap: 28px; }.hero-copy { padding: 0; } h1 { font-size: clamp(42px, 10vw, 64px); }.desktop-break { display: none; }.hero-lede { margin-block: 22px; font-size: 18px; }.hero-note { margin-top: 14px; }.hero-art { height: 300px; }
+    .feature-grid { grid-template-columns: 1fr; gap: 28px; }.feature-grid article :global(svg) { margin-bottom: 16px; }.feature-grid h3 { max-width: 26ch; }.feature-grid p { margin-block: 14px; }.price-note { display: block; }.price-note a { display: flex; margin-top: 8px; }
+  }
+</style>

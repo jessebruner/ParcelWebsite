@@ -79,7 +79,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Start with what the association actually spent",
         paragraphs: [
-          "Put the current budget beside year-to-date actuals and the prior full year. The differences tell you where the old plan was wrong, where a one-time event distorted the total, and which bills changed without anyone noticing.",
+          "Compare the current budget with what you have actually received and spent so far this year, and with last year’s totals. The differences tell you where the old plan was wrong, where a one-time event distorted the total, and which bills changed without anyone noticing.",
           "Do not copy every actual expense into the new budget. First ask why it moved. A snow season, insurance claim, emergency repair, or vacant contract can make one year a poor forecast for the next.",
         ],
       },
@@ -106,7 +106,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Decide what the reserve contribution is for",
         paragraphs: [
-          "A reserve contribution should not be whatever remains after operating expenses. Tie it to the association's known long-term work, its current reserve information, and the board's plan for updating that information.",
+          "Money set aside for major repairs and replacements (the reserve contribution) should not be whatever remains after day-to-day expenses. Tie it to the association's known long-term work, its current reserve information, and the board's plan for updating that information.",
           "If the board cannot explain the number, pause before the vote. A reserve professional, accountant, or local adviser can help where the association's records leave a real gap.",
         ],
       },
@@ -136,7 +136,7 @@ export const BLOG_POSTS: BlogPost[] = [
     },
     category: "Operations",
     artSubject: "renewal",
-    lede: "Auto-renewal is quiet. By the time someone remembers the contract, the cancellation window may already be closed. Put the dates, performance notes, and board decision in one place before that happens.",
+    lede: "Check the renewal terms and cancellation deadline before deciding whether to keep a vendor. Use this checklist to review the work, compare prices, and record the board’s decision.",
     sections: [
       {
         heading: "Read the renewal paragraph first",
@@ -159,10 +159,10 @@ export const BLOG_POSTS: BlogPost[] = [
         },
       },
       {
-        heading: "Compare the same scope",
+        heading: "Compare what each vendor will provide",
         paragraphs: [
           "If the board seeks another proposal, give each vendor the same property facts, service schedule, exclusions, and response expectations. A lower total can hide fewer visits, a smaller area, or work billed separately.",
-          "Write the differences down before choosing. The useful comparison is not three prices. It is three scopes the board can place side by side.",
+          "Write the differences down before choosing. Compare the work included in each proposal, as well as the price.",
         ],
       },
       {
@@ -235,7 +235,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Leave a record the next treasurer can follow",
         paragraphs: [
-          "Store the invoice, supporting document, approval, payment confirmation, and any corrected instructions together. The ledger entry should point back to that packet.",
+          "Store the invoice, supporting document, approval, payment confirmation, and any corrected instructions together. The transaction in your financial records should link to those documents.",
           "A clean payment record answers five questions without a phone call: who was paid, for what, under which agreement, who approved it, and when the money left the association's account.",
         ],
       },
@@ -254,7 +254,7 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: "how-to-run-a-smooth-hoa-annual-meeting",
     title: "How to run a smooth HOA annual meeting",
-    description: "A practical run sheet for the notice, agenda, quorum count, election, and minutes.",
+    description: "A practical checklist for meeting notices, the agenda, attendance requirements, elections, and minutes.",
     publishedAt: "2026-08-22",
     author: {
       name: "Common Parcel",
@@ -262,17 +262,17 @@ export const BLOG_POSTS: BlogPost[] = [
     },
     category: "Board Governance",
     artSubject: "meeting",
-    lede: "A missed notice or one short quorum count can force a do-over. Use this run sheet to prepare the notice, room, ballot count, and minutes.",
+    lede: "Prepare the notice, agenda, attendance count, ballots, and minutes before your annual meeting. This checklist helps the board check what is ready and what still needs attention.",
     sections: [
       {
-        heading: "The annual meeting run sheet",
+        heading: "Your annual meeting checklist",
         list: {
           title: "Run sheet checklist",
           items: [
             "Calendar the meeting date and book the venue early",
             "Send the required notice to everyone entitled to receive it and archive proof of notice",
             "Prepare an agenda and the ballot materials your rules require",
-            "Confirm quorum requirements in advance",
+            "Confirm quorum: the minimum participation required to conduct business",
             "Start on time and explain the meeting's speaking rules",
             "Follow the required ballot-counting process and record the result in the minutes",
             "Draft formal minutes directly from the meeting record",
@@ -300,7 +300,7 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       {
-        heading: "Plan for the short count and run the room",
+        heading: "Prepare for low attendance and manage the discussion",
         paragraphs: [
           "Quorum is the minimum participation required before the meeting can conduct business. Know the threshold before the meeting so nobody is guessing in the room. If the count falls short, pause before taking business and follow the adjournment or reconvening rule that applies.",
           "Start on time. Keep each item to its block. Explain the speaking rules at the start and apply them consistently. One person speaks at a time.",
@@ -308,9 +308,9 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       {
-        heading: "The year's quiet work behind the meeting",
+        heading: "Keep records ready throughout the year",
         paragraphs: [
-          "The annual meeting sits on the year's quiet work: the dues billed and collected, the books kept current, the notices sent and filed, and the election run. Common Parcel keeps that record for self-managed associations so volunteer directors get their evenings back.",
+          "Prepare for the annual meeting throughout the year by keeping dues records, financial reports, notices, and past minutes up to date. Common Parcel gives your board a place to keep these records together.",
         ],
       },
     ],
@@ -355,7 +355,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Reconcile the money before access changes",
         paragraphs: [
-          "The incoming treasurer needs a starting point they can prove. Match the bank balance to the ledger, list every unpaid invoice, and explain every item that is still unreconciled.",
+          "Give the incoming treasurer records they can check. Compare the bank balance with the financial records, list unpaid invoices, and explain any differences that have not been resolved.",
         ],
         list: {
           title: "Financial handover",
@@ -450,8 +450,8 @@ export const BLOG_POSTS: BlogPost[] = [
           "This guide follows two Michigan records paths that often matter to self-managed boards. They are not the only legal forms a community can take. Quoting a section that does not apply can leave the association relying on a right it does not have.",
           "**A condominium.** If your community was created by a recorded master deed and your neighbors are co-owners of units, the Michigan Condominium Act, 1978 PA 59, covers you. That act uses the terms \"association of co-owners\" and \"condominium project\". Its records sections are quoted below.",
           "**A subdivision association that is not a condominium.** Its records rights may come from the recorded declaration and bylaws and, if the association is incorporated under it, the Michigan Nonprofit Corporation Act, 1982 PA 162.",
-          "One trap worth naming, because it catches boards and it nearly caught this guide. A site condominium is a condominium. Owners hold a unit that happens to be a building envelope on land rather than an apartment, the lawns look like any subdivision, and the Condominium Act applies anyway. What the street looks like decides nothing.",
-          "Start with the recorded document that created the community and the association's state business filing. A recorded master deed points toward the Condominium Act. A declaration of covenants and a nonprofit filing may point toward the corporate path. Those records tell you which question you are asking. If they still leave it unclear, that is a cheap question to put to a Michigan attorney.",
+          "A site condominium is still a condominium. Its units may be areas of land for individual houses rather than apartments, so it can look like a subdivision. Check the recorded documents instead of relying on the appearance of the neighborhood.",
+          "Start with the recorded document that created the community and the association's state business filing. A recorded master deed points toward the Condominium Act. A declaration of covenants and a nonprofit filing may point toward the corporate path. Those records tell you which question you are asking. If it is still unclear, ask a Michigan attorney which law applies.",
         ],
         callout: {
           type: "note",
@@ -462,7 +462,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "What a condominium co-owner can ask for",
         paragraphs: [
-          "The Condominium Act splits the records into two sections that reach two different audiences. Knowing which is which is the difference between a manager who produces the file and a manager who asks what you mean.",
+          "The Condominium Act splits the records into two sections that reach two different audiences. Check which section covers the records you need and who can ask to see them.",
         ],
         callouts: [
           {
@@ -489,7 +489,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Check the audit rule before the handover",
         paragraphs: [
-          "This is the part of the Condominium Act that surprises boards, and it is much better found while the manager is still under contract than after.",
+          "Check the association’s audit or review records while the manager is still under contract and available to answer questions.",
         ],
         callouts: [
           {
@@ -516,7 +516,7 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: "The vote belongs to the members",
         paragraphs: [
           "Read subsections (2) and (3) together and the shape is clear. An audit or a review is what the statute requires above $20,000.00 in annual revenue. Opting out is allowed, and it is not a board decision and not a permanent one: the statute puts the vote with the members, requires a majority of them, and requires it again every year.",
-          "That distinction is the whole point of quoting the words rather than summarizing them. A board that believes it can decide to skip the audit has read a summary, and there are plenty of those. Several years with neither a report nor documentation of a member vote is a gap the next board inherits. Find it while the manager is still under contract, not after.",
+          "Ask for the audit or review report for each year, or the record of the member vote to opt out. Resolve any missing records while the manager is still under contract.",
         ],
       },
       {
@@ -559,8 +559,8 @@ export const BLOG_POSTS: BlogPost[] = [
             "**Per unit or per lot.** For an authorized board handover, identify the owner roster and mailing addresses the association is entitled to hold, the balance owed and its as-of date, payment plans in force, and open violations with their notice dates. Do not treat an ordinary member's inspection right as permission to publish private owner data.",
             "**Contracts.** Every vendor agreement with its renewal date and its cancellation notice window, certificates of insurance for each vendor, and the association's own policies with declarations pages.",
             "**The meeting record.** Minutes and resolutions as far back as they exist, election results, and retained ballots or proxies.",
-            "**Anything holding a clock.** Recorded liens and their dates, pending legal matters, open insurance claims, and any notice period already running against an owner.",
-            "**Control, which is not records and takes the longest.** Bank signatories, the registered agent on file with the state, the association's domain and email, the payment processor account, and the physical mailbox.",
+            "**Open matters and deadlines.** Recorded liens and their dates, pending legal matters, open insurance claims, and any notice period already running against an owner.",
+            "**Account access and authority.** Bank signatories, the registered agent on file with the state, the association's domain and email, the payment processor account, and the physical mailbox.",
           ],
         },
       },
@@ -587,9 +587,9 @@ export const BLOG_POSTS: BlogPost[] = [
         list: {
           items: [
             "**Balances with no as-of date.** A list of amounts owed is worth little if nobody can say which day it was true. Ask for the date on the face of the report.",
-            "**Vendor renewal dates.** Contracts arrive as scans and the renewal and cancellation dates sit in a paragraph in the middle. A board that misses one renews landscaping for a year on the old terms.",
+            "**Vendor renewal dates.** Contracts arrive as scans and the renewal and cancellation dates sit in a paragraph in the middle. Check these dates before deciding whether to renew or end the agreement.",
             "**The monthly reconciliations.** Bank statements arrive and the reconciliation does not, because it lived in the manager's accounting system rather than in a file. Without it, the ledger and the bank are two numbers with nothing joining them.",
-            "**Audit and review reports, and the opt-out votes.** See above. This is the gap that costs money later.",
+            "**Audit and review reports, and the opt-out votes.** Ask for each report and documentation of any member vote to opt out.",
             "**Owner mailing addresses of record.** The address an owner asked the association to use is not always the property address. Confirm the authorized address source before the next required notice.",
           ],
         },

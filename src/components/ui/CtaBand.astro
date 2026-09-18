@@ -1,94 +1,20 @@
 ---
-/**
- * THE CLOSER. Built to the homepage's closing section, because that is the one
- * on this site that works.
- *
- * What it replaced, and the numbers are the argument: a 38px serif headline on
- * beige, inside a bordered card, centred, under a "Get Started" badge, with a
- * lede and two buttons. The homepage closes on 124px of Bricolage over a live
- * dawn marsh, with four words, no label, no lede, and one button. It also gets
- * `clamp(72px, 10vw, 170px)` of padding, more than its own hero.
- *
- * So this is that section, with a per-page seed so no two pages close on the
- * same treeline, and the headline is written per page. The generated
- * `See ${title} in Common Parcel.` named the product and the feature and
- * promised nothing.
- *
- * One button. tokens.css states the rule as one filled terracotta button per
- * view, and the hero above this already spends the page's primary action, so
- * the closer uses the on-ink button the homepage uses in the same position.
- */
-import type { SceneKey } from "../../data/scenes.ts";
-import PixelSky from "../PixelSky.astro";
-
-interface Props {
-  headline: string;
-  /** dawn closes the page, the way the homepage opens at dusk and ends at dawn. */
-  scene?: SceneKey;
-  /** Different per page, so the treeline is not the same picture twice. */
-  seed?: number;
-  /** The one action. Defaults to the early-access dialog. */
-  cta?: string;
-}
-
-const { headline, scene = "dawn", seed = 4, cta = "Get early access" } = Astro.props;
+import PixelSky, { type SceneKey } from "../PixelSky.astro";
+import { APP_URL } from "../../data/site";
+interface Props { headline?: string; scene?: SceneKey; seed?: number; cta?: string; }
+const { headline = "More time for your neighborhood.", scene = "dawn", seed = 197, cta = "Get started" } = Astro.props;
 ---
-
-<section class="closer on-ink" data-scene={scene}>
-  <div class="art" aria-hidden="true">
-    <PixelSky mode="scene" scene={scene} seed={seed} />
-  </div>
-  <div class="veil" aria-hidden="true"></div>
-  <div class="inner">
-    <h2>{headline}</h2>
-    <button type="button" class="btn btn--on-ink" data-open-modal="early-access">{cta}</button>
-  </div>
+<section class="closing on-ink">
+  <div class="closing-art"><PixelSky mode="scene" scene={scene} seed={seed} animated /></div>
+  <div class="closing-veil" aria-hidden="true"></div>
+  <div class="page closing-copy"><h2>{headline}</h2><a class="btn btn--on-ink" href={APP_URL}>{cta}<span aria-hidden="true">↗</span></a></div>
 </section>
-
 <style>
-  .closer {
-    position: relative;
-    overflow: hidden;
-    padding: clamp(72px, 10vw, 170px) var(--pad-x);
-    background: var(--night);
-    color: var(--paper);
-    /* The consequence stroke. The homepage's closer is the only section on it
-       that carries one, and it is what makes the band read as an ending. */
-    border-top: 1.5px solid var(--terracotta);
-  }
-
-  .art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .art :global(canvas) { width: 100%; height: 100%; }
-
-  /*
-   * The homepage's closer uses 0.44 to 0.38 and gets away with it because its
-   * scene is seeded so the horizon sits below the headline. Seeded per page
-   * these do not, and the dawn ramp ends at --paper, which is the headline's
-   * own colour: measured at 2.70:1 against a 3.0 requirement for large text.
-   * Heavier at the top, where the words are, and the marsh keeps the bottom.
-   */
-  .veil {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background: linear-gradient(180deg, rgba(10, 14, 22, 0.70) 0%, rgba(10, 14, 22, 0.58) 46%, rgba(10, 14, 22, 0.34) 100%);
-  }
-
-  .inner {
-    position: relative; z-index: 2;
-    max-width: var(--page-max);
-    margin: 0 auto;
-  }
-
-  .closer h2 {
-    font-family: var(--font-sans);
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    line-height: 0.92;
-    font-size: clamp(44px, 7.4vw, 124px);
-    margin: 0;
-    max-width: 12ch;
-    text-wrap: balance;
-    color: var(--paper);
-  }
-
-  .closer .btn { margin-top: clamp(30px, 4vw, 52px); }
+  .closing { position: relative; isolation: isolate; overflow: hidden; background: var(--night); color: var(--paper); padding: clamp(80px, 9vw, 140px) 0; border-top: 1px solid var(--terracotta); }
+  .closing-art { position: absolute; inset: 0; z-index: -2; }
+  .closing-veil { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, #171326cc 0%, #171326a8 45%, #17132633 100%); }
+  .closing-copy { pointer-events: none; }
+  h2 { font: 650 clamp(46px, 7.2vw, 100px)/1.02 var(--font-sans); letter-spacing: -.055em; max-width: 13ch; margin: 0; text-wrap: balance; }
+  .btn { margin-top: 36px; pointer-events: auto; }
+  @media(max-width: 700px) { .closing { padding-block: 72px 100px; }.closing-veil { background: linear-gradient(90deg, #171326cc, #17132680); } h2 { max-width: 12ch; } }
 </style>

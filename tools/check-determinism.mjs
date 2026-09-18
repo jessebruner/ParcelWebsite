@@ -1,5 +1,5 @@
-import { execSync } from "node:child_process";
-import { readFileSync, readdirSync, statSync, rmSync } from "node:fs";
+import { execSync, execFileSync } from "node:child_process";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
@@ -25,7 +25,7 @@ function hashDir(dir) {
   return hash.digest("hex");
 }
 
-const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+
 
 // 1. Source-level guard: Forbid unpinned build-time Date reads outside epoch-aware sites
 console.log("Checking for unpinned build-time Date reads...");
@@ -87,8 +87,7 @@ console.log("✓ No unpinned build-time Date reads found in components or build 
 // 2. Skewed-epoch positive verification: verify that build outputs respond to SOURCE_DATE_EPOCH
 const TEST_EPOCH = "978307200"; // 2001-01-01T00:00:00Z
 console.log(`Verifying date sink response with skewed SOURCE_DATE_EPOCH=${TEST_EPOCH}...`);
-rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
-execSync(`${npmCmd} run build`, { stdio: "inherit", env: { ...process.env, SOURCE_DATE_EPOCH: TEST_EPOCH } });
+execFileSync(process.execPath, ["tools/build.mjs"], { stdio: "inherit", env: { ...process.env, SOURCE_DATE_EPOCH: TEST_EPOCH } });
 
 /*
  * The footer year is the date sink, and it has to respond, or step 3's
@@ -139,13 +138,11 @@ if (!epoch) {
 process.env.SOURCE_DATE_EPOCH = epoch;
 
 console.log(`Checking build determinism with SOURCE_DATE_EPOCH=${epoch}...`);
-rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
-execSync(`${npmCmd} run build`, { stdio: "inherit", env: process.env });
+execFileSync(process.execPath, ["tools/build.mjs"], { stdio: "inherit", env: process.env });
 const hash1 = hashDir("dist");
 
-rmSync("dist", { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 
-execSync(`${npmCmd} run build`, { stdio: "inherit", env: process.env });
+execFileSync(process.execPath, ["tools/build.mjs"], { stdio: "inherit", env: process.env });
 const hash2 = hashDir("dist");
 
 if (hash1 !== hash2) {
@@ -154,4 +151,3 @@ if (hash1 !== hash2) {
 }
 
 console.log(`Build is reproducible from source (SOURCE_DATE_EPOCH=${epoch}, dist SHA-256: ${hash1.slice(0, 16)}...)`);
-

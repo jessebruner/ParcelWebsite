@@ -1,162 +1,45 @@
 ---
-/**
- * The feature route.
- *
- * Nine pages still render from one template, and that is not the problem worth
- * solving — nine hand-written files would drift. What was wrong is that the
- * template gave every page the identical shape and then refused to be loud
- * anywhere in it:
- *
- *   - a small label above the h1 that was a byte-for-byte copy of the page's
- *     own name, while the h1 said something else entirely
- *   - a display size overridden DOWN to 78px, under a token already below the
- *     homepage's 108px
- *   - a still frame of a sky that the homepage animates
- *   - no pixel strip, on the only page family without one
- *   - alternating field/paper bands at one padding value, forever
- *   - a closing band generated as `See ${title} in Common Parcel.`
- *
- * The shape now varies with the page: the marsh moves, a weather strip breaks
- * the run of bands, the air opens and tightens, and every page writes its own
- * closing line.
- */
 import Base from "../../layouts/Base.astro";
-import Hero from "../../components/Hero.astro";
 import Band from "../../components/Band.astro";
 import Blocks from "../../components/Blocks.astro";
-import CtaBand from "../../components/ui/CtaBand.astro";
 import Faq from "../../components/Faq.astro";
-import PixelSky from "../../components/PixelSky.astro";
 import FeatureScene from "../../components/product/FeatureScene.astro";
 import { FEATURES, type PageSpec } from "../../data/content";
-import { FEATURE_ART, DEFAULT_ART } from "../../data/scenes.ts";
-
-export function getStaticPaths() {
-  return FEATURES.map((feat) => ({
-    params: { slug: feat.slug },
-    props: { feature: feat },
-  }));
-}
-
-interface Props {
-  feature: PageSpec;
-}
-
+import { APP_URL, faqSchema } from "../../data/site";
+export function getStaticPaths() { return FEATURES.map(feature => ({ params: { slug: feature.slug }, props: { feature } })); }
+interface Props { feature: PageSpec; }
 const { feature } = Astro.props;
-
-/**
- * Which landscape this page stands in, and the seed that makes it its own
- * picture. See src/data/scenes.ts -- the table is there rather than here
- * because a test reads it.
- */
-const art = FEATURE_ART[feature.slug] ?? DEFAULT_ART;
-
-/**
- * Where the weather strip falls. After the first band on a short page, after
- * the second on a long one, so it never lands as the last thing before the
- * closer and never separates the hero from the page's opening argument.
- */
-const stripAfter = feature.bands.length >= 4 ? 2 : 1;
-
-/**
- * FAQPage, and it is not free SEO decoration: Google's own guidance is that
- * the markup must match question-and-answer content the reader can see on the
- * page. It is generated from the same array the section renders, so the two
- * cannot drift apart -- a hand-written block would be one more place for a
- * claim to live after the page stopped making it.
- *
- * `<` is escaped because this goes into a <script> via set:html, and a literal
- * `</script>` inside a JSON string would end the block early. Nothing in the
- * copy contains one today; the escape is so nothing has to remember that.
- */
 const faqs = feature.faqs ?? [];
-const schema = faqs.length
-  ? JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqs.map(([question, answer]) => ({
-        "@type": "Question",
-        name: question,
-        acceptedAnswer: { "@type": "Answer", text: answer },
-      })),
-    }).replaceAll("<", "\\u003c")
-  : undefined;
+const relatedBySlug: Record<string, string[]> = {
+  "dues-and-payments": ["collections", "accounting-and-budgets", "resident-portal"],
+  "collections": ["dues-and-payments", "rules-and-enforcement", "records-and-audit"],
+  "accounting-and-budgets": ["dues-and-payments", "vendors-and-insurance", "records-and-audit"],
+  "rules-and-enforcement": ["documents-and-answers", "resident-portal", "meetings-and-voting"],
+  "meetings-and-voting": ["records-and-audit", "documents-and-answers", "resident-portal"],
+  "documents-and-answers": ["rules-and-enforcement", "records-and-audit", "resident-portal"],
+  "vendors-and-insurance": ["accounting-and-budgets", "records-and-audit", "documents-and-answers"],
+  "resident-portal": ["dues-and-payments", "documents-and-answers", "rules-and-enforcement"],
+  "records-and-audit": ["meetings-and-voting", "accounting-and-budgets", "documents-and-answers"],
+};
+const related = (relatedBySlug[feature.slug] ?? []).map(slug => FEATURES.find(item => item.slug === slug)!);
+const schema = JSON.stringify([faqSchema(faqs), {
+  "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://commonparcel.com/" },
+    { "@type": "ListItem", position: 2, name: "Product", item: "https://commonparcel.com/product" },
+    { "@type": "ListItem", position: 3, name: feature.title },
+  ],
+}]).replaceAll("<", "\\u003c");
 ---
-
-<Base
-  title={feature.title}
-  description={feature.description}
-  path={`/product/${feature.slug}`}
-  shareTitle={`Common Parcel: ${feature.title}`}
-  schema={schema}
->
-  <Hero scene={art.scene} seed={art.seed} live>
-    <div class="feature-hero">
-      <div class="feature-copy">
-        <h1 class="t-display">{feature.h1}</h1>
-        <p class="t-lede">{feature.lede}</p>
-        <div class="actions">
-          <button type="button" class="btn btn--on-ink" data-open-modal="early-access">Get early access</button>
-        </div>
-      </div>
-      <FeatureScene slug={feature.slug} />
-    </div>
-  </Hero>
-
-  {feature.bands.map((band, i) => (
-    <>
-      <Band
-        title={band.title}
-        field={band.field}
-        air={band.air}
-        layout={band.layout}
-        note={band.note ? band.note[0] : undefined}
-        noteHref={band.note ? band.note[1] : undefined}
-      >
-        <Blocks body={band.body} />
-      </Band>
-      {i === stripAfter - 1 && (
-        <div class="strip">
-          <PixelSky mode="band" scene={art.strip} seed={art.seed + 1} />
-        </div>
-      )}
-    </>
-  ))}
-
-  {faqs.length > 0 && <Faq items={faqs} />}
-
-  <CtaBand headline={feature.closer} scene={art.closeScene} seed={art.seedClose} />
+<Base title={feature.title} description={feature.description} path={`/product/${feature.slug}`} schema={schema}>
+  <section class="feature-intro"><div class="page feature-grid">
+    <div><a class="back-link" href="/product">← All features</a><h1 class="t-display">{feature.h1}</h1><p class="t-lede">{feature.lede}</p><div class="actions"><a class="btn btn--primary" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a><a class="text-link" href="/pricing">See pricing</a></div></div>
+    <figure class="feature-art"><div class="scene-frame"><FeatureScene slug={feature.slug} /></div><figcaption>Illustrative example · Fictional association data</figcaption></figure>
+  </div></section>
+  {feature.bands.map(band => <Band title={band.title} layout={band.layout} field={band.field}><Blocks body={band.body} /></Band>)}
+  <Faq items={faqs} />
+  <div class="page related"><div>{related.map(item => <a href={`/product/${item.slug}`}>{item.title} <span aria-hidden="true">↗</span></a>)}</div></div>
 </Base>
-
 <style>
-  .feature-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
-    gap: clamp(36px, 5vw, 72px);
-    align-items: center;
-  }
-  .feature-copy { min-width: 0; }
-  /* The measure belongs to the headline, not to the column. Putting it on the
-     column broke the lede into a four-word-wide ribbon. */
-  .feature-copy :global(h1) { max-width: 13ch; }
-  /*
-   * No font-size here. The old rule set clamp(40px, 5.2vw, 78px), which is 28%
-   * smaller than the homepage's headline on the same fonts and the same tokens.
-   * .t-display is the scale; a page does not get to shrink it.
-   */
-
-  .strip { position: relative; }
-
-  @media (max-width: 900px) {
-    .feature-hero { grid-template-columns: 1fr; }
-    /*
-     * The measure stays on the headline here too. It was on .feature-copy, and
-     * the same mistake the desktop rule above documents was live on every
-     * phone: 18ch resolved to a 199px column inside a 390px viewport, so the
-     * lede wrapped to nine lines and the button sat 18px from its own edge.
-     * Measured on all nine pages before and after.
-     */
-    .feature-copy :global(h1) { max-width: 15ch; }
-    .feature-hero :global(.feature-scene) { justify-self: stretch; width: 100%; }
-  }
+  .feature-intro { padding-block: 44px 72px; border-bottom: var(--stroke-edge); }.feature-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }.back-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; margin-bottom: 24px; text-decoration: none; }.eyebrow { font-size: 12px; } h1 { font-size: clamp(38px, 4.3vw, 60px); max-width: 17ch; }.t-lede { margin: 24px 0 28px; max-width: 34em; font-size: 19px; }.feature-art { margin: 0; min-width: 0; }.scene-frame { width: 100%; }.scene-frame :global(.feature-scene) { width: 100%; } figcaption { font: 400 12px/1.6 var(--font-mono); color: var(--ink-3); padding-top: 12px; }.related { padding-block: 24px 64px; }.related > div { display: flex; flex-wrap: wrap; gap: 16px 36px; }.related a { display: inline-flex; min-height: 44px; align-items: center; gap: 14px; font-size: 15px; }
+  @media(max-width: 850px) { .feature-grid { grid-template-columns: 1fr; gap: 32px; } h1 { max-width: 22ch; }.scene-frame { max-width: 600px; }.feature-art { max-width: 600px; width: 100%; } }
 </style>

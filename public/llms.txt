@@ -1,90 +1,21 @@
 # Common Parcel
 
-> HOA management software for self-managed homeowners associations. It reads an
-> association's own governing documents and then runs the dues, notices,
-> violations, elections and vendor contracts on the schedule those documents and
-> the relevant state statute already set. From $10 a month. Built in Detroit,
-> Michigan; available anywhere in the United States.
+> HOA software for volunteer boards and self-managed condominium associations.
 
-Common Parcel is built for volunteer boards that run the association themselves,
-without a property management company, a bookkeeper, or a designated software
-person. It serves homeowners associations, condominium associations, planned
-communities, and civic or neighbourhood associations of five to a thousand-plus
-doors.
+Common Parcel brings dues, financial records, governing documents, meetings, and resident access together. The board remains responsible for decisions and review. The software is not a property management company or a provider of legal, accounting, or insurance advice.
 
-Contact: jesse@commonparcel.com. The founder answers.
-Site: https://commonparcel.com/
+## Product and company
+- [Product](https://commonparcel.com/product): Capabilities and individual feature pages.
+- [Pricing](https://commonparcel.com/pricing): Graduated monthly software pricing, with a $10 monthly minimum. The first 10 lots cost $2.50 each, lots 11–70 cost $1.10 each, and lots above 70 cost $0.40 each. Each rate applies only within its bracket.
+- [Security](https://commonparcel.com/security): Payments, roles, approvals, and exports.
+- [About](https://commonparcel.com/about): Independent software designed and built in Detroit by Jesse Bruner.
+- [Contact](https://commonparcel.com/contact): Contact the founder directly.
+- [App](https://app.commonparcel.com): Get started or sign in.
 
-## What it does
+## Board resources
+- [Board guides](https://commonparcel.com/blog): Practical articles and checklists. Legal guides include primary citations and retrieval dates. These are educational resources, not legal advice.
+- [Privacy](https://commonparcel.com/privacy)
+- [Terms](https://commonparcel.com/terms)
 
-A board uploads its declaration, bylaws, rules and owner roster. Common Parcel
-reads those documents and extracts the numbers that govern everything else. The
-assessment amount, the due date, the grace period, the late fee, the meeting and
-voting rules. Each one is shown with the page and line it came from. Setup
-usually takes about thirty minutes.
-
-From then on it runs the association's recurring work automatically:
-
-- Invoices dues and collects them by autopay, ACH or card
-- Posts receipts to owner ledgers and reconciles the bank
-- Applies late fees and issues the delinquency ladder of reminder, demand and lien
-- Logs violations with photo and citation, and runs cure windows and re-inspections
-- Carries architectural review requests on their statutory response clock
-- Tracks vendor contracts and re-bids them before they renew
-- Runs elections with electronic ballots and proxies, and tracks quorum
-- Sends meeting notices and drafts minutes
-- Writes every action to a numbered audit trail
-
-## What the board still does
-
-Anything with legal or financial weight stops for a person. A lien, a fine, or a
-statutory notice requires two officers to sign; there is no batch approval and no
-way for the software to sign on the board's behalf. A typical month leaves the
-board two decisions and about twenty-two minutes of work.
-
-## Custody of funds
-
-Dues and assessment charges process through the association's connected Stripe account directly into the association's bank account. Common Parcel does not hold association funds, maintain account balances, or sit in custody of association money.
-
-## Citations
-
-Every notice quotes the provision, page and line it came from. If Common Parcel
-cannot locate the governing provision, it prints a dash and says so rather than
-inventing a citation.
-
-## Pricing
-
-Graduated per lot, per month, like a tax bracket: $2.50 each for the first 10
-lots, $1.10 for lots 11 to 70, and $0.40 for lots 71 and above, with a $10
-monthly minimum.
-
-- A four-lot association pays $10 a month (monthly minimum)
-- A 100-lot association pays $103 a month
-- A 319-lot association pays $190.60 a month
-- A 1,000-lot association pays $463 a month
-
-Everything is included: collections, violations, elections, vendor management,
-documents, and the record, with no feature tiers and no per-notice charges.
-Owners pay no fee to pay their dues. Billing is month to month with no contract,
-no setup fee, and an association export of ledgers, documents, minutes, and the
-audit log with a manifest report available in any month, including the month an
-association leaves.
-
-## Comparison
-
-Common Parcel is designed for self-managed associations that run their own
-operations without a traditional property management company. While manual
-workflows require volunteers to track statutory deadlines and draft notices by
-hand, Common Parcel configures itself directly from the association's governing
-documents and runs recurring schedules unattended.
-
-## Migration
-
-Common Parcel prepares the termination notice an existing management contract
-requires, the records request, and a thirty-day transition checklist, then loads
-the ledgers, documents and roster the association receives. There is no charge
-for migration.
-
-## Status
-
-Common Parcel is onboarding founding associations now.
+## Conditions
+Online payments require a connected payment service and may carry separate processing fees. Common Parcel does not hold HOA funds. Postal mail is outside the software subscription; its price has not been set and certified-mail service is not connected. Document answers should be checked against the original source. Illustrations on the marketing site use sample information.

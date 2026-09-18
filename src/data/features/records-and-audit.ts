@@ -1,95 +1,55 @@
-/**
- * records-and-audit
- *
- * One page, one file. See src/data/content.ts for the shared shape and
- * src/data/features/index.ts for the order they appear in.
- *
- * This was the thinnest page on the site: two bands, no onward link, and a
- * band whose paragraph repeated its own heading word for word. It now argues
- * the two things that actually make an association keep records: an owner can
- * demand them, and the board that has them will not be here next year.
- */
 import type { PageSpec } from "../content";
 
 export const recordsAndAudit: PageSpec = {
-  slug: "records-and-audit",
-  title: "Records and audit",
-  description:
-    "Minutes, resolutions, notices, and ledgers kept in one place, with a name and a time on every change.",
-  h1: "Records and audit",
-  lede: "Officers change every year or two and what they knew leaves with them. Common Parcel keeps minutes, resolutions, notices, and ledgers where the next board will find them.",
-  closer: "Nothing leaves with the treasurer.",
-  bands: [
+  "slug": "records-and-audit",
+  "title": "HOA records and board handover",
+  "description": "Store minutes, financial records, contracts, and governing documents with the association. New board members can find what they need and continue unfinished work.",
+  "h1": "Keep HOA records available when officers change.",
+  "lede": "Store minutes, financial records, contracts, and governing documents with the association. New board members can find what they need and continue unfinished work.",
+  "bands": [
     {
-      title: "Permanent association records that outlast board turnover",
-      layout: "wide",
-      air: "open",
-      body: [
-        { panel: {
-          label: "Association Archive Vault",
-          note: "Fiscal Year 2026",
-          rows: [
-            { label: "Annual meeting minutes", chip: "Signed", cite: "March 12, 2026" },
-            { label: "Board resolution · Landscaping RFP", chip: "Passed", cite: "2 of 2 officers signed" },
-            { label: "Delinquency notice · Lot 63", chip: "Delivered", cite: "Certified dispatch" },
-            { label: "Operating ledger & bank match", chip: "Reconciled", cite: "$0 difference" },
-          ],
-          footing: { label: "Complete Archive Export", value: "Available anytime" },
-        } },
-        { p: "Every decision, notice, and reconciled financial ledger is preserved in one centralized archive that transitions automatically to incoming board members." },
-      ],
+      "title": "Give your board a shared place for records",
+      "layout": "rail",
+      "field": false,
+      "body": [
+        {
+          "p": "Authorized board members can find association records in one account. Important documents remain available when an officer leaves, instead of staying in a personal inbox."
+        }
+      ]
     },
     {
-      title: "Track every modification with immutable timestamps",
-      layout: "rail",
-      field: true,
-      body: [
-        { panel: {
-          label: "Dual-Approval & Modification Log",
-          note: "Live Audit Log",
-          rows: [
-            { label: "Rule update · Architectural guidelines", value: "Recorded", cite: "Sarah M. (President)" },
-            { label: "Second officer sign-off", value: "Confirmed", cite: "John D. (Treasurer)" },
-            { label: "Assessment schedule revision", value: "Verified", cite: "Matched to Bylaws p. 6" },
-          ],
-          footing: { label: "Audit Integrity", value: "Immutable" },
-        } },
-        { p: "An edit to a rule or a record carries the name of whoever made it and the time. Every action has clear accountability." },
-        { rows: [
-          "Every edit logs officer identity, date, and exact changes.",
-          "Dual sign-off records both officers before legal actions proceed.",
-          "Exportable records for CPA reviews and legal inquiries.",
-        ] },
-      ],
+      "title": "See who approved an important decision",
+      "layout": "rail",
+      "field": true,
+      "body": [
+        {
+          "p": "Keep meeting records, supporting documents, and recorded approvals together. Review the available activity history to understand who took an action and when."
+        }
+      ]
     },
     {
-      title: "Fulfill owner records requests without digging",
-      layout: "rail",
-      air: "tight",
-      note: ["Michigan records requests", "/blog/michigan-hoa-records-request"],
-      body: [
-        { p: "Record the day the request arrives and what the owner asked for. Common Parcel gathers the records it already holds and shows a response clock only where the rule for that association has been verified." },
-        { coda: "The next treasurer opens a complete historical record rather than searching through lost emails." },
-      ],
-    },
-    {
-      title: "Zero knowledge lost when volunteers step down",
-      layout: "stack",
-      field: true,
-      body: [
-        { p: "The officer who knew where everything was is gone. The next one opens association records that outlast any board." },
-        { coda: "Handing over the association takes five minutes instead of three boxes of loose paper." },
-      ],
-    },
+      "title": "Prepare for the next board",
+      "layout": "rail",
+      "field": false,
+      "body": [
+        {
+          "p": "Update access when officers change. Export the records your association needs and use a handover checklist to explain outstanding bills, contracts, and open decisions."
+        }
+      ]
+    }
   ],
-  faqs: [
-    ["An owner has demanded the books. What now?",
-      "Record the request and what the owner asked for. Common Parcel gathers the records it already holds and shows a statutory deadline only where the rule for that association has been verified."],
-    ["Who can change a record?",
-      "Whoever the board has given that role. An edit to a rule or a record carries the name of whoever made it and the time."],
-    ["What happens when the treasurer resigns?",
-      "Nothing leaves with them. The next officer opens the same records."],
-    ["Can we get everything out?",
-      "An export any month, with the records attached."],
-  ],
+  "faqs": [
+    [
+      "What should we keep for a board handover?",
+      "Start with governing documents, minutes, financial records, vendor agreements, insurance policies, and a list of open matters. Review access as officers change."
+    ],
+    [
+      "Can the association export its records?",
+      "Yes. Association exports include records such as financial ledgers, governing documents, meeting minutes, and available activity records."
+    ],
+    [
+      "Does every record belong in a resident response?",
+      "No. Review each records request and the applicable requirements before sharing. Some records may contain confidential or personal information."
+    ]
+  ]
 };

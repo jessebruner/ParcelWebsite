@@ -22,30 +22,7 @@ export interface Route {
     | "contact";
 }
 
-/**
- * THE NINE PAGES, GROUPED BY THE QUESTION A BOARD IS ASKING.
- *
- * Nine labels in one flat column is a list you have to read all of before you
- * can choose from it, and it was the same list in the dropdown and on
- * /product. The group names are Jesse's own, from the prototype
- * ("Product Pages.dc.html"), and they are kept verbatim so the three pages
- * that prototype has and this site does not -- Legal Compliance, Procurement,
- * Voting split from Meetings -- drop into an existing column rather than
- * forcing the grouping to be redrawn.
- *
- * The columns are uneven, three down to one, and the ORDER is the prototype's
- * too: Money in, Compliance, Property and spend, Governance, People. It was
- * briefly not. I led with the two three-item columns, which is the
- * length-driven ordering the sentence above rejects, and Codex caught that the
- * note and the array disagreed. Evening the columns out, or sorting them by
- * how full they are, would both mean grouping by column length instead of by
- * the question -- which is the thing the grouping is for.
- *
- * Records and audit sits under Governance rather than Compliance. The
- * prototype files records REQUESTS under Legal Compliance because they are a
- * statutory clock; our page is about keeping the file so the next board can
- * open it, which is a governance job.
- */
+/** Product navigation grouped by the work a board needs to do. */
 export interface RouteGroup {
   name: string;
   items: Route[];
@@ -53,37 +30,27 @@ export interface RouteGroup {
 
 export const PRODUCT_GROUPS: RouteGroup[] = [
   {
-    name: "Money in",
+    name: "Money and payments",
     items: [
-      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Bills every lot what your declaration says it owes.", icon: "dues" },
-      { path: "/product/collections", label: "Collections", blurb: "Late accounts move on a plan the board controls.", icon: "collections" },
-      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Books that match the bank, month by month.", icon: "books" },
+      { path: "/product/dues-and-payments", label: "Dues and payments", blurb: "Collect dues and see who has paid.", icon: "dues" },
+      { path: "/product/collections", label: "Collections", blurb: "Track unpaid dues and review notices.", icon: "collections" },
+      { path: "/product/accounting-and-budgets", label: "Accounting and budgets", blurb: "Track income, expenses, and budgets.", icon: "books" },
     ],
   },
   {
-    name: "Compliance",
+    name: "Documents and residents",
     items: [
-      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Your declaration, read, with the page every figure came from.", icon: "documents" },
+      { path: "/product/documents-and-answers", label: "Documents and answers", blurb: "Get answers from your HOA documents.", icon: "documents" },
+      { path: "/product/resident-portal", label: "Resident portal", blurb: "Let owners view dues and send requests.", icon: "resident" },
+      { path: "/product/records-and-audit", label: "Association records", blurb: "Keep records through board changes.", icon: "records" },
     ],
   },
   {
-    name: "Property and spend",
+    name: "Board and property",
     items: [
-      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Fresh prices before a contract renews on its own.", icon: "vendors" },
-    ],
-  },
-  {
-    name: "Governance",
-    items: [
-      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Notice on your bylaws' clock, and quorum you can prove.", icon: "meetings" },
-      { path: "/product/rules-and-enforcement", label: "Violations and notices", blurb: "The same rule enforced the same way for every lot.", icon: "rules" },
-      { path: "/product/records-and-audit", label: "Records and audit", blurb: "Minutes, resolutions and ledgers the next board can find.", icon: "records" },
-    ],
-  },
-  {
-    name: "People",
-    items: [
-      { path: "/product/resident-portal", label: "Resident portal", blurb: "Owners pay and look up their own rules.", icon: "resident" },
+      { path: "/product/meetings-and-voting", label: "Meetings and voting", blurb: "Plan meetings and record decisions.", icon: "meetings" },
+      { path: "/product/rules-and-enforcement", label: "Violations and requests", blurb: "Review violations and improvement requests.", icon: "rules" },
+      { path: "/product/vendors-and-insurance", label: "Vendors and insurance", blurb: "Track contracts and renewal dates.", icon: "vendors" },
     ],
   },
 ];
@@ -101,8 +68,8 @@ export const PRODUCT_WIDE: Route[] = [
 */
 export const COMPANY_NAV: Route[] = [
   { path: "/about", label: "About", blurb: "Building software in Detroit for self-managed associations.", icon: "about" },
-  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "Why software built for a volunteer board works differently.", icon: "difference" },
-  { path: "/blog", label: "Blog", blurb: "Practical guides and statutory references for self-managed associations.", icon: "blog" },
+  { path: "/why-common-parcel", label: "Why Common Parcel", blurb: "How Common Parcel helps volunteer boards.", icon: "difference" },
+  { path: "/blog", label: "Board guides", blurb: "Checklists for meetings, budgets, and board changes.", icon: "blog" },
   { path: "/contact", label: "Contact", blurb: "Reach the Common Parcel team directly.", icon: "contact" },
 ];
 
@@ -116,7 +83,7 @@ export const TOP_NAV: Route[] = [
 export const COMPANY: Route[] = [
   { path: "/about", label: "About" },
   { path: "/why-common-parcel", label: "Why Common Parcel" },
-  { path: "/blog", label: "Blog" },
+  { path: "/blog", label: "Board guides" },
   { path: "/pricing", label: "Pricing" },
   { path: "/security", label: "Security" },
   { path: "/contact", label: "Contact" },

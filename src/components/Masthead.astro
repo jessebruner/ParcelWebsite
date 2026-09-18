@@ -1,292 +1,154 @@
 ---
-/**
- * Global Masthead with Product & Company Dropdowns and Early Access CTA.
- *
- * Provides responsive navigation across desktop and mobile, with keyboard-accessible
- * mega menus for Product and Company.
- */
 import Mark from "./Mark.astro";
+import PixelSky from "./PixelSky.astro";
+import FeatureIcon from "./product/FeatureIcon.astro";
+import { APP_URL } from "../data/site";
 import { PRODUCT_GROUPS, COMPANY_NAV } from "../data/routes";
-
-const here = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
-const isCurrent = (href: string) => here === href;
-const isProductActive = here.startsWith("/product");
-const isCompanyActive = here === "/about" || here === "/why-common-parcel" || here === "/blog";
+import { price, money, DEFAULT_BRACKETS, DEFAULT_MINIMUM } from "./pricing/brackets";
+const path = Astro.url.pathname;
+const startingPrice = money(price(DEFAULT_BRACKETS, 4, DEFAULT_MINIMUM).total, 0);
 ---
-
 <header class="mast">
-  <div class="lockup-pad">
-    {/*
-      aria-label, not the wordmark, is this link's accessible name.
-      The heron Mark is aria-hidden (decorative) and masthead.css hides
-      .wordmark at 420px and below, so without the label the home link is an
-      unnamed link on every phone. Guarded by tests/masthead-a11y.test.mjs.
-      An HTML comment here would ship on all 23 pages; this form is compiled away.
-    */}
-    <a class="lockup" href="/" aria-label="Common Parcel home">
-      <Mark size={34} />
-      <span class="wordmark">Common Parcel</span>
-    </a>
+  <div class="page mast-inner">
+    <a class="lockup" href="/" aria-label="Common Parcel home"><Mark size={32} /><span>Common Parcel</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu <span aria-hidden="true">＋</span></button>
+    <nav id="site-nav" aria-label="Main navigation">
+      <details class="nav-dropdown product-dropdown">
+        <summary aria-controls="product-menu">Product <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary>
+        <div class="dropdown-panel mega-menu" id="product-menu">
+          <div class="mega-main">
+            <a class="menu-overview" href="/product">Explore Common Parcel <span aria-hidden="true">↗</span></a>
+            <div class="mega-groups">{PRODUCT_GROUPS.map(group => <div class="mega-group"><h2>{group.name}</h2>{group.items.map(item => <a class="menu-feature" href={item.path} aria-current={path === item.path ? "page" : undefined}><span class="menu-icon"><FeatureIcon name={item.icon!} /></span><span class="menu-copy"><strong>{item.label}</strong><span class="menu-description">{item.blurb}</span></span></a>)}</div>)}</div>
+          </div>
+          <aside class="menu-story">
+            <div class="story-landscape" aria-hidden="true"><PixelSky mode="scene" scene="street" seed={42} /></div>
+            <div class="story-copy"><h2>More time for<br />your neighborhood.</h2><p>See how dues, documents, and board decisions work together.</p><a href="/product#product-tour">Take a product tour <span aria-hidden="true">→</span></a></div>
+          </aside>
+          <div class="mega-bottom"><a href="/pricing"><span><strong>{startingPrice}/month</strong> for 4 units</span><span class="footer-action">Calculate your price <span aria-hidden="true">→</span></span></a><a href="/security">Security and account access <span aria-hidden="true">↗</span></a></div>
+        </div>
+      </details>
+      <a href="/pricing" aria-current={path === "/pricing" ? "page" : undefined}>Pricing</a>
+      <a href="/blog" aria-current={path.startsWith("/blog") ? "page" : undefined}>Guides</a>
+      <details class="nav-dropdown company-dropdown">
+        <summary aria-controls="company-menu">Company <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary>
+        <div class="dropdown-panel company-menu" id="company-menu">
+          <div class="company-links">{COMPANY_NAV.filter(item => item.path !== "/blog").map(item => <a class="menu-feature" href={item.path} aria-current={path === item.path ? "page" : undefined}><span class="menu-icon"><FeatureIcon name={item.icon!} /></span><span class="menu-copy"><strong>{item.label}</strong><span class="menu-description">{item.blurb}</span></span></a>)}</div>
+          <aside class="company-story"><Mark size={40} /><h2>Built for the people<br />who step up.</h2><p>Meet the person behind Common Parcel and why it started.</p><a href="/about">Our story <span aria-hidden="true">→</span></a></aside>
+        </div>
+      </details>
+      <a class="nav-cta" href={APP_URL}>Get started <span aria-hidden="true">↗</span></a>
+    </nav>
   </div>
-
-  <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-
-  <nav id="nav" aria-label="Main navigation">
-    <div class="nav-links">
-      <!-- PRODUCT MEGA DROPDOWN -->
-      <div class="nav-item has-dropdown">
-        <button type="button" class:list={["navlink nav-btn", { on: isProductActive }]} aria-expanded="false">
-          <span>Product</span>
-          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-          </svg>
-        </button>
-        <div class="dropdown-menu mega-menu">
-          <div class="mega-shell">
-            <div class="mega-directory">
-              <div class="mega-directory-head">
-                <a href="/product" class:list={["mega-overview", { active: isCurrent("/product") }]}>
-                  <span>Explore the whole product</span>
-                  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 5l4 4-4 4" /></svg>
-                </a>
-                <a href="/security" class:list={["mega-security", { active: isCurrent("/security") }]}>Security and records</a>
-              </div>
-              <div class="mega-link-grid">
-                {PRODUCT_GROUPS.map((group, i) => (
-                  <div class="mega-group" role="group" aria-labelledby={`mega-g${i}`}>
-                    <span class="mega-head" id={`mega-g${i}`}>{group.name}</span>
-                    {group.items.map((p) => (
-                      <a href={p.path} class:list={["mega-item", { active: isCurrent(p.path) }]}>
-                        <span class="mega-ico" aria-hidden="true">
-                          <svg viewBox="0 0 24 24"><use href={`#nav-${p.icon}`} /></svg>
-                        </span>
-                        <span class="mega-copy">
-                          <span class="mega-name">{p.label}</span>
-                          <span class="mega-desc">{p.blurb}</span>
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <a class="mega-spotlight" href="/product">
-              <span class="mega-spotlight-art" aria-hidden="true">
-                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid slice">
-                  <rect width="360" height="190" class="spot-night" />
-                  <rect y="116" width="360" height="74" class="spot-ground" />
-                  <rect x="0" y="83" width="360" height="6" class="spot-horizon" />
-                  <circle cx="310" cy="34" r="13" class="spot-moon" />
-                  <path d="M0 83h34V67h28v16h30V53h34v30h36V62h32v21h34V45h36v38h34V59h29v24h53" class="spot-roofs" />
-                  <g class="spot-windows">
-                    <rect x="42" y="72" width="8" height="8" /><rect x="101" y="61" width="9" height="9" />
-                    <rect x="173" y="69" width="9" height="9" /><rect x="239" y="55" width="9" height="9" />
-                  </g>
-                  <path d="M30 138h300" class="spot-line" />
-                  <g class="spot-steps">
-                    <rect x="30" y="122" width="48" height="33" /><path d="M40 132h28M40 140h19" />
-                    <rect x="105" y="122" width="48" height="33" /><path d="M115 132h28M115 140h22" />
-                    <rect x="180" y="122" width="48" height="33" /><path d="M190 132h28M190 140h15" />
-                    <rect x="255" y="122" width="48" height="33" /><path d="M265 132h28M265 140h24" />
-                    <path d="M78 138h27M153 138h27M228 138h27" class="spot-connectors" />
-                  </g>
-                </svg>
-              </span>
-              <span class="mega-spotlight-copy">
-                <strong>A month in Common Parcel</strong>
-                <span>See dues, collections, books, notices, renewals, meetings, and resident records in one place.</span>
-                <span class="mega-spotlight-link">See the whole product <span aria-hidden="true">→</span></span>
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- PRICING -->
-      <div class="nav-item">
-        <a class:list={["navlink", { on: isCurrent("/pricing") }]} href="/pricing" aria-current={here === "/pricing" ? "page" : undefined}>
-          Pricing
-        </a>
-      </div>
-
-      <!-- COMPANY DROPDOWN -->
-      <div class="nav-item has-dropdown">
-        <button type="button" class:list={["navlink nav-btn", { on: isCompanyActive }]} aria-expanded="false">
-          <span>Company</span>
-          <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-          </svg>
-        </button>
-        <div class="dropdown-menu company-menu">
-          <div class="company-menu-inner">
-            <div class="company-directory">
-              {COMPANY_NAV.map((c) => (
-                <a href={c.path} class:list={["company-item", { active: isCurrent(c.path) }]}>
-                  <span class="company-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href={`#nav-${c.icon}`} /></svg></span>
-                  <span>
-                    <span class="company-name">{c.label}</span>
-                    <span class="company-desc">{c.blurb}</span>
-                  </span>
-                </a>
-              ))}
-            </div>
-            <a class="company-spotlight" href="/about">
-              <span class="company-spotlight-mark" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              </span>
-              <strong>Built in Detroit for volunteer boards.</strong>
-              <span>Meet the small team behind Common Parcel.</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- CONTACT -->
-      <div class="nav-item">
-        <a class:list={["navlink", { on: isCurrent("/contact") }]} href="/contact" aria-current={here === "/contact" ? "page" : undefined}>
-          Contact
-        </a>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <button type="button" class="nav-cta" data-open-modal="early-access">
-      Early Access
-    </button>
-  </nav>
-
-  <svg class="nav-symbols" aria-hidden="true">
-    <defs>
-      <symbol id="nav-dues" viewBox="0 0 24 24"><path d="M5 4h11v16H5zM8 8h5M8 12h5M8 16h3M17 8h3v8h-3" /></symbol>
-      <symbol id="nav-collections" viewBox="0 0 24 24"><path d="M4 5h12v14H4zM7 9h6M7 13h4M17 12h4M19 10v4" /></symbol>
-      <symbol id="nav-books" viewBox="0 0 24 24"><path d="M4 5h6v14H4zM14 5h6v14h-6M6 9h2M16 9h2M6 13h2M16 13h2" /></symbol>
-      <symbol id="nav-documents" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v5h4M9 12h7M9 16h5" /></symbol>
-      <symbol id="nav-vendors" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM8 3v6M16 3v6M4 10h16M8 15h3M14 15h2" /></symbol>
-      <symbol id="nav-meetings" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h2v2H8zM12 9h2v2h-2zM16 9h2v2h-2zM8 14h2v2H8zM12 14h6" /></symbol>
-      <symbol id="nav-rules" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h8M16 11v3M14.5 12.5h3" /></symbol>
-      <symbol id="nav-records" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8M8 15h5" /></symbol>
-      <symbol id="nav-resident" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M6 10v10h12V10M10 20v-6h4v6" /></symbol>
-      <symbol id="nav-about" viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12M8 10h2M14 10h2M8 14h2M14 14h2" /></symbol>
-      <symbol id="nav-difference" viewBox="0 0 24 24"><path d="M4 5h6v14H4zM14 5h6v14h-6M7 9h0M17 9h0M7 15h0M17 15h0" /></symbol>
-      <symbol id="nav-blog" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" /></symbol>
-      <symbol id="nav-contact" viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 7l9 7 9-7" /></symbol>
-    </defs>
-  </svg>
 </header>
-
 <script>
-  function initMasthead() {
-    const mast = document.querySelector<HTMLElement>(".mast");
-    if (!mast) return;
-
-    const burger = mast.querySelector<HTMLButtonElement>(".burger");
-    const dropdownBtns = mast.querySelectorAll<HTMLButtonElement>(".has-dropdown > .nav-btn");
-
-    burger?.addEventListener("click", () => {
-      const open = mast.hasAttribute("data-open");
-      open ? mast.removeAttribute("data-open") : mast.setAttribute("data-open", "");
-      burger.setAttribute("aria-expanded", String(!open));
-    });
-
-    const dropdownContainers = mast.querySelectorAll<HTMLElement>(".has-dropdown");
-
-    /**
-     * A panel is open for one of two reasons, and they close differently.
-     *
-     * Hovering opens it and moving away closes it. Clicking LATCHES it, and a
-     * latched panel ignores the pointer entirely: it closes on a second click,
-     * on Escape, or on a click outside the masthead. Before this, `mouseleave`
-     * tore the panel down however it had been opened, so a clicked panel died
-     * the moment the pointer left it.
-     *
-     * Clicking also could not open a panel at all on a desktop pointer. The
-     * old handler asked whether the panel was already open, but `mouseenter`
-     * fires as the pointer arrives on the button and opens it first, so by the
-     * time the click landed the answer was always yes and the click closed
-     * what the hover had just opened. Latching is tracked separately from
-     * `.open` for exactly that reason.
-     */
-    const closeTimers = new WeakMap<HTMLElement, number>();
-
-    const shut = (el: Element) => {
-      el.removeAttribute("data-latched");
-      el.classList.remove("open");
-      el.querySelector(".nav-btn")?.setAttribute("aria-expanded", "false");
-    };
-
-    dropdownContainers.forEach((container) => {
-      const btn = container.querySelector<HTMLButtonElement>(".nav-btn");
-
-      container.addEventListener("mouseenter", () => {
-        if (window.innerWidth > 860) {
-          const pending = closeTimers.get(container);
-          if (pending) { window.clearTimeout(pending); closeTimers.delete(container); }
-          container.classList.add("open");
-          btn?.setAttribute("aria-expanded", "true");
-        }
+  const mast = document.querySelector<HTMLElement>(".mast");
+  const toggle = mast?.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = mast?.querySelector<HTMLElement>("#site-nav");
+  if (mast && toggle && nav) {
+    const dropdowns = Array.from(mast.querySelectorAll<HTMLDetailsElement>(".nav-dropdown"));
+    const desktopPointer = matchMedia("(min-width: 901px) and (hover: hover) and (pointer: fine)");
+    let latched: HTMLDetailsElement | null = null;
+    let pendingOpen = 0, pendingClose = 0;
+    toggle.hidden = false;
+    mast.classList.add("enhanced");
+    const clearTimers = () => { window.clearTimeout(pendingOpen); window.clearTimeout(pendingClose); };
+    function setOpen(menu: HTMLDetailsElement, open: boolean) {
+      menu.open = open;
+      menu.querySelector("summary")!.setAttribute("aria-expanded", String(open));
+      if (!open && latched === menu) latched = null;
+    }
+    function closeDropdowns() { clearTimers(); dropdowns.forEach(menu => setOpen(menu, false)); }
+    function openDropdown(menu: HTMLDetailsElement) { clearTimers(); dropdowns.forEach(other => setOpen(other, other === menu)); }
+    function closeMenu() { toggle!.setAttribute("aria-expanded", "false"); closeDropdowns(); }
+    dropdowns.forEach(menu => {
+      const summary = menu.querySelector("summary")!;
+      summary.setAttribute("aria-expanded", "false");
+      summary.addEventListener("click", event => {
+        event.preventDefault();
+        if (menu.open && (!desktopPointer.matches || latched === menu)) setOpen(menu, false);
+        else { openDropdown(menu); latched = menu; }
+        clearTimers();
       });
-
-      container.addEventListener("mouseleave", () => {
-        if (window.innerWidth > 860) {
-          if (container.hasAttribute("data-latched")) return;
-          const pending = closeTimers.get(container);
-          if (pending) window.clearTimeout(pending);
-          // A short grace period. Leaving a menu by a diagonal path clips the
-          // corner of a neighbouring element on the way, and an instant close
-          // makes the menu feel like it is running away from the pointer.
-          closeTimers.set(container, window.setTimeout(() => {
-            closeTimers.delete(container);
-            container.classList.remove("open");
-            btn?.setAttribute("aria-expanded", "false");
-          }, 220));
-        }
+      summary.addEventListener("keydown", event => {
+        if (event.key === "ArrowDown") { event.preventDefault(); openDropdown(menu); latched = menu; menu.querySelector<HTMLAnchorElement>(".dropdown-panel a")?.focus(); }
       });
-    });
-
-    dropdownBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const parent = btn.closest<HTMLElement>(".has-dropdown");
-        if (!parent) return;
-        const wasLatched = parent.hasAttribute("data-latched");
-
-        mast.querySelectorAll(".has-dropdown").forEach((el) => {
-          if (el !== parent) shut(el);
-        });
-
-        if (wasLatched) {
-          shut(parent);
-        } else {
-          parent.setAttribute("data-latched", "");
-          parent.classList.add("open");
-          btn.setAttribute("aria-expanded", "true");
-        }
+      menu.addEventListener("pointerenter", () => {
+        if (!desktopPointer.matches) return;
+        clearTimers();
+        if (!menu.open) pendingOpen = window.setTimeout(() => openDropdown(menu), 140);
       });
+      menu.addEventListener("pointerleave", () => {
+        clearTimers();
+        if (!desktopPointer.matches || latched === menu) return;
+        pendingClose = window.setTimeout(() => { if (!menu.contains(document.activeElement)) setOpen(menu, false); }, 220);
+      });
+      menu.addEventListener("focusout", event => { if (!menu.contains(event.relatedTarget as Node)) { clearTimers(); setOpen(menu, false); } });
+      menu.addEventListener("toggle", () => summary.setAttribute("aria-expanded", String(menu.open)));
     });
-
-    // Close on escape or outside click
-    document.addEventListener("click", (e) => {
-      if (!mast.contains(e.target as Node)) {
-        mast.querySelectorAll(".has-dropdown").forEach(shut);
-      }
+    toggle.addEventListener("click", () => { const open = toggle.getAttribute("aria-expanded") !== "true"; toggle.setAttribute("aria-expanded", String(open)); if (!open) closeDropdowns(); });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      const opened = dropdowns.find(menu => menu.open);
+      if (opened) { clearTimers(); setOpen(opened, false); opened.querySelector("summary")!.focus(); }
+      else if (toggle.getAttribute("aria-expanded") === "true") { closeMenu(); toggle.focus(); }
     });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        mast.removeAttribute("data-open");
-        burger?.setAttribute("aria-expanded", "false");
-        mast.querySelectorAll(".has-dropdown").forEach(shut);
-      }
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initMasthead);
-  } else {
-    initMasthead();
+    document.addEventListener("click", event => { if (!mast.contains(event.target as Node)) closeMenu(); });
+    mast.addEventListener("focusout", event => { if (!mast.contains(event.relatedTarget as Node)) closeMenu(); });
+    nav.addEventListener("click", event => { if ((event.target as HTMLElement).closest("a")) closeMenu(); });
+    matchMedia("(min-width: 901px)").addEventListener("change", closeMenu);
   }
 </script>
+<style>
+  .mast { border-bottom: var(--stroke-edge); background: var(--paper); position: relative; z-index: 20; }
+  .mast-inner { min-height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+  .lockup { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-size: 23px; font-weight: 650; letter-spacing: -.05em; white-space: nowrap; }
+  nav { display: flex; align-items: center; gap: 28px; }
+  nav > a, summary { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); text-decoration: none; font-size: 15px; font-weight: 550; }
+  summary { cursor: pointer; list-style: none; } summary::marker, summary::-webkit-details-marker { display: none; content: ""; }
+  summary:hover, details[open] > summary, nav > a:hover, nav a[aria-current] { color: var(--terracotta); }
+  .chevron { display: block; width: 14px; height: 14px; flex: 0 0 14px; transition: transform .18s ease; } details[open] > summary .chevron { transform: rotate(180deg); }
+  nav > .nav-cta { background: var(--terracotta); color: var(--paper); padding: 10px 20px; gap: 22px; }
+  nav .nav-cta:hover { background: var(--terracotta-deep); color: var(--paper); }
+  .dropdown-panel { position: absolute; top: calc(100% - 1px); border: var(--stroke-edge); background: var(--card); box-shadow: 0 24px 48px -16px #2e2a2430, 0 4px 10px #2e2a2406; }
+  .dropdown-panel::before { content: ""; position: absolute; inset: -24px 0 100%; }
+  details[open] .dropdown-panel { animation: menu-in .18s ease-out; }
+  .mega-menu { left: max(var(--pad-x), calc((100% - 1320px) / 2 + var(--pad-x))); right: max(var(--pad-x), calc((100% - 1320px) / 2 + var(--pad-x))); display: grid; grid-template-columns: minmax(0, 1fr) 282px; }
+  .mega-main { padding: 24px 28px 26px; min-width: 0; }
+  .menu-overview { display: inline-flex; gap: 24px; align-items: center; min-height: 36px; text-decoration: none; font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 26px; }
+  .menu-overview > span { color: var(--terracotta); }.menu-overview:hover { color: var(--terracotta); }
+  .mega-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  .mega-group h2 { font: 500 13px/1.5 var(--font-sans); color: var(--ink-3); margin: 0 0 12px; padding-bottom: 12px; border-bottom: var(--stroke-edge); }
+  .menu-feature { min-height: 96px; display: flex; align-items: flex-start; gap: 12px; text-decoration: none; color: var(--ink); padding: 12px 8px; margin: 0 -8px; transition: background .15s; }
+  .menu-feature:hover, .menu-feature:focus-visible, .menu-feature[aria-current] { background: var(--field); }
+  .menu-icon { color: var(--terracotta); display: grid; place-items: center; flex: 0 0 30px; height: 32px; background: var(--held); border: 1px solid var(--c-rule); }
+  .menu-icon :global(svg) { width: 20px; height: 20px; }
+  .menu-copy { min-width: 0; }.menu-copy strong { display: block; font-size: 15px; font-weight: 550; line-height: 1.4; }
+  .menu-description { display: block; font-size: 14px; line-height: 1.55; color: var(--ink-3); margin-top: 5px; }
+  .menu-feature[aria-current] strong { text-decoration: underline; text-underline-offset: 4px; }
+  .menu-story { background: var(--field); border-left: var(--stroke-edge); padding: 20px; }
+  .story-landscape { height: 140px; overflow: hidden; }.story-copy { padding: 23px 4px 0; }
+  .story-copy h2, .company-story h2 { font: 500 25px/1.2 var(--font-serif); letter-spacing: -.04em; margin: 0; color: var(--ink); }
+  .story-copy p, .company-story p { font-size: 14px; line-height: 1.6; color: var(--ink-3); margin: 14px 0 10px; }
+  .story-copy a, .company-story a { display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: 14px; font-weight: 550; text-decoration: none; }
+  .story-copy a:hover, .company-story a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .mega-bottom { grid-column: 1/-1; border-top: var(--stroke-edge); padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .mega-bottom a { display: flex; align-items: center; gap: 28px; min-height: 40px; font-size: 14px; text-decoration: none; color: var(--ink-3); }.mega-bottom a:hover .footer-action, .mega-bottom a:hover { color: var(--terracotta); }
+  .mega-bottom strong { font-weight: 600; color: var(--ink); }.footer-action { color: var(--terracotta); }.footer-action > span { margin-left: 8px; }
+  .company-menu { width: 640px; display: grid; grid-template-columns: 1.1fr 1fr; right: max(var(--pad-x), calc((100% - 1320px) / 2 + var(--pad-x))); }
+  .company-links { padding: 20px 28px; }.company-links .menu-feature { padding-block: 18px; }.company-story { background: var(--field); border-left: var(--stroke-edge); padding: 30px; }.company-story > :global(svg) { color: var(--terracotta); margin-bottom: 22px; }.company-story h2 { font-size: 24px; }
+  .menu-toggle > span { transition: transform .18s ease; }.menu-toggle[aria-expanded="true"] > span { transform: rotate(45deg); }.menu-toggle { display: none; border: var(--stroke-edge); background: transparent; color: var(--ink); min-height: 44px; padding: 8px 12px; font: inherit; font-size: 15px; gap: 14px; align-items: center; }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+  @media(min-width: 901px) and (max-width: 1150px) { nav { gap: 20px; }.mega-menu { grid-template-columns: minmax(0, 1fr) 230px; }.mega-main { padding-inline: 22px; }.mega-groups { gap: 16px; }.menu-feature { gap: 8px; }.menu-icon { flex-basis: 26px; height: 28px; }.menu-copy strong { font-size: 14px; }.story-copy h2 { font-size: 23px; } }
+  @media(max-width: 900px) {
+    .mast-inner { min-height: 76px; flex-wrap: wrap; gap: 0; }.lockup { font-size: 21px; gap: 9px; }.lockup :global(svg) { width: 27px; }
+    nav { width: 100%; flex-wrap: wrap; gap: 8px 24px; padding: 12px 0 20px; }.enhanced .menu-toggle { display: flex; }.enhanced .menu-toggle[aria-expanded="false"] + nav { display: none; }
+    .enhanced nav { display: block; padding-top: 16px; max-height: calc(100dvh - 92px); overflow-y: auto; overscroll-behavior: contain; }
+    nav > a, summary { display: flex; padding: 12px 4px; border-top: var(--stroke-rule); font-size: 17px; justify-content: space-between; }
+    nav > .nav-cta { padding: 12px 16px; margin-top: 12px; }.dropdown-panel { position: static; width: auto; box-shadow: none; margin: 0 0 12px; border: 0; background: transparent; }.dropdown-panel::before { display: none; }
+    .mega-menu, .company-menu { display: block; }.menu-story, .company-story, .menu-description { display: none; }.mega-main { padding: 4px 8px 16px; }.menu-overview { min-height: 44px; font-size: 15px; margin-bottom: 16px; }
+    .mega-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }.mega-group h2 { margin-bottom: 4px; padding-bottom: 8px; font-size: 13px; }.menu-feature { padding-block: 9px; align-items: center; min-height: 48px; }.menu-copy strong { font-size: 15px; }.menu-icon { flex-basis: 28px; height: 28px; }
+    .mega-bottom { padding: 12px 8px; background: var(--field); gap: 8px; align-items: flex-start; flex-wrap: wrap; }.mega-bottom a { gap: 16px; flex-wrap: wrap; }.company-links { padding: 4px 8px; }.company-links .menu-feature { padding-block: 12px; }
+  }
+  @media(max-width: 620px) { .mega-groups { grid-template-columns: 1fr; gap: 20px; }.mega-bottom { display: block; }.mega-bottom a { justify-content: space-between; }.mega-bottom a + a { margin-top: 8px; }.mega-bottom .footer-action { font-size: 13px; } }
+  @media(max-width: 360px) { .lockup { font-size: 18px; gap: 6px; }.lockup :global(svg) { width: 22px; }.menu-toggle { gap: 6px; padding-inline: 8px; }.mega-bottom a { gap: 6px 12px; } }
+</style>
